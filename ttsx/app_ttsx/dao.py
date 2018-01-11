@@ -1,4 +1,5 @@
 from .models import *
+from .exceptions import *
 
 
 class UserDao(object):
@@ -21,11 +22,24 @@ class UserDao(object):
             self.user.save()
             return True
 
+    @staticmethod
+    def insert(user):
+        # 如果对象是UserInfo类型，则存入数据库
+        if isinstance(user, UserInfo):
+            try:
+                user.save()
+            except Exception:
+                # 自定义异常，并将异常抛出
+                raise DatabaseInsertException('数据库插入异常')
+        else:
+            raise DatabaseInsertException('对象不是UserInfo类型')
+
     # def get_user_by_name(self, username):
     #     user_info = UserInfo.objects.filter(username=username)
     #     return user_info
 
-    def is_user_exist(self):
-        return UserInfo.objects.filter(username=self.user.username).exists()
+    @staticmethod
+    def is_user_exist(username):
+        return UserInfo.objects.filter(username=username).exists()
 
 

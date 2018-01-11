@@ -34,27 +34,31 @@ def user_register(request):
     :param request:
     :return:
     """
-    # 获取用户输入信息
+    # 获取用户输入信息, 创建UserInfo对象
+    user = UserInfo()
     user_info = request.POST
-    username = user_info.get('user_name')
-    password = user_info.get('pwd')
-    email = user_info.get('email')
-    # allow = user_info.get('allow')
+    user.username = user_info.get('user_name')
+    user.password = user_info.get('pwd')
+    user.email = user_info.get('email')
 
-    # 创建UserInfo对象
-    # user = UserInfo()
-    # user.username = username
-    # user.password = password
-    # user.email = email
-    # 创建dao对象
+    # 调用dao，判断是否可以写入数据库
+    if UserDao.is_user_exist(user.username):
+        # 用户已存在注册失败
+        result = '注册失败，用户已存在'
+    else:
+        # 添加用户信息到数据库，返回注册成功
+        try:
+            UserDao.insert(user)
+        except Exception as e:
+            print(e)
+            result = '注册失败，请重试'
+        else:
+            result = '注册成功'
 
-
-    # 写入数据库
-    user.save()
-
-    # 返回登录界面
+    # 跳转到注册结果页面
+    context = {'result': result}
     # return render(request, 'app_ttsx/login.html')
-    return redirect('/login/')
+    return render(request, 'app_ttsx/register_result.html', context)
 
 
 
