@@ -3,25 +3,7 @@ from .exceptions import *
 
 
 class UserDao(object):
-    def __init__(self, username, password, email):
-        self.user = UserInfo()
-        self.user.username = username
-        self.user.password = password
-        self.user.email = email
-
-    def register(self):
-        """
-        用户注册
-        :return: 成功返回True， 失败返回False
-        """
-        if self.is_user_exist(self.user.username):
-            # 用户已存在注册失败
-            return False
-        else:
-            # 添加用户信息到数据库，返回注册成功
-            self.user.save()
-            return True
-
+    # 插入一条数据
     @staticmethod
     def insert(user):
         # 如果对象是UserInfo类型，则存入数据库
@@ -38,8 +20,14 @@ class UserDao(object):
     #     user_info = UserInfo.objects.filter(username=username)
     #     return user_info
 
+    # 通过用户名判断数据是否存在
     @staticmethod
     def is_user_exist(username):
         return UserInfo.objects.filter(username=username).exists()
+
+    # 通过用户名查询数据，返回结果列表，如果用户不存在返回空列表
+    @staticmethod
+    def get_user_by_name(username):
+        return UserInfo.objects.filter(username=username)
 
 

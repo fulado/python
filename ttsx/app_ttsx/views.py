@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import UserInfo
 from .dao import UserDao
+import hashlib
 
 # Create your views here.
 
@@ -8,6 +9,15 @@ from .dao import UserDao
 def test(request):
     dao = UserDao(username='abcdef', password='123', email='')
     print(dao.is_user_exist())
+
+
+def show_index(request):
+    """
+    显示系统首页
+    :param request:
+    :return:
+    """
+    return render(request, 'app_ttsx/index.html')
 
 
 def show_login(request):
@@ -28,7 +38,8 @@ def show_reg(request):
     return render(request, 'app_ttsx/register.html')
 
 
-def user_register(request):
+# 用户注册服务
+def register_service(request):
     """
     用户注册
     :param request:
@@ -46,6 +57,9 @@ def user_register(request):
         # 用户已存在注册失败
         result = '注册失败，用户已存在'
     else:
+        # 对用户密码进行加密
+        user.password = hashlib.sha1(user.password.encode('utf-8')).hexdigest()
+
         # 添加用户信息到数据库，返回注册成功
         try:
             UserDao.insert(user)
@@ -61,4 +75,36 @@ def user_register(request):
     return render(request, 'app_ttsx/register_result.html', context)
 
 
+# 用户登录服务
+def login_server(request):
+    """
+    验证用户登录信息
+    :param request:
+    :return:
+    """
+    # 获取用户输入信息
+    username = request.POST.get('username')
+    password = request.POST.get('pwd')
+    remember = request.POST.get('remember')  # 勾选后返回一个str对象，值是'on'；不勾选返回None
+
+    # 通过用户名在数据库中查询用户
+    users = UserDao.get_user_by_name(username)
+
+    # 查询结果为空列表，返回用户不存在
+    if len(users) == 0:
+        result = '用户不存在'
+    # 查询结果不为空，验证密码
+    else:
+        user = users[0]
+        password = hashlib.sha1(password.encode('utf-8')).hexdigest()
+
+        # 密码不一致，返回用户名密码不匹配
+        if password != user.password:
+            result = '用户名密码不匹配'
+        else:
+            # 密码一致，登录成功
+            result = '登录成功'
+
+    context = {'result': result}
+    return render(request, 'app_ttsx/login_result.html', context)
 
