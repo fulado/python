@@ -45,6 +45,24 @@ def show_reg(request):
     return render(request, 'app_ttsx/register.html')
 
 
+def show_user_site(request):
+    """
+    显示用户地址页面
+    :param request:
+    :return:
+    """
+    return render(request, 'app_ttsx/user_center_site.html')
+
+
+def show_user_info(request):
+    """
+    显示用户个人信息页面
+    :param request:
+    :return:
+    """
+    return render(request, 'app_ttsx/user_center_info.html')
+
+
 # 用户注册服务
 def register_service(request):
     """
