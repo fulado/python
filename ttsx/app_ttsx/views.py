@@ -26,7 +26,14 @@ def show_login(request):
     :param request:
     :return:
     """
-    return render(request, 'app_ttsx/login.html')
+    # 获取Cookie中保存的用户名
+    if 'username' in request.COOKIES.keys():
+        username = request.COOKIES.get('username')
+    else:
+        username = ''
+    context = {'username': username}
+
+    return render(request, 'app_ttsx/login.html', context)
 
 
 def show_reg(request):
@@ -106,5 +113,13 @@ def login_server(request):
             result = '登录成功'
 
     context = {'result': result}
-    return render(request, 'app_ttsx/login_result.html', context)
+    response = render(request, 'app_ttsx/login_result.html', context)
 
+    # 使用Cookie保存用户名
+    # 如果用户勾选，保存到Cookie，否则清除Cookie
+    if remember is not None:
+        response.set_cookie('username', username)
+    else:
+        response.delete_cookie('username')
+
+    return response
