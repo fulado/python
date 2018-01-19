@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import UserInfo
+from .models import UserInfo, UserSite
 from .dao import UserDao
 import hashlib
 
@@ -51,6 +51,23 @@ def show_user_site(request):
     :param request:
     :return:
     """
+
+    user_id = request.session.get('user_id')
+
+    # 修改收获地址
+    site_info = request.POST
+    print(user_id)
+    print(site_info.get('site'))
+
+    user_site = UserSite()
+    user_site.receiver = site_info.get('receiver')
+    user_site.site = site_info.get('site')
+    user_site.zip = site_info.get('zip')
+    user_site.phone = site_info.get('phone')
+    user_site.user
+
+
+
     return render(request, 'app_ttsx/user_center_site.html')
 
 
@@ -60,7 +77,16 @@ def show_user_info(request):
     :param request:
     :return:
     """
-    return render(request, 'app_ttsx/user_center_info.html')
+    # 取出session中存储的个人信息
+    user_id = request.session.get('user_id')
+    # user_sites =
+
+    if user_id is not None:
+        context = {'user_id': user_id}
+    else:
+        context = {}
+
+    return render(request, 'app_ttsx/user_center_info.html', context)
 
 
 # 用户注册服务
@@ -129,6 +155,10 @@ def login_server(request):
         else:
             # 密码一致，登录成功
             result = '登录成功'
+
+            # 登录成功后将用户信息保存在session中(存不了自定义类的实例？？？)
+            request.session['user_id'] = user.id
+            request.session.set_expiry(0)
 
     context = {'result': result}
     response = render(request, 'app_ttsx/login_result.html', context)
