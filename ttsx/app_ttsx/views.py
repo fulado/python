@@ -53,24 +53,54 @@ def show_user_site(request):
     """
 
     user_id = request.session.get('user_id')
+    sites = UserDao.get_user_sites_by_user_id(user_id)
+
+    if len(sites) > 0:
+        site = sites[0]
+    else:
+        site = None
+
+    context = {'site': site}
+
+    return render(request, 'app_ttsx/user_center_site.html', context)
+
+
+def modify_user_site(request):
+    """
+    修改收货地址
+    :param request:
+    :return:
+    """
+    user_id = request.session.get('user_id')
 
     # 修改收获地址
     site_info = request.POST
-    print(user_id)
-    print(site_info.get('site'))
+    # print(user_id)
+    # print(site_info.get('site'))
 
-    user_site = UserSite()
-    user_site.receiver = site_info.get('receiver')
-    user_site.site = site_info.get('site')
-    user_site.zip = site_info.get('zip')
-    user_site.phone = site_info.get('phone')
-    user_site.user
+    sites = UserDao.get_user_sites_by_user_id(user_id)
+
+    if len(sites) > 0:
+        site = sites[0]
+    else:
+        site = UserSite()
+
+    site.receiver = site_info.get('receiver')
+    site.site = site_info.get('site')
+    site.zip = site_info.get('zip')
+    site.phone = site_info.get('phone')
+    site.user_id = user_id
+
+    try:
+        UserDao.insert_user_site(site)
+    except Exception as e:
+        print(e)
+
+    # 跳转到show_user_site视图
+    return redirect('/user_site/')
 
 
-
-    return render(request, 'app_ttsx/user_center_site.html')
-
-
+# 显示用户个人信息页面
 def show_user_info(request):
     """
     显示用户个人信息页面
@@ -79,12 +109,15 @@ def show_user_info(request):
     """
     # 取出session中存储的个人信息
     user_id = request.session.get('user_id')
-    # user_sites =
+    print(user_id)
+    sites = UserDao.get_user_sites_by_user_id(user_id)
 
-    if user_id is not None:
-        context = {'user_id': user_id}
+    if len(sites) > 0:
+        site = sites[0]
     else:
-        context = {}
+        site = None
+
+    context = {'site': site}
 
     return render(request, 'app_ttsx/user_center_info.html', context)
 

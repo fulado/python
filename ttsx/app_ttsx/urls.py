@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^login/$', views.show_login),
     url(r'^login_server/$', views.login_server),
     url(r'^user_site/$', views.show_user_site),
+    url(r'^modify_site/$', views.modify_user_site),
     url(r'^user_info/$', views.show_user_info),
 ]
 

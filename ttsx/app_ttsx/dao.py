@@ -37,7 +37,7 @@ class UserDao(object):
         :param user_id:
         :return: 用户首地址对象列表
         """
-        return UserSite.objects.filter()
+        return UserSite.objects.filter(user_id=user_id)
 
     @staticmethod
     def insert_user_site(user_site):
@@ -50,7 +50,8 @@ class UserDao(object):
         if isinstance(user_site, UserSite):
             try:
                 user_site.save()
-            except Exception:
+            except Exception as e:
+                print(e)
                 # 自定义异常，并将异常抛出
                 raise DatabaseInsertException('数据库插入异常')
             else:
