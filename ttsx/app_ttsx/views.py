@@ -31,7 +31,7 @@ def show_login(request):
         username = request.COOKIES.get('username')
     else:
         username = ''
-    context = {'username': username}
+    context = {'username': username, 'title': '登录'}
 
     return render(request, 'app_ttsx/login.html', context)
 
@@ -42,7 +42,8 @@ def show_reg(request):
     :param request:
     :return:
     """
-    return render(request, 'app_ttsx/register.html')
+    context = {'title': '注册'}
+    return render(request, 'app_ttsx/register.html', context)
 
 
 def show_user_site(request):
@@ -60,7 +61,7 @@ def show_user_site(request):
     else:
         site = None
 
-    context = {'site': site}
+    context = {'site': site, 'title': '收货地址', 'show': '1'}
 
     return render(request, 'app_ttsx/user_center_site.html', context)
 
@@ -117,7 +118,7 @@ def show_user_info(request):
     else:
         site = None
 
-    context = {'site': site}
+    context = {'site': site, 'title': '用户中心', 'show': '1'}
 
     return render(request, 'app_ttsx/user_center_info.html', context)
 
@@ -177,6 +178,7 @@ def login_server(request):
     # 查询结果为空列表，返回用户不存在
     if len(users) == 0:
         result = '用户不存在'
+        flag = False
     # 查询结果不为空，验证密码
     else:
         user = users[0]
@@ -185,20 +187,24 @@ def login_server(request):
         # 密码不一致，返回用户名密码不匹配
         if password != user.password:
             result = '用户名密码不匹配'
+            flag = False
         else:
             # 密码一致，登录成功
             result = '登录成功'
-
+            flag = True
             # 登录成功后将用户信息保存在session中(存不了自定义类的实例？？？)
             request.session['user_id'] = user.id
             request.session.set_expiry(0)
 
-    context = {'result': result}
-    response = render(request, 'app_ttsx/login_result.html', context)
+    if flag is False:
+        context = {'result': result}
+        response = render(request, 'app_ttsx/login.html', context)
+    else:
+        response = redirect('/user/user_info')
 
     # 使用Cookie保存用户名
     # 如果用户勾选，保存到Cookie，否则清除Cookie
-    if remember is not None:
+    if remember is not None and flag is True:
         response.set_cookie('username', username)
     else:
         response.delete_cookie('username')
