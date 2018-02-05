@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import UserInfo, UserSite
 from .dao import UserDao
+from .decorator import login_check
 import hashlib
 
 # Create your views here.
@@ -46,6 +47,7 @@ def show_reg(request):
     return render(request, 'app_ttsx/register.html', context)
 
 
+@login_check
 def show_user_site(request):
     """
     显示用户地址页面
@@ -102,6 +104,7 @@ def modify_user_site(request):
 
 
 # 显示用户个人信息页面
+@login_check
 def show_user_info(request):
     """
     显示用户个人信息页面
@@ -194,6 +197,7 @@ def login_server(request):
             flag = True
             # 登录成功后将用户信息保存在session中(存不了自定义类的实例？？？)
             request.session['user_id'] = user.id
+            request.session['username'] = user.username
             request.session.set_expiry(0)
 
     if flag is False:
@@ -210,3 +214,14 @@ def login_server(request):
         response.delete_cookie('username')
 
     return response
+
+
+# 用户退出
+def logout(request):
+    """
+    用户退出操作
+    :param request:
+    :return:
+    """
+    request.session.flush()  # 清空session
+    return redirect('/user/login')
