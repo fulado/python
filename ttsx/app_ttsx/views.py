@@ -204,7 +204,7 @@ def login_server(request):
         context = {'result': result}
         response = render(request, 'app_ttsx/login.html', context)
     else:
-        response = redirect('/user/user_info')
+        response = redirect(request.session.get('path', '/user/login'))
 
     # 使用Cookie保存用户名
     # 如果用户勾选，保存到Cookie，否则清除Cookie
