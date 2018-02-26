@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'app_ttsx',
     'ttsx_goods',
+    'tinymce',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -110,5 +111,12 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': 'advanced',
+    'width': 600,
+    'height': 400,
+}
