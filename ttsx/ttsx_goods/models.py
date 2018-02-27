@@ -8,6 +8,9 @@ class TypeInfo(models.Model):
     title = models.CharField(max_length=20)
     is_delete = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.title
+
 
 class GoodsInfo(models.Model):
     title = models.CharField(max_length=50)
@@ -20,3 +23,6 @@ class GoodsInfo(models.Model):
     stored = models.IntegerField(default=100)
     content = HTMLField()
     type = models.ForeignKey('TypeInfo')
+
+    def __str__(self):
+        return self.title
