@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .models import UserInfo, UserSite
 from .dao import UserDao
 from .decorator import login_check
+from ttsx_goods.models import TypeInfo, GoodsInfo
 import hashlib
 
 # Create your views here.
@@ -18,7 +19,18 @@ def show_index(request):
     :param request:
     :return:
     """
-    return render(request, 'app_ttsx/index.html')
+    goods_list = []
+
+    types = TypeInfo.objects.all()
+    for t in types:
+        recent_goods = GoodsInfo.objects.filter(type=t).order_by('-id')[0: 3]
+        pop_goods = GoodsInfo.objects.filter(type=t).order_by('-count')[0: 4]
+
+        goods_list.append({'type': t, 'recent_goods': recent_goods, 'pop_goods': pop_goods})
+
+    context = {'title': '首页', 'goods_list': goods_list}
+
+    return render(request, 'app_ttsx/index.html', context)
 
 
 def show_login(request):
