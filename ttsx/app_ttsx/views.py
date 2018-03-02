@@ -13,6 +13,7 @@ def test(request):
     print(dao.is_user_exist())
 
 
+# 显示系统首页
 def show_index(request):
     """
     显示系统首页
@@ -28,11 +29,12 @@ def show_index(request):
 
         goods_list.append({'type': t, 'recent_goods': recent_goods, 'pop_goods': pop_goods})
 
-    context = {'title': '首页', 'goods_list': goods_list}
+    context = {'title': '首页', 'goods_list': goods_list, 'show': '2'}
 
     return render(request, 'app_ttsx/index.html', context)
 
 
+# 显示用户登录界面
 def show_login(request):
     """
     显示用户登录界面
@@ -49,6 +51,7 @@ def show_login(request):
     return render(request, 'app_ttsx/login.html', context)
 
 
+# 显示用户注册页面
 def show_reg(request):
     """
     跳转到用户注册页面
@@ -59,6 +62,7 @@ def show_reg(request):
     return render(request, 'app_ttsx/register.html', context)
 
 
+# 显示用户地址页面
 @login_check
 def show_user_site(request):
     """
@@ -80,6 +84,7 @@ def show_user_site(request):
     return render(request, 'app_ttsx/user_center_site.html', context)
 
 
+# 修改收货地址
 def modify_user_site(request):
     """
     修改收货地址
@@ -133,7 +138,16 @@ def show_user_info(request):
     else:
         site = None
 
-    context = {'site': site, 'title': '用户中心', 'show': '1'}
+    goods_list = []
+    if 'recent_views' in request.COOKIES.keys():
+        view_list = request.COOKIES.get('recent_views').split(',')
+        for i in view_list:
+            try:
+                goods_list.append(GoodsInfo.objects.get(id=i))
+            except Exception as e:
+                print(e)
+
+    context = {'site': site, 'title': '用户中心', 'show': '1', 'goods_list': goods_list}
 
     return render(request, 'app_ttsx/user_center_info.html', context)
 

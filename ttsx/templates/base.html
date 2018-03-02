@@ -40,7 +40,7 @@
 	</div>
     {%if show|default:'0' == '1'%}
         <div class="search_bar clearfix">
-            <a href="index.html" class="logo fl"><img src="/static/images/logo.png"></a>
+            <a href="/user/index" class="logo fl"><img src="/static/images/logo.png"></a>
             <div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;用户中心</div>
             <div class="search_con fr">
                 <input type="text" class="input_text fl" name="" placeholder="搜索商品">
@@ -50,7 +50,7 @@
     {%endif%}
 	{%if show|default:'0' == '2'%}
 		<div class="search_bar clearfix">
-			<a href="index.html" class="logo fl"><img src="/static/images/logo.png"></a>
+			<a href="/user/index" class="logo fl"><img src="/static/images/logo.png"></a>
 			<div class="search_con fl">
 				<input type="text" class="input_text fl" name="" placeholder="搜索商品">
 				<input type="button" class="input_btn fr" name="" value="搜索">
@@ -63,5 +63,18 @@
 	{%endif%}
 {%block body%}
 {%endblock body%}
+	<div class="footer">
+		<div class="foot_link">
+			<a href="#">关于我们</a>
+			<span>|</span>
+			<a href="#">联系我们</a>
+			<span>|</span>
+			<a href="#">招聘人才</a>
+			<span>|</span>
+			<a href="#">友情链接</a>
+		</div>
+		<p>CopyRight © 2016 北京天天生鲜信息技术有限公司 All Rights Reserved</p>
+		<p>电话：010-****888    京ICP备*******8号</p>
+	</div>
 </body>
 </html>
