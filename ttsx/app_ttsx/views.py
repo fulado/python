@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 from .models import UserInfo, UserSite
 from .dao import UserDao
 from .decorator import login_check
@@ -227,6 +228,7 @@ def login_server(request):
             request.session.set_expiry(0)
 
     if flag is False:
+        print(result)
         context = {'result': result}
         response = render(request, 'app_ttsx/login.html', context)
     else:
@@ -240,6 +242,16 @@ def login_server(request):
         response.delete_cookie('username')
 
     return response
+
+
+# 判断用户是否登录
+def is_login(request):
+    result = 0
+    if 'user_id' in request.session.keys():
+        result = 1
+
+    print(result)
+    return JsonResponse({'is_login': result})
 
 
 # 用户退出

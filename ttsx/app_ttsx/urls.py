@@ -14,5 +14,6 @@ urlpatterns = [
     url(r'^modify_site/$', views.modify_user_site),
     url(r'^user_info/$', views.show_user_info),
     url(r'^logout/$', views.logout),
+    url(r'^is_login/$', views.is_login),
 ]
 
