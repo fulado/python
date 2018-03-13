@@ -40,8 +40,23 @@ def cart_count(request):
 
 # 显示购物车
 @login_check
-def cart(request):
+def cart_show(request):
     user_id = request.session.get('user_id')
     carts = CartInfo.objects.filter(user_id=user_id)
     context = {'carts': carts, 'title': '购物车', 'show': '1'}
     return render(request, 'cart/cart.html', context)
+
+
+# 修改购物车中商品数量
+def modify(request):
+    cart_id = request.GET.get('cart_id', '0')
+    num = request.GET.get('num', '0')
+    cart_list = CartInfo.objects.filter(id=cart_id)
+
+    if len(cart_list) > 0:
+        cart = cart_list[0]
+        cart.amount = num
+        cart.save()
+        return JsonResponse({'ok': True})
+    else:
+        return JsonResponse({'ok': False})
