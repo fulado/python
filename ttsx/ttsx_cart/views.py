@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import CartInfo
-from django.db.models import Sum
 from app_ttsx.decorator import login_check
+from app_ttsx.models import UserSite
 # Create your views here.
 
 
@@ -60,3 +60,45 @@ def modify(request):
         return JsonResponse({'ok': True})
     else:
         return JsonResponse({'ok': False})
+
+
+# 删除购物车中商品
+def del_cart(request):
+    # 获取购物车id
+    cart_id = int(request.GET.get('cart_id', '0'))
+    if cart_id > 0:
+        cart_list = CartInfo.objects.filter(id=cart_id)
+    else:
+        return JsonResponse({'ok': False})
+
+    if len(cart_list) > 0:
+        cart_list[0].delete()
+        return JsonResponse({'ok': True})
+    else:
+        return JsonResponse({'ok': False})
+
+
+# 显示提交订单页面
+@login_check
+def order(request):
+    # 获取用户id
+    user_id = request.session.get('user_id', '0')
+    if user_id == '0':
+        return render(request, '404.html')
+
+    # 获取用户地址
+    site_list = UserSite.objects.filter(user_id=user_id)
+    if len(site_list) == 0:
+        site_list = ['']
+
+    # 获取用户选择的购物车
+    id_list = request.POST.getlist('select')
+    id_list_str = ','.join(id_list)
+    if len(id_list) == 0:
+        return render(request, '404.html')
+    cart_list = CartInfo.objects.filter(id__in=id_list)
+    if len(cart_list) == 0:
+        return render(request, '404.html')
+
+    context = {'title': '提交订单', 'show': '1', 'site': site_list[0], 'cart_list': cart_list, 'id_list_str': id_list_str}
+    return render(request, 'cart/place_order.html', context)

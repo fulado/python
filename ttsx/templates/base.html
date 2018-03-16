@@ -63,10 +63,15 @@
 
 		<script type="text/javascript">
 			// 先判断是否登录，登陆后再显示购物车中商品数量
-			if ($('.login_btn').text().indexOf('登录') < 0) {
-				$.get('/cart/cart_count', function(data){
+
+			function cartCount() {
+				$.get('/cart/cart_count/', function(data){
 					$('.goods_count').text(data.count);
 				});
+			}
+
+			if ($('.login_btn').text().indexOf('登录') < 0) {
+				cartCount();
 			}
 		</script>
 	{%endif%}

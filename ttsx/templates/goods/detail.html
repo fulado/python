@@ -42,9 +42,11 @@
                         if(data.is_add){
                             alert('购买成功');
                             // 改变购物中数量
+                            /*
                             $.get('/cart/cart_count', function(data){
 								$('.goods_count').text(data.count);
-							});
+							});*/
+							cartCount();
                         }else{
                             alert('购买失败');
                         }

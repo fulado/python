@@ -9,6 +9,7 @@
                 $.get('/cart/add/', {'goods_id': goods_id}, function(data){
                     if(data.is_add){
                         alert('购买成功');
+                        cartCount();
                     }else{
                         alert('购买失败');
                     }
