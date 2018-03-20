@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <link rel="stylesheet" type="text/css" href="css/login.css">
-    <script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/login.css">
+    <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
     <script type="text/javascript">
         $(function() {
             // 鼠标点击用户名输入框时, 清空输入框内容
@@ -35,17 +35,18 @@
 </head>
 <body>
     <div class="main">
-        <img src="image/mark1.png" alt="警徽" class="img01" />
-        <img src="image/mark2.png" alt="8890" class="img02" />
+        <img src="/static/image/mark1.png" alt="警徽" class="img01" />
+        <img src="/static/image/mark2.png" alt="8890" class="img02" />
         <p>天津市公安交通管理局便民专线服务平台</p>
         <form action="#" method="post">
-                <input type="text" name="username" value="用户名" class="username" />
-                <input type="text" name="password" value="密   码" class="password" />
-                <input type="submit" value="登   录" class="submit" />
-                <div>
-                    <img src="image/exclamation.png" alt="感叹号" />
-                    <p>用户名或密码错误</p>
-                </div>
+            {%csrf_token%}
+            <input type="text" name="username" value="用户名" class="username" />
+            <input type="text" name="password" value="密   码" class="password" />
+            <input type="submit" value="登   录" class="submit" />
+            <div>
+                <img src="/static/image/exclamation.png" alt="感叹号" />
+                <p>用户名或密码错误</p>
+            </div>
         </form>
     </div>
 </body>
