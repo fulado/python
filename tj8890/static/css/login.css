@@ -2,7 +2,7 @@
 * @Author: Marte
 * @Date:   2018-03-20 13:55:54
 * @Last Modified by:   Marte
-* @Last Modified time: 2018-03-20 16:44:44
+* @Last Modified time: 2018-03-21 11:20:55
 */
 
 /* 页面总体 */
@@ -53,7 +53,7 @@
 }
 
 /* 输入框 */
-input{
+input, label{
     position: absolute;
     left: 720px;
     width:221px;
@@ -72,18 +72,34 @@ input{
 /* 密码 */
 .password{
     top: 364px;
+    left: 720px;
+}
+
+/* 用户名密码提示 */
+#label01{
+    top: 307px;
+    height:35px;
+    line-height: 35px;
+    z-index: 20;
+}
+
+#label02{
+    top: 364px;
+    height:35px;
+    line-height: 35px;
+    z-index: 20;
 }
 
 /* 登录按钮 */
 .submit{
     top: 460px;
-    margin-left: 0px;
+    padding: 0px;
     height: 37px;
     width: 240px;
     background-color: #17C0E6;
-    border: 0px;
     font-size: 16px;
     color: #FFFFFF;
+    border-radius: 3px;
 }
 
 /* 用户名密码错误提示 */
@@ -109,10 +125,11 @@ input{
     position: absolute;
     left: 38px;
     top: 8px;
-    width: 113px;
+    width: 133px;
     height: 13px;
     font-size: 13px;
     color: #A2A2A2;
     line-height: 13px;
     text-align: left;
 }
+

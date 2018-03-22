@@ -6,30 +6,46 @@
     <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
     <script type="text/javascript">
         $(function() {
-            // 鼠标点击用户名输入框时, 清空输入框内容
+            // 鼠标点击用户名输入框时, 清除用户名三个字
             $('.username').focus(function() {
-                if ($(this).val() == '用户名') {
-                    $(this).val('');
-                }
+                $('#label01').hide();
             });
+            // 输入的字符后, 保留输入的字符
             $('.username').blur(function() {
                 if ($(this).val().length < 1) {
-                    $(this).val('用户名');
+                    $('#label01').show();
+                } else {
+                    $('#label01').hide();
                 }
             });
 
-            // 鼠标点击密码输入框时, 清空输入框内容
+            // 鼠标点击密码输入框时, 清除密码两个字
             $('.password').focus(function() {
-                if ($(this).val() == '密   码') {
-                    $(this).val('');
-                }
+                $('#label02').hide();
             });
+            // 输入的字符后, 保留输入的字符
             $('.password').blur(function() {
                 if ($(this).val().length < 1) {
-                    $(this).val('密   码');
+                   $('#label02').show();
+                } else {
+                    $('#label02').hide();
                 }
             });
+
+            // 页面刷新后, 掉用函数检测输入框中是否有内容
+            $('.username').blur();
+            $('.password').blur();
         });
+
+        // 表单提交验证, 用户名和密码都不为空时允许提交
+        function loginCheck() {
+            if (($('#username').val().length < 1) || ($('#password').val().length < 1)) {
+                $('#alarm01').show();
+                return false;
+            } else {
+                return true;
+            }
+        }
     </script>
     <title>登陆</title>
 </head>
@@ -38,14 +54,22 @@
         <img src="/static/image/mark1.png" alt="警徽" class="img01" />
         <img src="/static/image/mark2.png" alt="8890" class="img02" />
         <p>天津市公安交通管理局便民专线服务平台</p>
-        <form action="#" method="post">
+        <form action="/user/login/" method="post" onsubmit="return loginCheck()">
             {%csrf_token%}
-            <input type="text" name="username" value="用户名" class="username" />
-            <input type="text" name="password" value="密   码" class="password" />
+            <label for="username" id="label01">用户名{{result}}</label>
+            <input type="text" name="username" class="username" id="username" value="{{username}}"/>
+            <label for="password" id="label02">密&nbsp&nbsp&nbsp码</label>
+            <input type="password" name="password" class="password" id="password" value="{{password}}"/>
             <input type="submit" value="登   录" class="submit" />
+            {%if error%}
             <div>
                 <img src="/static/image/exclamation.png" alt="感叹号" />
                 <p>用户名或密码错误</p>
+            </div>
+            {%endif%}
+            <div id="alarm01" hidden>
+                <img src="/static/image/exclamation.png" alt="感叹号" />
+                <p>用户名和密码不能为空</p>
             </div>
         </form>
     </div>
