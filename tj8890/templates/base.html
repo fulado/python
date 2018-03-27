@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>部门管理</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+    <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            // 导航栏当前页提示
+            $('.list-group-item').click(function() {
+                $('.list-group-item.active').removeClass('active');
+                $(this).addClass('active');
+            });
+
+             // 检索框文字显示
+            $('#search01').focus(function() {
+                $('#search01_label').hide();
+            });
+            $('#search01').blur(function() {
+                if ($(this).val().length < 1) {
+                    $('#search01_label').show();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- 标题栏 -->
+        <div class="banner">
+            <img class="img01" src="/static/image/mark1.png" alt="警徽" />
+            <p class="title">天津市公安交通管理局便民专线服务平台</p>
+            <p class="user">
+                欢迎&nbsp:&nbsp;<span>指挥室</span>&nbsp;>&nbsp;<span>应急综合科</span>&nbsp;>&nbsp;<span>张亮</span>
+                &nbsp;|&nbsp;<a href="#">退出</a>
+            </p>
+        </div>
+        <!-- 侧标导航栏 -->
+        <div class="navi" >
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <img src="/static/image/icon01.png" alt="icon01">
+                            <a data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseOne">
+                                办理事项管理
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <a href="#" class="list-group-item active">全部事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">未转办事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已转办事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">办理中事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已反馈事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已超时事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">退回重办事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">申请延期事项<span class="badge">10</span></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <img src="/static/image/icon02.png" alt="icon02">
+                            <a data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseTwo">
+                                办结事项管理
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse">
+                        <div class="panel-body clearfix">
+                            <a href="#" class="list-group-item">全部事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">未转办事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已转办事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">办理中事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已反馈事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已超时事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">退回重办事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">申请延期事项<span class="badge">10</span></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <img src="/static/image/icon03.png" alt="icon03">
+                            <a data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseThree">
+                                统计分析
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseThree" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <a href="#" class="list-group-item">全部事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">未转办事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已转办事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">办理中事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已反馈事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已超时事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">退回重办事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">申请延期事项<span class="badge">10</span></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <img src="/static/image/icon04.png" alt="icon04">
+                            <a data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseFour">
+                                知识库管理
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseFour" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <a href="#" class="list-group-item">全部事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">未转办事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已转办事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">办理中事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已反馈事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已超时事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">退回重办事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">申请延期事项<span class="badge">10</span></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <img src="/static/image/icon05.png" alt="icon05">
+                            <a data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseFive">
+                                用户管理
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseFive" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <a href="#" class="list-group-item">人员管理</a>
+                            <a href="#" class="list-group-item">部门管理</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 当前位置 -->
+        <div class="location">
+            <p><span>用户管理</span>&nbsp;>&nbsp;<span>部门管理</span></p>
+            <!-- 搜索框 -->
+            <div class="input-group">
+                <label for="search01" id="search01_label">请输入关键字</label>
+                <input type="text" class="form-control" id="search01" />
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </span>
+            </div>
+        </div>
+        <div class="bar01"></div>
+        <!-- 检索/添加/修改 -->
+        {%block search%}
+        {%endblock%}
+        <!-- 检索结果 -->
+        <div class="result">
+            <div class="bar02"></div>
+            <table class="table table-striped table-hover text-center">
+                <thead>
+                    <tr>
+                        <td>单位</td>
+                        <td>科室</td>
+                        <td></td>
+                        <td>操作</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>指挥室</td>
+                        <td>应急综合科</td>
+                        <td></td>
+                        <td><a href="#" class="btn btn-default">编辑</a></td>
+                    </tr>
+                    <tr>
+                        <td>指挥室</td>
+                        <td>应急综合科</td>
+                        <td></td>
+                        <td><a href="#" class="btn btn-default">编辑</a></td>
+                    </tr>
+                    <tr>
+                        <td>指挥室</td>
+                        <td>应急综合科</td>
+                        <td></td>
+                        <td><a href="#" class="btn btn-default">编辑</a></td>
+                    </tr>
+                    <tr>
+                        <td>指挥室</td>
+                        <td>应急综合科</td>
+                        <td></td>
+                        <td><a href="#" class="btn btn-default">编辑</a></td>
+                    </tr>
+                    <tr>
+                        <td>指挥室</td>
+                        <td>应急综合科</td>
+                        <td></td>
+                        <td><a href="#" class="btn btn-default">编辑</a></td>
+                    </tr>
+                    <tr>
+                        <td>指挥室</td>
+                        <td>应急综合科</td>
+                        <td></td>
+                        <td><a href="#" class="btn btn-default">编辑</a></td>
+                    </tr>
+                    <tr>
+                        <td>指挥室</td>
+                        <td>应急综合科</td>
+                        <td></td>
+                        <td><a href="#" class="btn btn-default">编辑</a></td>
+                    </tr>
+                    <tr>
+                        <td>指挥室</td>
+                        <td>应急综合科</td>
+                        <td></td>
+                        <td><a href="#" class="btn btn-default">编辑</a></td>
+                    </tr>
+                    <tr>
+                        <td>指挥室</td>
+                        <td>应急综合科</td>
+                        <td></td>
+                        <td><a href="#" class="btn btn-default">编辑</a></td>
+                    </tr>
+                    <tr>
+                        <td>指挥室</td>
+                        <td>应急综合科</td>
+                        <td></td>
+                        <td><a href="#" class="btn btn-default">编辑</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- 分页 -->
+        <div class="divide-page">
+            <p class="goto">
+                <span>到</span>
+                <input type="text" name="" />
+                <span>页</span>
+            </p>
+            <p class="current-total">
+                共<span>5</span>页/<span>40</span>条数据
+            </p>
+
+            <ul class="page">
+                <a href="#"><li>首页</li></a>
+                <a href="#"><li>上一页</li></a>
+                <a href="#"><li class="number">1</li></a>
+                <a href="#"><li class="number">2</li></a>
+                <a href="#"><li class="number current-page">3</li></a>
+                <a href="#"><li class="number">4</li></a>
+                <a href="#"><li class="number">5</li></a>
+                <a href="#"><li>下一页</li></a>
+                <a href="#"><li>末页</li></a>
+            </ul>
+
+        </div>
+    </div>
+</body>
+</html>
