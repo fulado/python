@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import HttpResponse
 from .models import User, Dept
 import hashlib
+from tj8890.utils import MyPaginator
 
 # Create your views here.
 
@@ -57,8 +58,23 @@ def login_service(request):
 
 # 显示部门管理页
 def dept(request):
-    dept_list = Dept.objects.filter(supervisor__isnull=True).filter(is_delete=False)
-    print(len(dept_list))
+    # 获取所有的一级部门
+    supervisor_list = Dept.objects.filter(supervisor__isnull=True).filter(is_delete=False)
 
-    context = {'title': '部门管理', 'dept_list': dept_list}
+    # 页面标题
+    title = ['用户管理', '部门管理']
+
+    # 获取用户选择的一级部门id
+    supervisor_id = int(request.GET.get('supervisor_id', 1))
+    # 查询二级部门
+    dept_list = Dept.objects.filter(supervisor=supervisor_id)
+
+    # 获得用户指定的页面
+    page_num = int(request.GET.get('page_num', 1))
+    # 分页
+    mp = MyPaginator()
+    mp.paginate(dept_list, 10, page_num)
+
+    context = {'title': title, 'supervisor_list': supervisor_list, 'supervisor_id': supervisor_id,
+               'mp': mp}
     return render(request, 'user/dept.html', context)

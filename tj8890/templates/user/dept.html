@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <title>部门管理</title>
+    <title>{{title.1}}</title>
     <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/static/css/main.css">
     <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
@@ -146,7 +146,7 @@
                     <div id="collapseFive" class="panel-collapse collapse in">
                         <div class="panel-body">
                             <a href="#" class="list-group-item">人员管理</a>
-                            <a href="/user/dept/" class="list-group-item active">部门管理</a>
+                            <a href="/user/dept" class="list-group-item active">部门管理</a>
                         </div>
                     </div>
                 </div>
@@ -154,7 +154,7 @@
         </div>
         <!-- 当前位置 -->
         <div class="location">
-            <p><span>用户管理</span>&nbsp;>&nbsp;<span>部门管理</span></p>
+            <p><span>{{title.0}}</span>&nbsp;>&nbsp;<span>{{title.1}}</span></p>
             <!-- 搜索框 -->
             <div class="input-group">
                 <label for="search01" id="search01_label">请输入关键字</label>
@@ -170,16 +170,22 @@
         <!-- 部门检索/添加 -->
         <div class="search">
             <p>部门选择&nbsp;:</p>
-            <select class="custom-select">
-                {%for dept in dept_list%}
-                <option value="{{dept.id}}">{{dept.name}}</option>
-                {%endfor%}
-            </select>
-            <div class="search-btn-group">
-                <a href="#" class="btn btn-default">查询</a>
-                <a href="#" class="btn btn-default">添加</a>
-                <a href="#" class="btn btn-default">重置</a>
-            </div>
+            <form action="/user/dept" method="GET">
+                <select class="custom-select" name="supervisor_id">
+                    {%for supervisor in supervisor_list%}
+                        {%if supervisor_id == supervisor.id%}
+                        <option value="{{supervisor.id}}" selected>{{supervisor.name}}</option>
+                        {%else%}
+                        <option value="{{supervisor.id}}">{{supervisor.name}}</option>
+                        {%endif%}
+                    {%endfor%}
+                </select>
+                <div class="search-btn-group">
+                    <input type="submit" class="btn btn-default"  value="查询" />
+                    <a href="#" class="btn btn-default">添加</a>
+                    <a href="#" class="btn btn-default">重置</a>
+                </div>
+            </form>
         </div>
         <!-- 检索结果 -->
         <div class="result">
@@ -194,90 +200,41 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {%for dept in mp.object_list%}
                     <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
+                        <td>{{dept.supervisor.name}}</td>
+                        <td>{{dept.name}}</td>
                         <td></td>
                         <td><a href="#" class="btn btn-default">编辑</a></td>
                     </tr>
-                    <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
-                        <td></td>
-                        <td><a href="#" class="btn btn-default">编辑</a></td>
-                    </tr>
-                    <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
-                        <td></td>
-                        <td><a href="#" class="btn btn-default">编辑</a></td>
-                    </tr>
-                    <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
-                        <td></td>
-                        <td><a href="#" class="btn btn-default">编辑</a></td>
-                    </tr>
-                    <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
-                        <td></td>
-                        <td><a href="#" class="btn btn-default">编辑</a></td>
-                    </tr>
-                    <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
-                        <td></td>
-                        <td><a href="#" class="btn btn-default">编辑</a></td>
-                    </tr>
-                    <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
-                        <td></td>
-                        <td><a href="#" class="btn btn-default">编辑</a></td>
-                    </tr>
-                    <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
-                        <td></td>
-                        <td><a href="#" class="btn btn-default">编辑</a></td>
-                    </tr>
-                    <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
-                        <td></td>
-                        <td><a href="#" class="btn btn-default">编辑</a></td>
-                    </tr>
-                    <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
-                        <td></td>
-                        <td><a href="#" class="btn btn-default">编辑</a></td>
-                    </tr>
+                    {%endfor%}
                 </tbody>
             </table>
         </div>
         <!-- 分页 -->
         <div class="divide-page">
-            <p class="goto">
+            <form action="/user/dept" method="GET" class="goto">
                 <span>到</span>
-                <input type="text" name="" />
+                    <input type="hidden" name="supervisor_id" value="{{supervisor_id}}"/>
+                    <input type="text" name="page_num" />
                 <span>页</span>
-            </p>
+            </form>
             <p class="current-total">
-                共<span>5</span>页/<span>40</span>条数据
+                共<span>{{mp.total_pages}}</span>页/<span>{{mp.total_objects}}</span>条数据
             </p>
 
             <ul class="page">
-                <a href="#"><li>首页</li></a>
-                <a href="#"><li>上一页</li></a>
-                <a href="#"><li class="number">1</li></a>
-                <a href="#"><li class="number">2</li></a>
-                <a href="#"><li class="number current-page">3</li></a>
-                <a href="#"><li class="number">4</li></a>
-                <a href="#"><li class="number">5</li></a>
-                <a href="#"><li>下一页</li></a>
-                <a href="#"><li>末页</li></a>
+                <a href="/user/dept?supervisor_id={{supervisor_id}}&page_num=1"><li>首页</li></a>
+                <a href="/user/dept?supervisor_id={{supervisor_id}}&page_num={{mp.current_num|add:-1}}"><li>上一页</li></a>
+                {%for num in mp.page_range%}
+                    {%if num == mp.current_num%}
+                    <a href="/user/dept?supervisor_id={{supervisor_id}}&page_num={{num}}"><li class="number current-page">{{num}}</li></a>
+                    {%else%}
+                    <a href="/user/dept?supervisor_id={{supervisor_id}}&page_num={{num}}"><li class="number">{{num}}</li></a>
+                    {%endif%}
+                {%endfor%}
+                <a href="/user/dept?supervisor_id={{supervisor_id}}&page_num={{mp.current_num|add:1}}"><li>下一页</li></a>
+                <a href="/user/dept?supervisor_id={{supervisor_id}}&page_num={{mp.total_pages}}"><li>末页</li></a>
             </ul>
 
         </div>

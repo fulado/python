@@ -174,7 +174,7 @@
     top: 120px;
 }
 
-.search-btn-group a{
+.search-btn-group .btn{
     width: 84px;
     height: 35px;
     border-radius: 4px;
@@ -188,6 +188,12 @@
 .search-btn-group a:visited{
     background-color: #FFFFFF;
     border-color: #CFCFCF;
+}
+
+.search-btn-group input:focus,.search-btn-group input:active,.search-btn-group input:hover{
+   outline: none!important;
+   background-color: #FFFFFF;
+   border-color: #CFCFCF;
 }
 
 /* 显示结果栏 */
@@ -249,6 +255,7 @@ tbody td{
 
 .goto{
     float: right;
+    display: inline-block;
 }
 
 .goto input{
