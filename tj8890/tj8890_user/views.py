@@ -3,6 +3,7 @@ from django.shortcuts import HttpResponse
 from .models import User, Dept
 import hashlib
 from tj8890.utils import MyPaginator
+from django.http import  HttpResponseRedirect
 
 # Create your views here.
 
@@ -57,7 +58,7 @@ def login_service(request):
 
 
 # 显示部门管理页
-def dept(request):
+def dept_show(request):
     # 获取所有的一级部门
     supervisor_list = Dept.objects.filter(supervisor__isnull=True).filter(is_delete=False)
 
@@ -66,6 +67,7 @@ def dept(request):
 
     # 获取用户选择的一级部门id
     supervisor_id = int(request.GET.get('supervisor_id', 1))
+    supervisor = Dept.objects.filter(id=supervisor_id)[0]
     # 查询二级部门
     dept_list = Dept.objects.filter(supervisor=supervisor_id)
 
@@ -75,6 +77,55 @@ def dept(request):
     mp = MyPaginator()
     mp.paginate(dept_list, 10, page_num)
 
-    context = {'title': title, 'supervisor_list': supervisor_list, 'supervisor_id': supervisor_id,
+    context = {'title': title, 'supervisor_list': supervisor_list, 'supervisor': supervisor,
                'mp': mp}
     return render(request, 'user/dept.html', context)
+
+
+# 添加部门
+def dept_add(request):
+    # 获取用户提交的信息
+    grade = int(request.GET.get('grade', '1'))
+    supervisor_id = int(request.GET.get('supervisor', '1'))
+    dept_name = request.GET.get('dept_name')
+
+    # 创建部门对象并对属性赋值
+    dept = Dept()
+    dept.name = dept_name
+    if grade != 1:
+        dept.supervisor_id = supervisor_id
+
+    # 存入数据库
+    dept.save()
+    return HttpResponseRedirect('/user/dept')
+
+
+# 编辑部门
+def dept_modify(request):
+    # 获取用户提交的编辑信息
+    dept_id = int(request.GET.get('dept_id'))
+    dept_name = request.GET.get('dept_name')
+    supervisor_id = request.GET.get('supervisor_id')
+
+    dept_list = Dept.objects.filter(id=dept_id)
+    if len(dept_list) > 0:
+        dept = dept_list[0]
+    dept.name = dept_name
+    dept.supervisor_id = supervisor_id
+
+    dept.save()
+
+    return HttpResponseRedirect('/user/dept')
+
+
+# 删除部门
+def dept_del(request):
+    # 获取用户提交的编辑信息
+    dept_id = int(request.GET.get('dept_id'))
+
+    dept_list = Dept.objects.filter(id=dept_id)
+    if len(dept_list) > 0:
+        dept = dept_list[0]
+        dept.delete()
+
+    return HttpResponseRedirect('/user/dept')

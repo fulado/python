@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <title>部门管理</title>
+    <title>{{title.1}}</title>
     <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/static/css/main.css">
     <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
@@ -26,6 +26,9 @@
             });
         });
     </script>
+
+    {% block head %}
+    {% endblock %}
 </head>
 <body>
     <div class="container">
@@ -51,9 +54,9 @@
                             </a>
                         </h4>
                     </div>
-                    <div id="collapseOne" class="panel-collapse collapse in">
+                    <div id="collapseOne" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <a href="#" class="list-group-item active">全部事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">全部事项<span class="badge">10</span></a>
                             <a href="#" class="list-group-item">未转办事项<span class="badge">10</span></a>
                             <a href="#" class="list-group-item">已转办事项<span class="badge">10</span></a>
                             <a href="#" class="list-group-item">办理中事项<span class="badge">10</span></a>
@@ -143,10 +146,10 @@
                             </a>
                         </h4>
                     </div>
-                    <div id="collapseFive" class="panel-collapse collapse">
+                    <div id="collapseFive" class="panel-collapse collapse in">
                         <div class="panel-body">
                             <a href="#" class="list-group-item">人员管理</a>
-                            <a href="#" class="list-group-item">部门管理</a>
+                            <a href="/user/dept" class="list-group-item active">部门管理</a>
                         </div>
                     </div>
                 </div>
@@ -154,7 +157,7 @@
         </div>
         <!-- 当前位置 -->
         <div class="location">
-            <p><span>用户管理</span>&nbsp;>&nbsp;<span>部门管理</span></p>
+            <p><span>{{title.0}}</span>&nbsp;>&nbsp;<span>{{title.1}}</span></p>
             <!-- 搜索框 -->
             <div class="input-group">
                 <label for="search01" id="search01_label">请输入关键字</label>
@@ -167,109 +170,22 @@
             </div>
         </div>
         <div class="bar01"></div>
-        <!-- 检索/添加/修改 -->
-        {%block search%}
-        {%endblock%}
+        <!-- 部门检索/添加 -->
+        {% block search %}
+        {% endblock %}
+
+        <!-- 操作窗口 -->
+        <!-- 模态框（Modal） -->
+        {% block operate %}
+        {% endblock %}
+
         <!-- 检索结果 -->
-        <div class="result">
-            <div class="bar02"></div>
-            <table class="table table-striped table-hover text-center">
-                <thead>
-                    <tr>
-                        <td>单位</td>
-                        <td>科室</td>
-                        <td></td>
-                        <td>操作</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
-                        <td></td>
-                        <td><a href="#" class="btn btn-default">编辑</a></td>
-                    </tr>
-                    <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
-                        <td></td>
-                        <td><a href="#" class="btn btn-default">编辑</a></td>
-                    </tr>
-                    <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
-                        <td></td>
-                        <td><a href="#" class="btn btn-default">编辑</a></td>
-                    </tr>
-                    <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
-                        <td></td>
-                        <td><a href="#" class="btn btn-default">编辑</a></td>
-                    </tr>
-                    <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
-                        <td></td>
-                        <td><a href="#" class="btn btn-default">编辑</a></td>
-                    </tr>
-                    <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
-                        <td></td>
-                        <td><a href="#" class="btn btn-default">编辑</a></td>
-                    </tr>
-                    <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
-                        <td></td>
-                        <td><a href="#" class="btn btn-default">编辑</a></td>
-                    </tr>
-                    <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
-                        <td></td>
-                        <td><a href="#" class="btn btn-default">编辑</a></td>
-                    </tr>
-                    <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
-                        <td></td>
-                        <td><a href="#" class="btn btn-default">编辑</a></td>
-                    </tr>
-                    <tr>
-                        <td>指挥室</td>
-                        <td>应急综合科</td>
-                        <td></td>
-                        <td><a href="#" class="btn btn-default">编辑</a></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        {% block result %}
+        {% endblock %}
+
         <!-- 分页 -->
-        <div class="divide-page">
-            <p class="goto">
-                <span>到</span>
-                <input type="text" name="" />
-                <span>页</span>
-            </p>
-            <p class="current-total">
-                共<span>5</span>页/<span>40</span>条数据
-            </p>
-
-            <ul class="page">
-                <a href="#"><li>首页</li></a>
-                <a href="#"><li>上一页</li></a>
-                <a href="#"><li class="number">1</li></a>
-                <a href="#"><li class="number">2</li></a>
-                <a href="#"><li class="number current-page">3</li></a>
-                <a href="#"><li class="number">4</li></a>
-                <a href="#"><li class="number">5</li></a>
-                <a href="#"><li>下一页</li></a>
-                <a href="#"><li>末页</li></a>
-            </ul>
-
-        </div>
+        {% block page %}
+        {% endblock %}
     </div>
 </body>
 </html>

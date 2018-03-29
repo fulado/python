@@ -81,6 +81,11 @@
     border: 0px;
 }
 
+.list-group-item.active
+{
+    background-color: #3E9ED3!important;
+}
+
 /* 当前位置 */
 .location{
     position: absolute;
@@ -185,15 +190,37 @@
 
 }
 
-.search-btn-group a:visited{
-    background-color: #FFFFFF;
-    border-color: #CFCFCF;
-}
-
+.search-btn-group a:focus,
 .search-btn-group input:focus,.search-btn-group input:active,.search-btn-group input:hover{
    outline: none!important;
    background-color: #FFFFFF;
    border-color: #CFCFCF;
+}
+
+/* 模态框 */
+.modal-dialog{
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    margin: auto;
+    width: 600px;
+    height: 200px;
+}
+
+.modal-title{
+    text-align: center;
+}
+
+.modal-body select,input{
+    width: 150px;
+    height: 30px;
+    border-radius: 4px;
+}
+
+.modal-body span{margin-left: 10px;}
+
+.modal-footer .btn{
+    width: 80px;
+    height: 35px;
 }
 
 /* 显示结果栏 */
@@ -232,14 +259,15 @@ tbody td{
     vertical-align: middle!important;
 }
 
-.table a{
+.table button{
     width: 65px;
     height: 30px;
     padding: 0px;
     line-height: 30px;
 }
 
-.table a:visited{
+.table button:focus,.table button:active{
+    outline: none;
     background-color: #FFFFFF;
     border-color: #CFCFCF;
 }
