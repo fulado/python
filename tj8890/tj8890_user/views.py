@@ -105,13 +105,16 @@ def dept_modify(request):
     # 获取用户提交的编辑信息
     dept_id = int(request.GET.get('dept_id'))
     dept_name = request.GET.get('dept_name')
-    supervisor_id = request.GET.get('supervisor_id')
+    supervisor_id = int(request.GET.get('supervisor_id', '0'))
 
     dept_list = Dept.objects.filter(id=dept_id)
     if len(dept_list) > 0:
         dept = dept_list[0]
     dept.name = dept_name
-    dept.supervisor_id = supervisor_id
+
+    # 如果supervisor_id不等于0, 修改该属性; 等于0说明是一级单位, 此字段为空
+    if supervisor_id != 0:
+        dept.supervisor_id = supervisor_id
 
     dept.save()
 
@@ -122,10 +125,17 @@ def dept_modify(request):
 def dept_del(request):
     # 获取用户提交的编辑信息
     dept_id = int(request.GET.get('dept_id'))
+    supervisor_id = int(request.GET.get('supervisor_id', '0'))
 
-    dept_list = Dept.objects.filter(id=dept_id)
-    if len(dept_list) > 0:
-        dept = dept_list[0]
+    # 如果supervisor_id==0, 说明是一级部门, 需要先删除所有部门下属科室
+    if supervisor_id == 0:
+        dept_list = Dept.objects.filter(supervisor=dept_id)
+        for dept in dept_list:
+            dept.delete()
+
+    supervisor_list = Dept.objects.filter(id=dept_id)
+    if len(supervisor_list) > 0:
+        dept = supervisor_list[0]
         dept.delete()
 
     return HttpResponseRedirect('/user/dept')
