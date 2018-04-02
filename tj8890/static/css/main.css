@@ -2,6 +2,12 @@
 * @Author: Marte
 * @Date:   2018-03-23 17:11:48
 * @Last Modified by:   Marte
+* @Last Modified time: 2018-04-02 18:06:17
+*/
+/*
+* @Author: Marte
+* @Date:   2018-03-23 17:11:48
+* @Last Modified by:   Marte
 * @Last Modified time: 2018-03-27 16:23:19
 */
 
@@ -12,6 +18,12 @@
 .container{
     width: 1280px;
     position: relative;
+}
+
+input{
+    border-radius: 1px;
+    border: 1px solid #A6B9C8;
+    padding-left: 5px;
 }
 
 /* 标题栏 */
@@ -216,7 +228,20 @@
     border-radius: 4px;
 }
 
-.modal-body span{margin-left: 10px;}
+.modal-body span{
+    text-align: justify;
+    text-align-last:justify;
+    display: inline-block;
+    width:60px;
+}
+
+.modal-body table,
+.modal-body tr,
+.modal-body td{
+    margin: auto;
+    padding: 10px;
+    text-align: center;
+}
 
 .modal-footer .btn{
     width: 80px;

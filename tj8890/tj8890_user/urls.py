@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^dept_modify/?', views.dept_modify),
     url(r'^dept_del/?', views.dept_del),
     url(r'^dept/?', views.dept_show),
+    url(r'^user/?', views.user_show),
     url(r'^', views.login),
 ]
 

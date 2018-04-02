@@ -3,9 +3,7 @@ from django.shortcuts import HttpResponse
 from .models import User, Dept
 import hashlib
 from tj8890.utils import MyPaginator
-from django.http import  HttpResponseRedirect
-
-# Create your views here.
+from django.http import HttpResponseRedirect
 
 
 # 创建超级用户
@@ -65,7 +63,7 @@ def dept_show(request):
     # 页面标题
     title = ['用户管理', '部门管理']
 
-    # 获取用户选择的一级部门id
+    # 获取用户选择的一级部门
     supervisor_id = int(request.GET.get('supervisor_id', 1))
     supervisor = Dept.objects.filter(id=supervisor_id)[0]
     # 查询二级部门
@@ -86,18 +84,25 @@ def dept_show(request):
 def dept_add(request):
     # 获取用户提交的信息
     grade = int(request.GET.get('grade', '1'))
-    supervisor_id = int(request.GET.get('supervisor', '1'))
+    supervisor_id = int(request.GET.get('supervisor_id', '1'))
     dept_name = request.GET.get('dept_name')
 
     # 创建部门对象并对属性赋值
     dept = Dept()
     dept.name = dept_name
-    if grade != 1:
+    if grade != 1:  # 不等与1, 添加的部门为下属科室
         dept.supervisor_id = supervisor_id
 
     # 存入数据库
     dept.save()
-    return HttpResponseRedirect('/user/dept')
+
+    # 设置url, 用户添加后可以直接看到添加的部门
+    if grade != 1:  # 不等与1, 添加的部门为下属科室
+        url = '/user/dept?supervisor_id=' + str(supervisor_id)
+    else:
+        url = '/user/dept?supervisor_id=' + str(dept.id)
+
+    return HttpResponseRedirect(url)
 
 
 # 编辑部门
@@ -115,10 +120,13 @@ def dept_modify(request):
     # 如果supervisor_id不等于0, 修改该属性; 等于0说明是一级单位, 此字段为空
     if supervisor_id != 0:
         dept.supervisor_id = supervisor_id
+        url = '/user/dept?supervisor_id=' + str(supervisor_id)
+    else:
+        url = '/user/dept?supervisor_id=' + str(dept.id)
 
     dept.save()
 
-    return HttpResponseRedirect('/user/dept')
+    return HttpResponseRedirect(url)
 
 
 # 删除部门
@@ -132,10 +140,40 @@ def dept_del(request):
         dept_list = Dept.objects.filter(supervisor=dept_id)
         for dept in dept_list:
             dept.delete()
+        url = '/user/dept'
+    else:
+        url = '/user/dept?supervisor_id=' + str(supervisor_id)
 
     supervisor_list = Dept.objects.filter(id=dept_id)
     if len(supervisor_list) > 0:
         dept = supervisor_list[0]
         dept.delete()
 
-    return HttpResponseRedirect('/user/dept')
+    return HttpResponseRedirect(url)
+
+
+# 显示用户管理页
+def user_show(request):
+    # 获取所有的一级部门
+    supervisor_list = Dept.objects.filter(supervisor__isnull=True).filter(is_delete=False)
+
+    # 页面标题
+    title = ['用户管理', '人员管理']
+
+    # 获取用户选择的一级部门
+    # supervisor_id = int(request.GET.get('supervisor_id', 1))
+    # supervisor = Dept.objects.filter(id=supervisor_id)[0]
+    # 查询二级部门
+    # dept_list = Dept.objects.filter(supervisor=supervisor_id)
+
+    # 查询全部人员
+    user_list = User.objects.all()
+
+    # 获得用户指定的页面
+    page_num = int(request.GET.get('page_num', 1))
+    # 分页
+    mp = MyPaginator()
+    mp.paginate(user_list, 10, page_num)
+
+    context = {'title': title, 'supervisor_list': supervisor_list, 'mp': mp}
+    return render(request, 'user/user.html', context)

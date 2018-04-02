@@ -2,15 +2,19 @@
 
 {% block head %}
     <script type="text/javascript">
+        // 一级部门id全局变量, 是否有其它方法代替全局变量?
+        var supervisorId;
+
         $(function() {
             // 添加部门时上级单位窗口是否可用
             $('#grade-select').change(function() {
                 if ($(this).val() == 1) {
+                    supervisorId = $('#supervisor-select').val();
                     $('#supervisor-select').val("");
                     $('#supervisor-select').attr("disabled","disabled");
                 } else {
                     $('#supervisor-select').removeAttr("disabled");
-                    $('#supervisor-select').val("1");
+                    $('#supervisor-select').val(supervisorId);
                 }
             });
         });
@@ -25,10 +29,12 @@
 
         // 删除请求
         function del(obj) {
-            var oForm = $(obj).parents('form');
-            oForm.prop('action', '/user/dept_del');
+            if (confirm('是否确认删除该部门及相关部门信息?')) {
+                var oForm = $(obj).parents('form');
+                oForm.prop('action', '/user/dept_del');
 
-            oForm.submit();
+                oForm.submit();
+            }
         }
 
         // 设置打开编辑部门窗口时显示的信息
@@ -53,9 +59,9 @@
             <select class="custom-select" name="supervisor_id">
                 {% for dept in supervisor_list %}
                     {% if supervisor.id == dept.id %}
-                    <option value="{{dept.id}}" selected>{{ dept.name }}</option>
+                    <option value="{{ dept.id }}" selected>{{ dept.name }}</option>
                     {% else %}
-                    <option value="{{dept.id}}">{{ dept.name }}</option>
+                    <option value="{{ dept.id }}">{{ dept.name }}</option>
                     {% endif %}
                 {% endfor %}
             </select>
@@ -93,9 +99,13 @@
                         <span>部门名称:&nbsp;</span>
                         <input type="text" name="dept_name" />
                         <span>上级单位:&nbsp;</span>
-                        <select name="supervisor" id="supervisor-select">
-                            {% for supervisor in supervisor_list %}
-                            <option value="{{supervisor.id}}">{{ supervisor.name }}</option>
+                        <select name="supervisor_id" id="supervisor-select">
+                            {% for dept in supervisor_list %}
+                                {% if supervisor.id == dept.id %}
+                                <option value="{{ dept.id }}" selected>{{ dept.name }}</option>
+                                {% else %}
+                                <option value="{{ dept.id }}">{{ dept.name }}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>
@@ -201,7 +211,7 @@
     <div class="divide-page">
         <form action="/user/dept" method="GET" class="goto">
             <span>到</span>
-                <input type="hidden" name="supervisor_id" value="{{supervisor.id}}"/>
+                <input type="hidden" name="supervisor_id" value="{{ supervisor.id }}"/>
                 <input type="text" name="page_num" />
             <span>页</span>
         </form>
@@ -210,17 +220,17 @@
         </p>
 
         <ul class="page">
-            <a href="/user/dept?supervisor_id={{supervisor.id}}&page_num=1"><li>首页</li></a>
-            <a href="/user/dept?supervisor_id={{supervisor.id}}&page_num={{mp.current_num|add:-1}}"><li>上一页</li></a>
+            <a href="/user/dept?supervisor_id={{ supervisor.id }}&page_num=1"><li>首页</li></a>
+            <a href="/user/dept?supervisor_id={{ supervisor.id }}&page_num={{ mp.current_num|add:-1 }}"><li>上一页</li></a>
             {% for num in mp.page_range %}
                 {% if num == mp.current_num %}
-                <a href="/user/dept?supervisor_id={{supervisor.id}}&page_num={{num}}"><li class="number current-page">{{ num }}</li></a>
+                <a href="/user/dept?supervisor_id={{ supervisor.id }}&page_num={{ num }}"><li class="number current-page">{{ num }}</li></a>
                 {% else %}
-                <a href="/user/dept?supervisor_id={{supervisor.id}}&page_num={{num}}"><li class="number">{{ num }}</li></a>
+                <a href="/user/dept?supervisor_id={{ supervisor.id }}&page_num={{ num }}"><li class="number">{{ num }}</li></a>
                 {% endif %}
             {% endfor %}
-            <a href="/user/dept?supervisor_id={{supervisor.id}}&page_num={{mp.current_num|add:1}}"><li>下一页</li></a>
-            <a href="/user/dept?supervisor_id={{supervisor.id}}&page_num={{mp.total_pages}}"><li>末页</li></a>
+            <a href="/user/dept?supervisor_id={{ supervisor.id }}&page_num={{ mp.current_num|add:1 }}"><li>下一页</li></a>
+            <a href="/user/dept?supervisor_id={{ supervisor.id }}&page_num={{ mp.total_pages }}"><li>末页</li></a>
         </ul>
     </div>
 {% endblock %}
