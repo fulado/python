@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import HttpResponse
+from django.http import JsonResponse
 from .models import User, Dept
 import hashlib
 from tj8890.utils import MyPaginator
@@ -160,14 +161,25 @@ def user_show(request):
     # 页面标题
     title = ['用户管理', '人员管理']
 
-    # 获取用户选择的一级部门
-    # supervisor_id = int(request.GET.get('supervisor_id', 1))
-    # supervisor = Dept.objects.filter(id=supervisor_id)[0]
-    # 查询二级部门
-    # dept_list = Dept.objects.filter(supervisor=supervisor_id)
+    # 获取用户选择的部门id, 默认是0
+    supervisor_id = int(request.GET.get('supervisor_id', 0))
+    dept_id = int(request.GET.get('dept_id', 0))
 
-    # 查询全部人员
-    user_list = User.objects.all()
+    # 查询二级部门
+    # 如果一级部门id等于0, 取一级部门列表中的一个作为上级部门
+    if supervisor_id == 0:
+        dept_list = Dept.objects.filter(supervisor=supervisor_list[0].id)
+        # 查询全部人员
+        user_list = User.objects.all()
+    else:
+        dept_list = Dept.objects.filter(supervisor=supervisor_id)
+        # 查询用户指定
+        # 如果二级部门id等于0, 查询全部的属于该二级部门上级部门的用户
+        if dept_id == 0:
+            user_list = User.objects.filter(dept=supervisor_id)
+        else:
+            # 如果二级部门id不等于0, 查询该二级部门下的全部人员
+            user_list = User.objects.filter(dept=dept_id)
 
     # 获得用户指定的页面
     page_num = int(request.GET.get('page_num', 1))
@@ -175,5 +187,53 @@ def user_show(request):
     mp = MyPaginator()
     mp.paginate(user_list, 10, page_num)
 
-    context = {'title': title, 'supervisor_list': supervisor_list, 'mp': mp}
+    context = {'title': title, 'supervisor_list': supervisor_list, 'dept_list': dept_list,
+               'supervisor_id': supervisor_id, 'dept_id': dept_id, 'mp': mp}
     return render(request, 'user/user.html', context)
+
+
+# 二级部门查询
+def dept_search(request):
+    supervisor_id = request.GET.get('supervisor_id', 0)
+    dept_list = Dept.objects.filter(supervisor=supervisor_id)
+
+    # 构建返回的Json格式数据
+    data = []
+    for dept in dept_list:
+        dept_info = {'id': dept.id, 'name': dept.name}
+        data.append(dept_info)
+
+    return JsonResponse({'dept_list': data})
+
+
+# 添加人员
+def user_add(request):
+    # 获取用户信息
+    username = request.GET.get('username')
+    password = request.GET.get('password')
+    real_name = request.GET.get('real_name', None)
+    dept_id = int(request.GET.get('dept_id', None))
+    duty = request.GET.get('duty', None)
+    number = request.GET.get('number', None)
+    phone = request.GET.get('phone', None)
+    authority = int(request.GET.get('authority', None))
+
+    user = User()
+    user.username = username
+    user.password = hashlib.sha1(password.encode('utf8')).hexdigest()  # 密码需要加密
+    if real_name is not None:
+        user.real_name = real_name
+    if dept_id is not None:
+        user.dept_id = dept_id
+    if duty is not None:
+        user.duty = duty
+    if number is not None:
+        user.number = number
+    if phone is not None:
+        user.phone = phone
+    if authority is not None:
+        user.authority = authority
+
+    user.save()
+
+    return HttpResponseRedirect('/user/user')

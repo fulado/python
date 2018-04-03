@@ -10,12 +10,12 @@
     <script type="text/javascript">
         $(function() {
             // 导航栏当前页提示
-            $('.list-group-item').click(function() {
-                $(this).addClass('active');
-                $('.list-group-item.active').removeClass('active');
+            $(function() {
+                var currentPage = $('.location span').first().next().text();
+                $('.navi .list-group-item:contains(' + currentPage + ')').addClass('active');
             });
 
-             // 检索框文字显示
+            // 检索框文字显示
             $('#search01').focus(function() {
                 $('#search01_label').hide();
             });

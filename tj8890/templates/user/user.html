@@ -1,34 +1,68 @@
 {% extends 'base.html' %}
 
-<!--{% block head %}-->
-    <!--<style type="text/css" media="screen">-->
-        <!--.modal-dialog{-->
-            <!--height: 500px;-->
-        <!--}-->
-    <!--</style>-->
+{% block head %}
+    <style type="text/css">
+        .modal-dialog{
+            height: 500px;
+        }
+    </style>
 
-    <!--<script type="text/javascript">-->
-        <!--$(function() {-->
-            <!--// alert($('.search custom-select').length);-->
-        <!--});-->
-    <!--</script>-->
-<!--{% endblock %}-->
+    <script type="text/javascript">
+        $(function() {
+            // 人员检索添加框, 选择不同的一级部门, 二级部门的选项相应变化
+            $('.search .custom-select').first().change(function(data) {
+                setDeptInfo($(this),  $('.search .custom-select').last());
+            });
+
+            // 添加人员模态框, 选择不同的一级部门, 二级部门的选项相应变化
+            $('#addModal .modal-body select').first().change(function(data) {
+                setDeptInfo($(this),  $('#addModal .modal-body select').eq(1));
+            });
+        });
+
+        // 选择不同的一级部门, 二级部门的选项相应变化
+        function setDeptInfo(supervisorObj, deptObj) {
+            // 用户选择的一级部门id
+            var supervisor_id = supervisorObj.val();
+            // 通过Ajax获取二级部门
+            $.get('/user/dept_search', {'supervisor_id': supervisor_id}, function(data) {
+                // 清空二级部门选择中的全部选项
+                deptObj.children().remove();
+                // 根据查询结果, 添加二级部门子元素
+                for (i in data.dept_list) {
+                    var newOption = $('<option></option>');
+                    newOption.val(data.dept_list[i].id);
+                    newOption.text(data.dept_list[i].name);
+                    deptObj.append(newOption);
+                }
+            });
+        }
+    </script>
+{% endblock %}
 
 <!-- 检索/添加 -->
 {% block search %}
     <!-- 人员检索/添加 -->
     <div class="search">
         <p>部门选择&nbsp;:</p>
-        <form action="#" method="GET">
+        <form action="/user/user" method="GET">
             <select class="custom-select" name="supervisor_id">
                 {% for supervisor in supervisor_list %}
-                <option value="{{ supervisor.id }}">{{ supervisor.name }}</option>
+                    {% if supervisor.id == supervisor_id %}
+                    <option value="{{ supervisor.id }}" selected>{{ supervisor.name }}</option>
+                    {% else %}
+                    <option value="{{ supervisor.id }}">{{ supervisor.name }}</option>
+                    {% endif %}
                 {% endfor %}
             </select>
             <select class="custom-select" id="dept02" name="dept_id">
-                <option value="1" selected>应急综合科</option>
-                <option value="2">情报中心</option>
-                <option value="3">指挥中心</option>
+                {% for dept in dept_list %}
+                {% if dept.id == dept_id %}
+                    <option value="{{ dept.id }}" selected>{{ dept.name }}</option>
+                    {% else %}
+                    <option value="{{ dept.id }}">{{ dept.name }}</option>
+                    {% endif %}
+                {% endfor %}
             </select>
             <div class="search-btn-group">
                 <input type="submit" class="btn btn-default"  value="查询" />
@@ -52,29 +86,25 @@
                     </button>
                     <h4 class="modal-title" id="addModalLabel">添加人员</h4>
                 </div>
-                <form action="#" method="GET">
+                <form action="/user/user_add" method="GET">
                     <div class="modal-body">
                         <table>
                             <tr>
                                 <td><span>所属单位</span></td>
                                 <td>
                                     <select name="supervisor_id">
-                                        <option value="1" selected>指挥室</option>
-                                        <option value="14">安监处</option>
-                                        <option value="21">车管所</option>
-                                        <option value="34">法制办</option>
-                                        <option value="38">后保处</option>
+                                        {% for supervisor in supervisor_list %}
+                                        <option value="{{ supervisor.id }}">{{ supervisor.name }}</option>
+                                        {% endfor %}
                                     </select>
                                 </td>
                                 <td></td>
                                 <td><span>所属科室</span></td>
                                 <td>
                                     <select name="dept_id">
-                                        <option value="1" selected>一科</option>
-                                        <option value="14">三科</option>
-                                        <option value="21">四科</option>
-                                        <option value="34">五科</option>
-                                        <option value="38">二科</option>
+                                        {% for dept in dept_list %}
+                                        <option value="{{ dept.id }}">{{ dept.name }}</option>
+                                        {% endfor %}
                                     </select>
                                 </td>
                             </tr>
@@ -89,9 +119,9 @@
                                 <td><span>职务</span></td>
                                 <td>
                                     <select name="duty">
-                                        <option value="1" selected>警员科</option>
-                                        <option value="14">协警</option>
-                                        <option value="21">科长</option>
+                                        <option value="警员">警员</option>
+                                        <option value="协警">协警</option>
+                                        <option value="科长">科长</option>
                                     </select>
                                 </td>
                                 <td></td>
@@ -106,8 +136,8 @@
                                 <td>
                                     <select name="authority">
                                         <option value="1" selected>管理员</option>
-                                        <option value="14">管理端用户</option>
-                                        <option value="21">客户端用户</option>
+                                        <option value="2">管理端用户</option>
+                                        <option value="3">客户端用户</option>
                                     </select>
                                 </td>
                             </tr>
@@ -147,33 +177,17 @@
                 </tr>
             </thead>
             <tbody>
+                {% for user in mp.object_list %}
                 <tr>
-                    <td>指挥室</td>
-                    <td>应急综合科</td>
-                    <td>张亮</td>
-                    <td>警官</td>
-                    <td>123456</td>
-                    <td>13901236789</td>
+                    <td>{{ user.dept.supervisor.name }}</td>
+                    <td>{{ user.dept.name }}</td>
+                    <td>{{ user.real_name }}</td>
+                    <td>{{ user.duty }}</td>
+                    <td>{{ user.number }}</td>
+                    <td>{{ user.phone }}</td>
                     <td><button onclick="javascript:void(0)" class="btn btn-default" data-toggle="modal" data-target="#editModal" data-backdrop="static">编辑</button></td>
                 </tr>
-                <tr>
-                    <td>指挥室</td>
-                    <td>应急综合科</td>
-                    <td>张亮</td>
-                    <td>警官</td>
-                    <td>123456</td>
-                    <td>13901236789</td>
-                    <td><button onclick="javascript:void(0)" class="btn btn-default" data-toggle="modal" data-target="#editModal" data-backdrop="static">编辑</button></td>
-                </tr>
-                <tr>
-                    <td>指挥室</td>
-                    <td>应急综合科</td>
-                    <td>张亮</td>
-                    <td>警官</td>
-                    <td>123456</td>
-                    <td>13901236789</td>
-                    <td><button onclick="javascript:void(0)" class="btn btn-default" data-toggle="modal" data-target="#editModal" data-backdrop="static">编辑</button></td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

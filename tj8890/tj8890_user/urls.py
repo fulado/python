@@ -7,7 +7,9 @@ urlpatterns = [
     url(r'^dept_add/?', views.dept_add),
     url(r'^dept_modify/?', views.dept_modify),
     url(r'^dept_del/?', views.dept_del),
+    url(r'^dept_search/?', views.dept_search),
     url(r'^dept/?', views.dept_show),
+    url(r'^user_add/?', views.user_add),
     url(r'^user/?', views.user_show),
     url(r'^', views.login),
 ]
