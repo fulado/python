@@ -9,7 +9,7 @@ class MyPaginator(object):
     def __init__(self):
         self.page_range = []        # 页码范围
         self.show_begin = False     # 显示首页
-        self.show_end = False       # 显示伟业
+        self.show_end = False       # 显示尾页
         self.object_list = []       # 当前页数据
         self.current_num = 0        # 当前页码
         self.total_objects = 0      # 共计多少条数据
@@ -36,13 +36,16 @@ class MyPaginator(object):
             user_num = p.num_pages
         self.current_num = user_num
 
-        # 计算显示的起始页码和结束页码
+        # 计算显示的起始页码和结束页码, 默认显示5页
         begin_page = int(user_num) - 2
         end_page = int(user_num) + 2
+        # 用户属于页面小于3, 需要调整结束页码; 或者大于总页码减2, 需要调整起始页码
         if begin_page < 1:
             begin_page = 1
+            end_page = begin_page + 4
         if end_page > p.num_pages:
             end_page = p.num_pages
+            begin_page = p.num_pages - 4
 
         self.page_range = range(begin_page, end_page + 1)
 
@@ -62,14 +65,13 @@ class MyPaginator(object):
 
 
 if __name__ == '__main__':
-    my_list = range(1, 11)
+    my_list = range(1, 100)
     mp = MyPaginator()
-    mp.paginate(my_list, 3, 2)
-    for i in my_list:
-        print(i, end=',')
-    print()
+    mp.paginate(my_list, 10, 11)
+
     for i in mp.object_list:
-        print(i)
+        print(i, end=' ')
+    print()
     print(mp.page_range)
     print(mp.current_num)
     print(mp.show_begin)

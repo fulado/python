@@ -237,3 +237,52 @@ def user_add(request):
     user.save()
 
     return HttpResponseRedirect('/user/user')
+
+
+# 编辑人员
+def user_modify(request):
+    dept_id = int(request.GET.get('dept_id'))
+    real_name = request.GET.get('real_name')
+    username = request.GET.get('username')
+    duty = request.GET.get('duty')
+    number = request.GET.get('number')
+    authority = request.GET.get('authority')
+    phone = request.GET.get('phone')
+    user_id = int(request.GET.get('user_id'))
+
+    user = User.objects.filter(id=user_id)[0]
+
+    user.dept_id = dept_id
+    user.real_name = real_name
+    user.username = username
+    user.duty = duty
+    user.number = number
+    user.authority = authority
+    user.phone = phone
+
+    user.save()
+
+    return HttpResponseRedirect('/user/user')
+
+
+# 删除人员
+def user_del(request):
+    user_id = int(request.GET.get('user_id'))
+
+    user = User.objects.filter(id=user_id)[0]
+
+    user.delete()
+
+    return HttpResponseRedirect('/user/user')
+
+
+# 重置密码
+def reset_password(request):
+    user_id = int(request.POST.get('user_id'))
+    password = request.POST.get('password')
+
+    user = User.objects.filter(id=user_id)[0]
+    user.password = hashlib.sha1(password.encode('utf8')).hexdigest()  # 密码需要加密
+
+    user.save()
+    return HttpResponseRedirect('/user/user')

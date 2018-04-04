@@ -10,6 +10,9 @@ urlpatterns = [
     url(r'^dept_search/?', views.dept_search),
     url(r'^dept/?', views.dept_show),
     url(r'^user_add/?', views.user_add),
+    url(r'^user_modify/?', views.user_modify),
+    url(r'^user_del/?', views.user_del),
+    url(r'^reset_password/?', views.reset_password),
     url(r'^user/?', views.user_show),
     url(r'^', views.login),
 ]
