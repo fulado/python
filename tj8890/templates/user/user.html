@@ -10,18 +10,19 @@
     <script type="text/javascript">
         $(function() {
             // 人员检索添加框, 选择不同的一级部门, 二级部门的选项相应变化
-            $('.search .custom-select').first().change(function(data) {
-                setDeptInfo($(this),  $('.search .custom-select').last());
+            $('.search .custom-select').first().change(function() {
+                setDeptInfo($(this), $('.search .custom-select').last());
             });
 
             // 添加人员模态框, 选择不同的一级部门, 二级部门的选项相应变化
-            $('#addModal .modal-body select').first().change(function(data) {
-                setDeptInfo($(this),  $('#addModal .modal-body select').eq(1));
+            $('#addModal .modal-body select').first().change(function() {
+                setDeptInfo($(this), $('#addModal .modal-body select').eq(1));
             });
+            $('#addModal .modal-body select').first().change();
 
             // 编辑人员模态框, 选择不同的一级部门, 二级部门的选项相应变化
-            $('#editModal .modal-body select').first().change(function(data) {
-                setDeptInfo($(this),  $('#editModal .modal-body select').eq(1));
+            $('#editModal .modal-body select').first().change(function() {
+                setDeptInfo($(this), $('#editModal .modal-body select').eq(1));
             });
         });
 
@@ -30,9 +31,7 @@
             // 设置一级部门选项
             $('#editModal .modal-body select').eq(0).val(supervisorId);
             // 根据一级部门选择, 自动刷新下属二级部门
-            $('#editModal .modal-body select').eq(0).change();
-            // 设置二级部门选项
-            $('#editModal .modal-body select').eq(1).val(deptId);
+            setDeptInfo($('#editModal .modal-body select').first(), $('#editModal .modal-body select').eq(1), deptId)
             // 设置职务
             $('#editModal .modal-body select').eq(2).val(duty);
             // 设置权限
@@ -49,8 +48,18 @@
             $('#editModal .modal-body input').eq(5).val(id);
         }
 
+        // 设置用户所属的二级部门
+        function setUserDept(deptId) {
+            // 设置二级部门选项
+            // 必须在dept_id刷新后再给定值
+            alert($('#select-dept').find('option').length);
+            $('#select-dept').val(deptId)
+        }
+
         // 选择不同的一级部门, 二级部门的选项相应变化
-        function setDeptInfo(supervisorObj, deptObj) {
+        function setDeptInfo(supervisorObj, deptObj, deptId) {
+            // deptId的默认值是0
+            deptId = deptId || 0;
             // 用户选择的一级部门id
             var supervisor_id = supervisorObj.val();
             // 通过Ajax获取二级部门
@@ -59,7 +68,11 @@
                 deptObj.empty();
                 // 根据查询结果, 添加二级部门子元素
                 for (i in data.dept_list) {
-                    var newOption = $('<option></option>').val(data.dept_list[i].id).text(data.dept_list[i].name);
+                    if (deptId == data.dept_list[i].id) {
+                        var newOption = $('<option selected></option>').val(data.dept_list[i].id).text(data.dept_list[i].name);
+                    } else {
+                        var newOption = $('<option></option>').val(data.dept_list[i].id).text(data.dept_list[i].name);
+                    }
                     deptObj.append(newOption);
                 }
             });
@@ -68,18 +81,14 @@
         // 人员修改请求
         function modify(obj) {
             var oForm = $(obj).parents('form');
-            oForm.prop('action', '/user/user_modify');
-
-            oForm.submit();
+            submitForm(oForm, 'GET', '/user/user_modify');
         }
 
         // 人员删除请求
         function del(obj) {
             if (confirm('是否确认删除该人员信息?')) {
                 var oForm = $(obj).parents('form');
-                oForm.prop('action', '/user/user_del');
-
-                oForm.submit();
+                submitForm(oForm, 'GET', '/user/user_del');
             }
         }
 
@@ -87,10 +96,7 @@
         function resetPassword(obj) {
             if (confirm('是否确认重新设定该用户密码?')) {
                 var oForm = $(obj).parents('form');
-                oForm.prop('method', 'POST');
-                oForm.prop('action', '/user/reset_password');
-
-                oForm.submit();
+                submitForm(oForm, 'POST', '/user/reset_password');
             }
         }
     </script>
@@ -158,9 +164,6 @@
                                 <td><span>所属科室</span></td>
                                 <td>
                                     <select name="dept_id">
-                                        {% for dept in dept_list %}
-                                        <option value="{{ dept.id }}">{{ dept.name }}</option>
-                                        {% endfor %}
                                     </select>
                                 </td>
                             </tr>
@@ -262,7 +265,7 @@
                     </button>
                     <h4 class="modal-title" id="editModalLabel">编辑人员</h4>
                 </div>
-                <form action="#" method="GET">
+                <form method="GET">
                     {% csrf_token %}
                     <div class="modal-body">
                         <table>
@@ -278,7 +281,7 @@
                                 <td></td>
                                 <td><span>所属科室</span></td>
                                 <td>
-                                    <select name="dept_id">
+                                    <select name="dept_id" id="select-dept">
                                         {% for dept in dept_list %}
                                         <option value="{{ dept.id }}">{{ dept.name }}</option>
                                         {% endfor %}
@@ -328,9 +331,9 @@
                         </table>
                     </div>
                     <div class="modal-footer">
-                        <input type="submit" class="btn btn-primary" value="确定" onclick="modify(this)" />
-                        <input type="submit" class="btn btn-primary" value="删除" onclick="del(this)" />
-                        <input type="submit" class="btn btn-primary" value="修改密码" onclick="resetPassword(this)" />
+                        <input type="button" class="btn btn-primary" value="确定" onclick="modify(this)" />
+                        <input type="button" class="btn btn-primary" value="删除" onclick="del(this)" />
+                        <input type="button" class="btn btn-primary" value="修改密码" onclick="resetPassword(this)" />
                         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                     </div>
                 </form>

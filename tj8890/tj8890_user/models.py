@@ -10,18 +10,6 @@ class Dept(models.Model):
     is_delete = models.BooleanField(default=False)
 
 
-# 职务模型
-class Duty(models.Model):
-    name = models.CharField(max_length=255)
-    is_delete = models.BooleanField(default=False)
-
-
-# 权限模型
-class Authority(models.Model):
-    auth = models.CharField(max_length=255)
-    is_delete = models.BooleanField(default=False)
-
-
 # 用户模型
 class User(models.Model):
     username = models.CharField(max_length=50)

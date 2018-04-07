@@ -209,6 +209,7 @@ def dept_search(request):
 # 添加人员
 def user_add(request):
     # 获取用户信息
+    supervisor_id = int(request.GET.get('supervisor_id'))
     username = request.GET.get('username')
     password = request.GET.get('password')
     real_name = request.GET.get('real_name', None)
@@ -235,12 +236,14 @@ def user_add(request):
         user.authority = authority
 
     user.save()
+    url = '/user/user?supervisor_id=%d&dept_id=%d' % (supervisor_id, dept_id)
 
-    return HttpResponseRedirect('/user/user')
+    return HttpResponseRedirect(url)
 
 
 # 编辑人员
 def user_modify(request):
+    supervisor_id = int(request.GET.get('supervisor_id'))
     dept_id = int(request.GET.get('dept_id'))
     real_name = request.GET.get('real_name')
     username = request.GET.get('username')
@@ -261,19 +264,23 @@ def user_modify(request):
     user.phone = phone
 
     user.save()
+    url = '/user/user?supervisor_id=%d&dept_id=%d' % (supervisor_id, dept_id)
 
-    return HttpResponseRedirect('/user/user')
+    return HttpResponseRedirect(url)
 
 
 # 删除人员
 def user_del(request):
+    supervisor_id = int(request.GET.get('supervisor_id'))
+    dept_id = int(request.GET.get('dept_id'))
     user_id = int(request.GET.get('user_id'))
 
     user = User.objects.filter(id=user_id)[0]
 
     user.delete()
+    url = '/user/user?supervisor_id=%d&dept_id=%d' % (supervisor_id, dept_id)
 
-    return HttpResponseRedirect('/user/user')
+    return HttpResponseRedirect(url)
 
 
 # 重置密码

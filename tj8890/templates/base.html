@@ -25,6 +25,14 @@
                 }
             });
         });
+
+        // 表单提交请求
+        function submitForm(oForm, sMethod, sUrl) {
+            oForm.prop('method', sMethod);
+            oForm.prop('action', sUrl);
+
+            oForm.submit();
+        }
     </script>
 
     {% block head %}
