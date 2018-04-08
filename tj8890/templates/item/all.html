@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <style type="text/css" media="screen">
+        .search{
+            height: 304px;
+        }
+
+        .result{
+            top: 426px;
+        }
+
+        .divide-page{
+            top: 981px;
+        }
+
+        .search .search-btn-group{
+            top: 250px;
+        }
+    </style>
+{% endblock %}}
+
+<!-- 检索/添加 -->
+{% block search %}
+    <!-- 事件检索 -->
+    <div class="search">
+        <form action="#" method="GET">
+            <table>
+                <tr>
+                    <td><input type="checkbox" name="" /></td>
+                    <td><span>受理时间</span></td>
+                    <td>
+                        <input type="text" class="datetime-picker">
+                        ~
+                        <input type="text" class="datetime-picker">
+                    </td>
+                    <td></td>
+                    <td><input type="checkbox" name="" /></td>
+                    <td><span>转办时间</span></td>
+                    <td>
+                        <input type="text" class="datetime-picker">
+                        ~
+                        <input type="text" class="datetime-picker">
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" name="" /></td>
+                    <td><span>求助类别</span></td>
+                    <td colspan="5">
+                        <select name="">
+                            <option value="">事项总类</option>
+                        </select>
+                        <select name="">
+                            <option value="">事项二类</option>
+                        </select>
+                        <select name="">
+                            <option value="">事项三类</option>
+                        </select>
+                        <select name="">
+                            <option value="">事项四类</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" name="" /></td>
+                    <td><span>流转情况</span></td>
+                    <td>
+                        <select name="">
+                            <option value="">事项状态</option>
+                        </select>
+                    </td>
+                    <td></td>
+                    <td><input type="checkbox" name="" /></td>
+                    <td><span>紧急程度</span></td>
+                    <td>
+                        <select name="">
+                            <option value="">普通(3天)</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" name="" /></td>
+                    <td><span>关键字检索</span></td>
+                    <td colspan="5">
+                        <input type="text" value="请输入关键字">
+                    </td>
+                </tr>
+            </table>
+            <div class="search-btn-group">
+                <input type="submit" class="btn btn-default"  value="查询" />
+                <a href="javascript:void(0)" class="btn btn-default" data-toggle="modal" data-target="#addModal" data-backdrop="static">添加</a>
+                <a href="javascript:void(0)" class="btn btn-default">重置</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+<!-- 检索结果 -->
+{% block result %}
+<!-- 检索结果 -->
+    <div class="result">
+        <div class="bar02"></div>
+        <table class="table table-striped table-hover text-center">
+            <thead>
+                <tr>
+                    <td>事项编号</td>
+                    <td>内容摘要</td>
+                    <td>积极程度</td>
+                    <td>流转情况</td>
+                    <td>录入时间</td>
+                    <td>操作</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>20170321001</td>
+                    <td>驾驶证丢失</td>
+                    <td>普通(3天)</td>
+                    <td>未转办</td>
+                    <td>2016-12-21 16:07:13</td>
+                    <td><button class="btn btn-default">查看</button></td>
+                </tr>
+                <tr>
+                    <td>20170321001</td>
+                    <td>驾驶证丢失</td>
+                    <td>普通(3天)</td>
+                    <td>未转办</td>
+                    <td>2016-12-21 16:07:13</td>
+                    <td><button class="btn btn-default">查看</button></td>
+                </tr>
+                <tr>
+                    <td>20170321001</td>
+                    <td>驾驶证丢失</td>
+                    <td>普通(3天)</td>
+                    <td>未转办</td>
+                    <td>2016-12-21 16:07:13</td>
+                    <td><button class="btn btn-default">查看</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+<!-- 分页 -->
+{% block page %}
+    <!-- 分页 -->
+    <div class="divide-page">
+        <form action="/user/user" method="GET" class="goto">
+            <span>到</span>
+                <input type="hidden" name="supervisor_id" value="0"/>
+                <input type="hidden" name="dept_id" value="0"/>
+                <input type="text" name="page_num" />
+            <span>页</span>
+        </form>
+        <p class="current-total">
+            共<span>8</span>页/<span>79</span>条数据
+        </p>
+        <ul class="page">
+            <a href="/user/user?supervisor_id=0&dept_id=0&page_num=1"><li>首页</li></a>
+            <a href="/user/user?supervisor_id=0&dept_id=0&page_num=0"><li>上一页</li></a>
+            <a href="/user/user?supervisor_id=0&dept_id=0&page_num=1"><li class="number current-page">1</li></a>
+            <a href="/user/user?supervisor_id=0&dept_id=0&page_num=2"><li class="number">2</li></a>
+            <a href="/user/user?supervisor_id=0&dept_id=0&page_num=3"><li class="number">3</li></a>
+            <a href="/user/user?supervisor_id=0&dept_id=0&page_num=2"><li>下一页</li></a>
+            <a href="/user/user?supervisor_id=0&dept_id=0&page_num=8"><li>末页</li></a>
+        </ul>
+    </div>
+{% endblock %}

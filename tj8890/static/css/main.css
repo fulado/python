@@ -2,7 +2,7 @@
 * @Author: Marte
 * @Date:   2018-03-23 17:11:48
 * @Last Modified by:   Marte
-* @Last Modified time: 2018-04-02 18:06:17
+* @Last Modified time: 2018-04-08 14:49:02
 */
 /*
 * @Author: Marte
@@ -182,6 +182,42 @@ input{
 
 #dept02{
     left:275px;
+}
+
+.search table{
+    position: absolute;
+    left: 25px;
+    top: 48px;
+}
+
+.search table,.search tr,.search td{
+    font-size: 14px;
+    margin: auto;
+    padding: 10px;
+    text-align: left;
+}
+
+.search span{
+    text-align: justify;
+    text-align-last:justify;
+    display: inline-block;
+    width:70px;
+}
+
+.search select,input{
+    width: 150px;
+    height: 30px;
+    border-radius: 4px;
+}
+
+.search input[type=checkbox]{
+    width: 15px;
+    height: 15px;
+    margin-right: -10px;
+}
+
+.search select{
+    margin-right: 15px;
 }
 
 /* 检索栏按钮组 */

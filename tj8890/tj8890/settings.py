@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tj8890_user',
+    'tj8890_item',
 )
 
 MIDDLEWARE_CLASSES = (
