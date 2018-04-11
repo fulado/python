@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <title>{{title.0}}</title>
+    <title>{{ title.0 }}</title>
     <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/static/css/main.css">
     <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-datetimepicker.min.css">
@@ -16,6 +16,7 @@
             $(function() {
                 var currentPage = $('.location span').first().next().text();
                 $('.navi .list-group-item:contains(' + currentPage + ')').addClass('active');
+                $('.navi .list-group-item:contains(' + currentPage + ')').parents('.collapse').addClass('in');
             });
 
             // 检索框文字显示
@@ -27,6 +28,16 @@
                     $('#search01_label').show();
                 }
             });
+
+            // 日期组件初始化
+            $('.datetime-picker').datetimepicker({
+                language: 'zh-CN',          //显示中文
+                format: 'yyyy-mm-dd',       //显示格式
+                minView: "month",           //设置只显示到月份
+                initialDate: new Date(),    //初始化当前日期
+                autoclose: true,            //选中自动关闭
+                todayBtn: true              //显示今日按钮
+            });
         });
 
         // 表单提交请求
@@ -36,16 +47,6 @@
 
             oForm.submit();
         }
-
-        // 日期组件初始化
-        $('.datetime-picker').datetimepicker({
-            language: 'zh-CN',          //显示中文
-            format: 'yyyy-mm-dd',       //显示格式
-            minView: "month",           //设置只显示到月份
-            initialDate: new Date(),    //初始化当前日期
-            autoclose: true,            //选中自动关闭
-            todayBtn: true              //显示今日按钮
-        });
     </script>
 
     {% block head %}
@@ -58,7 +59,7 @@
             <img class="img01" src="/static/image/mark1.png" alt="警徽" />
             <p class="title">天津市公安交通管理局便民专线服务平台</p>
             <p class="user">
-                欢迎&nbsp:&nbsp;<span>指挥室</span>&nbsp;>&nbsp;<span>应急综合科</span>&nbsp;>&nbsp;<span>张亮</span>
+                欢迎&nbsp;:&nbsp;<span>指挥室</span>&nbsp;>&nbsp;<span>应急综合科</span>&nbsp;>&nbsp;<span>张亮</span>
                 &nbsp;|&nbsp;<a href="#">退出</a>
             </p>
         </div>
@@ -100,14 +101,14 @@
                     </div>
                     <div id="collapseTwo" class="panel-collapse collapse">
                         <div class="panel-body clearfix">
-                            <a href="#" class="list-group-item">全部事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">未转办事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">已转办事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">办理中事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">已反馈事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">已超时事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">退回重办事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">申请延期事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">全部2事项2<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">未转办2事项2<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已转办2事项2<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">办理中2事项2<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已反馈2事项2<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已超时2事项2<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">退回重办2事项2<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">申请延期2事项2<span class="badge">10</span></a>
                         </div>
                     </div>
                 </div>
@@ -123,14 +124,14 @@
                     </div>
                     <div id="collapseThree" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <a href="#" class="list-group-item">全部事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">未转办事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">已转办事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">办理中事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">已反馈事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">已超时事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">退回重办事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">申请延期事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">全部3事项3<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">未转办3事项3<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已转办3事项3<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">办理中3事项3<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已反馈3事项3<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已超时3事项3<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">退回重办3事项3<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">申请延期3事项3<span class="badge">10</span></a>
                         </div>
                     </div>
                 </div>
@@ -146,14 +147,14 @@
                     </div>
                     <div id="collapseFour" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <a href="#" class="list-group-item">全部事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">未转办事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">已转办事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">办理中事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">已反馈事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">已超时事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">退回重办事项<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">申请延期事项<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">全部4事项4<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">未转办4事项4<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已转办4事项4<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">办理中4事项4<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已反馈4事项4<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已超时4事项4<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">退回重办4事项4<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">申请延期4事项4<span class="badge">10</span></a>
                         </div>
                     </div>
                 </div>
@@ -167,7 +168,7 @@
                             </a>
                         </h4>
                     </div>
-                    <div id="collapseFive" class="panel-collapse collapse in">
+                    <div id="collapseFive" class="panel-collapse collapse">
                         <div class="panel-body">
                             <a href="/user/user" class="list-group-item">人员管理</a>
                             <a href="/user/dept" class="list-group-item">部门管理</a>

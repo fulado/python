@@ -15,6 +15,7 @@
         }
 
         .search .search-btn-group{
+            left: 422px;
             top: 250px;
         }
     </style>
@@ -27,7 +28,6 @@
         <form action="#" method="GET">
             <table>
                 <tr>
-                    <td><input type="checkbox" name="" /></td>
                     <td><span>受理时间</span></td>
                     <td>
                         <input type="text" class="datetime-picker">
@@ -35,7 +35,6 @@
                         <input type="text" class="datetime-picker">
                     </td>
                     <td></td>
-                    <td><input type="checkbox" name="" /></td>
                     <td><span>转办时间</span></td>
                     <td>
                         <input type="text" class="datetime-picker">
@@ -44,14 +43,19 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><input type="checkbox" name="" /></td>
                     <td><span>求助类别</span></td>
                     <td colspan="5">
                         <select name="">
-                            <option value="">事项总类</option>
+                            <option value="0">全部</option>
+                            {% for cate in cate1_list %}
+                            <option value="{{ cate.id }}">{{ cate.name }}</option>
+                            {% endfor %}
                         </select>
                         <select name="">
-                            <option value="">事项二类</option>
+                            <option value="0">全部</option>
+                            {% for cate in cate2_list %}
+                            <option value="{{ cate.id }}">{{ cate.name }}</option>
+                            {% endfor %}
                         </select>
                         <select name="">
                             <option value="">事项三类</option>
@@ -62,24 +66,32 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><input type="checkbox" name="" /></td>
                     <td><span>流转情况</span></td>
                     <td>
-                        <select name="">
-                            <option value="">事项状态</option>
+                        <select name="status">
+                            <option value="0">全部</option>
+                            <option value="1">未转办</option>
+                            <option value="2">已转办</option>
+                            <option value="3">办理中</option>
+                            <option value="4">已反馈</option>
+                            <option value="5">已超时</option>
+                            <option value="6">退回重办</option>
+                            <option value="7">申请延期</option>
                         </select>
                     </td>
                     <td></td>
-                    <td><input type="checkbox" name="" /></td>
                     <td><span>紧急程度</span></td>
                     <td>
                         <select name="">
-                            <option value="">普通(3天)</option>
+                            <option value="0">全部</option>
+                            <option value="1">普通（3天）</option>
+                            <option value="2">加急（2天）</option>
+                            <option value="3">紧急（当日回复）</option>
+                            <option value="4">特急（2小时内回复）</option>
                         </select>
                     </td>
                 </tr>
                 <tr>
-                    <td><input type="checkbox" name="" /></td>
                     <td><span>关键字检索</span></td>
                     <td colspan="5">
                         <input type="text" value="请输入关键字">
@@ -88,7 +100,6 @@
             </table>
             <div class="search-btn-group">
                 <input type="submit" class="btn btn-default"  value="查询" />
-                <a href="javascript:void(0)" class="btn btn-default" data-toggle="modal" data-target="#addModal" data-backdrop="static">添加</a>
                 <a href="javascript:void(0)" class="btn btn-default">重置</a>
             </div>
         </form>
@@ -105,7 +116,7 @@
                 <tr>
                     <td>事项编号</td>
                     <td>内容摘要</td>
-                    <td>积极程度</td>
+                    <td>紧急程度</td>
                     <td>流转情况</td>
                     <td>录入时间</td>
                     <td>操作</td>
