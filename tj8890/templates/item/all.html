@@ -19,13 +19,70 @@
             top: 250px;
         }
     </style>
+
+    <script type="text/javascript">
+        $(function() {
+            // 事项二类选择后, 三类对应变化
+            $('.search select').eq(1).change(function() {
+                val = $(this).val();
+                if (val == 0) {
+                    $('.search select').eq(2).val(0);
+                    $('.search select').eq(2).attr("disabled","disabled");
+                } else {
+                    $('.search select').eq(2).removeAttr("disabled");
+                    var cate3 = $('.search input:hidden').eq(0).val();
+                    setCateInfo($(this), $('.search select').eq(2), cate3);
+                }
+                $('.search select').eq(2).change();
+            });
+
+            // 事项三类选择后, 四类对应变化
+            $('.search select').eq(2).change(function() {
+                val = $(this).val();
+                if (val == 0) {
+                    $('.search select').eq(3).val(0);
+                    $('.search select').eq(3).attr("disabled","disabled");
+                } else {
+                    $('.search select').eq(3).removeAttr("disabled");
+                    setCateInfo($(this), $('.search select').eq(3));
+                }
+            });
+
+            $('.search select').eq(1).change();
+            $('.search select').eq(2).change();
+        });
+
+        // 选择不同的上级选项, 下级选择框相应变化
+        function setCateInfo(parentObj, childObj, childId) {
+            // 设置查询下级复选框登记
+            var childId = childId || 0;
+            // 用户选择上级选项的id
+            var parent_id = parentObj.val();
+            // 通过Ajax获取二级部门
+            $.get('/item/cate_search', {'parent_id': parent_id}, function(data) {
+                // 清空二级部门选择中的全部选项
+                childObj.empty();
+                // 根据查询结果, 添加二级部门子元素
+                var newOption = $('<option></option>').val(0).text('全部');
+                childObj.append(newOption);
+                for (i in data.cate_list) {
+                    if (childId == data.cate_list[i].id) {
+                        var newOption = $('<option selected></option>').val(data.cate_list[i].id).text(data.cate_list[i].name);
+                    } else {
+                        var newOption = $('<option></option>').val(data.cate_list[i].id).text(data.cate_list[i].name);
+                    }
+                    childObj.append(newOption);
+                }
+            });
+        }
+    </script>
 {% endblock %}}
 
 <!-- 检索/添加 -->
 {% block search %}
     <!-- 事件检索 -->
     <div class="search">
-        <form action="#" method="GET">
+        <form action="/item/all" method="GET">
             <table>
                 <tr>
                     <td><span>受理时间</span></td>
@@ -45,49 +102,68 @@
                 <tr>
                     <td><span>求助类别</span></td>
                     <td colspan="5">
-                        <select name="">
+                        <select name="cate1">
+                            {% if cate1 == 0 %}
+                            <option value="0" selected>全部</option>
+                            {% else %}
                             <option value="0">全部</option>
+                            {% endif %}
                             {% for cate in cate1_list %}
+                            {% if cate1 == cate.id %}
+                            <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                            {% else %}
                             <option value="{{ cate.id }}">{{ cate.name }}</option>
+                            {% endif %}
                             {% endfor %}
                         </select>
-                        <select name="">
+                        <select name="cate2">
+                            {% if cate2 == 0 %}
+                            <option value="0" selected>全部</option>
+                            {% else %}
                             <option value="0">全部</option>
+                            {% endif %}
                             {% for cate in cate2_list %}
+                            {% if cate2 == cate.id %}
+                            <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                            {% else %}
                             <option value="{{ cate.id }}">{{ cate.name }}</option>
+                            {% endif %}
                             {% endfor %}
                         </select>
-                        <select name="">
-                            <option value="">事项三类</option>
+                        <select name="cate3" disabled>
+                            <option value="0">全部</option>
                         </select>
-                        <select name="">
-                            <option value="">事项四类</option>
+                        <select name="cate4" disabled>
+                            <option value="0">全部</option>
                         </select>
+                        <input type="hidden" value="{{ cate3 }}" />
+                        <input type="hidden" value="{{ cate4 }}" />
                     </td>
                 </tr>
                 <tr>
                     <td><span>流转情况</span></td>
                     <td>
                         <select name="status">
-                            <option value="0">全部</option>
-                            <option value="1">未转办</option>
-                            <option value="2">已转办</option>
-                            <option value="3">办理中</option>
-                            <option value="4">已反馈</option>
-                            <option value="5">已超时</option>
-                            <option value="6">退回重办</option>
-                            <option value="7">申请延期</option>
+                            {% for s in status_list %}
+                            {% if status == forloop.counter|add:-1 %}
+                            <option value="{{ forloop.counter|add:-1 }}" selected>{{ s }}</option>
+                            {% else %}
+                            <option value="{{ forloop.counter|add:-1 }}">{{ s }}</option>
+                            {% endif %}
+                            {% endfor %}
                         </select>
                     </td>
                     <td></td>
                     <td><span>紧急程度</span></td>
                     <td>
-                        <select name="">
-                            <option value="0">全部</option>
-                            <option value="1">普通（3天）</option>
-                            <option value="2">加急（2天）</option>
-                            <option value="3">紧急（当日回复）</option>
-                            <option value="4">特急（2小时内回复）</option>
+                        <select name="emergency">
+                            {% for e in emergency_list %}
+                            {% if emergency == forloop.counter|add:-1 %}
+                            <option value="{{ forloop.counter|add:-1 }}" selected>{{ e }}</option>
+                            {% else %}
+                            <option value="{{ forloop.counter|add:-1 }}">{{ e }}</option>
+                            {% endif %}
+                            {% endfor %}
                         </select>
                     </td>
                 </tr>
@@ -123,30 +199,38 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>20170321001</td>
-                    <td>驾驶证丢失</td>
-                    <td>普通(3天)</td>
-                    <td>未转办</td>
-                    <td>2016-12-21 16:07:13</td>
-                    <td><button class="btn btn-default">查看</button></td>
-                </tr>
-                <tr>
-                    <td>20170321001</td>
-                    <td>驾驶证丢失</td>
-                    <td>普通(3天)</td>
-                    <td>未转办</td>
-                    <td>2016-12-21 16:07:13</td>
-                    <td><button class="btn btn-default">查看</button></td>
-                </tr>
-                <tr>
-                    <td>20170321001</td>
-                    <td>驾驶证丢失</td>
-                    <td>普通(3天)</td>
-                    <td>未转办</td>
-                    <td>2016-12-21 16:07:13</td>
-                    <td><button class="btn btn-default">查看</button></td>
-                </tr>
+                {% for item in mp.object_list %}
+                    <tr>
+                        <td>{{ item.id }}</td>
+                        <td>{{ item.title }}</td>
+                        {% if item.emergency == 1 %}
+                            <td>普通(3天)</td>
+                            {% elif item.emergency == 2 %}
+                            <td>加急(2天)</td>
+                            {% elif item.emergency == 3 %}
+                            <td>紧急(当日回复)</td>
+                            {% elif item.emergency == 4 %}
+                            <td>特急(两小时内回复)</td>
+                        {% endif %}
+                        {% if item.status == 1 %}
+                            <td>未转办</td>
+                            {% elif item.status == 2 %}
+                            <td>已转办</td>
+                            {% elif item.status == 3 %}
+                            <td>办理中</td>
+                            {% elif item.status == 4 %}
+                            <td>已反馈</td>
+                            {% elif item.status == 5 %}
+                            <td>已超时</td>
+                            {% elif item.status == 6 %}
+                            <td>退回重办</td>
+                            {% elif item.status == 7 %}
+                            <td>申请延期</td>
+                        {% endif %}
+                        <td>{{ item.recd_time }}</td>
+                        <td><button class="btn btn-default">查看</button></td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
@@ -156,7 +240,7 @@
 {% block page %}
     <!-- 分页 -->
     <div class="divide-page">
-        <form action="/user/user" method="GET" class="goto">
+        <form action="/item/all" method="GET" class="goto">
             <span>到</span>
                 <input type="hidden" name="supervisor_id" value="0"/>
                 <input type="hidden" name="dept_id" value="0"/>
@@ -164,16 +248,21 @@
             <span>页</span>
         </form>
         <p class="current-total">
-            共<span>8</span>页/<span>79</span>条数据
+            共<span>{{ mp.total_pages }}</span>页/<span>{{ mp.total_objects }}</span>条数据
         </p>
+
         <ul class="page">
-            <a href="/user/user?supervisor_id=0&dept_id=0&page_num=1"><li>首页</li></a>
-            <a href="/user/user?supervisor_id=0&dept_id=0&page_num=0"><li>上一页</li></a>
-            <a href="/user/user?supervisor_id=0&dept_id=0&page_num=1"><li class="number current-page">1</li></a>
-            <a href="/user/user?supervisor_id=0&dept_id=0&page_num=2"><li class="number">2</li></a>
-            <a href="/user/user?supervisor_id=0&dept_id=0&page_num=3"><li class="number">3</li></a>
-            <a href="/user/user?supervisor_id=0&dept_id=0&page_num=2"><li>下一页</li></a>
-            <a href="/user/user?supervisor_id=0&dept_id=0&page_num=8"><li>末页</li></a>
+            <a href="/item/all?page_num=1"><li>首页</li></a>
+            <a href="/item/all?page_num={{ mp.current_num|add:-1 }}"><li>上一页</li></a>
+            {% for num in mp.page_range %}
+                {% if num == mp.current_num %}
+                <a href="/item/all?page_num={{ num }}"><li class="number current-page">{{ num }}</li></a>
+                {% else %}
+                <a href="/item/all?page_num={{ num }}"><li class="number">{{ num }}</li></a>
+                {% endif %}
+            {% endfor %}
+            <a href="/item/all?page_num={{ mp.current_num|add:1 }}"><li>下一页</li></a>
+            <a href="/item/all?page_num={{ mp.total_pages }}"><li>末页</li></a>
         </ul>
     </div>
 {% endblock %}

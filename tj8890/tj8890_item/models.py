@@ -47,7 +47,7 @@ class Item(models.Model):
     receive_time = models.DateTimeField(null=True, blank=True)          # 接件时间
     receive_limit = models.DateTimeField(null=True, blank=True)         # 接单时限
     deal_limit = models.DateTimeField(null=True, blank=True)            # 承办时限
-    status = models.IntegerField(default=1)                             # 办件状态, 1-未转办
+    status = models.IntegerField(default=1)  # 办件状态, 1-未转办, 2-已转办, 3-办理中, 4-已反馈, 5-已超时, 6-退回重办, 7-申请延期
     is_overtime = models.BooleanField(default=False)                    # 是否超时
     comment = models.CharField(max_length=500, null=True, blank=True)   # 拟办意见
     leader_comment = models.CharField(max_length=500, null=True, blank=True)  # 领导批示
