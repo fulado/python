@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from .models import Item, Category
 from tj8890.utils import MyPaginator
 import random
+import time
 
 STATUS_LIST = ['全部', '未转办', '已转办', '办理中', '已反馈', '已超时', '退回重办', '申请延期']
 EMERGENCY_LIST = ['全部', '普通(3天)', '加急(2天)', '紧急(当日回复)', '特急(两小时内回复)']
@@ -80,11 +81,33 @@ def all_show(request):
     cate4 = int(request.GET.get('cate4', 0))
     status = int(request.GET.get('status', 0))
     emergency = int(request.GET.get('emergency', 0))
+    recd_time_begin = request.GET.get('recd_time_begin', 0)
+    recd_time_end = request.GET.get('recd_time_end', 0)
+    deliver_time_begin = request.GET.get('deliver_time_begin', 0)
+    deliver_time_end = request.GET.get('deliver_time_end', 0)
 
     # 查询事项全部事项
     item_list = Item.objects.all().order_by('-recd_time')
 
     # 按照表单中的的信息进行过滤
+    if recd_time_begin == 0:
+        recd_time_begin = time.strftime('%Y-1-1', time.localtime())
+    else:
+        item_list = item_list.filter(recd_time__gte=recd_time_begin)
+    if recd_time_end == 0:
+        recd_time_end = time.strftime('%Y-%m-%d', time.localtime())
+    else:
+        item_list = item_list.filter(recd_time__lte=recd_time_end)
+
+    if deliver_time_begin == 0:
+        deliver_time_begin = time.strftime('%Y-1-1', time.localtime())
+    else:
+        item_list = item_list.filter(deliver_time__gte=deliver_time_begin)
+    if deliver_time_end == 0:
+        deliver_time_end = time.strftime('%Y-%m-%d', time.localtime())
+    else:
+        item_list = item_list.filter(deliver_time__lte=deliver_time_end)
+
     if cate1 != 0:
         item_list = item_list.filter(category1_id=cate1)
         print('cate1: %d' % (len(item_list)))
@@ -109,6 +132,8 @@ def all_show(request):
     # 事项分类
     cate1_list = Category.objects.filter(level=1)
     cate2_list = Category.objects.filter(level=2)
+    cate3_list = Category.objects.filter(cate_id=cate2)
+    cate4_list = Category.objects.filter(cate_id=cate3)
 
     # 获得用户指定的页面
     page_num = int(request.GET.get('page_num', 1))
@@ -117,8 +142,10 @@ def all_show(request):
     mp.paginate(item_list, 10, page_num)
 
     context = {'title': title, 'status': status, 'emergency': emergency, 'mp': mp, 'cate1_list': cate1_list,
-               'cate2_list': cate2_list, 'status_list': STATUS_LIST, 'emergency_list': EMERGENCY_LIST, 'cate1': cate1,
-               'cate2': cate2, 'cate3': cate3, 'cate4': cate4}
+               'cate2_list': cate2_list, 'cate3_list': cate3_list, 'cate4_list': cate4_list, 'status_list': STATUS_LIST,
+               'emergency_list': EMERGENCY_LIST, 'cate1': cate1, 'cate2': cate2, 'cate3': cate3, 'cate4': cate4,
+               'recd_time_begin': recd_time_begin, 'recd_time_end': recd_time_end,
+               'deliver_time_begin': deliver_time_begin, 'deliver_time_end': deliver_time_end}
 
     return render(request, 'item/all.html', context)
 
