@@ -108,6 +108,10 @@ def all_show(request):
     else:
         item_list = item_list.filter(deliver_time__lte=deliver_time_end)
 
+    # 按照服务器的时间, 把默认起止事件传给客户端
+    default_time_begin = time.strftime('%Y-1-1', time.localtime())
+    default_time_end = time.strftime('%Y-%m-%d', time.localtime())
+
     if cate1 != 0:
         item_list = item_list.filter(category1_id=cate1)
         print('cate1: %d' % (len(item_list)))
@@ -145,12 +149,13 @@ def all_show(request):
                'cate2_list': cate2_list, 'cate3_list': cate3_list, 'cate4_list': cate4_list, 'status_list': STATUS_LIST,
                'emergency_list': EMERGENCY_LIST, 'cate1': cate1, 'cate2': cate2, 'cate3': cate3, 'cate4': cate4,
                'recd_time_begin': recd_time_begin, 'recd_time_end': recd_time_end,
-               'deliver_time_begin': deliver_time_begin, 'deliver_time_end': deliver_time_end}
+               'deliver_time_begin': deliver_time_begin, 'deliver_time_end': deliver_time_end,
+               'default_time_begin': default_time_begin, 'default_time_end': default_time_end}
 
     return render(request, 'item/all.html', context)
 
 
-# 查询事项分类:
+# 查询事项分类
 def cate_search(request):
     parent_id = request.GET.get('parent_id')
 
@@ -164,3 +169,8 @@ def cate_search(request):
         data.append(cate_info)
 
     return JsonResponse({'cate_list': data})
+
+
+# 未转办事项详情
+def not_deliver_detail(request):
+    return render(request, 'item/not_deliver.html')
