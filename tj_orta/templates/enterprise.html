@@ -68,86 +68,22 @@
                 </tr>
             </thead>
             <tbody>
+                {% for enterprise in enterprise_list %}
                 <tr>
-                    <td>1</td>
-                    <td title="中铁四局集团有限公司">中铁四局集团有限公司</td>
-                    <td title="913400001491855256">913400001491855256</td>
-                    <td title="王海兵">王海兵</td>
-                    <td title="18622313664">18622313664</td>
-                    <td><span class="see" style="margin-right: 5px;">查看</span></td>
+                    <td>{{ forloop.counter }}</td>
+                    <td title="{{ enterprise.enterprise_name }}">{{ enterprise.enterprise_name }}</td>
+                    <td title="{{ enterprise.organization_code }}">{{ enterprise.organization_code }}</td>
+                    <td title="{{ enterprise.contact }}">{{ enterprise.contact }}</td>
+                    <td title="{{ enterprise.contact_phone }}">{{ enterprise.contact_phone }}</td>
+                    <td>
+                        <button type="button" class="see" style="margin-right: 5px;" onclick="setUserInfo(
+                        '{{ enterprise.username }}', '{{ enterprise.authority.id }}',
+                        '{{ enterprise.enterprise_name }}', '{{ enterprise.enterprise_phone }}',
+                        '{{ enterprise.legal_person }}', '{{ enterprise.organization_code }}',
+                        '{{ enterprise.contact }}', '{{ enterprise.contact_phone }}')">查看</button>
+                    </td>
                 </tr>
-                <tr>
-                    <td>2</td>
-                    <td>中铁四局集团有限公司</td>
-                    <td>913400001491855256</td>
-                    <td>王海兵</td>
-                    <td>18622313664</td>
-                    <td><span class="see" style="margin-right: 5px;">查看</span></td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>中铁四局集团有限公司</td>
-                    <td>913400001491855256</td>
-                    <td>王海兵</td>
-                    <td>18622313664</td>
-                    <td><span class="see" id="see" style="margin-right: 5px;">查看</span></td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>中铁四局集团有限公司</td>
-                    <td>913400001491855256</td>
-                    <td>王海兵</td>
-                    <td>18622313664</td>
-                    <td><span class="see" id="see" style="margin-right: 5px;">查看</span></td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>中铁四局集团有限公司</td>
-                    <td>913400001491855256</td>
-                    <td>王海兵</td>
-                    <td>18622313664</td>
-                    <td><span class="see" id="see" style="margin-right: 5px;">查看</span></td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td>中铁四局集团有限公司</td>
-                    <td>913400001491855256</td>
-                    <td>王海兵</td>
-                    <td>18622313664</td>
-                    <td><span class="see" id="see" style="margin-right: 5px;">查看</span></td>
-                </tr>
-                <tr>
-                    <td>7</td>
-                    <td>中铁四局集团有限公司</td>
-                    <td>913400001491855256</td>
-                    <td>王海兵</td>
-                    <td>18622313664</td>
-                    <td><span class="see" id="see" style="margin-right: 5px;">查看</span></td>
-                </tr>
-                <tr>
-                    <td>8</td>
-                    <td>中铁四局集团有限公司</td>
-                    <td>913400001491855256</td>
-                    <td>王海兵</td>
-                    <td>18622313664</td>
-                    <td><span class="see" id="see" style="margin-right: 5px;">查看</span></td>
-                </tr>
-                <tr>
-                    <td>9</td>
-                    <td>中铁四局集团有限公司</td>
-                    <td>913400001491855256</td>
-                    <td>王海兵</td>
-                    <td>18622313664</td>
-                    <td><span class="see" id="see" style="margin-right: 5px;">查看</span></td>
-                </tr>
-                <tr>
-                    <td>10</td>
-                    <td>中铁四局集团有限公司</td>
-                    <td>913400001491855256</td>
-                    <td>王海兵</td>
-                    <td>18622313664</td>
-                    <td><span class="see" id="see" style="margin-right: 5px;">查看</span></td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
@@ -196,14 +132,14 @@
             </div>
             <div class="pwd">
                 <label for="pwd">密码</label>
-                <input type="text" placeholder="输入密码" id="pwd" name="password">
+                <input type="password" placeholder="输入密码" id="pwd" name="password">
             </div>
             <div class="pwd">
                 <label for="pwd">帐号权限</label>
                 <select name="author">
-                    <option value="1">企业权限</option>}
-                    <option value="2">环保局权限</option>}
-                    <option value="3">交管局权限</option>}
+                    <option value="1">企业权限</option>
+                    <option value="2">环保局权限</option>
+                    <option value="3">交管局权限</option>
                 </select>
             </div>
         </form>
@@ -262,9 +198,9 @@
             <div class="pwd">
                 <label for="pwd">帐号权限</label>
                 <select name="author">
-                    <option value="1" selected>企业权限</option>}
-                    <option value="2">环保局权限</option>}
-                    <option value="3">交管局权限</option>}
+                    <option value="1">企业权限</option>
+                    <option value="2">环保局权限</option>
+                    <option value="3">交管局权限</option>
                 </select>
             </div>
         </form>
@@ -308,12 +244,33 @@
 
     // 保存新增企业
     $('.add-enterprise .save').click(function() {
-        if (confirm('是否保存新增企业信息？')) {
+        var username = $('.add-enterprise .user input').val();
+        var password = $('.add-enterprise .pwd input').val();
+        if (username == '') {
+            alert('用户名不能为空');
+        }
+        else if (password == '') {
+            alert('密码不能为空');
+        }
+        else if (confirm('是否保存新增企业信息？')) {
             $('.add-enterprise form').submit();
             $('.add-enterprise').hide();
             $('.mask').hide();
         }
     });
+
+    // 填充编辑企业模态框信息
+    function setUserInfo(username, authority, enterprise_name, enterprise_phone, legal_person,
+                    organization_code, contact, contact_phone) {
+        $('.modify-enterprise .ePrisename input').val(enterprise_name);     // 企业名称
+        $('.modify-enterprise .contact input').val(enterprise_phone);       // 企业联系方式
+        $('.modify-enterprise .corporation input').val(legal_person);       // 法人
+        $('.modify-enterprise .organization input').val(organization_code); // 组织机构代码
+        $('.modify-enterprise .contacts input').val(contact);               // 联系人
+        $('.modify-enterprise .contactway input').val(contact_phone);       // 联系方式
+        $('.modify-enterprise .user input').val(username);                  // 帐号
+        $('.modify-enterprise select').val(authority);                      // 权限
+    }
 
     // 显示编辑企业模态框
     $('.table_box .see').click(function(){

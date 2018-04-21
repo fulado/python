@@ -13,7 +13,12 @@ def main(request):
 
 # 显示企业管理页面
 def enterprise(request):
-    return render(request, 'enterprise.html')
+    # 查询企业信息
+    enterprise_list = User.objects.filter(authority_id=1).filter(is_delete=False)
+    
+    context = {'enterprise_list': enterprise_list}
+    
+    return render(request, 'enterprise.html', context)
 
 
 # 添加企业
