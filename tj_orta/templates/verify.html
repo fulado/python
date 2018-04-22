@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <!-- 目前仅限360急速浏览 webkit:急速  ie-comp:ie兼容模式   ie-stand: ie标准模式 -->
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/initial.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/account_number.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/modle.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/paging.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/darktooltip.css"/>
+
+    <style type="text/css">
+    .table_container .search_input select{
+        width: 150px;
+        height: 24px;
+        border-radius: 4px;
+        padding-left: 10px;
+        background-color: #f9f9f9;
+        border: solid 1px #eeeeee;
+        margin-right: 10px;
+        outline: none;
+    }
+
+    /* 模态框 */
+        .my-modal-dialog{
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            margin: auto;
+            width: 460px;
+            height: 698px;
+            display: none;
+        }
+
+        .my-modal-title{
+            text-align: center;
+            font-size: 20px;
+        }
+
+        .my-modal-body select,input{
+            width: 200px;
+            height: 30px;
+            padding-left: 5px;
+            border-radius: 4px;
+        }
+
+        .my-modal-body p{
+            text-align: center;
+        }
+
+        .my-modal-body table span{
+            text-align: justify;
+            text-align-last:justify;
+            display: inline-block;
+            width:100px;
+        }
+
+        .my-modal-body table,
+        .my-modal-body tr,
+        .my-modal-body td{
+            margin: auto;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .my-modal-footer{
+            margin-top: 20px;
+        }
+        .my-modal-footer .btn{
+            margin-left: 0px;
+        }
+    </style>
+    <title></title>
+</head>
+<body>
+<div class="table_wrapper">
+    <div class="table_head">
+        <span>车辆审核</span>
+    </div>
+    <div class="table_container">
+        <div class="search_input">
+            <label for="ss">车辆搜索</label>
+            <input type="text" placeholder="输入车牌号码" id="ss"/>
+            <select name="">
+                <option value="1">待审核车辆</option>
+                <option value="2">通过车辆</option>
+                <option value="3">未通过车辆</option>
+                <option value="0">全部车辆</option>
+            </select>
+            <span class="find_btn">查询</span>
+            <span class="out outexcel" style="display: none;">导出待审核数据</span>
+            <span class="in inexcel" style="display: none;">导入审核后数据</span>
+            <span class="out outxmls" style="display: none;">导出待审核数据xml</span>
+            <span class="in inxmls" style="display: none;">导入审核后数据xml</span>
+        </div>
+        <table class="table_box" id="table_box">
+            <thead>
+                <tr>
+                    <td style="width: 4%">序号</td>
+                    <td>号牌号码</td>
+                    <td>车辆类型</td>
+                    <td>发动机型号</td>
+                    <td>审核状态</td>
+                    <td>原因</td>
+                    <td style="width: 200px">操作</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 4%">1</td>
+                    <td title="津AX1234">津AX1234</td>
+                    <td title="01（大型货车）">01（大型货车）</td>
+                    <td title="1234567890">1234567890</td>
+                    <td title="审核中（环保局）">审核中（环保局）</td>
+                    <td title="车辆类型不符">车辆类型不符</td>
+                    <td style="width: 200px">
+                        <button type="button" class="see verify-vehicle-info" style="margin-right: 5px;">审核</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 4%">2</td>
+                    <td>津AX1234</td>
+                    <td>01（大型货车）</td>
+                    <td>1234567890</td>
+                    <td>审核中（环保局）</td>
+                    <td>车辆类型不符</td>
+                    <td style="width: 200px">查看</td>
+                </tr>
+                <tr>
+                    <td style="width: 4%">3</td>
+                    <td>津AX1234</td>
+                    <td>01（大型货车）</td>
+                    <td>1234567890</td>
+                    <td>审核中（环保局）</td>
+                    <td>车辆类型不符</td>
+                    <td style="width: 200px">查看</td>
+                </tr>
+                <tr>
+                    <td style="width: 4%">4</td>
+                    <td>津AX1234</td>
+                    <td>01（大型货车）</td>
+                    <td>1234567890</td>
+                    <td>审核中（环保局）</td>
+                    <td>车辆类型不符</td>
+                    <td style="width: 200px">查看</td>
+                </tr>
+                <tr>
+                    <td style="width: 4%">5</td>
+                    <td>津AX1234</td>
+                    <td>01（大型货车）</td>
+                    <td>1234567890</td>
+                    <td>审核中（环保局）</td>
+                    <td>车辆类型不符</td>
+                    <td style="width: 200px">查看</td>
+                </tr>
+                <tr>
+                    <td style="width: 4%">6</td>
+                    <td>津AX1234</td>
+                    <td>01（大型货车）</td>
+                    <td>1234567890</td>
+                    <td>审核中（环保局）</td>
+                    <td>车辆类型不符</td>
+                    <td style="width: 200px">查看</td>
+                </tr>
+                <tr>
+                    <td style="width: 4%">7</td>
+                    <td>津AX1234</td>
+                    <td>01（大型货车）</td>
+                    <td>1234567890</td>
+                    <td>审核中（环保局）</td>
+                    <td>车辆类型不符</td>
+                    <td style="width: 200px">查看</td>
+                </tr>
+                <tr>
+                    <td style="width: 4%">8</td>
+                    <td>津AX1234</td>
+                    <td>01（大型货车）</td>
+                    <td>1234567890</td>
+                    <td>审核中（环保局）</td>
+                    <td>车辆类型不符</td>
+                    <td style="width: 200px">查看</td>
+                </tr>
+                <tr>
+                    <td style="width: 4%">9</td>
+                    <td>津AX1234</td>
+                    <td>01（大型货车）</td>
+                    <td>1234567890</td>
+                    <td>审核中（环保局）</td>
+                    <td>车辆类型不符</td>
+                    <td style="width: 200px">查看</td>
+                </tr>
+                <tr>
+                    <td style="width: 4%">10</td>
+                    <td>津AX1234</td>
+                    <td>01（大型货车）</td>
+                    <td>1234567890</td>
+                    <td>审核中（环保局）</td>
+                    <td>车辆类型不符</td>
+                    <td style="width: 200px">查看</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="pagingToolBar"></div>
+</div>
+
+<!-- 模态框 -->
+<!-- 审核车辆 -->
+<div class="pop-up verify-vehicle my-modal-dialog">
+    <div class="my-modal-title">
+        <p>审核车辆</p>
+    </div>
+    <div class="my-modal-body">
+        <form action="#" method="GET">
+            <table>
+                <tr>
+                    <td colspan="2"><p style="padding: 20px;">车辆信息</p></td>
+                </tr>
+                <tr>
+                    <td><span>车辆类型</span></td>
+                    <td>
+                        <select name="" placeholder="请选择车辆类型">
+                            <option value="1">大型货车</option>
+                            <option value="2">小型货车</option>
+                            <option value="15">挂式货车</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>号牌号码</span></td>
+                    <td>
+                        <select name="" style="width: 43px;">
+                            <option value="津">津</option>
+                            <option value="京">京</option>
+                            <option value="沪">沪</option>
+                        </select>
+                        <input type="text" placeholder="请输入号牌号码" name="" value="A12345" style="width: 150px;">
+                        <p>（挂车不需要输入“挂”字）<p>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>发动机型号</span></td>
+                    <td>
+                        <input type="text" placeholder="请输入发动机型号" value="1234567890" name="">
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>车辆型号</span></td>
+                    <td>
+                        <input type="text" placeholder="请输入车辆型号" value="丰田霸道X20" name="number">
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>车辆注册日期</span></td>
+                    <td>
+                        <input type="text" class="datetime-picker" placeholder="请选择车辆注册日期" value="2018-04-19" name="">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><p style="padding: 20px;">路线信息</p></td>
+                </tr>
+                <tr>
+                    <td><span>运输路线</span></td>
+                    <td>
+                        <textarea name="" id="reason" style="resize:none; border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:200px;height:100px">北辰，天津港，西青，天津港，和平，天津港</textarea>
+                        <p>（道路之间用“，”隔开）<p>
+                    </td>
+                </tr>
+            </table>
+            <div class="my-modal-footer" >
+                <input type="hidden" name="refuse_reason"/>
+                <div class="clickbtn" style="text-align: center;width: 440px;">
+                    <button type="button" class="btn save pass">通过</button>
+                    <button type="button" class="btn delete refuse">不通过</button>
+                    <button type="button" class="btn del">取消</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 未通过原因 -->
+<div class="pop-up refuse-content my-modal-dialog">
+    <div class="my-modal-title">
+        <p>未通过原因</p>
+    </div>
+    <div class="my-modal-body">
+        <form action="#" method="GET">
+            <table>
+                <tr>
+                    <td><p style="padding: 20px;">请填写未通过原因</p></td>
+                </tr>
+                <tr>
+                    <td>
+                        <textarea name="" style="resize:none; border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:200px;height:100px"></textarea>
+                    </td>
+                </tr>
+            </table>
+            <div class="my-modal-footer" >
+                <div class="clickbtn" style="text-align: center;width: 440px;">
+                    <button type="button" class="btn save">确定</button>
+                    <button type="button" class="btn del">取消</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!--摸态框-->
+<div class="container">
+    <div class="pop-up" style="width: 560px;height: 268px;margin: 15% auto;display: none">
+        <form>
+            <div class="ePrisename" style="height: 200px;">
+                <label for="reason" style="vertical-align: top;width: 100px">填写原因</label>
+                <textarea name="" id="reason" style="resize:none;  border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:400px;height:150px"></textarea>
+            </div>
+
+            <div class="clickbtn" style="margin: 0 auto;width: 430px">
+                <div class="btn save" id="save">提交</div>
+                <div class="btn del" id="del">关闭</div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!--上传文件摸态框-->
+<div class="pop-up1" style="width: 560px;height: 268px;display: none;">
+    <form id="excelform" enctype="multipart/form-data">
+        <div class="selFile" style="">
+            <label for="reason" style="">选择文件</label>
+            <input type="file" name="file" style="outline: none;cursor: pointer" accept="application/vnd.ms-excel"/>
+        </div>
+
+        <div class="btndiv" style="">
+            <div class="btn" id="out">提交</div>
+            <div class="btn" id="close">关闭</div>
+        </div>
+    </form>
+</div>
+
+<div class="pop-up2" style="width: 560px;height: 268px;display: none;">
+    <form id="xmlform" enctype="multipart/form-data">
+        <div class="selFile" style="">
+            <label for="reason" style="">选择文件</label>
+            <input type="file" name="file" style="outline: none;cursor: pointer" />
+        </div>
+
+        <div class="btndiv" style="">
+            <div class="btn" id="outxmls">提交</div>
+            <div class="btn" id="closexml">关闭</div>
+        </div>
+    </form>
+</div>
+
+<div class="mask" style="display: none"></div>
+</body>
+<script type="text/javascript" src="/static/js/jquery-3.1.0.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="/static/js/through.js"></script>
+<script type="text/javascript" src="/static/js/query.js"></script>
+<script type="text/javascript" src="/static/js/paging.js"></script>
+<script type="text/javascript" src="/static/js/md5.js"></script>
+<script type="text/javascript" src="/static/js/jquery.darktooltip.js"></script>
+
+<script type="text/javascript">
+    $(function() {
+        // 显示编辑车辆信息模态框
+        $('.table_box .verify-vehicle-info').click(function() {
+            $('.verify-vehicle').show();
+            $('.mask').show();
+        });
+
+        // 隐藏编辑车辆信息模态框
+        $('.verify-vehicle .del').click(function() {
+            if (confirm('是否放弃审核？')) {
+                $('.verify-vehicle').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 审核车辆信息表单提交: 通过
+        $('.verify-vehicle .pass').click(function() {
+            if (confirm('是否通过该车辆?')) {
+                $('.verify-vehicle form').prop('action', '#');
+                $('.verify-vehicle form').submit();
+                $('.verify-vehicle').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 审核车辆: 不通过
+        $('.verify-vehicle .refuse').click(function() {
+            $('.refuse-content').show();
+        });
+
+        // 未通过原因: 取消
+        $('.refuse-content .del').click(function() {
+            $('.refuse-content').hide();
+        });
+
+        // 未通过原因: 确定
+        $('.refuse-content .save').click(function() {
+            if (confirm('是否不通过该车辆？')) {
+                $('.verify-vehicle input:hidden').val($('.refuse-content textarea').val());
+                $('.verify-vehicle form').prop('action', '#');
+                $('.verify-vehicle form').submit();
+                $('.refuse-content').hide();
+                $('.verify-vehicle').hide();
+                $('.mask').hide();
+            }
+        });
+    });
+</script>
+</html>

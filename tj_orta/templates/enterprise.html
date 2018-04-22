@@ -52,10 +52,13 @@
     <div class="table_container">
         <div class="search_input">
             <label for="ss">企业搜索</label>
-            <input type="text" placeholder="输入企业名称" id="ss">
+            <form action="enterprise" method="GET" style="display: inline-block;">
+                <input type="text" placeholder="输入企业名称" id="ss" name="search_name">
+            </form>
             <span class="find_btn" id="find_btn">查询</span>
             <span class="add_company" id="add">新增企业</span>
         </div>
+        <!--显示查询结果-->
         <table class="table_box" id="table_box">
             <thead>
                 <tr>
@@ -68,7 +71,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for enterprise in enterprise_list %}
+                {% for enterprise in mp.object_list %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     <td title="{{ enterprise.enterprise_name }}">{{ enterprise.enterprise_name }}</td>
@@ -80,14 +83,39 @@
                         '{{ enterprise.username }}', '{{ enterprise.authority.id }}',
                         '{{ enterprise.enterprise_name }}', '{{ enterprise.enterprise_phone }}',
                         '{{ enterprise.legal_person }}', '{{ enterprise.organization_code }}',
-                        '{{ enterprise.contact }}', '{{ enterprise.contact_phone }}')">查看</button>
+                        '{{ enterprise.contact }}', '{{ enterprise.contact_phone }}', '{{ enterprise.id }}')">查看</button>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-    <div id="pageToolbar"><div id="Paging_009071537570730115" class="ui-paging-container"><ul><li class="js-page-first js-page-action ui-pager ui-pager-disabled">&lt;&lt;首页</li><li class="js-page-prev js-page-action ui-pager ui-pager-disabled">上一页</li><li data-page="1" class="ui-pager focus">1</li><li data-page="2" class="ui-pager">2</li><li data-page="3" class="ui-pager">3</li><li class="ui-paging-ellipse">...</li><li data-page="104" class="ui-pager">104</li><li class="js-page-next js-page-action ui-pager">下一页</li><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li><li class="ui-paging-toolbar"><input type="text" class="ui-paging-count"><a href="javascript:void(0)">跳转</a></li></ul></div></div>
+    <!--分页-->
+    <div id="pageToolbar">
+        <div id="Paging_009071537570730115" class="ui-paging-container">
+            <ul>
+                <a href="/enterprise?page_num=1&search_name={{ search_name }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
+                <a href="/enterprise?page_num={{ mp.current_num|add:-1 }}&search_name={{ search_name }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
+                {% for num in mp.page_range %}
+                    {% if num == mp.current_num %}
+                    <a href="/enterprise?page_num={{ num }}&search_name={{ search_name }}"><li class="ui-pager focus">{{ num }}</li></a>
+                    {% else %}
+                    <a href="/enterprise?page_num={{ num }}&search_name={{ search_name }}"><li class="ui-pager">{{ num }}</li></a>
+                    {% endif %}
+                {% endfor %}
+                <a href="/enterprise?page_num={{ mp.current_num|add:1 }}&search_name={{ search_name }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
+                <a href="/enterprise?page_num={{ mp.total_pages }}&search_name={{ search_name }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
+                <li class="ui-paging-toolbar">
+                    <form action="/enterprise" method="GET">
+                        <input type="text" class="ui-paging-count" style="font-size: 12px;" name="page_num" value="{{ mp.current_num }}" />
+                        <input type="hidden" name="search_name" value="{{ search_name }}" />
+                        <span>/&nbsp;{{ mp.total_pages }}</span>
+                        <a href="javascript:jump()">跳转</a>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 
 <!--模态框-->
@@ -159,7 +187,8 @@
         <p>编辑企业</p>
     </div>
     <div class="my-modal-body" style="margin-top: 20px;">
-        <form action="#" method="GET">
+        <form action="#" method="POST">
+            {%csrf_token%}
             <p style="margin: auto;font-size: 16px;text-align: center;margin-bottom: 10px;">企业信息</p>
             <div class="ePrisename">
                 <label for="ePrisename">企业名称</label>
@@ -189,11 +218,11 @@
             <p style="margin: auto;font-size: 16px;text-align: center;margin-bottom: 10px;">帐号信息</p>
             <div class="user">
                 <label for="user">账号</label>
-                <input type="text" placeholder="输入账号" id="user" name="account" value="4hx11bztsj"/>
+                <input type="text" placeholder="输入账号" id="user" name="username" />
             </div>
             <div class="pwd">
                 <label for="pwd">密码</label>
-                <input type="password" placeholder="输入密码" id="pwd" value="123456"/>
+                <input type="password" placeholder="输入密码" id="pwd" name="password"/>
             </div>
             <div class="pwd">
                 <label for="pwd">帐号权限</label>
@@ -203,6 +232,7 @@
                     <option value="3">交管局权限</option>
                 </select>
             </div>
+            <input type="hidden" name="id" />
         </form>
     </div>
     <div class="my-modal-footer">
@@ -228,40 +258,110 @@
 <script type="text/javascript" src="/static/js/jquery.darktooltip.js"></script>
 
 <script type="text/javascript">
-    // 显示新增企业模态框
-    $('.search_input .add_company').click(function(){
-        $('.add-enterprise').show();
-        $('.mask').show();
-    });
 
-    // 隐藏新增企业模态框
-    $('.add-enterprise .del').click(function() {
-        if (confirm('是否取消新增？')) {
-            $('.add-enterprise').hide();
-            $('.mask').hide();
-        }
-    });
+    $(function() {
 
-    // 保存新增企业
-    $('.add-enterprise .save').click(function() {
-        var username = $('.add-enterprise .user input').val();
-        var password = $('.add-enterprise .pwd input').val();
-        if (username == '') {
-            alert('用户名不能为空');
-        }
-        else if (password == '') {
-            alert('密码不能为空');
-        }
-        else if (confirm('是否保存新增企业信息？')) {
-            $('.add-enterprise form').submit();
-            $('.add-enterprise').hide();
-            $('.mask').hide();
-        }
+        // 显示新增企业模态框
+        $('.search_input .add_company').click(function(){
+            $('.add-enterprise').show();
+            $('.mask').show();
+        });
+
+        // 隐藏新增企业模态框
+        $('.add-enterprise .del').click(function() {
+            if (confirm('是否取消新增？')) {
+                $('.add-enterprise').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 保存新增企业
+        $('.add-enterprise .save').click(function() {
+            var username = $('.add-enterprise .user input').val();
+            var password = $('.add-enterprise .pwd input').val();
+            if (username == '') {
+                alert('用户名不能为空');
+            }
+            else if (password == '') {
+                alert('密码不能为空');
+            }
+            else {
+                // 判断用户名是否已经存在
+                $.get('/is_user_exist', {'username': username}, function(data) {
+                    if (data.is_exist) {
+                        alert('账号名称已经存在，请使用其它账号名称');
+                    }
+                    else if (confirm('是否保存新增企业信息？')) {
+                        $('.add-enterprise form').submit();
+                        $('.add-enterprise').hide();
+                        $('.mask').hide();
+                    }
+                });
+            }
+        });
+
+        // 显示编辑企业模态框
+        $('.table_box .see').click(function(){
+            $('.modify-enterprise').show();
+            $('.mask').show();
+        });
+
+        // 隐藏编辑企业模态框
+        $('.modify-enterprise .del').click(function() {
+            if (confirm('是否取消编辑？')) {
+                $('.modify-enterprise').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 保存编辑企业信息
+        $('.modify-enterprise .save').click(function() {
+            var username = $('.modify-enterprise .user input').val();
+            var password = $('.modify-enterprise .pwd input').val();
+            var id = $('.modify-enterprise input').last().val();
+
+            if (username == '') {
+                alert('用户名不能为空');
+            }
+            else if (password == '') {
+                alert('密码不能为空');
+            }
+            else {
+                // 判断用户名是否已经存在
+                $.get('/is_user_exist', {'username': username, 'id': id}, function(data) {
+                    if (data.is_exist) {
+                        alert('账号名称已经存在，请使用其它账号名称');
+                    }
+                    else if (confirm('是否保存企业信息？')) {
+                        $('.modify-enterprise form').prop('action', '/enterprise_modify');
+                        $('.modify-enterprise form').submit();
+                        $('.modify-enterprise').hide();
+                        $('.mask').hide();
+                    }
+                });
+            }
+        });
+
+        // 编辑企业信息表单提交: 删除
+        $('.modify-enterprise .delete').click(function() {
+            if (confirm('是否删除该车辆信息？')) {
+                $('.modify-enterprise form').prop('action', '/enterprise_delete');
+                $('.modify-enterprise form').submit();
+                $('.modify-enterprise').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 提交企业查询表单
+        $('#find_btn').click(function() {
+            $('.search_input form').submit();
+        });
+
     });
 
     // 填充编辑企业模态框信息
     function setUserInfo(username, authority, enterprise_name, enterprise_phone, legal_person,
-                    organization_code, contact, contact_phone) {
+                    organization_code, contact, contact_phone, id) {
         $('.modify-enterprise .ePrisename input').val(enterprise_name);     // 企业名称
         $('.modify-enterprise .contact input').val(enterprise_phone);       // 企业联系方式
         $('.modify-enterprise .corporation input').val(legal_person);       // 法人
@@ -270,42 +370,17 @@
         $('.modify-enterprise .contactway input').val(contact_phone);       // 联系方式
         $('.modify-enterprise .user input').val(username);                  // 帐号
         $('.modify-enterprise select').val(authority);                      // 权限
+        $('.modify-enterprise input').last().val(id);                       // id
+
+        $('.modify-enterprise .pwd input').val('########');                 // 密码
     }
 
-    // 显示编辑企业模态框
-    $('.table_box .see').click(function(){
-        $('.modify-enterprise').show();
-        $('.mask').show();
-    });
 
-    // 隐藏编辑企业模态框
-    $('.modify-enterprise .del').click(function() {
-        if (confirm('是否取消编辑？')) {
-            $('.modify-enterprise').hide();
-            $('.mask').hide();
-        }
-    });
 
-    // 保存编辑企业信息
-    $('.modify-enterprise .save').click(function() {
-        if (confirm('是否保存新增企业信息？')) {
-            $('.modify-enterprise form').prop('action', '#');
-            $('.modify-enterprise form').submit();
-            $('.modify-enterprise').hide();
-            $('.mask').hide();
-        }
-    });
-
-    // 编辑企业信息表单提交: 删除
-    $('.modify-enterprise .delete').click(function() {
-        if (confirm('是否删除该车辆信息？')) {
-            $('.modify-enterprise form').prop('action', '#');
-            $('.modify-enterprise form').submit();
-            $('.modify-enterprise').hide();
-            $('.mask').hide();
-        }
-    });
-
+    // 跳转到指定页面
+    function jump() {
+        $('#pageToolbar form').submit();
+    }
 </script>
 
 </body></html>
