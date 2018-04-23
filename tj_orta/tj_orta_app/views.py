@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.shortcuts import HttpResponseRedirect
 from django.http import JsonResponse
-from .models import User
+from .models import User, Location, Vehicle
 from tj_orta.utils import MyPaginator
 import hashlib
+import time
 
 # Create your views here.
 
@@ -30,7 +31,7 @@ def enterprise(request):
     # 创建分页
     mp = MyPaginator()
     mp.paginate(enterprise_list, 10, page_num)
-    print(search_name)
+
     context = {'mp': mp, 'search_name': search_name}
     
     return render(request, 'enterprise.html', context)
@@ -142,9 +143,112 @@ def enterprise_delete(request):
 
 # 显示车辆管理页面
 def vehicle(request):
-    return render(request, 'vehicle.html')
+    # 查询车辆所在地数据
+    location_list = Location.objects.all()
+
+    # 查询该企业的所有车辆数据
+    vehicle_list = Vehicle.objects.filter(enterprise_id=4).order_by('-modify_time')
+
+    # 获取车辆搜索信息
+    search_name = request.GET.get('search_name', '')
+    print(search_name)
+    # 在结果集中搜索包含搜索信息的车辆, 车辆搜索功能不完善, 指数如车牌号,不要输入号牌所在地
+    if search_name != '':
+        vehicle_list = vehicle_list.filter(number__contains=search_name)
+
+    # 获得用户指定的页面
+    page_num = int(request.GET.get('page_num', 1))
+
+    # 创建分页
+    mp = MyPaginator()
+    mp.paginate(vehicle_list, 10, page_num)
+
+    context = {'location_list': location_list, 'mp': mp, 'search_name': search_name}
+
+    return render(request, 'vehicle.html', context)
 
 
 # 显示审核页面
 def verify(request):
     return render(request, 'verify.html')
+
+
+# 添加车辆
+def vehicle_add(request):
+    # 获取用户提交的车辆信息
+    location_id = int(request.GET.get('location'))          # 车牌所在地
+    number = request.GET.get('number')                      # 号牌号码
+    engine = request.GET.get('engine')                      # 发动机型号
+    vehicle_type_id = int(request.GET.get('vehicle_type'))     # 车辆类型
+    vehicle_model = request.GET.get('vehicle_model')        # 车辆型号
+    register_date = request.GET.get('register_date')        # 车辆注册日期
+    route = request.GET.get('route')                        # 路线
+
+    # 创建车辆数据对象
+    truck = Vehicle()
+    truck.vehicle_type_id = vehicle_type_id
+    truck.location_id = location_id
+    truck.number = number
+    truck.engine = engine
+    truck.vehicle_model = vehicle_model
+    truck.register_date = register_date
+    truck.route = route
+    truck.modify_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+    truck.enterprise_id = 4             # 测试, 先设置为4
+
+    # 存入数据库
+    try:
+        truck.save()
+    except Exception as e:
+        print(e)
+
+    return HttpResponseRedirect('/vehicle')
+
+
+# 编辑车辆
+def vehicle_modify(request):
+    # 获取用户提交的车辆信息
+    location_id = int(request.GET.get('location'))          # 车牌所在地
+    number = request.GET.get('number')                      # 号牌号码
+    engine = request.GET.get('engine')                      # 发动机型号
+    vehicle_type_id = int(request.GET.get('vehicle_type'))  # 车辆类型
+    vehicle_model = request.GET.get('vehicle_model')        # 车辆型号
+    register_date = request.GET.get('register_date')        # 车辆注册日期
+    route = request.GET.get('route')                        # 路线
+    vehicle_id = request.GET.get('vehicle_id')              # id
+
+    # 根据id查询车辆
+    truck = Vehicle.objects.filter(id=vehicle_id)[0]
+    truck.vehicle_type_id = vehicle_type_id
+    truck.location_id = location_id
+    truck.number = number
+    truck.engine = engine
+    truck.vehicle_model = vehicle_model
+    truck.register_date = register_date
+    truck.route = route
+    truck.modify_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+
+    # 存入数据库
+    try:
+        truck.save()
+    except Exception as e:
+        print(e)
+
+    return HttpResponseRedirect('/vehicle')
+
+
+# 删除车辆
+def vehicle_delete(request):
+    # 获取车辆id
+    vehicle_id = request.GET.get('vehicle_id')  # 车辆i
+
+    # 根据id查询车辆
+    truck = Vehicle.objects.filter(id=vehicle_id)[0]
+
+    # 删除车辆
+    try:
+        truck.delete()
+    except Exception as e:
+        print(e)
+
+    return HttpResponseRedirect('/vehicle')

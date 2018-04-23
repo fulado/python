@@ -75,7 +75,9 @@
     <div class="table_container">
         <div class="search_input">
             <label for="ss">车辆搜索</label>
-            <input type="text" placeholder="输入车牌号码" id="ss"/>
+            <form action="/vehicle" method="GET" style="display: inline-block;">
+                <input type="text" placeholder="输入车牌号码，不号牌含所在地" id="ss" name="search_name" style="width: 220px;"/>
+            </form>
             <span class="find_btn">查询</span>
             <span class="add_account" id="add">新增车辆</span>
             <span class="out outexcel">模版下载</span>
@@ -83,6 +85,7 @@
             <span class="out outexcel">全部提交</span>
 
         </div>
+        <!--检索结果-->
         <table class="table_box" id="table_box">
             <thead>
                 <tr>
@@ -96,104 +99,58 @@
                 </tr>
             </thead>
             <tbody>
+                {% for vehicle in mp.object_list %}
                 <tr>
-                    <td style="width: 4%">1</td>
-                    <td title="津AX1234">津AX1234</td>
-                    <td title="01（大型货车）">01（大型货车）</td>
-                    <td title="1234567890">1234567890</td>
-                    <td title="审核中（环保局）">审核中（环保局）</td>
-                    <td title="车辆类型不符">车辆类型不符</td>
+                    <td style="width: 4%">{{ forloop.counter }}</td>
+                    <td title="{{ vehicle.location.name }}{{ vehicle.number }}">{{ vehicle.location.name }}{{ vehicle.number }}</td>
+                    <td title="{{ vehicle.vehicle_type.name }}">{{ vehicle.vehicle_type.name }}</td>
+                    <td title="{{ vehicle.engine }}">{{ vehicle.engine }}</td>
+                    <td title="{{ vehicle.status.name }}">{{ vehicle.status.name }}</td>
+                    <td title="{{ vehicle.reason|default:'' }}">{{ vehicle.reason|default:'' }}</td>
                     <td>
-                        <button type="button" class="see modify-vehicle-info" style="margin-right: 5px;">编辑</button>
+                        <button type="button" class="see modify-vehicle-info" style="margin-right: 5px;" onclick="setVehicleInfo(
+                        '{{ vehicle.vehicle_type.id }}', '{{ vehicle.location.id }}', '{{ vehicle.number }}',
+                        '{{ vehicle.engine }}', '{{ vehicle.vehicle_model }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
+                        '{{ vehicle.route }}', '{{ vehicle.id }}')">编辑</button>
+                        {% if vehicle.status.id == 1 %}
                         <button type="button" class="see" style="margin-right: 5px;">提交</button>
+                        {% endif %}
+                        {% if vehicle.status.id == 4 %}
                         <button type="button" class="see" style="margin-right: 5px;">下载</button>
+                        {% endif %}
                     </td>
                 </tr>
-                <tr>
-                    <td style="width: 4%">2</td>
-                    <td>津AX1234</td>
-                    <td>01（大型货车）</td>
-                    <td>1234567890</td>
-                    <td>审核中（环保局）</td>
-                    <td>车辆类型不符</td>
-                    <td><span class="see" id="see" style="margin-right: 5px;">查看</span></td>
-                </tr>
-                <tr>
-                    <td style="width: 4%">3</td>
-                    <td>津AX1234</td>
-                    <td>01（大型货车）</td>
-                    <td>1234567890</td>
-                    <td>审核中（环保局）</td>
-                    <td>车辆类型不符</td>
-                    <td><span class="see" id="see" style="margin-right: 5px;">查看</span></td>
-                </tr>
-                <tr>
-                    <td style="width: 4%">4</td>
-                    <td>津AX1234</td>
-                    <td>01（大型货车）</td>
-                    <td>1234567890</td>
-                    <td>审核中（环保局）</td>
-                    <td>车辆类型不符</td>
-                    <td><span class="see" id="see" style="margin-right: 5px;">查看</span></td>
-                </tr>
-                <tr>
-                    <td style="width: 4%">5</td>
-                    <td>津AX1234</td>
-                    <td>01（大型货车）</td>
-                    <td>1234567890</td>
-                    <td>审核中（环保局）</td>
-                    <td>车辆类型不符</td>
-                    <td><span class="see" id="see" style="margin-right: 5px;">查看</span></td>
-                </tr>
-                <tr>
-                    <td style="width: 4%">6</td>
-                    <td>津AX1234</td>
-                    <td>01（大型货车）</td>
-                    <td>1234567890</td>
-                    <td>审核中（环保局）</td>
-                    <td>车辆类型不符</td>
-                    <td><span class="see" id="see" style="margin-right: 5px;">查看</span></td>
-                </tr>
-                <tr>
-                    <td style="width: 4%">7</td>
-                    <td>津AX1234</td>
-                    <td>01（大型货车）</td>
-                    <td>1234567890</td>
-                    <td>审核中（环保局）</td>
-                    <td>车辆类型不符</td>
-                    <td><span class="see" id="see" style="margin-right: 5px;">查看</span></td>
-                </tr>
-                <tr>
-                    <td style="width: 4%">8</td>
-                    <td>津AX1234</td>
-                    <td>01（大型货车）</td>
-                    <td>1234567890</td>
-                    <td>审核中（环保局）</td>
-                    <td>车辆类型不符</td>
-                    <td><span class="see" id="see" style="margin-right: 5px;">查看</span></td>
-                </tr>
-                <tr>
-                    <td style="width: 4%">9</td>
-                    <td>津AX1234</td>
-                    <td>01（大型货车）</td>
-                    <td>1234567890</td>
-                    <td>审核中（环保局）</td>
-                    <td>车辆类型不符</td>
-                    <td><span class="see" id="see" style="margin-right: 5px;">查看</span></td>
-                </tr>
-                <tr>
-                    <td style="width: 4%">10</td>
-                    <td>津AX1234</td>
-                    <td>01（大型货车）</td>
-                    <td>1234567890</td>
-                    <td>审核中（环保局）</td>
-                    <td>车辆类型不符</td>
-                    <td><span class="see" id="see" style="margin-right: 5px;">查看</span></td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
     <div id="pagingToolBar"></div>
+    <!--分页-->
+    <div id="pageToolbar">
+        <div id="Paging_009071537570730115" class="ui-paging-container">
+            <ul>
+                <a href="/vehicle?page_num=1&search_name={{ search_name }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
+                <a href="/vehicle?page_num={{ mp.current_num|add:-1 }}&search_name={{ search_name }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
+                {% for num in mp.page_range %}
+                    {% if num == mp.current_num %}
+                    <a href="/vehicle?page_num={{ num }}&search_name={{ search_name }}"><li class="ui-pager focus">{{ num }}</li></a>
+                    {% else %}
+                    <a href="/vehicle?page_num={{ num }}&search_name={{ search_name }}"><li class="ui-pager">{{ num }}</li></a>
+                    {% endif %}
+                {% endfor %}
+                <a href="/vehicle?page_num={{ mp.current_num|add:1 }}&search_name={{ search_name }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
+                <a href="/vehicle?page_num={{ mp.total_pages }}&search_name={{ search_name }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
+                <li class="ui-paging-toolbar">
+                    <form action="/vehicle" method="GET">
+                        <input type="text" class="ui-paging-count" style="font-size: 12px;" name="page_num" value="{{ mp.current_num }}" />
+                        <input type="hidden" name="search_name" value="{{ search_name }}" />
+                        <span>/&nbsp;{{ mp.total_pages }}</span>
+                        <a href="javascript:jump()">跳转</a>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 <!--模态框-->
 <!-- 新增车辆 -->
@@ -202,7 +159,7 @@
         <p>新增车辆</p>
     </div>
     <div class="my-modal-body">
-        <form action="#" method="GET" onsubmit="return confirm('是否保存新增车辆');">
+        <form action="/vehicle_add" method="GET">
             <table>
                 <tr>
                     <td colspan="2"><p style="padding: 20px;">车辆信息</p></td>
@@ -210,7 +167,7 @@
                 <tr>
                     <td><span>车辆类型</span></td>
                     <td>
-                        <select name="" placeholder="请选择车辆类型">
+                        <select name="vehicle_type" placeholder="请选择车辆类型">
                             <option value="1">大型货车</option>
                             <option value="2">小型货车</option>
                             <option value="15">挂式货车</option>
@@ -220,31 +177,31 @@
                 <tr>
                     <td><span>号牌号码</span></td>
                     <td>
-                        <select name="" style="width: 43px;">
-                            <option value="津">津</option>
-                            <option value="京">京</option>
-                            <option value="沪">沪</option>
+                        <select name="location" style="width: 43px;">
+                            {% for location in location_list %}
+                            <option value={{ location.id }}>{{ location.name }}</option>
+                            {% endfor %}
                         </select>
-                        <input type="text" placeholder="请输入号牌号码" name="" style="width: 150px;">
+                        <input type="text" placeholder="请输入号牌号码" name="number" style="width: 150px;">
                         <p>（挂车不需要输入“挂”字）<p>
                     </td>
                 </tr>
                 <tr>
                     <td><span>发动机型号</span></td>
                     <td>
-                        <input type="text" placeholder="请输入发动机型号" name="">
+                        <input type="text" placeholder="请输入发动机型号" name="engine">
                     </td>
                 </tr>
                 <tr>
                     <td><span>车辆型号</span></td>
                     <td>
-                        <input type="text" placeholder="请输入车辆型号" name="">
+                        <input type="text" placeholder="请输入车辆型号" name="vehicle_model">
                     </td>
                 </tr>
                 <tr>
                     <td><span>车辆注册日期</span></td>
                     <td>
-                        <input type="text" class="datetime-picker" placeholder="请选择车辆注册日期" name="">
+                        <input type="text" class="datetime-picker" placeholder="请选择车辆注册日期" name="register_date">
                     </td>
                 </tr>
                 <tr>
@@ -253,7 +210,7 @@
                 <tr>
                     <td><span>运输路线</span></td>
                     <td>
-                        <textarea name="" id="reason" style="resize:none; border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:200px;height:100px"></textarea>
+                        <textarea name="route" id="reason" style="resize:none; border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:200px;height:100px"></textarea>
                         <p>（道路之间用“，”隔开）<p>
                     </td>
                 </tr>
@@ -282,7 +239,7 @@
                 <tr>
                     <td><span>车辆类型</span></td>
                     <td>
-                        <select name="" placeholder="请选择车辆类型">
+                        <select name="vehicle_type" placeholder="请选择车辆类型">
                             <option value="1">大型货车</option>
                             <option value="2">小型货车</option>
                             <option value="15">挂式货车</option>
@@ -292,31 +249,31 @@
                 <tr>
                     <td><span>号牌号码</span></td>
                     <td>
-                        <select name="" style="width: 43px;">
-                            <option value="津">津</option>
-                            <option value="京">京</option>
-                            <option value="沪">沪</option>
+                        <select name="location" style="width: 43px;">
+                            {% for location in location_list %}
+                            <option value={{ location.id }}>{{ location.name }}</option>
+                            {% endfor %}
                         </select>
-                        <input type="text" placeholder="请输入号牌号码" name="" value="A12345" style="width: 150px;">
+                        <input type="text" placeholder="请输入号牌号码" name="number" style="width: 150px;">
                         <p>（挂车不需要输入“挂”字）<p>
                     </td>
                 </tr>
                 <tr>
                     <td><span>发动机型号</span></td>
                     <td>
-                        <input type="text" placeholder="请输入发动机型号" value="1234567890" name="">
+                        <input type="text" placeholder="请输入发动机型号" name="engine">
                     </td>
                 </tr>
                 <tr>
                     <td><span>车辆型号</span></td>
                     <td>
-                        <input type="text" placeholder="请输入车辆型号" value="丰田霸道X20" name="">
+                        <input type="text" placeholder="请输入车辆型号" name="vehicle_model">
                     </td>
                 </tr>
                 <tr>
                     <td><span>车辆注册日期</span></td>
                     <td>
-                        <input type="text" class="datetime-picker" placeholder="请选择车辆注册日期" value="2018-04-19" name="">
+                        <input type="text" class="datetime-picker" placeholder="请选择车辆注册日期" name="register_date">
                     </td>
                 </tr>
                 <tr>
@@ -325,11 +282,12 @@
                 <tr>
                     <td><span>运输路线</span></td>
                     <td>
-                        <textarea name="" id="reason" style="resize:none; border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:200px;height:100px">北辰，天津港，西青，天津港，和平，天津港</textarea>
+                        <textarea name="route" id="reason" style="resize:none; border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:200px;height:100px"></textarea>
                         <p>（道路之间用“，”隔开）<p>
                     </td>
                 </tr>
             </table>
+            <input type="hidden" name="vehicle_id">
             <div class="my-modal-footer" >
                 <div class="clickbtn" style="text-align: center;width: 440px;">
                     <button type="button" class="btn save">保存</button>
@@ -429,26 +387,6 @@
             }
         });
 
-        // 编辑车辆信息表单提交: 删除
-        $('.modify-vehicle .delete').click(function() {
-            if (confirm('是否删除该车辆信息？')) {
-                $('.modify-vehicle form').prop('action', '#');
-                $('.modify-vehicle form').submit();
-                $('.modify-vehicle').hide();
-                $('.mask').hide();
-            }
-        });
-
-        // 编辑车辆信息表单提交: 保存
-        $('.modify-vehicle .save').click(function() {
-            if (confirm('是否保修改的车辆信息?')) {
-                $('.modify-vehicle form').prop('action', '#');
-                $('.modify-vehicle form').submit();
-                $('.modify-vehicle').hide();
-                $('.mask').hide();
-            }
-        });
-
         // 日期组件初始化
         $('.datetime-picker').datetimepicker({
             language: 'zh-CN',          //显示中文
@@ -460,17 +398,31 @@
         });
 
         // 保存新增车辆
-        $('.add-add-vehicle .save').click(function() {
-            var number = $('.add-enterprise .user input').val();
-            var password = $('.add-enterprise .pwd input').val();
-            if (username == '') {
-                alert('用户名不能为空');
+        $('.add-vehicle .save').click(function() {
+            var number = $('.add-vehicle input').eq(0).val();
+            var engine = $('.add-vehicle input').eq(1).val();
+            var vehicle_model = $('.add-vehicle input').eq(2).val();
+            var register_date = $('.add-vehicle input').eq(3).val();
+            var route = $('.add-vehicle textarea').val();
+
+            if (number == '') {
+                alert('请输入正确的号牌号码');
             }
-            else if (password == '') {
-                alert('密码不能为空');
+            else if (engine == '') {
+                alert('请输入正确的发动机型号');
             }
-            else {
-                // 判断用户名是否已经存在
+            else if (vehicle_model == '') {
+                alert('请输入正确的车辆型号');
+            }
+            else if (register_date == '') {
+                alert('请选择正确的车辆注册日期');
+            }
+            else if (route == '') {
+                alert('请输入正确的行驶路线');
+            }
+            else if (confirm('是否保存新增车辆信息？')) {
+                // 判断车辆是否已经存在
+                /*
                 $.get('/is_user_exist', {'username': username}, function(data) {
                     if (data.is_exist) {
                         alert('账号名称已经存在，请使用其它账号名称');
@@ -481,8 +433,88 @@
                         $('.mask').hide();
                     }
                 });
+                */
+                $('.add-vehicle form').submit();
+                $('.add-vehicle').hide();
+                $('.mask').hide();
             }
         });
+
+        // 保存编辑车辆
+        $('.modify-vehicle .save').click(function() {
+            var number = $('.modify-vehicle input').eq(0).val();
+            var engine = $('.modify-vehicle input').eq(1).val();
+            var vehicle_model = $('.modify-vehicle input').eq(2).val();
+            var register_date = $('.modify-vehicle input').eq(3).val();
+            var route = $('.modify-vehicle textarea').val();
+
+            if (number == '') {
+                alert('请输入正确的号牌号码');
+            }
+            else if (engine == '') {
+                alert('请输入正确的发动机型号');
+            }
+            else if (vehicle_model == '') {
+                alert('请输入正确的车辆型号');
+            }
+            else if (register_date == '') {
+                alert('请选择正确的车辆注册日期');
+            }
+            else if (route == '') {
+                alert('请输入正确的行驶路线');
+            }
+            else if (confirm('是否保存车辆信息？')) {
+                // 判断车辆是否已经存在
+                /*
+                $.get('/is_user_exist', {'username': username}, function(data) {
+                    if (data.is_exist) {
+                        alert('账号名称已经存在，请使用其它账号名称');
+                    }
+                    else if (confirm('是否保存新增企业信息？')) {
+                        $('.add-enterprise form').submit();
+                        $('.add-enterprise').hide();
+                        $('.mask').hide();
+                    }
+                });
+                */
+                $('.modify-vehicle form').prop('action', '/vehicle_modify');
+                $('.modify-vehicle form').submit();
+                $('.modify-vehicle').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 编辑车辆信息表单提交: 删除
+        $('.modify-vehicle .delete').click(function() {
+            if (confirm('是否删除该车辆信息？')) {
+                $('.modify-vehicle form').prop('action', '/vehicle_delete');
+                $('.modify-vehicle form').submit();
+                $('.modify-vehicle').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 提交车辆查询表单
+        $('.search_input .find_btn').click(function() {
+            $('.search_input form').submit();
+        });
     });
+
+    // 填充编辑车辆模态框信息
+    function setVehicleInfo(vehicle_type, location, number, engine, vehicle_model, register_date, route, id) {
+         $('.modify-vehicle select').eq(0).val(vehicle_type);       // 车辆类型
+         $('.modify-vehicle select').eq(1).val(location);           // 号牌所在地
+         $('.modify-vehicle input').eq(0).val(number);              // 号牌号码
+         $('.modify-vehicle input').eq(1).val(engine);              // 发动机型号
+         $('.modify-vehicle input').eq(2).val(vehicle_model);       // 车辆型号
+         $('.modify-vehicle input').eq(3).val(register_date);     // 车辆注册日期
+         $('.modify-vehicle textarea').val(route);                  // 运输路线
+         $('.modify-vehicle input').eq(4).val(id);                  // 车辆id
+    }
+
+    // 跳转到指定页面
+    function jump() {
+        $('#pageToolbar form').submit();
+    }
 </script>
 </html>
