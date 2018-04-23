@@ -113,10 +113,10 @@
                         '{{ vehicle.engine }}', '{{ vehicle.vehicle_model }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
                         '{{ vehicle.route }}', '{{ vehicle.id }}')">编辑</button>
                         {% if vehicle.status.id == 1 %}
-                        <button type="button" class="see" style="margin-right: 5px;">提交</button>
+                        <a href="/vehicle_submit?vehicle_id={{ vehicle.id }}" class="see" style="margin-right: 5px;">提交</a>
                         {% endif %}
                         {% if vehicle.status.id == 4 %}
-                        <button type="button" class="see" style="margin-right: 5px;">下载</button>
+                        <button type="button" class="see download" style="margin-right: 5px;">下载</button>
                         {% endif %}
                     </td>
                 </tr>

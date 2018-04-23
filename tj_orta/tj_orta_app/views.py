@@ -3,8 +3,10 @@ from django.shortcuts import HttpResponseRedirect
 from django.http import JsonResponse
 from .models import User, Location, Vehicle
 from tj_orta.utils import MyPaginator
+from .utils import generate_certification
 import hashlib
 import time
+import random
 
 # Create your views here.
 
@@ -151,7 +153,7 @@ def vehicle(request):
 
     # 获取车辆搜索信息
     search_name = request.GET.get('search_name', '')
-    print(search_name)
+
     # 在结果集中搜索包含搜索信息的车辆, 车辆搜索功能不完善, 指数如车牌号,不要输入号牌所在地
     if search_name != '':
         vehicle_list = vehicle_list.filter(number__contains=search_name)
@@ -227,6 +229,8 @@ def vehicle_modify(request):
     truck.register_date = register_date
     truck.route = route
     truck.modify_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+    # 审核状态变为未提交
+    truck.status_id = 1
 
     # 存入数据库
     try:
@@ -248,6 +252,40 @@ def vehicle_delete(request):
     # 删除车辆
     try:
         truck.delete()
+    except Exception as e:
+        print(e)
+
+    return HttpResponseRedirect('/vehicle')
+
+
+# 提交车辆
+def vehicle_submit(request):
+    vehicle_id = request.GET.get('vehicle_id')  # id
+
+    # 根据id查询车辆
+    truck = Vehicle.objects.filter(id=vehicle_id)[0]
+
+    # 审核状态变为通过
+    truck.status_id = 4
+
+    # 生成通行证图片
+    # 生成通行证id, 201805+车牌号+三位随机数
+    certification_id = '%s%s%d%d%d' % (time.strftime('%Y%m', time.localtime()), truck.number, random.randint(0, 9),
+                                       random.randint(0, 9), random.randint(0, 9))
+    truck.cert_id = certification_id
+    limit_data = '2018年5月31日'  # 暂时写为5月底
+    number = '%s%s' % (truck.location.name, truck.number)
+    enterprise_name = truck.enterprise.enterprise_name
+    route = truck.route
+    # 图片文件名
+    file_name = '%s.jpg' % certification_id
+    truck.file_name = file_name
+
+    generate_certification(certification_id, limit_data, number, enterprise_name, route, file_name)
+
+    # 存入数据库
+    try:
+        truck.save()
     except Exception as e:
         print(e)
 

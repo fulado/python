@@ -57,3 +57,5 @@ class Vehicle(models.Model):
     jgj_time = models.DateTimeField(null=True, blank=True)                  # 交换据审核时间
     enterprise = models.ForeignKey(User, null=True, blank=True)             # 车辆所属企业
     reason = models.CharField(max_length=100, null=True, blank=True)        # 未通过原因
+    file_name = models.CharField(max_length=100, null=True, blank=True)     # 通行证完整保存路径
+    cert_id = models.CharField(max_length=30, null=True, blank=True)        # 通行证id

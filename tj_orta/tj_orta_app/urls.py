@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^vehicle_add/?', views.vehicle_add),
     url(r'^vehicle_modify/?', views.vehicle_modify),
     url(r'^vehicle_delete/?', views.vehicle_delete),
+    url(r'^vehicle_submit/?', views.vehicle_submit),
     url(r'^vehicle/?', views.vehicle),
     url(r'^verify/?', views.verify),
     url(r'^is_user_exist/?', views.is_user_exist),
