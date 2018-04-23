@@ -1,6 +1,7 @@
 """
 项目工具
 """
+from tj_orta import settings
 from PIL import Image, ImageFont, ImageDraw
 import qrcode
 
@@ -29,7 +30,7 @@ def generate_certification(certification_id, limit_data, number, enterprise_name
     image = Image.new('RGB', (width, height), (255, 255, 255))
 
     # 创建Font对象:
-    font = ImageFont.truetype(r"D:\tools\fonts\simsun.ttf", 40)
+    font = ImageFont.truetype(r"%s/simsun.ttf" % settings.FONTS_DIR, 40)
 
     # 创建Draw对象:
     draw = ImageDraw.Draw(image)
@@ -70,7 +71,7 @@ def generate_certification(certification_id, limit_data, number, enterprise_name
     draw.text((70, point_y), instrument_line_6, font=font, fill=(0, 0, 0))
 
     # 生成二维码
-    data = '%s | 有效期至：%s | 行驶路线：%s' %(number, limit_data, route)
+    data = '%s | %s | %s' % (number, limit_data, route)
     qr_img = generate_qrcode(data)
     qr_img = qr_img.resize((200, 200), Image.ANTIALIAS)
     image.paste(qr_img, (750, 170))

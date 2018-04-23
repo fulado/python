@@ -64,6 +64,11 @@
         .my-modal-footer .btn{
             margin-left: 0px;
         }
+
+        a,a:active,a:visited,a:focus{
+            text-decoration: none;
+        }
+
     </style>
     <title></title>
 </head>
@@ -76,7 +81,7 @@
         <div class="search_input">
             <label for="ss">车辆搜索</label>
             <form action="/vehicle" method="GET" style="display: inline-block;">
-                <input type="text" placeholder="输入车牌号码，不号牌含所在地" id="ss" name="search_name" style="width: 220px;"/>
+                <input type="text" placeholder="输入车牌号码，不含号牌所在地" id="ss" name="search_name" style="width: 220px;"/>
             </form>
             <span class="find_btn">查询</span>
             <span class="add_account" id="add">新增车辆</span>
@@ -116,7 +121,7 @@
                         <a href="/vehicle_submit?vehicle_id={{ vehicle.id }}" class="see" style="margin-right: 5px;">提交</a>
                         {% endif %}
                         {% if vehicle.status.id == 4 %}
-                        <button type="button" class="see download" style="margin-right: 5px;">下载</button>
+                        <a href="/static/certification/{{ vehicle.file_name }}" target="_Blank" class="see download" style="margin-right: 5px;">下载</a>
                         {% endif %}
                     </td>
                 </tr>

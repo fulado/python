@@ -4,9 +4,11 @@ from django.http import JsonResponse
 from .models import User, Location, Vehicle
 from tj_orta.utils import MyPaginator
 from .utils import generate_certification
+from tj_orta import settings
 import hashlib
 import time
 import random
+import os
 
 # Create your views here.
 
@@ -232,6 +234,15 @@ def vehicle_modify(request):
     # 审核状态变为未提交
     truck.status_id = 1
 
+    # 删除原有的通行证图片文件
+    file_name = truck.file_name
+    if file_name is not None:
+        file_name = r'%s/certification/%s' % (settings.CERTIFICATION_DIR, file_name)
+        truck.file_name = None
+        truck.cert_id = None
+    if os.path.exists(file_name):
+        os.remove(file_name)
+
     # 存入数据库
     try:
         truck.save()
@@ -278,8 +289,8 @@ def vehicle_submit(request):
     enterprise_name = truck.enterprise.enterprise_name
     route = truck.route
     # 图片文件名
-    file_name = '%s.jpg' % certification_id
-    truck.file_name = file_name
+    file_name = r'%s/certification/%s.jpg' % (settings.CERTIFICATION_DIR, certification_id)
+    truck.file_name = '%s.jpg' % certification_id
 
     generate_certification(certification_id, limit_data, number, enterprise_name, route, file_name)
 
