@@ -10,7 +10,8 @@ $(function(){
 	// }
     //    Yz_Click();
    $('#login_button').click(function () {
-	   localStorage.setItem("username",  $('#username').val());
+       alert(1);
+//	   localStorage.setItem("username",  $('#username').val());
        login();
    });
 
@@ -74,6 +75,9 @@ function login(){
     if(type == false){
         alert('请检查内容是否输入完整')
     }else{
+        $('#form_box').submit();
+
+        /*
         var data ={
             yzm:$('#yz').val().trim(),
             accout:$('#username').val().trim(),
@@ -97,7 +101,7 @@ function login(){
                 }
 
             }
-        })
+        })*/
     }
 
 }

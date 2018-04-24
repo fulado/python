@@ -69,6 +69,17 @@
             text-decoration: none;
         }
 
+         .pop-up1 .btndiv input{
+             display: inline-block;
+             background-color: #25b4b2;
+             border: solid 1px #189694;
+             color: #fff;
+             margin-left: 160px;
+
+         }
+         .pop-up1 .btndiv input{
+             background: #139b99;
+         }
     </style>
     <title></title>
 </head>
@@ -81,13 +92,13 @@
         <div class="search_input">
             <label for="ss">车辆搜索</label>
             <form action="/vehicle" method="GET" style="display: inline-block;">
-                <input type="text" placeholder="输入车牌号码，不含号牌所在地" id="ss" name="search_name" style="width: 220px;"/>
+                <input type="text" placeholder="输入车牌号码" id="ss" name="search_name" />
             </form>
             <span class="find_btn">查询</span>
             <span class="add_account" id="add">新增车辆</span>
-            <span class="out outexcel">模版下载</span>
-            <span class="out outexcel">导入车辆</span>
-            <span class="out outexcel">全部提交</span>
+            <a href="/static/excel/vehicle.xls"><span class="out outexcel">模版下载</span></a>
+            <span class="out import-excel">导入车辆</span>
+            <a href="/vehicle_submit_all"><span class="out">全部提交</span></a>
 
         </div>
         <!--检索结果-->
@@ -107,14 +118,14 @@
                 {% for vehicle in mp.object_list %}
                 <tr>
                     <td style="width: 4%">{{ forloop.counter }}</td>
-                    <td title="{{ vehicle.location.name }}{{ vehicle.number }}">{{ vehicle.location.name }}{{ vehicle.number }}</td>
+                    <td title="{{ vehicle.number }}">{{ vehicle.number }}</td>
                     <td title="{{ vehicle.vehicle_type.name }}">{{ vehicle.vehicle_type.name }}</td>
                     <td title="{{ vehicle.engine }}">{{ vehicle.engine }}</td>
                     <td title="{{ vehicle.status.name }}">{{ vehicle.status.name }}</td>
                     <td title="{{ vehicle.reason|default:'' }}">{{ vehicle.reason|default:'' }}</td>
                     <td>
                         <button type="button" class="see modify-vehicle-info" style="margin-right: 5px;" onclick="setVehicleInfo(
-                        '{{ vehicle.vehicle_type.id }}', '{{ vehicle.location.id }}', '{{ vehicle.number }}',
+                        '{{ vehicle.vehicle_type.id }}', '{{ vehicle.number }}',
                         '{{ vehicle.engine }}', '{{ vehicle.vehicle_model }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
                         '{{ vehicle.route }}', '{{ vehicle.id }}')">编辑</button>
                         {% if vehicle.status.id == 1 %}
@@ -182,12 +193,12 @@
                 <tr>
                     <td><span>号牌号码</span></td>
                     <td>
-                        <select name="location" style="width: 43px;">
-                            {% for location in location_list %}
-                            <option value={{ location.id }}>{{ location.name }}</option>
-                            {% endfor %}
-                        </select>
-                        <input type="text" placeholder="请输入号牌号码" name="number" style="width: 150px;">
+                        <!--<select name="location" style="width: 43px;">-->
+                            <!--{% for location in location_list %}-->
+                            <!--<option value={{ location.id }}>{{ location.name }}</option>-->
+                            <!--{% endfor %}-->
+                        <!--</select>-->
+                        <input type="text" placeholder="请输入号牌号码" name="number">
                         <p>（挂车不需要输入“挂”字）<p>
                     </td>
                 </tr>
@@ -254,12 +265,12 @@
                 <tr>
                     <td><span>号牌号码</span></td>
                     <td>
-                        <select name="location" style="width: 43px;">
-                            {% for location in location_list %}
-                            <option value={{ location.id }}>{{ location.name }}</option>
-                            {% endfor %}
-                        </select>
-                        <input type="text" placeholder="请输入号牌号码" name="number" style="width: 150px;">
+                        <!--<select name="location" style="width: 43px;">-->
+                            <!--{% for location in location_list %}-->
+                            <!--<option value={{ location.id }}>{{ location.name }}</option>-->
+                            <!--{% endfor %}-->
+                        <!--</select>-->
+                        <input type="text" placeholder="请输入号牌号码" name="number">
                         <p>（挂车不需要输入“挂”字）<p>
                     </td>
                 </tr>
@@ -323,15 +334,16 @@
 
 <!--上传文件模态框-->
 <div class="pop-up1" style="width: 560px;height: 268px;display: none;">
-    <form id="excelform" enctype="multipart/form-data">
-        <div class="selFile" style="">
+    <form action="/excel_import" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <div class="selFile">
             <label for="reason" style="">选择文件</label>
-            <input type="file" name="file" style="outline: none;cursor: pointer" accept="application/vnd.ms-excel"/>
+            <input type="file" name="excel_file" style="outline: none;cursor: pointer; width:300px; margin-left: 100px;" accept="application/vnd.ms-excel"/>
         </div>
 
-        <div class="btndiv" style="">
-            <div class="btn" id="out">提交</div>
-            <div class="btn" id="close">关闭</div>
+        <div class="btndiv" style="margin-top: 50px;">
+            <input type="submit" class="btn" style="line-height: 27px;" value="导入" />
+            <div class="btn" id="close" style="line-height: 27px;">关闭</div>
         </div>
     </form>
 </div>
@@ -503,12 +515,17 @@
         $('.search_input .find_btn').click(function() {
             $('.search_input form').submit();
         });
+
+        // 显示导入车辆信息模态框
+        $('.import-excel').click(function() {
+            $('.pop-up1').show();
+            $('.mask').show();
+        });
     });
 
     // 填充编辑车辆模态框信息
-    function setVehicleInfo(vehicle_type, location, number, engine, vehicle_model, register_date, route, id) {
+    function setVehicleInfo(vehicle_type, number, engine, vehicle_model, register_date, route, id) {
          $('.modify-vehicle select').eq(0).val(vehicle_type);       // 车辆类型
-         $('.modify-vehicle select').eq(1).val(location);           // 号牌所在地
          $('.modify-vehicle input').eq(0).val(number);              // 号牌号码
          $('.modify-vehicle input').eq(1).val(engine);              // 发动机型号
          $('.modify-vehicle input').eq(2).val(vehicle_model);       // 车辆型号

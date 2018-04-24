@@ -45,7 +45,7 @@ class Location(models.Model):
 class Vehicle(models.Model):
     location = models.ForeignKey(Location, null=True, blank=True)           # 车牌所在地
     number = models.CharField(max_length=20)                                # 号牌号码
-    engine = models.CharField(max_length=50)                                # 发动机型号
+    engine = models.CharField(max_length=50, null=True, blank=True)         # 发动机型号
     vehicle_type = models.ForeignKey(Type, null=True, blank=True)           # 车辆类型
     vehicle_model = models.CharField(max_length=50, null=True, blank=True)  # 车辆型号
     register_date = models.DateField(null=True, blank=True)                 # 车辆注册日期

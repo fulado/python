@@ -126,7 +126,7 @@
     </div>
     <div class="my-modal-body" style="margin-top: 20px;">
         <form id="form_1" action="/enterprise_add" method="POST">
-            {%csrf_token%}
+            {% csrf_token %}
             <p style="margin: auto;font-size: 16px;text-align: center;margin-bottom: 10px;">企业信息</p>
             <div class="ePrisename">
                 <label for="ePrisename">企业名称</label>
@@ -344,7 +344,7 @@
 
         // 编辑企业信息表单提交: 删除
         $('.modify-enterprise .delete').click(function() {
-            if (confirm('是否删除该车辆信息？')) {
+            if (confirm('是否删除该企业？')) {
                 $('.modify-enterprise form').prop('action', '/enterprise_delete');
                 $('.modify-enterprise form').submit();
                 $('.modify-enterprise').hide();

@@ -127,5 +127,7 @@ STATICFILES_DIRS = [
 ]
 
 FONTS_DIR = os.path.join(BASE_DIR, 'static/fonts')
-CERTIFICATION_DIR = os.path.join(BASE_DIR, 'static')
+FILE_DIR = os.path.join(BASE_DIR, 'static')
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 

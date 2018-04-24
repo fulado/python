@@ -136,6 +136,7 @@ function clickUp(){
         $('.mask').show();
     });
 
+    /*
     $('#out').click(function(){
         var fileVal = $('.pop-up1 input[type = file]').val();
         if (fileVal!= '') {
@@ -150,7 +151,7 @@ function clickUp(){
         }else if(!Boolean(fileVal)){
             alert('请选择要上传的类型')
         }
-    });
+    });*/
 
     $('#close').click(function(){
         $('.pop-up1').hide();
