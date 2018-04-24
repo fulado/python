@@ -143,7 +143,7 @@
      position: absolute;
      width: 12px;
      height: 8px;
-     background: url("../../img/down.png") no-repeat;
+     background: url("/static/img/down.png") no-repeat;
      right: 11px;
      top: 12px;
  }

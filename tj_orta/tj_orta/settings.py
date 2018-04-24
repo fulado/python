@@ -26,6 +26,9 @@ SECRET_KEY = 'awgn&oirft*niq0-#2jbk7%vctqnq!9#l66kk#xsbdqn_ugf5k'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+# DEBUG = False
+#
+# ALLOWED_HOSTS = ['*', ]
 
 
 # Application definition

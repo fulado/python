@@ -6,6 +6,7 @@ from .models import User, Vehicle
 from tj_orta.utils import MyPaginator
 from .utils import generate_certification
 from tj_orta import settings
+from .decorator import login_check
 import hashlib
 import time
 import random
@@ -126,6 +127,7 @@ def logout(request):
 
 
 # 显示主页面
+@login_check
 def main(request):
     user_id = request.session.get('user_id', '')
 
@@ -138,6 +140,7 @@ def main(request):
 
 
 # 显示企业管理页面
+@login_check
 def enterprise(request):
     # 查询企业信息
     enterprise_list = User.objects.filter(is_delete=False).order_by('-id')
@@ -265,6 +268,7 @@ def enterprise_delete(request):
 
 
 # 显示车辆管理页面
+@login_check
 def vehicle(request):
     # 获取session中的user_id, 根据user_id查询企业
     user_id = int(request.session.get('user_id', ''))
