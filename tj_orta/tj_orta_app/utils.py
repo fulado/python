@@ -40,7 +40,7 @@ def generate_certification(certification_id, limit_data, number, enterprise_name
 
     point_y = 180
     step_y = 50
-    font = ImageFont.truetype(r"D:\tools\fonts\simsun.ttf", 25)
+    font = ImageFont.truetype(r"%s/simsun.ttf" % settings.FONTS_DIR, 25)
 
     draw.text((70, point_y), certification_id, font=font, fill=(0, 0, 0))
     point_y += step_y
@@ -57,7 +57,7 @@ def generate_certification(certification_id, limit_data, number, enterprise_name
     step_y = 40
     draw.text((500, point_y), instrument_title, font=font, fill=(0, 0, 0))
     point_y += step_y
-    font = ImageFont.truetype(r"D:\tools\fonts\simsun.ttf", 20)
+    font = ImageFont.truetype(r"%s/simsun.ttf" % settings.FONTS_DIR, 20)
     draw.text((70, point_y), instrument_line_1, font=font, fill=(0, 0, 0))
     point_y += step_y
     draw.text((70, point_y), instrument_line_2, font=font, fill=(0, 0, 0))
@@ -76,6 +76,10 @@ def generate_certification(certification_id, limit_data, number, enterprise_name
     qr_img = qr_img.resize((200, 200), Image.ANTIALIAS)
     image.paste(qr_img, (750, 170))
 
+    # 交管局公章
+    gz_img = Image.open(r"%s/img/text9.png" % settings.FILE_DIR)
+    image.paste(gz_img, (330, 260), mask=gz_img)
+
     # 保存图片
     image.save(file_name, 'jpeg')
 
@@ -93,3 +97,7 @@ def generate_qrcode(data):
     qr.make(fit=True)
 
     return qr.make_image(fill_color="black", back_color="white")
+
+
+if __name__ == '__main__':
+    generate_certification('12345', '2018年5月31日', '津A12345', '哇哈哈哈哈哈哈', '牛牛牛', 'test_123.jpg')

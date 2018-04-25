@@ -370,7 +370,8 @@ def vehicle_modify(request):
 
     # 删除原有的通行证图片文件
     file_name = truck.file_name
-    if file_name is not None:
+
+    if file_name is not None and file_name != '':
         file_name = r'%s/certification/%s' % (settings.FILE_DIR, file_name)
         truck.file_name = None
         truck.cert_id = None
@@ -437,7 +438,7 @@ def vehicle_submit(request):
     return HttpResponseRedirect('/vehicle')
 
 
-# 导入车辆信息
+# 批量导入车辆信息
 def excel_import(request):
     # 获取用户上传的excel文件, 文件不存储, 在内存中对文件进行操作
     excel_file = request.FILES.get('excel_file')
@@ -449,44 +450,49 @@ def excel_import(request):
     # 获得第一个sheet对象
     worksheet = workbook.sheet_by_name(sheets[0])
     # 遍历
+    new_truck_list = []
     for i in range(1, worksheet.nrows):
         # row = worksheet.row(i)
         # 读取一条车辆信息
         vehicle_type = worksheet.cell_value(i, 1)           # 车辆类型
 
         if worksheet.cell(i, 2).ctype == 2:
-            number = int(worksheet.cell_value(i, 2))        # 车牌号
+            number = str(int(worksheet.cell_value(i, 2)))       # 车牌号
         else:
-            number = worksheet.cell_value(i, 2)
+            number = str(worksheet.cell_value(i, 2))
 
         if worksheet.cell(i, 3).ctype == 2:
-            engine = int(worksheet.cell_value(i, 3))        # 发动机型号
+            engine = str(int(worksheet.cell_value(i, 3)))       # 发动机型号
         else:
-            engine = worksheet.cell_value(i, 3)
+            engine = str(worksheet.cell_value(i, 3))
 
-        vehicle_model = worksheet.cell_value(i, 4)           # 车辆型号
-        register_date = worksheet.cell_value(i, 5)           # 注册日期
-        route = worksheet.cell_value(i, 6)                   # 路线
+        vehicle_model = str(worksheet.cell_value(i, 4))         # 车辆型号
+        register_date = str(worksheet.cell_value(i, 5))           # 注册日期
+        route = str(worksheet.cell_value(i, 6))                   # 路线
 
+        # print('%s %s %s %s %s %s' % (vehicle_type, number, engine, vehicle_model, register_date, route))
         # 如果车牌不为空, 创建车辆对象, 否则略过该条数据
-        if number != '':
-            # 如果库中已经存在该车牌则, 直接修改库中的信息, 否者创建新的车辆对象
+        is_exist = False
+        if number == '' or number is None:
+            is_exist = True
+
+        if not is_exist:
+            # 如果库中已经存在该车牌, 则忽略该车辆, 否者创建新的车辆对象
             # 获取session中的user_id, 根据user_id查询企业
             user_id = int(request.session.get('user_id', ''))
 
             # 查询该企业的所有车辆数据
-            truck_list = []
-            if user_id != '' and user_id != 1:
-                truck_list = Vehicle.objects.filter(enterprise_id=user_id).filter(number=number)
-
-            if len(truck_list) > 0:
-                truck = truck_list[0]
+            if user_id == '' or user_id == 1:
+                is_exist = True
             else:
-                truck = Vehicle()
-                truck.number = number
+                is_exist = Vehicle.objects.filter(enterprise_id=user_id).filter(number=number).exists()
+
+        if not is_exist:
+            truck = Vehicle()
+            truck.number = number
 
             # 添加车辆属性
-            if vehicle_type != '':
+            if vehicle_type != '' and vehicle_type is not None:
                 if vehicle_type == '大型货车':
                     truck.vehicle_type_id = 1
                 elif vehicle_type == '小型货车':
@@ -494,17 +500,17 @@ def excel_import(request):
                 elif vehicle_type == '挂式货车':
                     truck.vehicle_type_id = 15
 
-            if engine != '':
+            if engine != '' and engine is not None:
                 truck.engine = engine
 
-            if vehicle_model != '':
+            if vehicle_model != '' and vehicle_model is not None:
                 truck.vehicle_model = vehicle_model
 
             # 车辆注册日期, 应该判断一下格式是否正确, 不正确添加默认值, 或设置为空, 现在没时间做了
-            if register_date != '':
+            if register_date != '' and register_date is not None:
                 truck.register_date = register_date
 
-            if route != '':
+            if route != '' and route is not None:
                 truck.route = route
 
             truck.modify_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
@@ -512,9 +518,12 @@ def excel_import(request):
             if user_id != '' and user_id != 1:
                 truck.enterprise_id = user_id
             else:
-                truck.enterprise_id = 1
+                truck.enterprise_id = 1     # 多此一举
 
-            truck.save()
+            new_truck_list.append(truck)
+            #truck.save()
+
+    Vehicle.objects.bulk_create(new_truck_list)
 
         # for j in range(1, worksheet.ncols):
             # ctype： 0-empty, 1-string, 2-number, 3-date, 4-boolean, 5-error

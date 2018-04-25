@@ -69,15 +69,12 @@
             text-decoration: none;
         }
 
-         .pop-up1 .btndiv input{
+         .pop-up1 .btndiv input,.pop-up1 .btndiv button{
              display: inline-block;
              background-color: #25b4b2;
              border: solid 1px #189694;
              color: #fff;
              margin-left: 160px;
-
-         }
-         .pop-up1 .btndiv input{
              background: #139b99;
          }
     </style>
@@ -342,7 +339,8 @@
         </div>
 
         <div class="btndiv" style="margin-top: 50px;">
-            <input type="submit" class="btn" style="line-height: 27px;" value="导入" />
+            <button type="button" class="btn save" style="line-height: 27px;" >导入</button>
+            <!--<input type="submit" class="btn" style="line-height: 27px;" value="导入" />-->
             <div class="btn" id="close" style="line-height: 27px;">关闭</div>
         </div>
     </form>
@@ -520,6 +518,16 @@
         $('.import-excel').click(function() {
             $('.pop-up1').show();
             $('.mask').show();
+        });
+
+        // 导入车辆提交
+        $('.pop-up1 .btndiv button').click(function() {
+            // 判断是否选择文件
+            if ($('.pop-up1 .selFile input').val().length > 0) {
+                $('.pop-up1 form').submit();
+            } else {
+                alert('请选择需要导入的文件');
+            }
         });
     });
 

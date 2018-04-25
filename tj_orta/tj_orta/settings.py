@@ -81,10 +81,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'tj_orta',
-        'HOST': 'localhost',
+        'HOST': '192.168.188.11',
         'PORT': 3306,
-        'USER': 'admin',
-        'PASSWORD': '123456',
+        'USER': 'ethane',
+        'PASSWORD': 'yxtc_20921',
     }
 }
 
@@ -128,9 +128,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 FONTS_DIR = os.path.join(BASE_DIR, 'static/fonts')
 FILE_DIR = os.path.join(BASE_DIR, 'static')
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
