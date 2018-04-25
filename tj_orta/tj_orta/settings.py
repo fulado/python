@@ -81,13 +81,15 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'tj_orta',
-        'HOST': '192.168.188.11',
+        # 'HOST': '192.168.188.11',
+        'HOST': 'localhost',
         'PORT': 3306,
-        'USER': 'ethane',
-        'PASSWORD': 'yxtc_20921',
+        # 'USER': 'ethane',
+        # 'PASSWORD': 'yxtc_20921',
+        'USER': 'admin',
+        'PASSWORD': '123456',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

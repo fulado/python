@@ -20,5 +20,7 @@ urlpatterns = [
     url(r'^check_code/?', views.check_code),
     url(r'^login_handle/?', views.login_handle),
     url(r'^logout/?', views.logout),
+    url(r'^download_search/?', views.download_search),
+    url(r'^download/?', views.download),
     url(r'^/?', views.login),
 ]

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/static/css/initial.css"/>
     <link rel="stylesheet" href="/static/css/header.css"/>
     <link rel="stylesheet" href="/static/css/login.css"/>
+    <link rel="stylesheet" href="/static/css/company.css"/>
     <title>登录</title>
 </head>
 <body>
@@ -22,6 +23,14 @@
     <div class="text_wrapper">
         <span class="text_icon_1"></span>
         <span class="text_icon_2"></span>
+    </div>
+    <div class="tooltip_text">
+        <!--<span class="number_word">企业数量: &nbsp;</span>-->
+        <!--<span class="number"></span>-->
+        <!--<span class="number_word">提交审核车辆数: &nbsp;</span>-->
+        <!--<span class="number"></span>-->
+        <!--<span class="tooltip_btn" id='user_setting'>个人设置</span>-->
+        <a href="/download"><span class="tooltip_btn" style="width: 150px;">通行证查询下载</span></a>
     </div>
 </div>
 <div class="form_wrapper">
@@ -44,7 +53,7 @@
             </div>
         </div>
         <div class="login_button" id="login_button">登录</div>
-        <!-- <div class="login_button link_button" id="link_button">直接查询</div> -->
+        <!--<div class="login_button link_button" id="link_button">直接查询</div>-->
         <!-- <div class="login_button operation" id="operation">申请流程下载</div> -->
     </form>
     <p style="font-size: 20px; text-align: center; margin-top: 10px;">{{ msg }}</p>

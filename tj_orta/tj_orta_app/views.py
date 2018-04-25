@@ -573,3 +573,34 @@ def vehicle_submit_all(request):
                 print(e)
 
     return HttpResponseRedirect('/vehicle')
+
+
+# 显示通行证查询下载页面
+def download(request):
+    # 获取车牌号
+    number = request.GET.get('number', '')
+
+    status = 99
+    truck = None
+    # 如果number为空, 当前是未查询状态
+    if number != '':
+        # 通过车牌查询车辆
+        truck_list = Vehicle.objects.filter(number=number)
+
+        if len(truck_list) > 0:
+            truck = truck_list[0]
+            status = truck.status_id
+        else:
+            status = 0   # 车辆不存在
+
+    context = {'status': status, 'truck': truck, 'number': number}
+
+    return render(request, 'download.html', context)
+
+
+# 通行证查询
+def download_search(request):
+    # 获取车牌号
+    number = request.GET.get('number', '')
+
+    return HttpResponseRedirect('/download?number=%s' % number)
