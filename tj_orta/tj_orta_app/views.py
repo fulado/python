@@ -416,8 +416,12 @@ def vehicle_submit(request):
 
     # 生成通行证图片
     # 生成通行证id, 201805+车牌号+三位随机数
-    certification_id = '%s%s%d%d%d' % (time.strftime('%Y%m', time.localtime()), truck.number[1:], random.randint(0, 9),
-                                       random.randint(0, 9), random.randint(0, 9))
+    # certification_id = '%s%s%d%d%d' % (time.strftime('%Y%m', time.localtime()), truck.number[1:], random.randint(0, 9),
+    #                                    random.randint(0, 9), random.randint(0, 9))
+    # 临时设定, 记得改掉
+    certification_id = '%s%s%d%d%d' % ('201805', truck.number[1:], random.randint(0, 9), random.randint(0, 9),
+                                       random.randint(0, 9))
+
     truck.cert_id = certification_id
     limit_data = '2018年5月31日'  # 暂时写为5月底
     number = '%s' % truck.number
@@ -604,3 +608,16 @@ def download_search(request):
     number = request.GET.get('number', '')
 
     return HttpResponseRedirect('/download?number=%s' % number)
+
+
+# 生成密码
+# def generate_pwd(reqeust):
+#     user_list = User.objects.all()
+#
+#     for user in user_list:
+#         password = hashlib.sha1(user.password.encode('utf8')).hexdigest()
+#         user.password = password
+#
+#         user.save()
+#
+#     return HttpResponse('创建成功')

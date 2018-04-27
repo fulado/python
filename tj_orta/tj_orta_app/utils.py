@@ -101,3 +101,4 @@ def generate_qrcode(data):
 
 if __name__ == '__main__':
     generate_certification('12345', '2018年5月31日', '津A12345', '哇哈哈哈哈哈哈', '牛牛牛', 'test_123.jpg')
+

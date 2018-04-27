@@ -81,13 +81,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'tj_orta',
-        # 'HOST': '192.168.188.11',
-        'HOST': 'localhost',
         'PORT': 3306,
+        # 'HOST': '192.168.188.11',
+        # 'HOST': 'localhost',
         # 'USER': 'ethane',
         # 'PASSWORD': 'yxtc_20921',
-        'USER': 'admin',
-        'PASSWORD': '123456',
+        'HOST': '192.168.100.248',
+        'USER': 'root',
+        'PASSWORD': 'yxtc_20921',
     }
 }
 

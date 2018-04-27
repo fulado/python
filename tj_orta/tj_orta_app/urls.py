@@ -22,5 +22,6 @@ urlpatterns = [
     url(r'^logout/?', views.logout),
     url(r'^download_search/?', views.download_search),
     url(r'^download/?', views.download),
+    # url(r'^generate_pwd/?', views.generate_pwd),
     url(r'^/?', views.login),
 ]
