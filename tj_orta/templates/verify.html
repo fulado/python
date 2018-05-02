@@ -85,15 +85,22 @@
     </div>
     <div class="table_container">
         <div class="search_input">
-            <label for="ss">车辆搜索</label>
-            <input type="text" placeholder="输入车牌号码" id="ss"/>
-            <select name="">
-                <option value="1">待审核车辆</option>
-                <option value="2">通过车辆</option>
-                <option value="3">未通过车辆</option>
-                <option value="0">全部车辆</option>
-            </select>
-            <span class="find_btn">查询</span>
+            <form action="" method="">
+                <label for="ss">车辆搜索</label>
+                <input type="text" placeholder="输入车牌号码" name="number" value="{{ number }}" id="ss"/>
+                <select name="status">
+                    {% if authority == 3 or authority == 99 %}
+                    <option value="3" {% if status == 3 %}selected{% endif %}>待审核车辆</option>
+                    {% endif %}
+                    <option value="2" {% if status == 2 %}selected{% endif %}>环保局审核车辆</option>
+                    {% if authority == 3 or authority == 99 %}
+                    <option value="4" {% if status == 4 %}selected{% endif %}>通过车辆</option>
+                    {% endif %}
+                    <option value="5" {% if status == 5 %}selected{% endif %}>未通过车辆</option>
+                    <option value="0" {% if status == 0 %}selected{% endif %}>全部车辆</option>
+                </select>
+                <input type="submit" class="find_btn" value="查询" style="padding: 0px;"/>
+            </form>
             <span class="out outexcel" style="display: none;">导出待审核数据</span>
             <span class="in inexcel" style="display: none;">导入审核后数据</span>
             <span class="out outxmls" style="display: none;">导出待审核数据xml</span>
@@ -112,102 +119,64 @@
                 </tr>
             </thead>
             <tbody>
+                {% for vehicle in mp.object_list %}
                 <tr>
-                    <td style="width: 4%">1</td>
-                    <td title="津AX1234">津AX1234</td>
-                    <td title="01（大型货车）">01（大型货车）</td>
-                    <td title="1234567890">1234567890</td>
-                    <td title="审核中（环保局）">审核中（环保局）</td>
-                    <td title="车辆类型不符">车辆类型不符</td>
+                    <td style="width: 4%">{{ forloop.counter }}</td>
+                    <td title="{{ vehicle.number }}">{{ vehicle.number }}</td>
+                    <td title="{{ vehicle.vehicle_type.name }}">{{ vehicle.vehicle_type.name }}</td>
+                    <td title="{{ vehicle.engine }}">{{ vehicle.engine }}</td>
+                    <td title="{{ vehicle.status.name }}">{{ vehicle.status.name }}</td>
+                    <td title="{{ vehicle.reason }}">{{ vehicle.reason }}</td>
                     <td style="width: 200px">
-                        <button type="button" class="see verify-vehicle-info" style="margin-right: 5px;">审核</button>
+                        <button type="button" class="see verify-vehicle-info" style="margin-right: 5px;"
+                                onclick="setVehicleInfo('{{ vehicle.vehicle_type.id }}', '{{ vehicle.number }}',
+                        '{{ vehicle.engine }}', '{{ vehicle.vehicle_model }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
+                        '{{ vehicle.route }}', '{{ vehicle.id }}', '{{ vehicle.status.id }}', '{{ authority }}')">
+                            {% if vehicle.status.id == 2 and authority == 2 %}
+                                审核
+                            {% elif vehicle.status.id == 3 and authority == 3 %}
+                                审核
+                            {% elif vehicle.status.id == 2 and authority == 99 %}
+                                审核
+                            {% elif vehicle.status.id == 3 and authority == 99 %}
+                                审核
+                            {% else %}
+                                查看
+                            {% endif %}
+                        </button>
                     </td>
                 </tr>
-                <tr>
-                    <td style="width: 4%">2</td>
-                    <td>津AX1234</td>
-                    <td>01（大型货车）</td>
-                    <td>1234567890</td>
-                    <td>审核中（环保局）</td>
-                    <td>车辆类型不符</td>
-                    <td style="width: 200px">查看</td>
-                </tr>
-                <tr>
-                    <td style="width: 4%">3</td>
-                    <td>津AX1234</td>
-                    <td>01（大型货车）</td>
-                    <td>1234567890</td>
-                    <td>审核中（环保局）</td>
-                    <td>车辆类型不符</td>
-                    <td style="width: 200px">查看</td>
-                </tr>
-                <tr>
-                    <td style="width: 4%">4</td>
-                    <td>津AX1234</td>
-                    <td>01（大型货车）</td>
-                    <td>1234567890</td>
-                    <td>审核中（环保局）</td>
-                    <td>车辆类型不符</td>
-                    <td style="width: 200px">查看</td>
-                </tr>
-                <tr>
-                    <td style="width: 4%">5</td>
-                    <td>津AX1234</td>
-                    <td>01（大型货车）</td>
-                    <td>1234567890</td>
-                    <td>审核中（环保局）</td>
-                    <td>车辆类型不符</td>
-                    <td style="width: 200px">查看</td>
-                </tr>
-                <tr>
-                    <td style="width: 4%">6</td>
-                    <td>津AX1234</td>
-                    <td>01（大型货车）</td>
-                    <td>1234567890</td>
-                    <td>审核中（环保局）</td>
-                    <td>车辆类型不符</td>
-                    <td style="width: 200px">查看</td>
-                </tr>
-                <tr>
-                    <td style="width: 4%">7</td>
-                    <td>津AX1234</td>
-                    <td>01（大型货车）</td>
-                    <td>1234567890</td>
-                    <td>审核中（环保局）</td>
-                    <td>车辆类型不符</td>
-                    <td style="width: 200px">查看</td>
-                </tr>
-                <tr>
-                    <td style="width: 4%">8</td>
-                    <td>津AX1234</td>
-                    <td>01（大型货车）</td>
-                    <td>1234567890</td>
-                    <td>审核中（环保局）</td>
-                    <td>车辆类型不符</td>
-                    <td style="width: 200px">查看</td>
-                </tr>
-                <tr>
-                    <td style="width: 4%">9</td>
-                    <td>津AX1234</td>
-                    <td>01（大型货车）</td>
-                    <td>1234567890</td>
-                    <td>审核中（环保局）</td>
-                    <td>车辆类型不符</td>
-                    <td style="width: 200px">查看</td>
-                </tr>
-                <tr>
-                    <td style="width: 4%">10</td>
-                    <td>津AX1234</td>
-                    <td>01（大型货车）</td>
-                    <td>1234567890</td>
-                    <td>审核中（环保局）</td>
-                    <td>车辆类型不符</td>
-                    <td style="width: 200px">查看</td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
-    <div id="pagingToolBar"></div>
+    <!--分页-->
+    <div id="pageToolbar">
+        <div id="Paging_009071537570730115" class="ui-paging-container">
+            <ul>
+                <a href="/verify?page_num=1&number={{ number }}&status={{ status }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
+                <a href="/verify?page_num={{ mp.current_num|add:-1 }}&number={{ number }}&status={{ status }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
+                {% for num in mp.page_range %}
+                    {% if num == mp.current_num %}
+                    <a href="/verify?page_num={{ num }}&number={{ number }}&status={{ status }}"><li class="ui-pager focus">{{ num }}</li></a>
+                    {% else %}
+                    <a href="/verify?page_num={{ num }}&number={{ number }}&status={{ status }}"><li class="ui-pager">{{ num }}</li></a>
+                    {% endif %}
+                {% endfor %}
+                <a href="/verify?page_num={{ mp.current_num|add:1 }}&number={{ number }}&status={{ status }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
+                <a href="/verify?page_num={{ mp.total_pages }}&number={{ number }}&status={{ status }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
+                <li class="ui-paging-toolbar">
+                    <form action="/verify" method="GET">
+                        <input type="text" class="ui-paging-count" style="font-size: 12px;" name="page_num" value="{{ mp.current_num }}" />
+                        <input type="hidden" name="status" value="{{ status }}" />
+                        <input type="hidden" name="number" value="{{ number }}" />
+                        <span>/&nbsp;{{ mp.total_pages }}</span>
+                        <a href="javascript:jump()">跳转</a>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 
 <!-- 模态框 -->
@@ -235,12 +204,12 @@
                 <tr>
                     <td><span>号牌号码</span></td>
                     <td>
-                        <select name="" style="width: 43px;">
-                            <option value="津">津</option>
-                            <option value="京">京</option>
-                            <option value="沪">沪</option>
-                        </select>
-                        <input type="text" placeholder="请输入号牌号码" name="" value="A12345" style="width: 150px;">
+                        <!--<select name="location" style="width: 43px;">-->
+                            <!--{% for location in location_list %}-->
+                            <!--<option value={{ location.id }}>{{ location.name }}</option>-->
+                            <!--{% endfor %}-->
+                        <!--</select>-->
+                        <input type="text" placeholder="请输入号牌号码" name="number">
                         <p>（挂车不需要输入“挂”字）<p>
                     </td>
                 </tr>
@@ -273,11 +242,12 @@
                     </td>
                 </tr>
             </table>
+            <input type="hidden" name="vehicle_id">
             <div class="my-modal-footer" >
                 <input type="hidden" name="refuse_reason"/>
                 <div class="clickbtn" style="text-align: center;width: 440px;">
-                    <button type="button" class="btn save pass">通过</button>
-                    <button type="button" class="btn delete refuse">不通过</button>
+                    <button type="button" class="btn save pass" style="display: none;">通过</button>
+                    <button type="button" class="btn delete refuse" style="display: none;">不通过</button>
                     <button type="button" class="btn del">取消</button>
                 </div>
             </div>
@@ -291,24 +261,22 @@
         <p>未通过原因</p>
     </div>
     <div class="my-modal-body">
-        <form action="#" method="GET">
-            <table>
-                <tr>
-                    <td><p style="padding: 20px;">请填写未通过原因</p></td>
-                </tr>
-                <tr>
-                    <td>
-                        <textarea name="" style="resize:none; border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:200px;height:100px"></textarea>
-                    </td>
-                </tr>
-            </table>
-            <div class="my-modal-footer" >
-                <div class="clickbtn" style="text-align: center;width: 440px;">
-                    <button type="button" class="btn save">确定</button>
-                    <button type="button" class="btn del">取消</button>
-                </div>
+        <table>
+            <tr>
+                <td><p style="padding: 20px;">请填写未通过原因</p></td>
+            </tr>
+            <tr>
+                <td>
+                    <textarea name="" style="resize:none; border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:200px;height:100px"></textarea>
+                </td>
+            </tr>
+        </table>
+        <div class="my-modal-footer" >
+            <div class="clickbtn" style="text-align: center;width: 440px;">
+                <button type="button" class="btn save">确定</button>
+                <button type="button" class="btn del">取消</button>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 <!--摸态框-->
@@ -380,7 +348,13 @@
 
         // 隐藏编辑车辆信息模态框
         $('.verify-vehicle .del').click(function() {
-            if (confirm('是否放弃审核？')) {
+            if ($('.verify-vehicle .my-modal-footer .pass').css('display') != 'none') {
+                if (confirm('是否放弃审核？')) {
+                    $('.verify-vehicle').hide();
+                    $('.mask').hide();
+                }
+            }
+            else {
                 $('.verify-vehicle').hide();
                 $('.mask').hide();
             }
@@ -389,7 +363,7 @@
         // 审核车辆信息表单提交: 通过
         $('.verify-vehicle .pass').click(function() {
             if (confirm('是否通过该车辆?')) {
-                $('.verify-vehicle form').prop('action', '#');
+                $('.verify-vehicle form').prop('action', 'verify_pass');
                 $('.verify-vehicle form').submit();
                 $('.verify-vehicle').hide();
                 $('.mask').hide();
@@ -410,7 +384,7 @@
         $('.refuse-content .save').click(function() {
             if (confirm('是否不通过该车辆？')) {
                 $('.verify-vehicle input:hidden').val($('.refuse-content textarea').val());
-                $('.verify-vehicle form').prop('action', '#');
+                $('.verify-vehicle form').prop('action', 'verify_refuse');
                 $('.verify-vehicle form').submit();
                 $('.refuse-content').hide();
                 $('.verify-vehicle').hide();
@@ -418,5 +392,34 @@
             }
         });
     });
+
+     // 填充编辑车辆模态框信息
+    function setVehicleInfo(vehicle_type, number, engine, vehicle_model, register_date, route, id, status, authority) {
+        $('.verify-vehicle select').eq(0).val(vehicle_type);       // 车辆类型
+        $('.verify-vehicle input').eq(0).val(number);              // 号牌号码
+        $('.verify-vehicle input').eq(1).val(engine);              // 发动机型号
+        $('.verify-vehicle input').eq(2).val(vehicle_model);       // 车辆型号
+        $('.verify-vehicle input').eq(3).val(register_date);       // 车辆注册日期
+        $('.verify-vehicle textarea').val(route);                  // 运输路线
+        $('.verify-vehicle input').eq(4).val(id);                  // 车辆id
+
+        // 如果是环保局权限, 并且车辆处于环保局审核状态, 显示审核按钮
+        if (status == '2' && authority == '2') {
+            $('.verify-vehicle .my-modal-footer .pass').show();
+            $('.verify-vehicle .my-modal-footer .refuse').show();
+        }
+        else if (status == '3' && authority == '3') {
+            $('.verify-vehicle .my-modal-footer .pass').show();
+            $('.verify-vehicle .my-modal-footer .refuse').show();
+        }
+        else if ((status == '2' || status == '3') && authority == '99') {
+            $('.verify-vehicle .my-modal-footer .pass').show();
+            $('.verify-vehicle .my-modal-footer .refuse').show();
+        }
+        else{
+            $('.verify-vehicle .my-modal-footer .pass').hide();
+            $('.verify-vehicle .my-modal-footer .refuse').hide();
+        }
+    }
 </script>
 </html>

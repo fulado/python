@@ -23,12 +23,42 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'awgn&oirft*niq0-#2jbk7%vctqnq!9#l66kk#xsbdqn_ugf5k'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
+# settings for development
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+# Database
+# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'tj_orta',
+        'PORT': 3306,
+        'HOST': '127.0.0.1',
+        'USER': 'root',
+        'PASSWORD': 'xiaobai',
+    }
+}
+
+# settings for production
+
 # DEBUG = False
 #
 # ALLOWED_HOSTS = ['*', ]
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'tj_orta',
+#         'PORT': 3306,
+#         'HOST': '127.0.0.1',
+#         'USER': 'root',
+#         'PASSWORD': 'yxtc_20921',
+#     }
+# }
 
 
 # Application definition
@@ -72,25 +102,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'tj_orta.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'tj_orta',
-        'PORT': 3306,
-        # 'HOST': '192.168.188.11',
-        # 'HOST': 'localhost',
-        # 'USER': 'ethane',
-        # 'PASSWORD': 'yxtc_20921',
-        'HOST': '192.168.100.248',
-        'USER': 'root',
-        'PASSWORD': 'yxtc_20921',
-    }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

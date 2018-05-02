@@ -2,13 +2,14 @@ from django.shortcuts import render
 from django.shortcuts import HttpResponseRedirect
 from django.http import JsonResponse
 from django.shortcuts import HttpResponse
-from .models import User, Vehicle
+from .models import User, Vehicle, Authority
 from tj_orta.utils import MyPaginator
 from .utils import generate_certification
 from tj_orta import settings
 from .decorator import login_check
 import hashlib
 import time
+import datetime
 import random
 import os
 import xlrd
@@ -48,7 +49,7 @@ def check_code(request):
         fill = (random.randrange(0, 255), 255, random.randrange(0, 255))
         draw.point(xy, fill=fill)
     # 定义验证码的备选值
-    str1 = 'ABCD123EFGHIJK456LMNOPQRS789TUVWXYZ0'
+    str1 = 'ABCD23EFGHJK456LMNPQRS789TUVWXYZ'
     # 随机选取4个值作为验证码
     rand_str = ''
     for i in range(0, 4):
@@ -159,7 +160,7 @@ def enterprise(request):
     mp.paginate(enterprise_list, 10, page_num)
 
     context = {'mp': mp, 'search_name': search_name}
-    
+
     return render(request, 'enterprise.html', context)
 
 
@@ -296,11 +297,6 @@ def vehicle(request):
     context = {'mp': mp, 'search_name': search_name}
 
     return render(request, 'vehicle.html', context)
-
-
-# 显示审核页面
-def verify(request):
-    return render(request, 'verify.html')
 
 
 # 添加车辆
@@ -458,6 +454,7 @@ def excel_import(request):
     for i in range(1, worksheet.nrows):
         # row = worksheet.row(i)
         # 读取一条车辆信息
+        # ctype： 0-empty, 1-string, 2-number, 3-date, 4-boolean, 5-error
         vehicle_type = worksheet.cell_value(i, 1)           # 车辆类型
 
         if worksheet.cell(i, 2).ctype == 2:
@@ -471,7 +468,13 @@ def excel_import(request):
             engine = str(worksheet.cell_value(i, 3))
 
         vehicle_model = str(worksheet.cell_value(i, 4))         # 车辆型号
-        register_date = str(worksheet.cell_value(i, 5))           # 注册日期
+
+        if worksheet.cell(i, 5).ctype == 3:
+            register_date = xlrd.xldate_as_datetime(worksheet.cell_value(i, 5), 0)
+            register_date = datetime.datetime.strftime(register_date, r'%Y/%m/%d')
+        else:
+            register_date = str(worksheet.cell_value(i, 5))           # 注册日期
+
         route = str(worksheet.cell_value(i, 6))                   # 路线
 
         # print('%s %s %s %s %s %s' % (vehicle_type, number, engine, vehicle_model, register_date, route))
@@ -481,7 +484,7 @@ def excel_import(request):
             is_exist = True
 
         if not is_exist:
-            # 如果库中已经存在该车牌, 则忽略该车辆, 否者创建新的车辆对象
+            # 如果库中该企业已经存在该车牌, 则忽略该车辆, 否者创建新的车辆对象
             # 获取session中的user_id, 根据user_id查询企业
             user_id = int(request.session.get('user_id', ''))
 
@@ -497,11 +500,11 @@ def excel_import(request):
 
             # 添加车辆属性
             if vehicle_type != '' and vehicle_type is not None:
-                if vehicle_type == '大型货车':
+                if '大' in vehicle_type:
                     truck.vehicle_type_id = 1
-                elif vehicle_type == '小型货车':
+                elif '小' in vehicle_type:
                     truck.vehicle_type_id = 2
-                elif vehicle_type == '挂式货车':
+                elif '挂' in vehicle_type:
                     truck.vehicle_type_id = 15
 
             if engine != '' and engine is not None:
@@ -512,7 +515,8 @@ def excel_import(request):
 
             # 车辆注册日期, 应该判断一下格式是否正确, 不正确添加默认值, 或设置为空, 现在没时间做了
             if register_date != '' and register_date is not None:
-                truck.register_date = register_date
+                register_date = time.strptime(register_date, r'%Y/%m/%d')
+                truck.register_date = time.strftime(r'%Y-%m-%d', register_date)
 
             if route != '' and route is not None:
                 truck.route = route
@@ -525,7 +529,6 @@ def excel_import(request):
                 truck.enterprise_id = 1     # 多此一举
 
             new_truck_list.append(truck)
-            #truck.save()
 
     Vehicle.objects.bulk_create(new_truck_list)
 
@@ -621,3 +624,53 @@ def download_search(request):
 #         user.save()
 #
 #     return HttpResponse('创建成功')
+
+
+# 显示审核页面
+@login_check
+def verify(request):
+
+    # 获取查询信息
+    number = request.GET.get('number', '')
+    # 根据用户提交的查询信息, 查询车辆数据
+    if number == '':
+        # 如果未输入车牌号, 默认查询全部车辆
+        vehicle_list = Vehicle.objects.all()
+    else:
+        vehicle_list = Vehicle.objects.filter(number__contains=number)
+
+    # 从session中获取user_id
+    user_id = int(request.session.get('user_id', 0))
+
+    # 根据user_id获取用户权限, 2-环保局, 3-交管局
+    if user_id != 0:
+        authority = User.objects.get(id=user_id).authority.id
+    else:
+        authority = 0
+
+    # 根据用户权限查询需要该用户审核的车辆
+    if authority == 2:
+        # 环保局
+        # 获取查询车辆的审核状态
+        status = int(request.GET.get('status', 2))
+        vehicle_list = vehicle_list.filter(vehicle_type_id=1)
+    else:
+        # 交管局
+        status = int(request.GET.get('status', 3))
+
+    if status != 0:
+        vehicle_list = vehicle_list.filter(status_id=status)
+
+    # 获得用户指定的页面
+    page_num = int(request.GET.get('page_num', 1))
+
+    # 创建分页
+    mp = MyPaginator()
+    mp.paginate(vehicle_list, 10, page_num)
+
+    context = {'mp': mp, 'number': number, 'status': status, 'authority': authority}
+
+    return render(request, 'verify.html', context)
+
+
+#
