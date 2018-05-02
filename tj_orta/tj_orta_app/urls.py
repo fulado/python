@@ -23,6 +23,8 @@ urlpatterns = [
     url(r'^logout/?', views.logout),
     url(r'^download_search/?', views.download_search),
     url(r'^download/?', views.download),
+    url(r'^is_reach_limit/?', views.is_reach_limit),            # 判断是否到达车辆提交上限
+    url(r'^can_submit_all/?', views.can_submit_all),            # 判断是否可以提交全部车辆
     # url(r'^generate_pwd/?', views.generate_pwd),
     url(r'^/?', views.login),
 ]

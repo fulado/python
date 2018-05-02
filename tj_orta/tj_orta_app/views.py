@@ -274,6 +274,11 @@ def vehicle(request):
     # 获取session中的user_id, 根据user_id查询企业
     user_id = int(request.session.get('user_id', ''))
 
+    # 查询已提交申请车辆数, 限制提交车辆数
+    user = User.objects.get(id=user_id)
+    limit_number = user.limit_number
+    applied_number = user.applied_number
+
     # 查询该企业的所有车辆数据
     if user_id != '' and user_id != 1:
         vehicle_list = Vehicle.objects.filter(enterprise_id=user_id).order_by('-modify_time')
@@ -294,7 +299,8 @@ def vehicle(request):
     mp = MyPaginator()
     mp.paginate(vehicle_list, 10, page_num)
 
-    context = {'mp': mp, 'search_name': search_name}
+    context = {'mp': mp, 'search_name': search_name, 'limit_number': limit_number, 'applied_number': applied_number,
+               'user_id': user_id}
 
     return render(request, 'vehicle.html', context)
 
@@ -432,10 +438,58 @@ def vehicle_submit(request):
     # 存入数据库
     try:
         truck.save()
+
+        # 该用户已提交车辆计数加1
+        user_id = int(request.session.get('user_id', ''))
+
+        # 查询已提交申请车辆数, 限制提交车辆数
+        user = User.objects.get(id=user_id)
+        user.applied_number += 1
+
+        user.save()
+
     except Exception as e:
         print(e)
 
     return HttpResponseRedirect('/vehicle')
+
+
+# 是否到达车辆提交上限
+def is_reach_limit(request):
+    user_id = request.GET.get('user_id', 0)
+
+    result = False
+    if user_id != 0:
+        user = User.objects.get(id=user_id)
+        if user.applied_number >= user.limit_number:
+            result = True
+
+    return JsonResponse({'result': result})
+
+
+# 是否可以提交全部车辆
+def can_submit_all(request):
+    user_id = request.GET.get('user_id', 0)
+
+    result = True
+    if user_id != 0:
+        # 查询全已提交车辆和可提交车辆上限
+        user = User.objects.get(id=user_id)
+        # 计算允许提交的车辆总数
+        allow_number = user.limit_number - user.applied_number
+        if allow_number < 0:
+            allow_number = 0
+
+        # 查询本次提交需要提交的车辆总数
+        vehicle_num = Vehicle.objects.filter(enterprise_id=user_id).filter(status_id=1).count()
+
+        # 如果提交车辆的总数大于允许提交总数, 返回本次提交的数量和未提交的数量
+        ignore_num = 0
+        if vehicle_num > allow_number:
+            result = False
+            ignore_num = vehicle_num - allow_number
+
+    return JsonResponse({'result': result, 'allow_number': allow_number, 'ignore_num': ignore_num})
 
 
 # 批量导入车辆信息
@@ -548,36 +602,102 @@ def vehicle_submit_all(request):
     # 获取session中的user_id, 根据user_id查询企业
     user_id = int(request.session.get('user_id', ''))
 
+    # # 查询该企业的所有车辆数据
+    # if user_id != '' and user_id != 1:
+    #     # 查询已提交申请车辆数, 限制提交车辆数
+    #     user = User.objects.get(id=user_id)
+    #     limit_number = user.limit_number
+    #     applied_number = user.applied_number
+    #
+    #     # 判断是否到达上限, 如果达到退出循环
+    #     if applied_number >= limit_number:
+    #         return HttpResponseRedirect('/vehicle')
+    #     else:
+    #         truck_list = Vehicle.objects.filter(enterprise_id=user_id).filter(status_id=1).values_list('id', flat=True)
+    #         print(truck_list)
+    # # 判断查询结果集是否为空
+    # if len(truck_list) > 0:
+    #     for truck in truck_list:
+    #         # 审核状态变为通过
+    #         truck.status_id = 4
+    #
+    #         # 生成通行证图片
+    #         # 生成通行证id, 201805+车牌号+三位随机数
+    #         certification_id = '%s%s%d%d%d' % (time.strftime('%Y%m', time.localtime()), truck.number[1:],
+    #                                            random.randint(0, 9), random.randint(0, 9), random.randint(0, 9))
+    #         truck.cert_id = certification_id
+    #         limit_data = '2018年5月31日'  # 暂时写为5月底
+    #         number = '%s' % truck.number
+    #         enterprise_name = truck.enterprise.enterprise_name
+    #         route = truck.route
+    #         # 图片文件名
+    #         file_name = r'%s/certification/%s.jpg' % (settings.FILE_DIR, certification_id)
+    #         truck.file_name = '%s.jpg' % certification_id
+    #
+    #         generate_certification(certification_id, limit_data, number, enterprise_name, route, file_name)
+    #
+    #         # 存入数据库
+    #         try:
+    #             truck.save()
+    #
+    #             # 已提交车辆数+1
+    #             applied_number += 1
+    #
+    #             if applied_number == limit_number:
+    #                 break
+    #         except Exception as e:
+    #             print(e)
+    #
+    #     user.applied_number = applied_number
+    #     user.save()
+
     # 查询该企业的所有车辆数据
     if user_id != '' and user_id != 1:
-        truck_list = Vehicle.objects.filter(enterprise_id=user_id).filter(status_id=1)
+        # 查询已提交申请车辆数, 限制提交车辆数
+        user = User.objects.get(id=user_id)
+        limit_number = user.limit_number
+        applied_number = user.applied_number
 
+        # 判断是否到达上限, 如果达到退出循环
+        if applied_number >= limit_number:
+            return HttpResponseRedirect('/vehicle')
+        else:
+            vehicle_info_list = Vehicle.objects.filter(enterprise_id=user_id).filter(status_id=1).\
+                values('id', 'number', 'enterprise', 'route')
     # 判断查询结果集是否为空
-    if len(truck_list) > 0:
-        for truck in truck_list:
-            # 审核状态变为通过
-            truck.status_id = 4
-
+    # [{'id': 9796, 'number': '津AQ5028', 'enterprise': 24, 'route': '津北线，复康路'},]
+    if len(vehicle_info_list) > 0:
+        for vehicle_info in vehicle_info_list:
             # 生成通行证图片
             # 生成通行证id, 201805+车牌号+三位随机数
-            certification_id = '%s%s%d%d%d' % (time.strftime('%Y%m', time.localtime()), truck.number[1:],
+            certification_id = '%s%s%d%d%d' % (time.strftime('%Y%m', time.localtime()), vehicle_info['number'][1:],
                                                random.randint(0, 9), random.randint(0, 9), random.randint(0, 9))
-            truck.cert_id = certification_id
             limit_data = '2018年5月31日'  # 暂时写为5月底
-            number = '%s' % truck.number
-            enterprise_name = truck.enterprise.enterprise_name
-            route = truck.route
+            number = '%s' % vehicle_info['number']
+            enterprise_name = User.objects.get(id=vehicle_info['enterprise']).enterprise_name
+            route = vehicle_info['route']
             # 图片文件名
             file_name = r'%s/certification/%s.jpg' % (settings.FILE_DIR, certification_id)
-            truck.file_name = '%s.jpg' % certification_id
 
             generate_certification(certification_id, limit_data, number, enterprise_name, route, file_name)
 
             # 存入数据库
             try:
-                truck.save()
+                # 审核状态变为通过
+                # truck.status_id = 4
+                # truck.cert_id = certification_id
+                Vehicle.objects.filter(id=vehicle_info['id']).update(status_id=4, cert_id=certification_id,
+                                                                     file_name=os.path.basename(file_name))
+                # 已提交车辆数+1
+                applied_number += 1
+
+                if applied_number == limit_number:
+                    break
             except Exception as e:
                 print(e)
+
+        user.applied_number = applied_number
+        user.save()
 
     return HttpResponseRedirect('/vehicle')
 
@@ -671,6 +791,3 @@ def verify(request):
     context = {'mp': mp, 'number': number, 'status': status, 'authority': authority}
 
     return render(request, 'verify.html', context)
-
-
-#

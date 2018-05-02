@@ -77,6 +77,12 @@
              margin-left: 160px;
              background: #139b99;
          }
+
+         .table_head .number_word{
+            float: right;
+            margin-right: 20px;
+         }
+
     </style>
     <title></title>
 </head>
@@ -84,6 +90,8 @@
 <div class="table_wrapper">
     <div class="table_head">
         <span>车辆列表</span>
+        <span class="number_word">提交车辆上限&nbsp;:&nbsp;{{ limit_number }}</span>
+        <span class="number_word">已提交车辆数&nbsp;:&nbsp;{{ applied_number }}</span>
     </div>
     <div class="table_container">
         <div class="search_input">
@@ -95,7 +103,7 @@
             <span class="add_account" id="add">新增车辆</span>
             <a href="/static/excel/vehicle.xls"><span class="out outexcel">模版下载</span></a>
             <span class="out import-excel">导入车辆</span>
-            <a href="/vehicle_submit_all"><span class="out">全部提交</span></a>
+            <a href="javascript:submit_all('{{ user_id }}');"><span class="out">全部提交</span></a>
 
         </div>
         <!--检索结果-->
@@ -126,7 +134,7 @@
                         '{{ vehicle.engine }}', '{{ vehicle.vehicle_model }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
                         '{{ vehicle.route }}', '{{ vehicle.id }}')">编辑</button>
                         {% if vehicle.status.id == 1 %}
-                        <a href="/vehicle_submit?vehicle_id={{ vehicle.id }}" class="see" style="margin-right: 5px;">提交</a>
+                        <a href="javascript:submit_vehicle('{{ user_id }}', '{{ vehicle.id }}');" class="see" style="margin-right: 5px;">提交</a>
                         {% endif %}
                         {% if vehicle.status.id == 4 %}
                         <a href="/static/certification/{{ vehicle.file_name }}" target="_Blank" class="see download" style="margin-right: 5px;">下载</a>
@@ -545,6 +553,33 @@
     // 跳转到指定页面
     function jump() {
         $('#pageToolbar form').submit();
+    }
+
+    // 提交车辆, 需要判断是否已经达到上限
+    function submit_vehicle(user_id, vehicle_id) {
+        // 判断是否已经到达提交上限
+        $.get('/is_reach_limit', {'user_id': user_id}, function(data) {
+            if (data.result) {
+                alert('已经到达通行证申请上限，不能提交申请');
+            }
+            else {
+                window.location.href = "/vehicle_submit?vehicle_id="+vehicle_id;
+            }
+        });
+    }
+
+    // 提交全部车辆, 判断是否到达上限, 如到达上限, 则仅提交部分车辆, 并给出提示
+    function submit_all(user_id) {
+        // 判断是否可以提交全部车辆
+        $.get('/can_submit_all', {'user_id': user_id}, function(data) {
+            window.location.href = "/vehicle_submit_all";
+            if (data.result) {
+                alert('已提交全部车辆');
+            }
+            else {
+                alert('车辆超出允许提交的上限，本次提交车辆'+ data.allow_number +'辆，未提交车辆'+ data.ignore_num +'辆');
+            }
+        });
     }
 </script>
 </html>

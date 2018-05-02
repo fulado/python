@@ -20,6 +20,8 @@ class User(models.Model):
     organization_code = models.CharField(max_length=50, null=True, blank=True)  # 组织机构代码
     contact = models.CharField(max_length=50, null=True, blank=True)            # 联系人
     contact_phone = models.CharField(max_length=20, null=True, blank=True)      # 联系人电话
+    limit_number = models.IntegerField(default=1, null=True, blank=True)        # 可申请最大数量通行证
+    applied_number = models.IntegerField(default=0, null=True, blank=True)      # 已申请通行证数量
     is_delete = models.BooleanField(default=False)                              # 是否删除
 
 
