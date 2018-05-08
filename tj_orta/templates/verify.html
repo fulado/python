@@ -131,7 +131,7 @@
                         <button type="button" class="see verify-vehicle-info" style="margin-right: 5px;"
                                 onclick="setVehicleInfo('{{ vehicle.vehicle_type.id }}', '{{ vehicle.number }}',
                         '{{ vehicle.engine }}', '{{ vehicle.vehicle_model }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
-                        '{{ vehicle.route }}', '{{ vehicle.id }}', '{{ vehicle.status.id }}', '{{ authority }}')">
+                        '{{ vehicle.route|linebreaksbr }}', '{{ vehicle.id }}', '{{ vehicle.status.id }}', '{{ authority }}')">
                             {% if vehicle.status.id == 2 and authority == 2 %}
                                 审核
                             {% elif vehicle.status.id == 3 and authority == 3 %}
@@ -194,7 +194,7 @@
                 <tr>
                     <td><span>车辆类型</span></td>
                     <td>
-                        <select name="" placeholder="请选择车辆类型">
+                        <select placeholder="车辆类型">
                             <option value="1">大型货车</option>
                             <option value="2">小型货车</option>
                             <option value="15">挂式货车</option>
@@ -209,26 +209,26 @@
                             <!--<option value={{ location.id }}>{{ location.name }}</option>-->
                             <!--{% endfor %}-->
                         <!--</select>-->
-                        <input type="text" placeholder="请输入号牌号码" name="number">
+                        <input type="text" placeholder="号牌号码" />
                         <p>（挂车不需要输入“挂”字）<p>
                     </td>
                 </tr>
                 <tr>
                     <td><span>发动机型号</span></td>
                     <td>
-                        <input type="text" placeholder="请输入发动机型号" value="1234567890" name="">
+                        <input type="text" placeholder="发动机型号" />
                     </td>
                 </tr>
                 <tr>
                     <td><span>车辆型号</span></td>
                     <td>
-                        <input type="text" placeholder="请输入车辆型号" value="丰田霸道X20" name="number">
+                        <input type="text" placeholder="请输入车辆型号" />
                     </td>
                 </tr>
                 <tr>
                     <td><span>车辆注册日期</span></td>
                     <td>
-                        <input type="text" class="datetime-picker" placeholder="请选择车辆注册日期" value="2018-04-19" name="">
+                        <input type="text" class="datetime-picker" placeholder="车辆注册日期" />
                     </td>
                 </tr>
                 <tr>
@@ -237,12 +237,15 @@
                 <tr>
                     <td><span>运输路线</span></td>
                     <td>
-                        <textarea name="" id="reason" style="resize:none; border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:200px;height:100px">北辰，天津港，西青，天津港，和平，天津港</textarea>
+                        <textarea id="reason" style="resize:none; border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:200px;height:100px"></textarea>
                         <p>（道路之间用“，”隔开）<p>
                     </td>
                 </tr>
             </table>
-            <input type="hidden" name="vehicle_id">
+            <input type="hidden" name="vehicle_id" />
+            <input type="hidden" name="page_num" value="{{ mp.current_num }}" />
+            <input type="hidden" name="number" value="{{ number }}" />
+            <input type="hidden" name="status" value="{{ status }}" />
             <div class="my-modal-footer" >
                 <input type="hidden" name="refuse_reason"/>
                 <div class="clickbtn" style="text-align: center;width: 440px;">
@@ -383,7 +386,7 @@
         // 未通过原因: 确定
         $('.refuse-content .save').click(function() {
             if (confirm('是否不通过该车辆？')) {
-                $('.verify-vehicle input:hidden').val($('.refuse-content textarea').val());
+                $('.verify-vehicle .my-modal-footer input:hidden').val($('.refuse-content textarea').val());
                 $('.verify-vehicle form').prop('action', 'verify_refuse');
                 $('.verify-vehicle form').submit();
                 $('.refuse-content').hide();
@@ -393,14 +396,14 @@
         });
     });
 
-     // 填充编辑车辆模态框信息
+     // 填充审核车辆模态框信息
     function setVehicleInfo(vehicle_type, number, engine, vehicle_model, register_date, route, id, status, authority) {
         $('.verify-vehicle select').eq(0).val(vehicle_type);       // 车辆类型
         $('.verify-vehicle input').eq(0).val(number);              // 号牌号码
         $('.verify-vehicle input').eq(1).val(engine);              // 发动机型号
         $('.verify-vehicle input').eq(2).val(vehicle_model);       // 车辆型号
         $('.verify-vehicle input').eq(3).val(register_date);       // 车辆注册日期
-        $('.verify-vehicle textarea').val(route);                  // 运输路线
+        $('.verify-vehicle textarea').val(route.replace("<br />",""));                  // 运输路线
         $('.verify-vehicle input').eq(4).val(id);                  // 车辆id
 
         // 如果是环保局权限, 并且车辆处于环保局审核状态, 显示审核按钮

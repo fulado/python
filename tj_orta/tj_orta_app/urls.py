@@ -14,8 +14,9 @@ urlpatterns = [
     url(r'^vehicle_submit_all/?', views.vehicle_submit_all),
     url(r'^vehicle_submit/?', views.vehicle_submit),
     url(r'^vehicle/?', views.vehicle),
-    # url(r'^verify_pass/?', views.verify_pass),
-    url(r'^verify/?', views.verify),
+    url(r'^verify_pass/?', views.verify_pass),                  # 车辆审核通过
+    url(r'^verify_refuse/?', views.verify_refuse),              # 车辆审核不通过
+    url(r'^verify/?', views.verify),                            # 显示车辆审核页面
     url(r'^excel_import/?', views.excel_import),
     url(r'^is_user_exist/?', views.is_user_exist),
     url(r'^check_code/?', views.check_code),

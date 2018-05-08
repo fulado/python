@@ -130,9 +130,9 @@
                     <td title="{{ vehicle.reason|default:'' }}">{{ vehicle.reason|default:'' }}</td>
                     <td>
                         <button type="button" class="see modify-vehicle-info" style="margin-right: 5px;" onclick="setVehicleInfo(
-                        '{{ vehicle.vehicle_type.id }}', '{{ vehicle.number }}',
-                        '{{ vehicle.engine }}', '{{ vehicle.vehicle_model }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
-                        '{{ vehicle.route }}', '{{ vehicle.id }}')">编辑</button>
+                        '{{ vehicle.vehicle_type.id }}', '{{ vehicle.number }}', '{{ vehicle.engine }}',
+                        '{{ vehicle.vehicle_model }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
+                        '{{ vehicle.route|linebreaksbr }}', '{{ vehicle.id }}')">编辑</button>
                         {% if vehicle.status.id == 1 %}
                         <a href="javascript:submit_vehicle('{{ user_id }}', '{{ vehicle.id }}');" class="see" style="margin-right: 5px;">提交</a>
                         {% endif %}
@@ -546,7 +546,7 @@
          $('.modify-vehicle input').eq(1).val(engine);              // 发动机型号
          $('.modify-vehicle input').eq(2).val(vehicle_model);       // 车辆型号
          $('.modify-vehicle input').eq(3).val(register_date);     // 车辆注册日期
-         $('.modify-vehicle textarea').val(route);                  // 运输路线
+         $('.modify-vehicle textarea').val(route.replace("<br />",""));                  // 运输路线
          $('.modify-vehicle input').eq(4).val(id);                  // 车辆id
     }
 

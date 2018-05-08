@@ -44,7 +44,6 @@ DATABASES = {
 }
 
 # settings for production
-
 # DEBUG = False
 #
 # ALLOWED_HOSTS = ['*', ]

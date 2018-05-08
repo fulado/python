@@ -14,9 +14,26 @@
       <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tj_orta_app/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="352">
-              <caret line="16" column="19" lean-forward="false" selection-start-line="16" selection-start-column="4" selection-end-line="16" selection-end-column="19" />
+            <state relative-caret-position="-7">
+              <caret line="22" column="16" lean-forward="false" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="16" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="enterprise.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/enterprise.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="312">
+              <caret line="241" column="78" lean-forward="false" selection-start-line="241" selection-start-column="66" selection-end-line="241" selection-end-column="78" />
+              <folding>
+                <element signature="n#style#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#div#1;n#body#0;n#html#0;n#!!top" expanded="false" />
+                <element signature="n#style#0;n#div#0;n#div#2;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#1;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#0;n#div#2;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -24,8 +41,8 @@
       <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tj_orta/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="548">
-              <caret line="149" column="59" lean-forward="false" selection-start-line="149" selection-start-column="59" selection-end-line="149" selection-end-column="59" />
+            <state relative-caret-position="-7">
+              <caret line="63" column="0" lean-forward="false" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -34,8 +51,8 @@
       <file leaf-file-name="main.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/main.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-640">
-              <caret line="37" column="65" lean-forward="false" selection-start-line="37" selection-start-column="65" selection-end-line="37" selection-end-column="65" />
+            <state relative-caret-position="727">
+              <caret line="99" column="15" lean-forward="true" selection-start-line="99" selection-start-column="15" selection-end-line="99" selection-end-column="15" />
               <folding />
             </state>
           </provider>
@@ -44,16 +61,46 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tj_orta_app/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="614">
-              <caret line="696" column="24" lean-forward="false" selection-start-line="696" selection-start-column="24" selection-end-line="696" selection-end-column="24" />
+            <state relative-caret-position="434">
+              <caret line="393" column="21" lean-forward="true" selection-start-line="393" selection-start-column="21" selection-end-line="393" selection-end-column="21" />
               <folding>
-                <element signature="e#6047#7421#0" expanded="false" />
-                <element signature="e#7469#7743#0" expanded="false" />
-                <element signature="e#7796#8837#0" expanded="false" />
-                <element signature="e#8877#10085#0" expanded="false" />
-                <element signature="e#10128#11545#0" expanded="false" />
-                <element signature="e#11588#11852#0" expanded="false" />
+                <element signature="e#487#512#0" expanded="false" />
+                <element signature="e#555#855#0" expanded="false" />
+                <element signature="e#890#2298#0" expanded="false" />
+                <element signature="e#2333#2595#0" expanded="false" />
+                <element signature="e#2636#3631#0" expanded="false" />
+                <element signature="e#3666#3755#0" expanded="false" />
+                <element signature="e#3802#4029#0" expanded="false" />
+                <element signature="e#4085#4647#0" expanded="false" />
+                <element signature="e#4690#6114#0" expanded="false" />
+                <element signature="e#6163#6475#0" expanded="false" />
+                <element signature="e#6523#8158#0" expanded="false" />
+                <element signature="e#8206#8480#0" expanded="false" />
+                <element signature="e#8533#9564#0" expanded="false" />
+                <element signature="e#9604#10812#0" expanded="false" />
+                <element signature="e#12351#12615#0" expanded="false" />
+                <element signature="e#12658#14193#0" expanded="false" />
+                <element signature="e#14242#14490#0" expanded="false" />
+                <element signature="e#14539#15244#0" expanded="false" />
+                <element signature="e#15289#19125#0" expanded="false" />
+                <element signature="e#19184#24728#0" expanded="false" />
+                <element signature="e#24772#25255#0" expanded="false" />
+                <element signature="e#25300#25415#0" expanded="false" />
+                <element signature="e#25418#25424#0" expanded="false" />
+                <element signature="e#25743#26783#0" expanded="false" />
+                <element signature="e#26825#28379#0" expanded="false" />
+                <element signature="e#28424#28949#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="utils.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tj_orta_app/utils.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-7">
+              <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -61,8 +108,8 @@
       <file leaf-file-name="verify.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/verify.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="365" column="69" lean-forward="false" selection-start-line="365" selection-start-column="58" selection-end-line="365" selection-end-column="69" />
+            <state relative-caret-position="328">
+              <caret line="403" column="58" lean-forward="false" selection-start-line="403" selection-start-column="45" selection-end-line="403" selection-end-column="58" />
               <folding />
             </state>
           </provider>
@@ -71,8 +118,8 @@
       <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tj_orta_app/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="592">
-              <caret line="28" column="29" lean-forward="false" selection-start-line="28" selection-start-column="29" selection-end-line="28" selection-end-column="29" />
+            <state relative-caret-position="-7">
+              <caret line="17" column="48" lean-forward="false" selection-start-line="17" selection-start-column="35" selection-end-line="17" selection-end-column="48" />
               <folding>
                 <element signature="e#0#32#0" expanded="true" />
               </folding>
@@ -83,14 +130,12 @@
       <file leaf-file-name="vehicle.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/vehicle.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="571">
-              <caret line="582" column="5" lean-forward="false" selection-start-line="582" selection-start-column="5" selection-end-line="582" selection-end-column="5" />
+            <state relative-caret-position="376">
+              <caret line="548" column="69" lean-forward="false" selection-start-line="548" selection-start-column="43" selection-end-line="548" selection-end-column="69" />
               <folding>
-                <element signature="e#2750#2756#0" expanded="true" />
-                <element signature="e#2757#2763#0" expanded="true" />
-                <element signature="e#2829#2835#0" expanded="true" />
-                <element signature="e#2836#2842#0" expanded="true" />
-                <element signature="e#7244#7250#0" expanded="true" />
+                <element signature="n#style#0;n#button#0;n#td#6;n#tr#0;n#tbody#0;n#table#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#a#1;n#td#6;n#tr#0;n#tbody#0;n#table#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <marker date="1525778019800" expanded="true" signature="23233:23250" ph="..." />
               </folding>
             </state>
           </provider>
@@ -130,6 +175,11 @@
       <find>../</find>
       <find>BASE_DIR</find>
       <find>refuse-content</find>
+      <find>verify_pass</find>
+      <find>verify-vehicle</find>
+      <find>submit_vehicle</find>
+      <find>limit</find>
+      <find>setVehicleInfo</find>
     </findStrings>
     <replaceStrings>
       <replace>/static/</replace>
@@ -147,7 +197,6 @@
         <option value="$PROJECT_DIR$/tj_orta_app/tests.py" />
         <option value="$PROJECT_DIR$/static/js/through.js" />
         <option value="$PROJECT_DIR$/static/js/login.js" />
-        <option value="$PROJECT_DIR$/templates/enterprise.html" />
         <option value="$PROJECT_DIR$/templates/404.html" />
         <option value="$PROJECT_DIR$/templates/500.html" />
         <option value="$PROJECT_DIR$/static/css/header.css" />
@@ -157,17 +206,18 @@
         <option value="$PROJECT_DIR$/templates/login.html" />
         <option value="$PROJECT_DIR$/templates/download.html" />
         <option value="$PROJECT_DIR$/tj_orta_app/utils.py" />
-        <option value="$PROJECT_DIR$/templates/verify.html" />
         <option value="$PROJECT_DIR$/tj_orta_app/models.py" />
         <option value="$PROJECT_DIR$/tj_orta/settings.py" />
-        <option value="$PROJECT_DIR$/templates/main.html" />
         <option value="$PROJECT_DIR$/tj_orta_app/urls.py" />
+        <option value="$PROJECT_DIR$/templates/enterprise.html" />
         <option value="$PROJECT_DIR$/templates/vehicle.html" />
+        <option value="$PROJECT_DIR$/templates/main.html" />
+        <option value="$PROJECT_DIR$/templates/verify.html" />
         <option value="$PROJECT_DIR$/tj_orta_app/views.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="960" />
     <option name="width" value="960" />
     <option name="height" value="1160" />
@@ -270,7 +320,6 @@
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
     </configuration>
     <configuration name="utils" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -288,7 +337,6 @@
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
     </configuration>
     <list size="2">
       <item index="0" class="java.lang.String" itemvalue="Python.utils" />
@@ -327,18 +375,19 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1176" extended-state="7" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20758693" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21428572" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32916266" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33173078" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.32910156" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32884616" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33173078" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25576922" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25480768" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -346,7 +395,6 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -359,24 +407,37 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/templates/enterprise.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4536">
-          <caret line="189" column="91" lean-forward="false" selection-start-line="189" selection-start-column="82" selection-end-line="189" selection-end-column="91" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tj_orta_app/views.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="576">
           <caret line="27" column="44" lean-forward="false" selection-start-line="27" selection-start-column="44" selection-end-line="27" selection-end-column="44" />
           <folding>
-            <element signature="e#6047#7421#0" expanded="false" />
-            <element signature="e#7469#7743#0" expanded="false" />
-            <element signature="e#7796#8837#0" expanded="false" />
-            <element signature="e#8877#10085#0" expanded="false" />
-            <element signature="e#10128#11545#0" expanded="false" />
-            <element signature="e#11588#11852#0" expanded="false" />
+            <element signature="e#487#512#0" expanded="false" />
+            <element signature="e#555#855#0" expanded="false" />
+            <element signature="e#890#2298#0" expanded="false" />
+            <element signature="e#2333#2595#0" expanded="false" />
+            <element signature="e#2636#3631#0" expanded="false" />
+            <element signature="e#3666#3755#0" expanded="false" />
+            <element signature="e#3802#4029#0" expanded="false" />
+            <element signature="e#4085#4647#0" expanded="false" />
+            <element signature="e#4690#6114#0" expanded="false" />
+            <element signature="e#6163#6475#0" expanded="false" />
+            <element signature="e#6523#8158#0" expanded="false" />
+            <element signature="e#8206#8480#0" expanded="false" />
+            <element signature="e#8533#9564#0" expanded="false" />
+            <element signature="e#9604#10812#0" expanded="false" />
+            <element signature="e#12351#12615#0" expanded="false" />
+            <element signature="e#12658#14193#0" expanded="false" />
+            <element signature="e#14242#14490#0" expanded="false" />
+            <element signature="e#14539#15244#0" expanded="false" />
+            <element signature="e#15289#19125#0" expanded="false" />
+            <element signature="e#19184#24728#0" expanded="false" />
+            <element signature="e#24772#25255#0" expanded="false" />
+            <element signature="e#25300#25415#0" expanded="false" />
+            <element signature="e#25418#25424#0" expanded="false" />
+            <element signature="e#25743#26783#0" expanded="false" />
+            <element signature="e#26825#28379#0" expanded="false" />
+            <element signature="e#28424#28949#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -438,13 +499,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/201804321321351.jpg" />
-    <entry file="file://$PROJECT_DIR$/tj_orta/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="2" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/static/certification/201804321321261.jpg" />
     <entry file="file://$PROJECT_DIR$/static/certification/201804321321423.jpg" />
     <entry file="file://$PROJECT_DIR$/static/certification/2018044fdasf374.jpg" />
@@ -487,13 +541,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="264">
           <caret line="77" column="32" lean-forward="true" selection-start-line="68" selection-start-column="3" selection-end-line="77" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/enterprise.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="22">
-          <caret line="262" column="0" lean-forward="false" selection-start-line="262" selection-start-column="0" selection-end-line="262" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -601,88 +648,134 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tj_orta_app/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tj_orta/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="548">
-          <caret line="149" column="59" lean-forward="false" selection-start-line="149" selection-start-column="59" selection-end-line="149" selection-end-column="59" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/lib/pycharm.jar!/resources/html5-schema/html5/core-scripting.rnc">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
           <caret line="12" column="16" lean-forward="false" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/main.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-640">
-          <caret line="37" column="65" lean-forward="false" selection-start-line="37" selection-start-column="65" selection-end-line="37" selection-end-column="65" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tj_orta_app/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="592">
-          <caret line="28" column="29" lean-forward="false" selection-start-line="28" selection-start-column="29" selection-end-line="28" selection-end-column="29" />
+        <state relative-caret-position="-7">
+          <caret line="17" column="48" lean-forward="false" selection-start-line="17" selection-start-column="35" selection-end-line="17" selection-end-column="48" />
           <folding>
             <element signature="e#0#32#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/verify.html">
+    <entry file="file://$PROJECT_DIR$/tj_orta_app/utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="365" column="69" lean-forward="false" selection-start-line="365" selection-start-column="58" selection-end-line="365" selection-end-column="69" />
+        <state relative-caret-position="-7">
+          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tj_orta/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="2" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/certification/201805321321274.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tj_orta_app/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-7">
+          <caret line="22" column="16" lean-forward="false" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/enterprise.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="312">
+          <caret line="241" column="78" lean-forward="false" selection-start-line="241" selection-start-column="66" selection-end-line="241" selection-end-column="78" />
+          <folding>
+            <element signature="n#style#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#div#1;n#body#0;n#html#0;n#!!top" expanded="false" />
+            <element signature="n#style#0;n#div#0;n#div#2;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#2;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tj_orta/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-7">
+          <caret line="63" column="0" lean-forward="false" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/main.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="727">
+          <caret line="99" column="15" lean-forward="true" selection-start-line="99" selection-start-column="15" selection-end-line="99" selection-end-column="15" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/vehicle.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="571">
-          <caret line="582" column="5" lean-forward="false" selection-start-line="582" selection-start-column="5" selection-end-line="582" selection-end-column="5" />
+        <state relative-caret-position="376">
+          <caret line="548" column="69" lean-forward="false" selection-start-line="548" selection-start-column="43" selection-end-line="548" selection-end-column="69" />
           <folding>
-            <element signature="e#2750#2756#0" expanded="true" />
-            <element signature="e#2757#2763#0" expanded="true" />
-            <element signature="e#2829#2835#0" expanded="true" />
-            <element signature="e#2836#2842#0" expanded="true" />
-            <element signature="e#7244#7250#0" expanded="true" />
+            <element signature="n#style#0;n#button#0;n#td#6;n#tr#0;n#tbody#0;n#table#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#1;n#td#6;n#tr#0;n#tbody#0;n#table#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <marker date="1525778019800" expanded="true" signature="23233:23250" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tj_orta_app/models.py">
+    <entry file="file://$PROJECT_DIR$/templates/verify.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="352">
-          <caret line="16" column="19" lean-forward="false" selection-start-line="16" selection-start-column="4" selection-end-line="16" selection-end-column="19" />
+        <state relative-caret-position="328">
+          <caret line="403" column="58" lean-forward="false" selection-start-line="403" selection-start-column="45" selection-end-line="403" selection-end-column="58" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tj_orta_app/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="614">
-          <caret line="696" column="24" lean-forward="false" selection-start-line="696" selection-start-column="24" selection-end-line="696" selection-end-column="24" />
+        <state relative-caret-position="434">
+          <caret line="393" column="21" lean-forward="true" selection-start-line="393" selection-start-column="21" selection-end-line="393" selection-end-column="21" />
           <folding>
-            <element signature="e#6047#7421#0" expanded="false" />
-            <element signature="e#7469#7743#0" expanded="false" />
-            <element signature="e#7796#8837#0" expanded="false" />
-            <element signature="e#8877#10085#0" expanded="false" />
-            <element signature="e#10128#11545#0" expanded="false" />
-            <element signature="e#11588#11852#0" expanded="false" />
+            <element signature="e#487#512#0" expanded="false" />
+            <element signature="e#555#855#0" expanded="false" />
+            <element signature="e#890#2298#0" expanded="false" />
+            <element signature="e#2333#2595#0" expanded="false" />
+            <element signature="e#2636#3631#0" expanded="false" />
+            <element signature="e#3666#3755#0" expanded="false" />
+            <element signature="e#3802#4029#0" expanded="false" />
+            <element signature="e#4085#4647#0" expanded="false" />
+            <element signature="e#4690#6114#0" expanded="false" />
+            <element signature="e#6163#6475#0" expanded="false" />
+            <element signature="e#6523#8158#0" expanded="false" />
+            <element signature="e#8206#8480#0" expanded="false" />
+            <element signature="e#8533#9564#0" expanded="false" />
+            <element signature="e#9604#10812#0" expanded="false" />
+            <element signature="e#12351#12615#0" expanded="false" />
+            <element signature="e#12658#14193#0" expanded="false" />
+            <element signature="e#14242#14490#0" expanded="false" />
+            <element signature="e#14539#15244#0" expanded="false" />
+            <element signature="e#15289#19125#0" expanded="false" />
+            <element signature="e#19184#24728#0" expanded="false" />
+            <element signature="e#24772#25255#0" expanded="false" />
+            <element signature="e#25300#25415#0" expanded="false" />
+            <element signature="e#25418#25424#0" expanded="false" />
+            <element signature="e#25743#26783#0" expanded="false" />
+            <element signature="e#26825#28379#0" expanded="false" />
+            <element signature="e#28424#28949#0" expanded="false" />
           </folding>
         </state>
       </provider>

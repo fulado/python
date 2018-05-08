@@ -44,7 +44,7 @@
         <li class="main">企业管理</li>
         <li class="down_menu" data-url="/enterprise">企业信息</li>
         {% endif %}
-        {% if user.authority.id == 99 %}
+        {% if user.authority.id != 1%}
         <li class="main">审核管理</li>
         <li class="down_menu" data-url="/verify">车辆审核</li>
         {% endif %}
@@ -58,8 +58,8 @@
     {% if user.authority.id == 1 or user.authority.id == 99 %}
     <iframe src="/vehicle" frameborder="0" width="100%" height="100%"  id="content_iframe"></iframe>
     {% endif %}
-    {% if user.authority.id == 3 %}
-    <iframe src="/enterprise" frameborder="0" width="100%" height="100%"  id="content_iframe"></iframe>
+    {% if user.authority.id == 3 or user.authority.id == 2 %}
+    <iframe src="/verify" frameborder="0" width="100%" height="100%"  id="content_iframe"></iframe>
     {% endif %}
 </div>
 

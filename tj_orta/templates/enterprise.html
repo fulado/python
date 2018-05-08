@@ -83,7 +83,8 @@
                         '{{ enterprise.username }}', '{{ enterprise.authority.id }}',
                         '{{ enterprise.enterprise_name }}', '{{ enterprise.enterprise_phone }}',
                         '{{ enterprise.legal_person }}', '{{ enterprise.organization_code }}',
-                        '{{ enterprise.contact }}', '{{ enterprise.contact_phone }}', '{{ enterprise.id }}')">查看</button>
+                        '{{ enterprise.contact }}', '{{ enterprise.contact_phone }}', '{{ enterprise.id }}',
+                        '{{ enterprise.limit_number }}')">查看</button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -120,7 +121,7 @@
 
 <!--模态框-->
 <!-- 新增企业 -->
-<div class="pop-up add-enterprise" style="display: none; height: 700px;">
+<div class="pop-up add-enterprise" style="display: none;height: 760px;">
     <div class="my-modal-title">
         <p>新增企业</p>
     </div>
@@ -170,10 +171,14 @@
                     <option value="3">交管局权限</option>
                 </select>
             </div>
+            <div>
+                <label>通行证申请上限</label>
+                <input type="text" placeholder="输入可申请通行证上限" name="limit_number" />
+            </div>
         </form>
     </div>
     <div class="my-modal-footer">
-        <div class="clickbtn" style="margin: 0px;width: 410px;text-align: center;">
+        <div class="clickbtn" style="margin: 5px;width: 410px;text-align: center;margin-left: 25px;">
             <button type="button" class="btn save">保存</button>
             <button type="button" class="btn reset" style="display: none;">重置</button>
             <button type="button" class="btn del" style="margin: 0px;">取消</button>
@@ -182,7 +187,7 @@
 </div>
 
 <!-- 编辑企业信息 -->
-<div class="pop-up modify-enterprise" style="display: none; height: 700px;">
+<div class="pop-up modify-enterprise" style="display: none;height: 760px;">
     <div class="my-modal-title">
         <p>编辑企业</p>
     </div>
@@ -232,11 +237,15 @@
                     <option value="3">交管局权限</option>
                 </select>
             </div>
+            <div class="limit">
+                <label>通行证申请上限</label>
+                <input type="text" placeholder="输入可申请通行证上限" name="limit_number" />
+            </div>
             <input type="hidden" name="id" />
         </form>
     </div>
     <div class="my-modal-footer">
-        <div class="clickbtn" style="margin: 0px;width: 460px;text-align: center;">
+        <div class="clickbtn" style="margin: 5px;width: 460px;text-align: center;">
             <button type="button" class="btn save">保存</button>
             <button type="button" class="btn delete">删除</button>
             <button type="button" class="btn del" style="margin: 0px;">取消</button>
@@ -361,7 +370,7 @@
 
     // 填充编辑企业模态框信息
     function setUserInfo(username, authority, enterprise_name, enterprise_phone, legal_person,
-                    organization_code, contact, contact_phone, id) {
+                    organization_code, contact, contact_phone, id, limit_number) {
         $('.modify-enterprise .ePrisename input').val(enterprise_name);     // 企业名称
         $('.modify-enterprise .contact input').val(enterprise_phone);       // 企业联系方式
         $('.modify-enterprise .corporation input').val(legal_person);       // 法人
@@ -371,6 +380,7 @@
         $('.modify-enterprise .user input').val(username);                  // 帐号
         $('.modify-enterprise select').val(authority);                      // 权限
         $('.modify-enterprise input').last().val(id);                       // id
+        $('.modify-enterprise .limit input').val(limit_number);             // 车辆数量
 
         $('.modify-enterprise .pwd input').val('########');                 // 密码
     }
