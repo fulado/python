@@ -10,6 +10,7 @@ from .decorator import login_check
 import hashlib
 import time
 import datetime
+import calendar
 import random
 import os
 import xlrd
@@ -870,14 +871,27 @@ def verify_pass(request):
         if truck.status_id == 4:
             # 生成通行证图片
             # 生成通行证id, 201805+车牌号+三位随机数
-            # certification_id = '%s%s%d%d%d' % (time.strftime('%Y%m', time.localtime()), truck.number[1:], random.randint(0, 9),
-            #                                    random.randint(0, 9), random.randint(0, 9))
-            # 临时设定, 记得改掉
-            certification_id = '%s%s%d%d%d' % ('201805', truck.number[1:], random.randint(0, 9), random.randint(0, 9),
-                                               random.randint(0, 9))
+            # 获取当前年, 月
+            year = time.localtime().tm_year
+            month = time.localtime().tm_mon
+            # 如果是12月, 则年+1, 月变为1; 否则, 月+1
+            if month == 12:
+                year += 1
+                month = 1
+            else:
+                month += 1
 
+            if month < 10:
+                id_start = '%d0%d' % (year, month)
+            else:
+                id_start = '%d%d' % (year, month)
+
+            certification_id = '%s%s%d%d%d' % (id_start, truck.number[1:], random.randint(0, 9), random.randint(0, 9),
+                                               random.randint(0, 9))
             truck.cert_id = certification_id
-            limit_data = '2018年5月31日'  # 暂时写为5月底
+            # 计算通行证截至日期
+            end_day = calendar.monthrange(year, month)[1]
+            limit_data = '%d年%d月%d日' % (year, month, end_day)
             number = '%s' % truck.number
             enterprise_name = truck.enterprise.enterprise_name
             route = truck.route
