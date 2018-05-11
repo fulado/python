@@ -43,6 +43,22 @@ DATABASES = {
     }
 }
 
+# settings for test
+# DEBUG = False
+#
+# ALLOWED_HOSTS = []
+#
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'tj_orta',
+#         'PORT': 3306,
+#         'HOST': '192.168.188.11',
+#         'USER': 'ethane',
+#         'PASSWORD': 'yxtc_20921',
+#     }
+# }
+
 # settings for production
 # DEBUG = False
 #

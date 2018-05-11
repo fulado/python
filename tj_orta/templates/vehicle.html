@@ -97,7 +97,14 @@
         <div class="search_input">
             <label for="ss">车辆搜索</label>
             <form action="/vehicle" method="GET" style="display: inline-block;">
-                <input type="text" placeholder="输入车牌号码" id="ss" name="search_name" />
+                <input type="text" placeholder="输入车牌号码" id="ss" name="number" value="{{ number }}" />
+                <select name="status">
+                    <option value="0" {% if status == 0 %}selected{% endif %}>全部车辆</option>
+                    <option value="1" {% if status == 1 %}selected{% endif %}>未提交车辆</option>
+                    <option value="2" {% if status == 2 %}selected{% endif %}>待审核车辆</option>
+                    <option value="4" {% if status == 4 %}selected{% endif %}>已通过车辆</option>
+                    <option value="5" {% if status == 5 %}selected{% endif %}>未通过车辆</option>
+                </select>
             </form>
             <span class="find_btn">查询</span>
             <span class="add_account" id="add">新增车辆</span>
@@ -134,7 +141,9 @@
                         '{{ vehicle.vehicle_model }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
                         '{{ vehicle.route|linebreaksbr }}', '{{ vehicle.id }}')">编辑</button>
                         {% if vehicle.status.id == 1 %}
-                        <a href="javascript:submit_vehicle('{{ user_id }}', '{{ vehicle.id }}');" class="see" style="margin-right: 5px;">提交</a>
+                        <a href="javascript:submit_vehicle('{{ user_id }}', '{{ vehicle.id }}',  '{{ vehicle.vehicle_type.id }}',
+                        '{{ vehicle.number }}', '{{ vehicle.engine }}', '{{ vehicle.vehicle_model }}',
+                        '{{ vehicle.register_date|date:'Y-m-d' }}', '{{ vehicle.route|linebreaksbr }}');" class="see" style="margin-right: 5px;">提交</a>
                         {% endif %}
                         {% if vehicle.status.id == 4 %}
                         <a href="/static/certification/{{ vehicle.file_name }}" target="_Blank" class="see download" style="margin-right: 5px;">下载</a>
@@ -150,21 +159,22 @@
     <div id="pageToolbar">
         <div id="Paging_009071537570730115" class="ui-paging-container">
             <ul>
-                <a href="/vehicle?page_num=1&search_name={{ search_name }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
-                <a href="/vehicle?page_num={{ mp.current_num|add:-1 }}&search_name={{ search_name }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
+                <a href="/vehicle?page_num=1&number={{ number }}&status={{ status }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
+                <a href="/vehicle?page_num={{ mp.current_num|add:-1 }}&number={{ number }}&status={{ status }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
                 {% for num in mp.page_range %}
                     {% if num == mp.current_num %}
-                    <a href="/vehicle?page_num={{ num }}&search_name={{ search_name }}"><li class="ui-pager focus">{{ num }}</li></a>
+                    <a href="/vehicle?page_num={{ num }}&search_name={{ number }}&status={{ status }}"><li class="ui-pager focus">{{ num }}</li></a>
                     {% else %}
-                    <a href="/vehicle?page_num={{ num }}&search_name={{ search_name }}"><li class="ui-pager">{{ num }}</li></a>
+                    <a href="/vehicle?page_num={{ num }}&search_name={{ number }}&status={{ status }}"><li class="ui-pager">{{ num }}</li></a>
                     {% endif %}
                 {% endfor %}
-                <a href="/vehicle?page_num={{ mp.current_num|add:1 }}&search_name={{ search_name }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
-                <a href="/vehicle?page_num={{ mp.total_pages }}&search_name={{ search_name }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
+                <a href="/vehicle?page_num={{ mp.current_num|add:1 }}&number={{ number }}&status={{ status }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
+                <a href="/vehicle?page_num={{ mp.total_pages }}&number={{ number }}&status={{ status }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
                 <li class="ui-paging-toolbar">
                     <form action="/vehicle" method="GET">
                         <input type="text" class="ui-paging-count" style="font-size: 12px;" name="page_num" value="{{ mp.current_num }}" />
-                        <input type="hidden" name="search_name" value="{{ search_name }}" />
+                        <input type="hidden" name="number" value="{{ number }}" />
+                        <input type="hidden" name="status" value="{{ status }}" />
                         <span>/&nbsp;{{ mp.total_pages }}</span>
                         <a href="javascript:jump()">跳转</a>
                     </form>
@@ -282,7 +292,7 @@
                 <tr>
                     <td><span>发动机型号</span></td>
                     <td>
-                        <input type="text" placeholder="请输入发动机型号" name="engine">
+                        <input type="text" placeholder="请输入发动机型号，挂车不填" name="engine">
                     </td>
                 </tr>
                 <tr>
@@ -422,41 +432,32 @@
 
         // 保存新增车辆
         $('.add-vehicle .save').click(function() {
-            var number = $('.add-vehicle input').eq(0).val();
-            var engine = $('.add-vehicle input').eq(1).val();
-            var vehicle_model = $('.add-vehicle input').eq(2).val();
-            var register_date = $('.add-vehicle input').eq(3).val();
-            var route = $('.add-vehicle textarea').val();
+            var number = $('.add-vehicle input').eq(0).val().replace(/\s+/g,"");
+            var engine = $('.add-vehicle input').eq(1).val().replace(/\s+/g,"");
+            var vehicle_model = $('.add-vehicle input').eq(2).val().replace(/\s+/g,"");
+            var register_date = $('.add-vehicle input').eq(3).val().replace(/\s+/g,"");
+            var route = $('.add-vehicle textarea').val().replace(/\s+/g,"");
+            var vehicle_type = $('.add-vehicle select').eq(0).val();
 
-            if (number == '') {
+            if (!(vehicle_type == '1' || vehicle_type == '2' || vehicle_type == '15')) {
+                alert('请选择正确的车辆类型');
+            }
+            else if (number.length == 0) {
                 alert('请输入正确的号牌号码');
             }
-            else if (engine == '') {
+            else if (vehicle_type != 15 && engine.length == 0) {
                 alert('请输入正确的发动机型号');
             }
-            else if (vehicle_model == '') {
+            else if (vehicle_model.length == 0) {
                 alert('请输入正确的车辆型号');
             }
-            else if (register_date == '') {
+            else if (register_date.length == 0) {
                 alert('请选择正确的车辆注册日期');
             }
-            else if (route == '') {
+            else if (route.length == 0) {
                 alert('请输入正确的行驶路线');
             }
             else if (confirm('是否保存新增车辆信息？')) {
-                // 判断车辆是否已经存在
-                /*
-                $.get('/is_user_exist', {'username': username}, function(data) {
-                    if (data.is_exist) {
-                        alert('账号名称已经存在，请使用其它账号名称');
-                    }
-                    else if (confirm('是否保存新增企业信息？')) {
-                        $('.add-enterprise form').submit();
-                        $('.add-enterprise').hide();
-                        $('.mask').hide();
-                    }
-                });
-                */
                 $('.add-vehicle form').submit();
                 $('.add-vehicle').hide();
                 $('.mask').hide();
@@ -465,41 +466,32 @@
 
         // 保存编辑车辆
         $('.modify-vehicle .save').click(function() {
-            var number = $('.modify-vehicle input').eq(0).val();
-            var engine = $('.modify-vehicle input').eq(1).val();
-            var vehicle_model = $('.modify-vehicle input').eq(2).val();
-            var register_date = $('.modify-vehicle input').eq(3).val();
-            var route = $('.modify-vehicle textarea').val();
+            var number = $('.modify-vehicle input').eq(0).val().replace(/\s+/g,"");
+            var engine = $('.modify-vehicle input').eq(1).val().replace(/\s+/g,"");
+            var vehicle_model = $('.modify-vehicle input').eq(2).val().replace(/\s+/g,"");
+            var register_date = $('.modify-vehicle input').eq(3).val().replace(/\s+/g,"");
+            var route = $('.modify-vehicle textarea').val().replace(/\s+/g,"");
+            var vehicle_type = $('.modify-vehicle select').eq(0).val();
 
-            if (number == '') {
+            if (!(vehicle_type == '1' || vehicle_type == '2' || vehicle_type == '15')) {
+                alert('请选择正确的车辆类型');
+            }
+            else if (number.length == 0) {
                 alert('请输入正确的号牌号码');
             }
-            else if (engine == '') {
+            else if (vehicle_type != 15 && engine.length == 0) {
                 alert('请输入正确的发动机型号');
             }
-            else if (vehicle_model == '') {
+            else if (vehicle_model.length == 0) {
                 alert('请输入正确的车辆型号');
             }
-            else if (register_date == '') {
+            else if (register_date.length == 0) {
                 alert('请选择正确的车辆注册日期');
             }
-            else if (route == '') {
+            else if (route.length == 0) {
                 alert('请输入正确的行驶路线');
             }
             else if (confirm('是否保存车辆信息？')) {
-                // 判断车辆是否已经存在
-                /*
-                $.get('/is_user_exist', {'username': username}, function(data) {
-                    if (data.is_exist) {
-                        alert('账号名称已经存在，请使用其它账号名称');
-                    }
-                    else if (confirm('是否保存新增企业信息？')) {
-                        $('.add-enterprise form').submit();
-                        $('.add-enterprise').hide();
-                        $('.mask').hide();
-                    }
-                });
-                */
                 $('.modify-vehicle form').prop('action', '/vehicle_modify');
                 $('.modify-vehicle form').submit();
                 $('.modify-vehicle').hide();
@@ -555,17 +547,35 @@
         $('#pageToolbar form').submit();
     }
 
-    // 提交车辆, 需要判断是否已经达到上限
-    function submit_vehicle(user_id, vehicle_id) {
+    // 提交车辆, 需要判断是否已经达到上限, 并判断车辆信息是否填写完整, 挂车(15)可不填写发动机型号
+    function submit_vehicle(user_id, vehicle_id, vehicle_type, number, engine, vehicle_model, register_date, route) {
         // 判断是否已经到达提交上限
         $.get('/is_reach_limit', {'user_id': user_id}, function(data) {
             if (data.result) {
                 alert('已经到达通行证申请上限，不能提交申请');
             }
-            else {
-                window.location.href = "/vehicle_submit?vehicle_id="+vehicle_id;
+            else if (!(vehicle_type == '1' || vehicle_type == '2' || vehicle_type == '15')) {
+                alert('请选择正确的车辆类型');
             }
-        });
+            else if (number.replace(/\s+/g,"").length == 0) {
+                alert('请输入正确的号牌号码');
+            }
+            else if (vehicle_type != 15 && engine.replace(/\s+/g,"").length == 0) {
+                alert('请输入正确的发动机型号');
+            }
+            else if (vehicle_model.replace(/\s+/g,"").length == 0) {
+                alert('请输入正确的车辆型号');
+            }
+            else if (register_date.replace(/\s+/g,"").length == 0) {
+                alert('请选择正确的车辆注册日期');
+            }
+            else if (route.replace(/\s+/g,"").length == 0) {
+                alert('请输入正确的行驶路线');
+            }
+            else {
+                window.location.href = "/vehicle_submit?vehicle_id=" + vehicle_id;
+            }
+        });;
     }
 
     // 提交全部车辆, 判断是否到达上限, 如到达上限, 则仅提交部分车辆, 并给出提示
@@ -574,10 +584,20 @@
         $.get('/can_submit_all', {'user_id': user_id}, function(data) {
             window.location.href = "/vehicle_submit_all";
             if (data.result) {
-                alert('已提交全部车辆');
+                if (data.error_num > 0) {
+                     alert('本次提交车辆'+ data.vehicle_num +'辆，因信息不全无法提交车辆'+ data.error_num +'辆');
+                }
+                else {
+                    alert('已提交全部车辆');
+                }
             }
             else {
-                alert('车辆超出允许提交的上限，本次提交车辆'+ data.allow_number +'辆，未提交车辆'+ data.ignore_num +'辆');
+                if (data.error_num > 0) {
+                    alert('车辆超出允许提交的上限，本次提交车辆'+ data.vehicle_num +'辆，未提交车辆'+ data.ignore_num +'辆，因信息不全无法提交车辆' + data.error_num +'辆');
+                }
+                else {
+                    alert('车辆超出允许提交的上限，本次提交车辆'+ data.vehicle_num +'辆，未提交车辆'+ data.ignore_num +'辆');
+                }
             }
         });
     }

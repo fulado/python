@@ -94,7 +94,7 @@
                     {% endif %}
                     <option value="2" {% if status == 2 %}selected{% endif %}>环保局审核车辆</option>
                     {% if authority == 3 or authority == 99 %}
-                    <option value="4" {% if status == 4 %}selected{% endif %}>通过车辆</option>
+                    <option value="4" {% if status == 4 %}selected{% endif %}>已通过车辆</option>
                     {% endif %}
                     <option value="5" {% if status == 5 %}selected{% endif %}>未通过车辆</option>
                     <option value="0" {% if status == 0 %}selected{% endif %}>全部车辆</option>
@@ -110,6 +110,7 @@
             <thead>
                 <tr>
                     <td style="width: 4%">序号</td>
+                    <td>所属企业</td>
                     <td>号牌号码</td>
                     <td>车辆类型</td>
                     <td>发动机型号</td>
@@ -122,6 +123,7 @@
                 {% for vehicle in mp.object_list %}
                 <tr>
                     <td style="width: 4%">{{ forloop.counter }}</td>
+                    <td title="{{ vehicle.enterprise.enterprise_name }}">{{ vehicle.enterprise.enterprise_name }}</td>
                     <td title="{{ vehicle.number }}">{{ vehicle.number }}</td>
                     <td title="{{ vehicle.vehicle_type.name }}">{{ vehicle.vehicle_type.name }}</td>
                     <td title="{{ vehicle.engine }}">{{ vehicle.engine }}</td>
@@ -131,7 +133,8 @@
                         <button type="button" class="see verify-vehicle-info" style="margin-right: 5px;"
                                 onclick="setVehicleInfo('{{ vehicle.vehicle_type.id }}', '{{ vehicle.number }}',
                         '{{ vehicle.engine }}', '{{ vehicle.vehicle_model }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
-                        '{{ vehicle.route|linebreaksbr }}', '{{ vehicle.id }}', '{{ vehicle.status.id }}', '{{ authority }}')">
+                        '{{ vehicle.route|linebreaksbr }}', '{{ vehicle.id }}', '{{ vehicle.status.id }}', '{{ authority }}',
+                        '{{ vehicle.enterprise.enterprise_name }}')">
                             {% if vehicle.status.id == 2 and authority == 2 %}
                                 审核
                             {% elif vehicle.status.id == 3 and authority == 3 %}
@@ -181,7 +184,7 @@
 
 <!-- 模态框 -->
 <!-- 审核车辆 -->
-<div class="pop-up verify-vehicle my-modal-dialog">
+<div class="pop-up verify-vehicle my-modal-dialog" style="height: 750px;">
     <div class="my-modal-title">
         <p>审核车辆</p>
     </div>
@@ -190,6 +193,12 @@
             <table>
                 <tr>
                     <td colspan="2"><p style="padding: 20px;">车辆信息</p></td>
+                </tr>
+                <tr>
+                    <td><span>所属企业</span></td>
+                    <td>
+                        <input type="text" placeholder="所属企业" />
+                    </td>
                 </tr>
                 <tr>
                     <td><span>车辆类型</span></td>
@@ -397,14 +406,15 @@
     });
 
      // 填充审核车辆模态框信息
-    function setVehicleInfo(vehicle_type, number, engine, vehicle_model, register_date, route, id, status, authority) {
+    function setVehicleInfo(vehicle_type, number, engine, vehicle_model, register_date, route, id, status, authority, enterprise) {
         $('.verify-vehicle select').eq(0).val(vehicle_type);       // 车辆类型
-        $('.verify-vehicle input').eq(0).val(number);              // 号牌号码
-        $('.verify-vehicle input').eq(1).val(engine);              // 发动机型号
-        $('.verify-vehicle input').eq(2).val(vehicle_model);       // 车辆型号
-        $('.verify-vehicle input').eq(3).val(register_date);       // 车辆注册日期
+        $('.verify-vehicle input').eq(1).val(number);              // 号牌号码
+        $('.verify-vehicle input').eq(2).val(engine);              // 发动机型号
+        $('.verify-vehicle input').eq(3).val(vehicle_model);       // 车辆型号
+        $('.verify-vehicle input').eq(4).val(register_date);       // 车辆注册日期
         $('.verify-vehicle textarea').val(route.replace("<br />",""));                  // 运输路线
-        $('.verify-vehicle input').eq(4).val(id);                  // 车辆id
+        $('.verify-vehicle input').eq(5).val(id);                  // 车辆id
+        $('.verify-vehicle input').eq(0).val(enterprise);              // 号牌号码
 
         // 如果是环保局权限, 并且车辆处于环保局审核状态, 显示审核按钮
         if (status == '2' && authority == '2') {

@@ -305,14 +305,23 @@ def vehicle(request):
     if user_id != '' and user_id != 1:
         vehicle_list = Vehicle.objects.filter(enterprise_id=user_id).order_by('id')
     else:
-        vehicle_list = Vehicle.objects.all().order_by('-modify_time')
+        vehicle_list = Vehicle.objects.all().order_by('id')
+
+    # 获取用户选择的车辆查询状态
+    status = int(request.GET.get('status', 0))
+
+    # 根据不同状态过滤车辆
+    if status == 2:
+        vehicle_list = vehicle_list.filter(status_id__in=[2, 3]).order_by('id')
+    elif status != 0:
+        vehicle_list = vehicle_list.filter(status_id=status).order_by('id')
 
     # 获取车辆搜索信息
-    search_name = request.GET.get('search_name', '')
+    number = request.GET.get('number', '')
 
     # 在结果集中搜索包含搜索信息的车辆, 车辆搜索功能不完善, 指数如车牌号,不要输入号牌所在地
-    if search_name != '':
-        vehicle_list = vehicle_list.filter(number__contains=search_name)
+    if number != '':
+        vehicle_list = vehicle_list.filter(number__contains=number)
 
     # 获得用户指定的页面
     page_num = int(request.GET.get('page_num', 1))
@@ -321,8 +330,8 @@ def vehicle(request):
     mp = MyPaginator()
     mp.paginate(vehicle_list, 10, page_num)
 
-    context = {'mp': mp, 'search_name': search_name, 'limit_number': limit_number, 'applied_number': applied_number,
-               'user_id': user_id}
+    context = {'mp': mp, 'number': number, 'limit_number': limit_number, 'applied_number': applied_number,
+               'user_id': user_id, 'status': status}
 
     return render(request, 'vehicle.html', context)
 
@@ -509,15 +518,45 @@ def can_submit_all(request):
             allow_number = 0
 
         # 查询本次提交需要提交的车辆总数
-        vehicle_num = Vehicle.objects.filter(enterprise_id=user_id).filter(status_id=1).count()
+        vehicle_list = Vehicle.objects.filter(enterprise_id=user_id).filter(status_id=1)
+        # 可以提交的车辆数量
+        vehicle_num = 0
+        # 信息不全的车辆数量
+        error_num = 0
+        for truck in vehicle_list:
+            vehicle_type = str(truck.vehicle_type_id).strip()
+            number = str(truck.number).strip()
+            engine = str(truck.engine).strip()
+            vehicle_model = str(truck.vehicle_model).strip()
+            register_date = str(truck.register_date).strip()
+            route = str(truck.route).strip()
+
+            could_submit = True
+            if len(number) == 0 or number == 'None':
+                could_submit = False
+            elif len(vehicle_model) == 0 or vehicle_model == 'None':
+                could_submit = False
+            elif len(register_date) == 0 or register_date == 'None':
+                could_submit = False
+            elif len(route) == 0 or route == 'None':
+                could_submit = False
+            elif (len(engine) == 0 or engine == 'None') and vehicle_type != 15:
+                could_submit = False
+
+            if could_submit:
+                vehicle_num += 1
+            else:
+                error_num += 1
 
         # 如果提交车辆的总数大于允许提交总数, 返回本次提交的数量和未提交的数量
         ignore_num = 0
         if vehicle_num > allow_number:
             result = False
             ignore_num = vehicle_num - allow_number
+            vehicle_num = allow_number
 
-    return JsonResponse({'result': result, 'allow_number': allow_number, 'ignore_num': ignore_num})
+    return JsonResponse({'result': result, 'vehicle_num': vehicle_num, 'ignore_num': ignore_num,
+                         'error_num': error_num})
 
 
 # 批量导入车辆信息
