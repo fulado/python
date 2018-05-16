@@ -17,6 +17,16 @@
     <link rel="stylesheet" type="text/css" href="/static/css/darktooltip.css"/>
 
     <style type="text/css">
+        .table_container .search_input select{
+            width: 150px;
+            height: 24px;
+            border-radius: 4px;
+            padding-left: 10px;
+            background-color: #f9f9f9;
+            border: solid 1px #eeeeee;
+            margin-right: 10px;
+            outline: none;
+        }
         /* 模态框 */
         .my-modal-dialog{
             position: absolute;
@@ -69,19 +79,19 @@
             text-decoration: none;
         }
 
-         .pop-up1 .btndiv input,.pop-up1 .btndiv button{
-             display: inline-block;
-             background-color: #25b4b2;
-             border: solid 1px #189694;
-             color: #fff;
-             margin-left: 160px;
-             background: #139b99;
-         }
+        .pop-up1 .btndiv input,.pop-up1 .btndiv button{
+         display: inline-block;
+         background-color: #25b4b2;
+         border: solid 1px #189694;
+         color: #fff;
+         margin-left: 160px;
+         background: #139b99;
+        }
 
-         .table_head .number_word{
-            float: right;
-            margin-right: 20px;
-         }
+        .table_head .number_word{
+        float: right;
+        margin-right: 20px;
+        }
 
     </style>
     <title></title>
@@ -110,7 +120,9 @@
             <span class="add_account" id="add">新增车辆</span>
             <a href="/static/excel/vehicle.xls"><span class="out outexcel">模版下载</span></a>
             <span class="out import-excel">导入车辆</span>
+            {% if allow_submit %}
             <a href="javascript:submit_all('{{ user_id }}');"><span class="out">全部提交</span></a>
+            {% endif %}
 
         </div>
         <!--检索结果-->
@@ -140,7 +152,7 @@
                         '{{ vehicle.vehicle_type.id }}', '{{ vehicle.number }}', '{{ vehicle.engine }}',
                         '{{ vehicle.vehicle_model }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
                         '{{ vehicle.route|linebreaksbr }}', '{{ vehicle.id }}')">编辑</button>
-                        {% if vehicle.status.id == 1 %}
+                        {% if allow_submit and vehicle.status.id == 1 %}
                         <a href="javascript:submit_vehicle('{{ user_id }}', '{{ vehicle.id }}',  '{{ vehicle.vehicle_type.id }}',
                         '{{ vehicle.number }}', '{{ vehicle.engine }}', '{{ vehicle.vehicle_model }}',
                         '{{ vehicle.register_date|date:'Y-m-d' }}', '{{ vehicle.route|linebreaksbr }}');" class="see" style="margin-right: 5px;">提交</a>
@@ -551,7 +563,10 @@
     function submit_vehicle(user_id, vehicle_id, vehicle_type, number, engine, vehicle_model, register_date, route) {
         // 判断是否已经到达提交上限
         $.get('/is_reach_limit', {'user_id': user_id}, function(data) {
-            if (data.result) {
+            if (!data.allow_submit) {
+                alert('每月提交申请最后期限为25日, 无法提交申请');
+            }
+            else if (data.result) {
                 alert('已经到达通行证申请上限，不能提交申请');
             }
             else if (!(vehicle_type == '1' || vehicle_type == '2' || vehicle_type == '15')) {
@@ -582,7 +597,7 @@
     function submit_all(user_id) {
         // 判断是否可以提交全部车辆
         $.get('/can_submit_all', {'user_id': user_id}, function(data) {
-            window.location.href = "/vehicle_submit_all";
+            could_submit = true;
             if (data.result) {
                 if (data.error_num > 0) {
                      alert('本次提交车辆'+ data.vehicle_num +'辆，因信息不全无法提交车辆'+ data.error_num +'辆');
@@ -592,12 +607,20 @@
                 }
             }
             else {
-                if (data.error_num > 0) {
+                if (data.vehicle_num == 0) {
+                    alert('每月提交申请最后期限为25日, 无法提交申请');
+                    could_submit = false;
+                }
+                else if (data.error_num > 0) {
                     alert('车辆超出允许提交的上限，本次提交车辆'+ data.vehicle_num +'辆，未提交车辆'+ data.ignore_num +'辆，因信息不全无法提交车辆' + data.error_num +'辆');
                 }
                 else {
                     alert('车辆超出允许提交的上限，本次提交车辆'+ data.vehicle_num +'辆，未提交车辆'+ data.ignore_num +'辆');
                 }
+            }
+
+            if (could_submit) {
+                window.location.href = "/vehicle_submit_all";
             }
         });
     }

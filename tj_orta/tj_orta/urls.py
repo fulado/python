@@ -15,8 +15,22 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from apscheduler.schedulers.background import BackgroundScheduler
+from tj_orta_app.views import forbid_submit, init_sys
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('tj_orta_app.urls')),
 ]
+
+
+# 定时任务
+Scheduler = BackgroundScheduler()
+# 每月25日0点, 禁止提交申请
+Scheduler.add_job(forbid_submit, 'cron', day=26, hour=0, minute=0, second=0)
+# 每月1日1点, 重置数据库
+Scheduler.add_job(init_sys, 'cron', day=15, hour=11, minute=49, second=0)
+
+Scheduler.start()
+
+

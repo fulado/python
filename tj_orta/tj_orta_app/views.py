@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import HttpResponseRedirect
 from django.http import JsonResponse
 from django.shortcuts import HttpResponse
-from .models import User, Vehicle, Authority
+from .models import User, Vehicle, SysStatus, Backup1
 from tj_orta.utils import MyPaginator
 from .utils import generate_certification
 from tj_orta import settings
@@ -14,6 +14,7 @@ import calendar
 import random
 import os
 import xlrd
+import xlwt
 from PIL import Image, ImageDraw, ImageFont
 import io
 # Create your views here.
@@ -55,9 +56,9 @@ def check_code(request):
     rand_str = ''
     for i in range(0, 4):
         rand_str += str1[random.randrange(0, len(str1))]
-    # 构造字体对象，ubuntu的字体路径为“/usr/share/fonts/truetype/freefont”
+    # 设置字体
     font = ImageFont.truetype(r"%s/simsun.ttf" % settings.FONTS_DIR, 23)
-    # 构造字体颜色
+    # 字体颜色
     fontcolor = (255, 243, 67)
     # 绘制4个字
     draw.text((5, 2), rand_str[0], font=font, fill=fontcolor)
@@ -330,8 +331,11 @@ def vehicle(request):
     mp = MyPaginator()
     mp.paginate(vehicle_list, 10, page_num)
 
+    # 查询是否允许提交
+    allow_submit = SysStatus.objects.get(id=1).allow_submit
+
     context = {'mp': mp, 'number': number, 'limit_number': limit_number, 'applied_number': applied_number,
-               'user_id': user_id, 'status': status}
+               'user_id': user_id, 'status': status, 'allow_submit': allow_submit}
 
     return render(request, 'vehicle.html', context)
 
@@ -493,67 +497,78 @@ def vehicle_submit(request):
 
 # 是否到达车辆提交上限
 def is_reach_limit(request):
-    user_id = request.GET.get('user_id', 0)
+    allow_submit = SysStatus.objects.get(id=1).allow_submit
 
-    result = False
-    if user_id != 0:
-        user = User.objects.get(id=user_id)
-        if user.applied_number >= user.limit_number:
-            result = True
+    if allow_submit:
+        user_id = request.GET.get('user_id', 0)
 
-    return JsonResponse({'result': result})
+        result = False
+        if user_id != 0:
+            user = User.objects.get(id=user_id)
+            if user.applied_number >= user.limit_number:
+                result = True
+    else:
+        result = False
+
+    return JsonResponse({'result': result, 'allow_submit': allow_submit})
 
 
 # 是否可以提交全部车辆
 def can_submit_all(request):
-    user_id = request.GET.get('user_id', 0)
+    result = SysStatus.objects.get(id=1).allow_submit
 
-    result = True
-    if user_id != 0:
-        # 查询全已提交车辆和可提交车辆上限
-        user = User.objects.get(id=user_id)
-        # 计算允许提交的车辆总数
-        allow_number = user.limit_number - user.applied_number
-        if allow_number < 0:
-            allow_number = 0
+    if result:
+        user_id = request.GET.get('user_id', 0)
 
-        # 查询本次提交需要提交的车辆总数
-        vehicle_list = Vehicle.objects.filter(enterprise_id=user_id).filter(status_id=1)
-        # 可以提交的车辆数量
+        if user_id != 0:
+            # 查询全已提交车辆和可提交车辆上限
+            user = User.objects.get(id=user_id)
+            # 计算允许提交的车辆总数
+            allow_number = user.limit_number - user.applied_number
+            if allow_number < 0:
+                allow_number = 0
+
+            # 查询本次提交需要提交的车辆总数
+            vehicle_list = Vehicle.objects.filter(enterprise_id=user_id).filter(status_id=1)
+            # 可以提交的车辆数量
+            vehicle_num = 0
+            # 信息不全的车辆数量
+            error_num = 0
+            for truck in vehicle_list:
+                vehicle_type = str(truck.vehicle_type_id).strip()
+                number = str(truck.number).strip()
+                engine = str(truck.engine).strip()
+                vehicle_model = str(truck.vehicle_model).strip()
+                register_date = str(truck.register_date).strip()
+                route = str(truck.route).strip()
+
+                could_submit = True
+                if len(number) == 0 or number == 'None':
+                    could_submit = False
+                elif len(vehicle_model) == 0 or vehicle_model == 'None':
+                    could_submit = False
+                elif len(register_date) == 0 or register_date == 'None':
+                    could_submit = False
+                elif len(route) == 0 or route == 'None':
+                    could_submit = False
+                elif vehicle_type != 15 and (len(engine) == 0 or engine == 'None'):
+                    could_submit = False
+
+                if could_submit:
+                    vehicle_num += 1
+                else:
+                    error_num += 1
+
+            # 如果提交车辆的总数大于允许提交总数, 返回本次提交的数量和未提交的数量
+            ignore_num = 0
+            if vehicle_num > allow_number:
+                result = False
+                ignore_num = vehicle_num - allow_number
+                vehicle_num = allow_number
+    else:
         vehicle_num = 0
-        # 信息不全的车辆数量
-        error_num = 0
-        for truck in vehicle_list:
-            vehicle_type = str(truck.vehicle_type_id).strip()
-            number = str(truck.number).strip()
-            engine = str(truck.engine).strip()
-            vehicle_model = str(truck.vehicle_model).strip()
-            register_date = str(truck.register_date).strip()
-            route = str(truck.route).strip()
-
-            could_submit = True
-            if len(number) == 0 or number == 'None':
-                could_submit = False
-            elif len(vehicle_model) == 0 or vehicle_model == 'None':
-                could_submit = False
-            elif len(register_date) == 0 or register_date == 'None':
-                could_submit = False
-            elif len(route) == 0 or route == 'None':
-                could_submit = False
-            elif (len(engine) == 0 or engine == 'None') and vehicle_type != 15:
-                could_submit = False
-
-            if could_submit:
-                vehicle_num += 1
-            else:
-                error_num += 1
-
-        # 如果提交车辆的总数大于允许提交总数, 返回本次提交的数量和未提交的数量
         ignore_num = 0
-        if vehicle_num > allow_number:
-            result = False
-            ignore_num = vehicle_num - allow_number
-            vehicle_num = allow_number
+        error_num = 0
 
     return JsonResponse({'result': result, 'vehicle_num': vehicle_num, 'ignore_num': ignore_num,
                          'error_num': error_num})
@@ -579,16 +594,16 @@ def excel_import(request):
         vehicle_type = worksheet.cell_value(i, 1)           # 车辆类型
 
         if worksheet.cell(i, 2).ctype == 2:
-            number = str(int(worksheet.cell_value(i, 2)))       # 车牌号
+            number = str(int(worksheet.cell_value(i, 2))).strip()       # 车牌号
         else:
-            number = str(worksheet.cell_value(i, 2))
+            number = str(worksheet.cell_value(i, 2)).strip()
 
         if worksheet.cell(i, 3).ctype == 2:
-            engine = str(int(worksheet.cell_value(i, 3)))       # 发动机型号
+            engine = str(int(worksheet.cell_value(i, 3))).strip()       # 发动机型号
         else:
-            engine = str(worksheet.cell_value(i, 3))
+            engine = str(worksheet.cell_value(i, 3)).strip()
 
-        vehicle_model = str(worksheet.cell_value(i, 4))         # 车辆型号
+        vehicle_model = str(worksheet.cell_value(i, 4)).strip()         # 车辆型号
 
         if worksheet.cell(i, 5).ctype == 3:
             register_date = xlrd.xldate_as_datetime(worksheet.cell_value(i, 5), 0)
@@ -596,7 +611,7 @@ def excel_import(request):
         else:
             register_date = str(worksheet.cell_value(i, 5))           # 注册日期
 
-        route = str(worksheet.cell_value(i, 6))                   # 路线
+        route = str(worksheet.cell_value(i, 6)).strip()                   # 路线
 
         # print('%s %s %s %s %s %s' % (vehicle_type, number, engine, vehicle_model, register_date, route))
         # 如果车牌不为空, 创建车辆对象, 否则略过该条数据
@@ -680,28 +695,48 @@ def vehicle_submit_all(request):
         if applied_number >= limit_number:
             return HttpResponseRedirect('/vehicle')
         else:
-            vehicle_info_list = Vehicle.objects.filter(enterprise_id=user_id).filter(status_id=1).\
-                values('id', 'vehicle_type_id')
+            truck_list = Vehicle.objects.filter(enterprise_id=user_id).filter(status_id=1)
     # 判断查询结果集是否为空
     # [{'id': 9796, 'number': '津AQ5028', 'enterprise': 24, 'route': '津北线，复康路'},]
-    if len(vehicle_info_list) > 0:
-        for vehicle_info in vehicle_info_list:
-            # 存入数据库
-            try:
-                # 审核状态根据车辆类型变化, 大型货车需要环保局审核, 其它直接到交管局审核
-                if vehicle_info['vehicle_type_id'] == 1:
-                    Vehicle.objects.filter(id=vehicle_info['id']).update(status_id=2)
-                else:
-                    Vehicle.objects.filter(id=vehicle_info['id']).update(status_id=3)
+    if truck_list:
+        for truck in truck_list:
+            # 判断信息是否填写完整
+            vehicle_type = str(truck.vehicle_type_id).strip()
+            number = str(truck.number).strip()
+            engine = str(truck.engine).strip()
+            vehicle_model = str(truck.vehicle_model).strip()
+            register_date = str(truck.register_date).strip()
+            route = str(truck.route).strip()
 
-                # 已提交车辆数+1
-                applied_number += 1
+            could_submit = True
+            if len(number) == 0 or number == 'None':
+                could_submit = False
+            elif len(vehicle_model) == 0 or vehicle_model == 'None':
+                could_submit = False
+            elif len(register_date) == 0 or register_date == 'None':
+                could_submit = False
+            elif len(route) == 0 or route == 'None':
+                could_submit = False
+            elif vehicle_type != 15 and (len(engine) == 0 or engine == 'None'):
+                could_submit = False
 
-                # 如果到达提交上限, 退出循环
-                if applied_number >= limit_number:
-                    break
-            except Exception as e:
-                print(e)
+            # 提交车辆
+            if could_submit:
+                try:
+                    # 审核状态根据车辆类型变化, 大型货车需要环保局审核, 其它直接到交管局审核
+                    if truck.vehicle_type_id == 1:
+                        Vehicle.objects.filter(id=truck.id).update(status_id=2)
+                    else:
+                        Vehicle.objects.filter(id=truck.id).update(status_id=3)
+
+                    # 已提交车辆数+1
+                    applied_number += 1
+
+                    # 如果到达提交上限, 退出循环
+                    if applied_number >= limit_number:
+                        break
+                except Exception as e:
+                    print(e)
 
         user.applied_number = applied_number
         user.save()
@@ -859,10 +894,10 @@ def verify(request):
 
     # 根据用户提交的查询信息, 查询车辆数据
     if number == '':
-        # 如果未输入车牌号, 默认查询全部车辆
-        vehicle_list = Vehicle.objects.all()
+        # 如果未输入车牌号, 默认查询全部车辆, 未提交申请车辆除外
+        vehicle_list = Vehicle.objects.all().exclude(status_id=1)
     else:
-        vehicle_list = Vehicle.objects.filter(number__contains=number)
+        vehicle_list = Vehicle.objects.filter(number__contains=number).exclude(status_id=1)
 
     # 从session中获取authority_id
     # user_id = int(request.session.get('user_id', 0))
@@ -968,3 +1003,226 @@ def verify_refuse(request):
         truck.save()
 
     return HttpResponseRedirect(url)
+
+
+# 定时任务, 每月26日0点, 修改系统状态为不能提交车辆审核
+def forbid_submit():
+    sys_status = SysStatus.objects.get(id=1)
+    sys_status.allow_submit = False
+    sys_status.save()
+    print('submit forbidden!')
+
+
+# 定时任务, 每月1日0点, 初始化系统:
+# 保存上月车辆申请状态(id, 号牌, 审核状态, 未通过原因, 通行证id, 车辆提交审核时间, 环保局审核时间, 交管局审核时间)
+# 修改系统状态为可以提交车辆审核
+# 删除通行证图片文件
+# 全部车辆状态修改为1-未提交, 清空数据库中如下列的内容: 未通过原因(reason), 通行证保存路径(file_name), 通行证id(cert_id)
+# 所有用户的已提交车辆数量归零
+def init_sys():
+    # 清空备份数据库
+    Backup1.objects.all().delete()
+
+    # 备份上月车辆审核状态
+    truck_list = Vehicle.objects.all()
+    backup_list = []
+    for truck in truck_list:
+        backup = Backup1()
+        backup.number = truck.number
+        backup.status_id = truck.status_id
+        backup.reason = truck.reason
+        backup.cert_id = truck.cert_id
+        backup.submit_time = truck.submit_time
+        backup.hbj_time = truck.hbj_time
+        backup.jgj_time = truck.jgj_time
+
+        backup_list.append(backup)
+        # 删除通行证图片文件
+        file_name = truck.file_name
+
+        if file_name is not None and file_name != '':
+            file_name = r'%s/certification/%s' % (settings.FILE_DIR, file_name)
+            if os.path.exists(file_name):
+                os.remove(file_name)
+
+    Backup1.objects.bulk_create(backup_list)
+
+    # 修改系统状态为可以提交车辆审核
+    sys_status = SysStatus.objects.get(id=1)
+    sys_status.allow_submit = True
+    sys_status.save()
+
+    # 初始化全部车辆状态为未提交
+    Vehicle.objects.all().update(status_id=1)
+
+    # 清除数据库中如下列的内容: 未通过原因(reason), 通行证保存路径(file_name), 通行证id(cert_id)
+    Vehicle.objects.all().update(reason=None)
+    Vehicle.objects.all().update(file_name=None)
+    Vehicle.objects.all().update(cert_id=None)
+
+    # 所有用户的已提交车辆数量归零
+    User.objects.all().update(applied_number=0)
+
+    print('System initial complete.')
+
+
+# 导出全部待审核车辆
+def export_xls(request):
+    authority_id = request.session.get('authority_id', 0)
+    if authority_id == 2:
+        truck_list = Vehicle.objects.filter(status_id=2)
+    elif authority_id == 3:
+        truck_list = Vehicle.objects.filter(status_id=3)
+    elif authority_id == 99:
+        truck_list = Vehicle.objects.filter(status_id__in=[2, 3])
+    else:
+        truck_list = None
+
+    if truck_list:
+        # 创建工作簿
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('sheet1', cell_overwrite_ok=True)
+        # 设置表头
+        title = ['id', '企业名称', '车牌号', '车辆类型', '发动机号', '车辆型号', '注册日期', '运输路线', '审核结果(p-通过, f-不通过)',
+                 '未通过原因']
+        # 生成表头
+        len_title = len(title)
+        for i in range(0, len_title):
+            if i == 7:
+                ws.col(i).width = 256 * 50
+            elif i == 8:
+                ws.col(i).width = 256 * 30
+            else:
+                ws.col(i).width = 256 * 20
+            ws.write(0, i, title[i])
+        # 写入车辆数据
+        i = 1
+        len_content = len_title - 2
+        for truck in truck_list:
+            content = [truck.id, truck.enterprise.enterprise_name, truck.number, truck.vehicle_type.name, truck.engine,
+                       truck.vehicle_model, str(truck.register_date), truck.route]
+
+            for j in range(0, len_content):
+                ws.write(i, j, content[j])
+            i += 1
+
+        # 内存文件操作
+        buf = io.BytesIO()
+        # 将文件保存在内存中
+        wb.save(buf)
+        response = HttpResponse(buf.getvalue(), content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename=vehicle_check.xls'
+        response.write(buf.getvalue())
+        return response
+    else:
+        number = request.GET.get('number', 0)
+        page_num = request.GET.get('page_num', 0)
+        status = request.GET.get('status', 0)
+        url = '/verify?number=%s&page_num=%s&status=%s' % (number, page_num, status)
+        return HttpResponseRedirect(url)
+
+
+# 导入审核后的车辆数据
+def import_xls(request):
+    # 获取用户的权限等级
+    authority_id = request.session.get('authority_id', 0)
+    # 获取用户上传的excel文件, 文件不存储, 在内存中对文件进行操作
+    excel_file = request.FILES.get('excel_file')
+
+    # 打开excel文件, 直接从内存读取文件内容
+    workbook = xlrd.open_workbook(filename=None, file_contents=excel_file.read())
+    # 获得sheets列表
+    sheets = workbook.sheet_names()
+    # 获得第一个sheet对象
+    worksheet = workbook.sheet_by_name(sheets[0])
+    # 遍历
+    for i in range(1, worksheet.nrows):
+        # 读取一条车辆信息
+        # ctype： 0-empty, 1-string, 2-number, 3-date, 4-boolean, 5-error
+
+        # 读取车辆id
+        if worksheet.cell(i, 0).ctype != 5 and worksheet.cell_value(i, 0) != '':
+            vehicle_id = int(worksheet.cell_value(i, 0))  # 车辆id
+        else:
+            continue
+
+        # 根据车辆id从数据库查询该车辆
+        try:
+            truck = Vehicle.objects.get(id=vehicle_id)
+        except Exception as e:
+            print(e)
+            continue
+
+        if truck.status_id != 2 and truck.status_id != 3:
+            continue
+        elif authority_id == 2 and truck.status_id != 2:
+            continue
+        elif authority_id == 3 and truck.status_id != 3:
+            continue
+
+        # 读取审核状态
+        if worksheet.cell(i, 8).ctype != 5 and worksheet.cell_value(i, 8) != '':
+            vehicle_status = str(worksheet.cell_value(i, 8))  # 审核状态
+        else:
+            continue
+
+        # 审核通过
+        if 'p' in vehicle_status.lower():
+            truck.status_id += 1
+        # 审核不通过
+        elif 'f' in vehicle_status.lower():
+            truck.status_id = 5
+            # 读取未通过原因
+            if worksheet.cell(i, 9).ctype != 5 and worksheet.cell_value(i, 9) != '':
+                truck.reason = worksheet.cell_value(i, 9)  # 未通过原因
+        else:
+            continue
+
+        # 完全通过审核, 生成通行证图片
+        if truck.status_id == 4:
+            # 生成通行证图片
+            # 生成通行证id, 201805+车牌号+三位随机数
+            # 获取当前年, 月
+            year = time.localtime().tm_year
+            month = time.localtime().tm_mon
+            # 如果是12月, 则年+1, 月变为1; 否则, 月+1
+            if month == 12:
+                year += 1
+                month = 1
+            else:
+                month += 1
+
+            if month < 10:
+                id_start = '%d0%d' % (year, month)
+            else:
+                id_start = '%d%d' % (year, month)
+
+            certification_id = '%s%s%d%d%d' % (id_start, truck.number[1:], random.randint(0, 9), random.randint(0, 9),
+                                               random.randint(0, 9))
+            truck.cert_id = certification_id
+            # 计算通行证截至日期
+            end_day = calendar.monthrange(year, month)[1]
+            limit_data = '%d年%d月%d日' % (year, month, end_day)
+            number = '%s' % truck.number
+            enterprise_name = truck.enterprise.enterprise_name
+            route = truck.route
+            # 图片文件名
+            file_name = r'%s/certification/%s.jpg' % (settings.FILE_DIR, certification_id)
+            truck.file_name = '%s.jpg' % certification_id
+
+            generate_certification(certification_id, limit_data, number, enterprise_name, route, file_name)
+
+        truck.save()
+
+    return HttpResponseRedirect('/verify')
+
+
+# 测试
+def my_test(request):
+    if 'post' in request.method.lower():
+        content = request.POST.get('param')
+    else:
+        content = request.GET.get('param')
+    print(content)
+
+    return HttpResponse('ok')

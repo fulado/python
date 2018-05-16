@@ -17,18 +17,18 @@
     <link rel="stylesheet" type="text/css" href="/static/css/darktooltip.css"/>
 
     <style type="text/css">
-    .table_container .search_input select{
-        width: 150px;
-        height: 24px;
-        border-radius: 4px;
-        padding-left: 10px;
-        background-color: #f9f9f9;
-        border: solid 1px #eeeeee;
-        margin-right: 10px;
-        outline: none;
-    }
+        .table_container .search_input select{
+            width: 150px;
+            height: 24px;
+            border-radius: 4px;
+            padding-left: 10px;
+            background-color: #f9f9f9;
+            border: solid 1px #eeeeee;
+            margin-right: 10px;
+            outline: none;
+        }
 
-    /* 模态框 */
+        /* 模态框 */
         .my-modal-dialog{
             position: absolute;
             top: 0; left: 0; bottom: 0; right: 0;
@@ -75,6 +75,15 @@
         .my-modal-footer .btn{
             margin-left: 0px;
         }
+
+        .pop-up1 .btndiv input,.pop-up1 .btndiv button{
+         display: inline-block;
+         background-color: #25b4b2;
+         border: solid 1px #189694;
+         color: #fff;
+         margin-left: 160px;
+         background: #139b99;
+        }
     </style>
     <title></title>
 </head>
@@ -85,7 +94,7 @@
     </div>
     <div class="table_container">
         <div class="search_input">
-            <form action="" method="">
+            <form action="/verify" method="GET" style="display: inline-block;">
                 <label for="ss">车辆搜索</label>
                 <input type="text" placeholder="输入车牌号码" name="number" value="{{ number }}" id="ss"/>
                 <select name="status">
@@ -93,16 +102,14 @@
                     <option value="3" {% if status == 3 %}selected{% endif %}>待审核车辆</option>
                     {% endif %}
                     <option value="2" {% if status == 2 %}selected{% endif %}>环保局审核车辆</option>
-                    {% if authority == 3 or authority == 99 %}
                     <option value="4" {% if status == 4 %}selected{% endif %}>已通过车辆</option>
-                    {% endif %}
                     <option value="5" {% if status == 5 %}selected{% endif %}>未通过车辆</option>
                     <option value="0" {% if status == 0 %}selected{% endif %}>全部车辆</option>
                 </select>
                 <input type="submit" class="find_btn" value="查询" style="padding: 0px;"/>
             </form>
-            <span class="out outexcel" style="display: none;">导出待审核数据</span>
-            <span class="in inexcel" style="display: none;">导入审核后数据</span>
+            <a href="/export_xls"><span class="out outexcel">导出待审核车辆</span></a>
+            <a href="#"><span class="in inexcel">导入审核后车辆</span></a>
             <span class="out outxmls" style="display: none;">导出待审核数据xml</span>
             <span class="in inxmls" style="display: none;">导入审核后数据xml</span>
         </div>
@@ -128,7 +135,7 @@
                     <td title="{{ vehicle.vehicle_type.name }}">{{ vehicle.vehicle_type.name }}</td>
                     <td title="{{ vehicle.engine }}">{{ vehicle.engine }}</td>
                     <td title="{{ vehicle.status.name }}">{{ vehicle.status.name }}</td>
-                    <td title="{{ vehicle.reason }}">{{ vehicle.reason }}</td>
+                    <td title="{{ vehicle.reason|default:'' }}">{{ vehicle.reason|default:'' }}</td>
                     <td style="width: 200px">
                         <button type="button" class="see verify-vehicle-info" style="margin-right: 5px;"
                                 onclick="setVehicleInfo('{{ vehicle.vehicle_type.id }}', '{{ vehicle.number }}',
@@ -308,17 +315,19 @@
     </div>
 </div>
 
-<!--上传文件摸态框-->
+<!--上传文件模态框-->
 <div class="pop-up1" style="width: 560px;height: 268px;display: none;">
-    <form id="excelform" enctype="multipart/form-data">
-        <div class="selFile" style="">
+    <form action="/import_xls" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <div class="selFile">
             <label for="reason" style="">选择文件</label>
-            <input type="file" name="file" style="outline: none;cursor: pointer" accept="application/vnd.ms-excel"/>
+            <input type="file" name="excel_file" style="outline: none;cursor: pointer; width:300px; margin-left: 100px;" accept="application/vnd.ms-excel"/>
         </div>
 
-        <div class="btndiv" style="">
-            <div class="btn" id="out">提交</div>
-            <div class="btn" id="close">关闭</div>
+        <div class="btndiv" style="margin-top: 50px;">
+            <button type="button" class="btn save" style="line-height: 27px;" >导入</button>
+            <!--<input type="submit" class="btn" style="line-height: 27px;" value="导入" />-->
+            <div class="btn" id="close" style="line-height: 27px;">关闭</div>
         </div>
     </form>
 </div>
@@ -401,6 +410,16 @@
                 $('.refuse-content').hide();
                 $('.verify-vehicle').hide();
                 $('.mask').hide();
+            }
+        });
+
+        // 导入审核后车辆数据
+        $('.pop-up1 .btndiv button').click(function() {
+            // 判断是否选择文件
+            if ($('.pop-up1 .selFile input').val().length > 0) {
+                $('.pop-up1 form').submit();
+            } else {
+                alert('请选择需要导入的文件');
             }
         });
     });

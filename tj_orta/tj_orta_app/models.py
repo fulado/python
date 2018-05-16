@@ -56,8 +56,24 @@ class Vehicle(models.Model):
     modify_time = models.DateTimeField(null=True, blank=True)               # 车辆信息修改时间
     submit_time = models.DateTimeField(null=True, blank=True)               # 用户提交时间
     hbj_time = models.DateTimeField(null=True, blank=True)                  # 环保局审核时间
-    jgj_time = models.DateTimeField(null=True, blank=True)                  # 交换据审核时间
+    jgj_time = models.DateTimeField(null=True, blank=True)                  # 交管局审核时间
     enterprise = models.ForeignKey(User, null=True, blank=True)             # 车辆所属企业
     reason = models.CharField(max_length=100, null=True, blank=True)        # 未通过原因
     file_name = models.CharField(max_length=100, null=True, blank=True)     # 通行证完整保存路径
     cert_id = models.CharField(max_length=30, null=True, blank=True)        # 通行证id
+
+
+# 系统状态表
+class SysStatus(models.Model):
+    allow_submit = models.BooleanField(default=True)
+
+
+# 车辆状态备份表
+class Backup1(models.Model):
+    number = models.CharField(max_length=20)                            # 号牌号码
+    status = models.ForeignKey(Status, default=1)                       # 审核状态
+    reason = models.CharField(max_length=100, null=True, blank=True)    # 未通过原因
+    cert_id = models.CharField(max_length=30, null=True, blank=True)    # 通行证id
+    submit_time = models.DateTimeField(null=True, blank=True)           # 用户提交时间
+    hbj_time = models.DateTimeField(null=True, blank=True)              # 环保局审核时间
+    jgj_time = models.DateTimeField(null=True, blank=True)              # 交管局审核时间
