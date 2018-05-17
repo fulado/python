@@ -29,7 +29,7 @@ Scheduler = BackgroundScheduler()
 # 每月25日0点, 禁止提交申请
 Scheduler.add_job(forbid_submit, 'cron', day=26, hour=0, minute=0, second=0)
 # 每月1日1点, 重置数据库
-Scheduler.add_job(init_sys, 'cron', day=15, hour=11, minute=49, second=0)
+Scheduler.add_job(init_sys, 'cron', day=1, hour=1, minute=0, second=0)
 
 Scheduler.start()
 

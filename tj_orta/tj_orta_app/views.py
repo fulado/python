@@ -965,7 +965,7 @@ def verify_pass(request):
             truck.cert_id = certification_id
             # 计算通行证截至日期
             end_day = calendar.monthrange(year, month)[1]
-            limit_data = '%d年%d月%d日' % (year, month, end_day)
+            limit_data = '%d年%d月%d日 —— %d年%d月%d日' % (year, month, 1, year, month, end_day)
             number = '%s' % truck.number
             enterprise_name = truck.enterprise.enterprise_name
             route = truck.route
@@ -1202,7 +1202,7 @@ def import_xls(request):
             truck.cert_id = certification_id
             # 计算通行证截至日期
             end_day = calendar.monthrange(year, month)[1]
-            limit_data = '%d年%d月%d日' % (year, month, end_day)
+            limit_data = '%d年%d月%d日 —— %d年%d月%d日' % (year, month, 1, year, month, end_day)
             number = '%s' % truck.number
             enterprise_name = truck.enterprise.enterprise_name
             route = truck.route
