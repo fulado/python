@@ -11,7 +11,7 @@ def generate_certification(certification_id, limit_data, number, enterprise_name
     # 设置输出文字内容
     title = '外环线载货汽车日间通行证'
     certification_id = '编号：%s' % certification_id
-    limit_data = '有效期至：%s' % limit_data
+    limit_data = '有效期：%s' % limit_data
     number = '牌照号：%s' % number
     enterprise_name = '所属企业: %s' % enterprise_name
     route = '行驶路线：%s' % route

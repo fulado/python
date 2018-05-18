@@ -100,8 +100,8 @@
 <div class="table_wrapper">
     <div class="table_head">
         <span>车辆列表</span>
-        <span class="number_word">提交车辆上限&nbsp;:&nbsp;{{ limit_number }}</span>
-        <span class="number_word">已提交车辆数&nbsp;:&nbsp;{{ applied_number }}</span>
+        <span class="number_word">大型车辆提交上限&nbsp;:&nbsp;{{ limit_number }}</span>
+        <span class="number_word">已提交大型车辆数&nbsp;:&nbsp;{{ applied_number }}</span>
     </div>
     <div class="table_container">
         <div class="search_input">
@@ -149,8 +149,8 @@
                     <td title="{{ vehicle.reason|default:'' }}">{{ vehicle.reason|default:'' }}</td>
                     <td>
                         <button type="button" class="see modify-vehicle-info" style="margin-right: 5px;" onclick="setVehicleInfo(
-                        '{{ vehicle.vehicle_type.id }}', '{{ vehicle.number }}', '{{ vehicle.engine }}',
-                        '{{ vehicle.vehicle_model }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
+                        '{{ vehicle.vehicle_type.id }}', '{{ vehicle.number|linebreaksbr }}', '{{ vehicle.engine|linebreaksbr }}',
+                        '{{ vehicle.vehicle_model|linebreaksbr }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
                         '{{ vehicle.route|linebreaksbr }}', '{{ vehicle.id }}')">编辑</button>
                         {% if allow_submit and vehicle.status.id == 1 %}
                         <a href="javascript:submit_vehicle('{{ user_id }}', '{{ vehicle.id }}',  '{{ vehicle.vehicle_type.id }}',
@@ -403,6 +403,12 @@
 <script type="text/javascript" src="/static/js/jquery.darktooltip.js"></script>
 
 <script type="text/javascript">
+    // 定义车牌号正则规则
+    // 大型货车&小型货车
+    var re_01 = /^[\W][A-Z][A-Z0-9]{5}$/
+    // 挂车
+    var re_15 = /^[\W][A-Z][A-Z0-9]{4}$/
+
     $(function() {
         // 显示增加车辆模态框
         $('#add').click(function() {
@@ -457,6 +463,12 @@
             else if (number.length == 0) {
                 alert('请输入正确的号牌号码');
             }
+            else if (vehicle_type != 15 && !re_01.test(number)) {
+                alert('车辆类型或号牌号码不正确, 请修改后保存');
+            }
+            else if (vehicle_type == 15 && !re_15.test(number)) {
+                alert('车辆类型或号牌号码不正确, 请修改后保存');
+            }
             else if (vehicle_type != 15 && engine.length == 0) {
                 alert('请输入正确的发动机型号');
             }
@@ -490,6 +502,12 @@
             }
             else if (number.length == 0) {
                 alert('请输入正确的号牌号码');
+            }
+            else if (vehicle_type != 15 && !re_01.test(number)) {
+                alert('车辆类型或号牌号码不正确, 请修改后保存');
+            }
+            else if (vehicle_type == 15 && !re_15.test(number)) {
+                alert('车辆类型或号牌号码不正确, 请修改后保存');
             }
             else if (vehicle_type != 15 && engine.length == 0) {
                 alert('请输入正确的发动机型号');
@@ -546,9 +564,9 @@
     // 填充编辑车辆模态框信息
     function setVehicleInfo(vehicle_type, number, engine, vehicle_model, register_date, route, id) {
          $('.modify-vehicle select').eq(0).val(vehicle_type);       // 车辆类型
-         $('.modify-vehicle input').eq(0).val(number);              // 号牌号码
-         $('.modify-vehicle input').eq(1).val(engine);              // 发动机型号
-         $('.modify-vehicle input').eq(2).val(vehicle_model);       // 车辆型号
+         $('.modify-vehicle input').eq(0).val(number.replace("<br />",""));              // 号牌号码
+         $('.modify-vehicle input').eq(1).val(engine.replace("<br />",""));              // 发动机型号
+         $('.modify-vehicle input').eq(2).val(vehicle_model.replace("<br />",""));       // 车辆型号
          $('.modify-vehicle input').eq(3).val(register_date);     // 车辆注册日期
          $('.modify-vehicle textarea').val(route.replace("<br />",""));                  // 运输路线
          $('.modify-vehicle input').eq(4).val(id);                  // 车辆id
@@ -562,30 +580,36 @@
     // 提交车辆, 需要判断是否已经达到上限, 并判断车辆信息是否填写完整, 挂车(15)可不填写发动机型号
     function submit_vehicle(user_id, vehicle_id, vehicle_type, number, engine, vehicle_model, register_date, route) {
         // 判断是否已经到达提交上限
-        $.get('/is_reach_limit', {'user_id': user_id}, function(data) {
+        $.get('/can_submit_vehicle', {'user_id': user_id}, function(data) {
             if (!data.allow_submit) {
                 alert('每月提交申请最后期限为25日, 无法提交申请');
             }
-            else if (data.result) {
-                alert('已经到达通行证申请上限，不能提交申请');
-            }
             else if (!(vehicle_type == '1' || vehicle_type == '2' || vehicle_type == '15')) {
-                alert('请选择正确的车辆类型');
+                alert('车辆类型不正确, 请修改后提交');
+            }
+            else if (!data.result && vehicle_type == '1') {
+                alert('已经到达通行证申请上限，大型车辆不能提交申请');
             }
             else if (number.replace(/\s+/g,"").length == 0) {
-                alert('请输入正确的号牌号码');
+                alert('号牌号码不正确, 请修改后提交');
+            }
+            else if (vehicle_type != 15 && !re_01.test(number.replace(/\s+/g,""))) {
+                alert('车辆类型或号牌号码不正确, 请修改后提交');
+            }
+            else if (vehicle_type == 15 && !re_15.test(number.replace(/\s+/g,""))) {
+                alert('车辆类型或号牌号码不正确, 请修改后提交');
             }
             else if (vehicle_type != 15 && engine.replace(/\s+/g,"").length == 0) {
-                alert('请输入正确的发动机型号');
+                alert('发动机型号不正确, 请修改后提交');
             }
             else if (vehicle_model.replace(/\s+/g,"").length == 0) {
-                alert('请输入正确的车辆型号');
+                alert('车辆型号不正确, 请修改后提交');
             }
             else if (register_date.replace(/\s+/g,"").length == 0) {
-                alert('请选择正确的车辆注册日期');
+                alert('车辆注册日期不正确, 请修改后提交');
             }
             else if (route.replace(/\s+/g,"").length == 0) {
-                alert('请输入正确的行驶路线');
+                alert('行驶路线不正确, 请修改后提交');
             }
             else {
                 window.location.href = "/vehicle_submit?vehicle_id=" + vehicle_id;
@@ -600,22 +624,22 @@
             could_submit = true;
             if (data.result) {
                 if (data.error_num > 0) {
-                     alert('本次提交车辆'+ data.vehicle_num +'辆，因信息不全无法提交车辆'+ data.error_num +'辆');
+                     alert('本次提交车辆'+ data.vehicle_num +'辆，因信息不正确无法提交车辆'+ data.error_num +'辆');
                 }
                 else {
                     alert('已提交全部车辆');
                 }
             }
             else {
-                if (data.vehicle_num == 0) {
+                if (data.vehicle_num == -1) {
                     alert('每月提交申请最后期限为25日, 无法提交申请');
                     could_submit = false;
                 }
                 else if (data.error_num > 0) {
-                    alert('车辆超出允许提交的上限，本次提交车辆'+ data.vehicle_num +'辆，未提交车辆'+ data.ignore_num +'辆，因信息不全无法提交车辆' + data.error_num +'辆');
+                    alert('大型车辆超出允许提交的上限，本次共提交车辆'+ data.vehicle_num +'辆，因超限未提交大型车辆'+ data.ignore_num +'辆，因信息不正确无法提交车辆' + data.error_num +'辆');
                 }
                 else {
-                    alert('车辆超出允许提交的上限，本次提交车辆'+ data.vehicle_num +'辆，未提交车辆'+ data.ignore_num +'辆');
+                    alert('大型车辆超出允许提交的上限，本次共提交车辆'+ data.vehicle_num +'辆，因超限未提交大型车辆'+ data.ignore_num +'辆');
                 }
             }
 

@@ -46,7 +46,7 @@ DATABASES = {
 # settings for test
 # DEBUG = False
 #
-# ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = ['*', ]
 #
 # DATABASES = {
 #     'default': {
@@ -63,13 +63,13 @@ DATABASES = {
 # DEBUG = False
 #
 # ALLOWED_HOSTS = ['*', ]
-
+#
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
 #         'NAME': 'tj_orta',
 #         'PORT': 3306,
-#         'HOST': '127.0.0.1',
+#         'HOST': '192.168.100.248',
 #         'USER': 'root',
 #         'PASSWORD': 'yxtc_20921',
 #     }

@@ -17,6 +17,7 @@ import xlrd
 import xlwt
 from PIL import Image, ImageDraw, ImageFont
 import io
+import re
 # Create your views here.
 
 
@@ -452,7 +453,7 @@ def vehicle_submit(request):
 
     # 审核状态根据车辆类型变化, 大型货车需要环保局审核, 其它直接到交管局审核
     if truck.vehicle_type_id == 1:
-        truck.status_id = 2
+        truck.status_id = 3  # 暂时都提交到交管局,设置为3, 如果需要提交到环保局, 改为2
     else:
         truck.status_id = 3
 
@@ -460,14 +461,15 @@ def vehicle_submit(request):
     try:
         truck.save()
 
-        # 该用户已提交车辆计数加1
-        user_id = int(request.session.get('user_id', ''))
+        # 如果是大型车辆, 该用户已提交车辆计数加1
+        if truck.vehicle_type_id == 1:
+            user_id = int(request.session.get('user_id', ''))
 
-        # 查询已提交申请车辆数, 限制提交车辆数
-        user = User.objects.get(id=user_id)
-        user.applied_number += 1
+            # 查询已提交申请车辆数, 限制提交车辆数
+            user = User.objects.get(id=user_id)
+            user.applied_number += 1
 
-        user.save()
+            user.save()
 
     except Exception as e:
         print(e)
@@ -495,18 +497,23 @@ def vehicle_submit(request):
     return HttpResponseRedirect('/vehicle')
 
 
-# 是否到达车辆提交上限
-def is_reach_limit(request):
+# 是否允许提交申请, 判断到大型车辆是否达到提交上限
+def can_submit_vehicle(request):
+    # 系统是否允许提交申请
     allow_submit = SysStatus.objects.get(id=1).allow_submit
 
+    # 如果可以提交, 判断大型车辆是否达到提交上线
     if allow_submit:
         user_id = request.GET.get('user_id', 0)
 
         result = False
         if user_id != 0:
-            user = User.objects.get(id=user_id)
-            if user.applied_number >= user.limit_number:
-                result = True
+            try:
+                user = User.objects.get(id=user_id)
+                if user.applied_number < user.limit_number:
+                    result = True
+            except Exception as e:
+                print(e)
     else:
         result = False
 
@@ -528,14 +535,17 @@ def can_submit_all(request):
             if allow_number < 0:
                 allow_number = 0
 
-            # 查询本次提交需要提交的车辆总数
+            # 查询本次需要提交的车辆
             vehicle_list = Vehicle.objects.filter(enterprise_id=user_id).filter(status_id=1)
-            # 可以提交的车辆数量
-            vehicle_num = 0
-            # 信息不全的车辆数量
+
+            # 本次需要提交的大型车辆总数
+            vehicle_1_num = 0
+            # 本次需要提交的小型车辆和挂车总数
+            vehicle_other_num = 0
+            # 信息不正确的车辆数量
             error_num = 0
             for truck in vehicle_list:
-                vehicle_type = str(truck.vehicle_type_id).strip()
+                vehicle_type = truck.vehicle_type_id
                 number = str(truck.number).strip()
                 engine = str(truck.engine).strip()
                 vehicle_model = str(truck.vehicle_model).strip()
@@ -543,7 +553,13 @@ def can_submit_all(request):
                 route = str(truck.route).strip()
 
                 could_submit = True
-                if len(number) == 0 or number == 'None':
+                if vehicle_type not in [1, 2, 15]:
+                    could_submit = False
+                elif len(number) == 0 or number == 'None':
+                    could_submit = False
+                elif vehicle_type == 15 and (re.match(r'^[\W][A-Z][A-Z0-9]{4}$', number, re.A) is None):
+                    could_submit = False
+                elif vehicle_type != 15 and (re.match(r'^[\W][A-Z][A-Z0-9]{5}$', number, re.A) is None):
                     could_submit = False
                 elif len(vehicle_model) == 0 or vehicle_model == 'None':
                     could_submit = False
@@ -555,18 +571,23 @@ def can_submit_all(request):
                     could_submit = False
 
                 if could_submit:
-                    vehicle_num += 1
+                    if vehicle_type == 1:
+                        vehicle_1_num += 1
+                    else:
+                        vehicle_other_num += 1
                 else:
                     error_num += 1
 
-            # 如果提交车辆的总数大于允许提交总数, 返回本次提交的数量和未提交的数量
+            # 如果提交大型车辆的总数大于允许提交总数, 返回本次提交的数量和未提交的数量
             ignore_num = 0
-            if vehicle_num > allow_number:
+            if vehicle_1_num > allow_number:
                 result = False
-                ignore_num = vehicle_num - allow_number
-                vehicle_num = allow_number
+                ignore_num = vehicle_1_num - allow_number
+                vehicle_num = allow_number + vehicle_other_num      # 可以提交的车辆数量
+            else:
+                vehicle_num = vehicle_1_num + vehicle_other_num     # 可以提交的车辆数量
     else:
-        vehicle_num = 0
+        vehicle_num = -1
         ignore_num = 0
         error_num = 0
 
@@ -691,17 +712,21 @@ def vehicle_submit_all(request):
         limit_number = user.limit_number
         applied_number = user.applied_number
 
-        # 判断是否到达上限, 如果达到退出提交
+        # 判断是否到达上限, 如果达到, 则只能提交小型货车和挂车
         if applied_number >= limit_number:
-            return HttpResponseRedirect('/vehicle')
+            truck_list = Vehicle.objects.filter(enterprise_id=user_id).filter(status_id=1).filter(vehicle_type_id__in=
+                                                                                                  [2, 15])
         else:
             truck_list = Vehicle.objects.filter(enterprise_id=user_id).filter(status_id=1)
     # 判断查询结果集是否为空
     # [{'id': 9796, 'number': '津AQ5028', 'enterprise': 24, 'route': '津北线，复康路'},]
     if truck_list:
         for truck in truck_list:
+            # 如果到达提交上限, 并且车辆类型是大型车, 退出本次循环
+            if (applied_number >= limit_number) and (truck.vehicle_type_id == 1):
+                continue
             # 判断信息是否填写完整
-            vehicle_type = str(truck.vehicle_type_id).strip()
+            vehicle_type = truck.vehicle_type_id
             number = str(truck.number).strip()
             engine = str(truck.engine).strip()
             vehicle_model = str(truck.vehicle_model).strip()
@@ -709,7 +734,14 @@ def vehicle_submit_all(request):
             route = str(truck.route).strip()
 
             could_submit = True
-            if len(number) == 0 or number == 'None':
+            if vehicle_type not in [1, 2, 15]:
+                could_submit = False
+            elif len(number) == 0 or number == 'None':
+                could_submit = False
+            # 正则匹配车牌号码, 不正确不能提交
+            elif vehicle_type == 15 and (re.match(r'^[\W][A-Z][A-Z0-9]{4}$', number, re.A) is None):
+                could_submit = False
+            elif vehicle_type != 15 and (re.match(r'^[\W][A-Z][A-Z0-9]{5}$', number, re.A) is None):
                 could_submit = False
             elif len(vehicle_model) == 0 or vehicle_model == 'None':
                 could_submit = False
@@ -725,16 +757,13 @@ def vehicle_submit_all(request):
                 try:
                     # 审核状态根据车辆类型变化, 大型货车需要环保局审核, 其它直接到交管局审核
                     if truck.vehicle_type_id == 1:
-                        Vehicle.objects.filter(id=truck.id).update(status_id=2)
+                        Vehicle.objects.filter(id=truck.id).update(status_id=3)   # 暂时都提交到交管局,设置为3, 如果需要提交到环保局, 改为2
                     else:
                         Vehicle.objects.filter(id=truck.id).update(status_id=3)
 
                     # 已提交车辆数+1
-                    applied_number += 1
-
-                    # 如果到达提交上限, 退出循环
-                    if applied_number >= limit_number:
-                        break
+                    if truck.vehicle_type_id == 1:
+                        applied_number += 1
                 except Exception as e:
                     print(e)
 
@@ -960,12 +989,12 @@ def verify_pass(request):
             else:
                 id_start = '%d%d' % (year, month)
 
-            certification_id = '%s%s%d%d%d' % (id_start, truck.number[1:], random.randint(0, 9), random.randint(0, 9),
-                                               random.randint(0, 9))
+            certification_id = '%s%s%d%d%d' % (id_start, truck.number[1:].strip(), random.randint(0, 9),
+                                               random.randint(0, 9), random.randint(0, 9))
             truck.cert_id = certification_id
             # 计算通行证截至日期
             end_day = calendar.monthrange(year, month)[1]
-            limit_data = '%d年%d月%d日 —— %d年%d月%d日' % (year, month, 1, year, month, end_day)
+            limit_data = '%d年%d月%d日 — %d年%d月%d日' % (year, month, 1, year, month, end_day)
             number = '%s' % truck.number
             enterprise_name = truck.enterprise.enterprise_name
             route = truck.route
@@ -1197,12 +1226,12 @@ def import_xls(request):
             else:
                 id_start = '%d%d' % (year, month)
 
-            certification_id = '%s%s%d%d%d' % (id_start, truck.number[1:], random.randint(0, 9), random.randint(0, 9),
-                                               random.randint(0, 9))
+            certification_id = '%s%s%d%d%d' % (id_start, truck.number[1:].strip(), random.randint(0, 9),
+                                               random.randint(0, 9), random.randint(0, 9))
             truck.cert_id = certification_id
             # 计算通行证截至日期
             end_day = calendar.monthrange(year, month)[1]
-            limit_data = '%d年%d月%d日 —— %d年%d月%d日' % (year, month, 1, year, month, end_day)
+            limit_data = '%d年%d月%d日 — %d年%d月%d日' % (year, month, 1, year, month, end_day)
             number = '%s' % truck.number
             enterprise_name = truck.enterprise.enterprise_name
             route = truck.route

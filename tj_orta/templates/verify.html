@@ -138,8 +138,8 @@
                     <td title="{{ vehicle.reason|default:'' }}">{{ vehicle.reason|default:'' }}</td>
                     <td style="width: 200px">
                         <button type="button" class="see verify-vehicle-info" style="margin-right: 5px;"
-                                onclick="setVehicleInfo('{{ vehicle.vehicle_type.id }}', '{{ vehicle.number }}',
-                        '{{ vehicle.engine }}', '{{ vehicle.vehicle_model }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
+                                onclick="setVehicleInfo('{{ vehicle.vehicle_type.id }}', '{{ vehicle.number|linebreaksbr }}',
+                        '{{ vehicle.engine|linebreaksbr }}', '{{ vehicle.vehicle_model|linebreaksbr }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
                         '{{ vehicle.route|linebreaksbr }}', '{{ vehicle.id }}', '{{ vehicle.status.id }}', '{{ authority }}',
                         '{{ vehicle.enterprise.enterprise_name }}')">
                             {% if vehicle.status.id == 2 and authority == 2 %}
@@ -427,9 +427,9 @@
      // 填充审核车辆模态框信息
     function setVehicleInfo(vehicle_type, number, engine, vehicle_model, register_date, route, id, status, authority, enterprise) {
         $('.verify-vehicle select').eq(0).val(vehicle_type);       // 车辆类型
-        $('.verify-vehicle input').eq(1).val(number);              // 号牌号码
-        $('.verify-vehicle input').eq(2).val(engine);              // 发动机型号
-        $('.verify-vehicle input').eq(3).val(vehicle_model);       // 车辆型号
+        $('.verify-vehicle input').eq(1).val(number.replace("<br />",""));              // 号牌号码
+        $('.verify-vehicle input').eq(2).val(engine.replace("<br />",""));              // 发动机型号
+        $('.verify-vehicle input').eq(3).val(vehicle_model.replace("<br />",""));       // 车辆型号
         $('.verify-vehicle input').eq(4).val(register_date);       // 车辆注册日期
         $('.verify-vehicle textarea').val(route.replace("<br />",""));                  // 运输路线
         $('.verify-vehicle input').eq(5).val(id);                  // 车辆id

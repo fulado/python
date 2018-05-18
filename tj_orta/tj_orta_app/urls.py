@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^logout/?', views.logout),
     url(r'^download_search/?', views.download_search),
     url(r'^download/?', views.download),
-    url(r'^is_reach_limit/?', views.is_reach_limit),            # 判断是否到达车辆提交上限
+    url(r'^can_submit_vehicle/?', views.can_submit_vehicle),            # 判断是否可以提交单个车辆
     url(r'^can_submit_all/?', views.can_submit_all),            # 判断是否可以提交全部车辆
     url(r'^export_xls/?', views.export_xls),                    # 导出待审核车辆
     url(r'^import_xls/?', views.import_xls),                    # 导入审核后的车辆数据
