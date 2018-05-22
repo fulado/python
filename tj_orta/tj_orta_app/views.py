@@ -171,6 +171,10 @@ def enterprise(request):
 
     context = {'mp': mp, 'search_name': search_name}
 
+    # 保存当前页面状态到session
+    request.session['search_name'] = search_name
+    request.session['page_num'] = page_num
+
     return render(request, 'enterprise.html', context)
 
 
@@ -212,7 +216,13 @@ def enterprise_add(request):
     except Exception as e:
         print(e)
 
-    return HttpResponseRedirect('/enterprise')
+    # 构建返回url
+    search_name = request.session.get('search_name', '')
+    page_num = request.session.get('page_num', '')
+
+    url = '/enterprise?search_name=%s&page_num=%s' % (search_name, page_num)
+
+    return HttpResponseRedirect(url)
 
 
 # 判断用户名是否已经存在
@@ -272,7 +282,12 @@ def enterprise_modify(request):
     except Exception as e:
         print(e)
 
-    return HttpResponseRedirect('/enterprise')
+    # 构建返回url
+    search_name = request.session.get('search_name', '')
+    page_num = request.session.get('page_num', '')
+    url = '/enterprise?search_name=%s&page_num=%s' % (search_name, page_num)
+
+    return HttpResponseRedirect(url)
 
 
 # 删除用户信息
@@ -289,7 +304,12 @@ def enterprise_delete(request):
     except Exception as e:
         print(e)
 
-    return HttpResponseRedirect('/enterprise')
+    # 构建返回url
+    search_name = request.session.get('search_name', '')
+    page_num = request.session.get('page_num', '')
+    url = '/enterprise?search_name=%s&page_num=%s' % (search_name, page_num)
+
+    return HttpResponseRedirect(url)
 
 
 # 显示车辆管理页面
@@ -301,7 +321,8 @@ def vehicle(request):
     # 查询已提交申请车辆数, 限制提交车辆数
     user = User.objects.get(id=user_id)
     limit_number = user.limit_number
-    applied_number = user.applied_number
+    applied_number = Vehicle.objects.exclude(vehicle_type_id=15).filter(enterprise_id=user_id).\
+        filter(status_id__in=[2, 3, 4]).count()
 
     # 查询该企业的所有车辆数据
     if user_id != '' and user_id != 1:
@@ -337,6 +358,11 @@ def vehicle(request):
 
     context = {'mp': mp, 'number': number, 'limit_number': limit_number, 'applied_number': applied_number,
                'user_id': user_id, 'status': status, 'allow_submit': allow_submit}
+
+    # 保存页面状态到session
+    request.session['number'] = number
+    request.session['status'] = status
+    request.session['page_num'] = page_num
 
     return render(request, 'vehicle.html', context)
 
@@ -378,7 +404,13 @@ def vehicle_add(request):
     except Exception as e:
         print(e)
 
-    return HttpResponseRedirect('/vehicle')
+    # 构建返回url
+    number = request.session.get('number', '')
+    status = request.session.get('status', '')
+    page_num = request.session.get('page_num', '')
+    url = '/vehicle?number=%s&page_num=%s&status=%s' % (number, page_num, status)
+
+    return HttpResponseRedirect(url)
 
 
 # 编辑车辆
@@ -424,7 +456,13 @@ def vehicle_modify(request):
     except Exception as e:
         print(e)
 
-    return HttpResponseRedirect('/vehicle')
+    # 构建返回url
+    number = request.session.get('number', '')
+    status = request.session.get('status', '')
+    page_num = request.session.get('page_num', '')
+    url = '/vehicle?number=%s&page_num=%s&status=%s' % (number, page_num, status)
+
+    return HttpResponseRedirect(url)
 
 
 # 删除车辆
@@ -441,7 +479,13 @@ def vehicle_delete(request):
     except Exception as e:
         print(e)
 
-    return HttpResponseRedirect('/vehicle')
+    # 构建返回url
+    number = request.session.get('number', '')
+    status = request.session.get('status', '')
+    page_num = request.session.get('page_num', '')
+    url = '/vehicle?number=%s&page_num=%s&status=%s' % (number, page_num, status)
+
+    return HttpResponseRedirect(url)
 
 
 # 提交车辆
@@ -474,27 +518,13 @@ def vehicle_submit(request):
     except Exception as e:
         print(e)
 
-    # # 生成通行证图片
-    # # 生成通行证id, 201805+车牌号+三位随机数
-    # # certification_id = '%s%s%d%d%d' % (time.strftime('%Y%m', time.localtime()), truck.number[1:], random.randint(0, 9),
-    # #                                    random.randint(0, 9), random.randint(0, 9))
-    # # 临时设定, 记得改掉
-    # certification_id = '%s%s%d%d%d' % ('201805', truck.number[1:], random.randint(0, 9), random.randint(0, 9),
-    #                                    random.randint(0, 9))
-    #
-    # truck.cert_id = certification_id
-    # limit_data = '2018年5月31日'  # 暂时写为5月底
-    # number = '%s' % truck.number
-    # enterprise_name = truck.enterprise.enterprise_name
-    # route = truck.route
-    # # 图片文件名
-    # file_name = r'%s/certification/%s.jpg' % (settings.FILE_DIR, certification_id)
-    # truck.file_name = '%s.jpg' % certification_id
-    #
-    # generate_certification(certification_id, limit_data, number, enterprise_name, route, file_name)
-    #
+    # 构建返回url
+    number = request.session.get('number', '')
+    status = request.session.get('status', '')
+    page_num = request.session.get('page_num', '')
+    url = '/vehicle?number=%s&page_num=%s&status=%s' % (number, page_num, status)
 
-    return HttpResponseRedirect('/vehicle')
+    return HttpResponseRedirect(url)
 
 
 # 是否允许提交申请, 判断到大型车辆是否达到提交上限
@@ -509,7 +539,8 @@ def can_submit_vehicle(request):
         result = False
         if user_id != 0:
             try:
-                applied_number = Vehicle.objects.exclude(vehicle_type_id=15).filter(status_id__in=[2, 3, 4]).count()
+                applied_number = Vehicle.objects.exclude(vehicle_type_id=15).filter(enterprise_id=user_id). \
+                    filter(status_id__in=[2, 3, 4]).count()
                 user = User.objects.get(id=user_id)
                 if applied_number < user.limit_number:
                     result = True
@@ -531,7 +562,8 @@ def can_submit_all(request):
         if user_id != 0:
             # 查询全已提交车辆和可提交车辆上限
             user = User.objects.get(id=user_id)
-            applied_number = Vehicle.objects.exclude(vehicle_type_id=15).filter(status_id__in=[2, 3, 4]).count()
+            applied_number = Vehicle.objects.exclude(vehicle_type_id=15).filter(enterprise_id=user_id). \
+                filter(status_id__in=[2, 3, 4]).count()
             # 计算允许提交的车辆总数
             allow_number = user.limit_number - applied_number
             if allow_number < 0:
@@ -638,68 +670,65 @@ def excel_import(request):
 
         # print('%s %s %s %s %s %s' % (vehicle_type, number, engine, vehicle_model, register_date, route))
         # 如果车牌不为空, 创建车辆对象, 否则略过该条数据
-        is_exist = False
-        if number == '' or number is None:
-            is_exist = True
 
-        if not is_exist:
+        if number == '' or number is None:
+            continue
+        else:
             # 如果库中该企业已经存在该车牌, 则忽略该车辆, 否者创建新的车辆对象
             # 获取session中的user_id, 根据user_id查询企业
             user_id = int(request.session.get('user_id', ''))
 
-            # 查询该企业的所有车辆数据
-            if user_id == '' or user_id == 1:
-                is_exist = True
-            else:
-                is_exist = Vehicle.objects.filter(enterprise_id=user_id).filter(number=number).exists()
+        # 查询该企业的所有车辆数据
+        if user_id == '' or user_id == 1:
+            continue
+        else:
+            truck_list = Vehicle.objects.filter(enterprise_id=user_id).filter(number=number)
 
-        if not is_exist:
+        if truck_list:
+            truck = truck_list[0]
+        else:
             truck = Vehicle()
             truck.number = number
 
-            # 添加车辆属性
-            if vehicle_type != '' and vehicle_type is not None:
-                if '大' in vehicle_type:
-                    truck.vehicle_type_id = 1
-                elif '小' in vehicle_type:
-                    truck.vehicle_type_id = 2
-                elif '挂' in vehicle_type:
-                    truck.vehicle_type_id = 15
+        # 添加车辆属性
+        if vehicle_type != '' and vehicle_type is not None:
+            if '大' in vehicle_type:
+                truck.vehicle_type_id = 1
+            elif '小' in vehicle_type:
+                truck.vehicle_type_id = 2
+            elif '挂' in vehicle_type:
+                truck.vehicle_type_id = 15
 
-            if engine != '' and engine is not None:
-                truck.engine = engine
+        if engine != '' and engine is not None:
+            truck.engine = engine
 
-            if vehicle_model != '' and vehicle_model is not None:
-                truck.vehicle_model = vehicle_model
+        if vehicle_model != '' and vehicle_model is not None:
+            truck.vehicle_model = vehicle_model
 
-            # 车辆注册日期, 应该判断一下格式是否正确, 不正确添加默认值, 或设置为空, 现在没时间做了
-            if register_date != '' and register_date is not None:
-                register_date = time.strptime(register_date, r'%Y/%m/%d')
-                truck.register_date = time.strftime(r'%Y-%m-%d', register_date)
+        # 车辆注册日期, 应该判断一下格式是否正确, 不正确添加默认值, 或设置为空, 现在没时间做了
+        if register_date != '' and register_date is not None:
+            register_date = time.strptime(register_date, r'%Y/%m/%d')
+            truck.register_date = time.strftime(r'%Y-%m-%d', register_date)
 
-            if route != '' and route is not None:
-                truck.route = route
+        if route != '' and route is not None:
+            truck.route = route
 
-            truck.modify_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+        truck.modify_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
-            if user_id != '' and user_id != 1:
-                truck.enterprise_id = user_id
-            else:
-                truck.enterprise_id = 1     # 多此一举
+        if user_id != '' and user_id != 1:
+            truck.enterprise_id = user_id
+        else:
+            truck.enterprise_id = 1     # 多此一举
 
-            new_truck_list.append(truck)
+        truck.save()
 
-    Vehicle.objects.bulk_create(new_truck_list)
+    # 构建返回url
+    number = request.session.get('number', '')
+    status = request.session.get('status', '')
+    page_num = request.session.get('page_num', '')
+    url = '/vehicle?number=%s&page_num=%s&status=%s' % (number, page_num, status)
 
-        # for j in range(1, worksheet.ncols):
-            # ctype： 0-empty, 1-string, 2-number, 3-date, 4-boolean, 5-error
-            # 判断数据的类型, 如果是数字, 默认显示为浮点数, 这里转成整数
-            # if worksheet.cell(i, j).ctype == 2:
-            #     print("%s\t" % int(worksheet.cell_value(i, j)), end="")
-            # else:
-            #     print("%s\t" % worksheet.cell_value(i, j), end="")
-
-    return HttpResponseRedirect('/vehicle')
+    return HttpResponseRedirect(url)
 
 
 # 提交全部车辆(request):
@@ -712,7 +741,8 @@ def vehicle_submit_all(request):
         # 查询已提交申请车辆数, 限制提交车辆数
         user = User.objects.get(id=user_id)
         limit_number = user.limit_number
-        applied_number = Vehicle.objects.exclude(vehicle_type_id=15).filter(status_id__in=[2, 3, 4]).count()
+        applied_number = Vehicle.objects.exclude(vehicle_type_id=15).filter(enterprise_id=user_id). \
+            filter(status_id__in=[2, 3, 4]).count()
 
         # 判断是否到达上限, 如果达到, 则只能提交挂车
         if applied_number >= limit_number:
@@ -869,7 +899,13 @@ def vehicle_submit_all(request):
     #     user.applied_number = applied_number
     #     user.save()
 
-    return HttpResponseRedirect('/vehicle')
+    # 构建返回url
+    number = request.session.get('number', '')
+    status = request.session.get('status', '')
+    page_num = request.session.get('page_num', '')
+    url = '/vehicle?number=%s&page_num=%s&status=%s' % (number, page_num, status)
+
+    return HttpResponseRedirect(url)
 
 
 # 显示通行证查询下载页面
@@ -956,18 +992,17 @@ def verify(request):
 
     context = {'mp': mp, 'number': number, 'status': status, 'authority': authority}
 
+    # 保存页面状态到session
+    request.session['number'] = number
+    request.session['status'] = status
+    request.session['page_num'] = page_num
+
     return render(request, 'verify.html', context)
 
 
 # 车辆审核通过
 def verify_pass(request):
     vehicle_id = int(request.GET.get('vehicle_id', 0))
-
-    number = request.GET.get('number', 0)
-    page_num = request.GET.get('page_num', 0)
-    status = request.GET.get('status', 0)
-
-    url = '/verify?number=%s&page_num=%s&status=%s' % (number, page_num, status)
 
     if vehicle_id != 0:
         truck = Vehicle.objects.get(id=vehicle_id)
@@ -1012,18 +1047,18 @@ def verify_pass(request):
         except Exception as e:
             print(e)
 
+    # 构建返回url
+    number = request.session.get('number', '')
+    status = request.session.get('status', '')
+    page_num = request.session.get('page_num', '')
+    url = '/verify?number=%s&page_num=%s&status=%s' % (number, page_num, status)
+
     return HttpResponseRedirect(url)
 
 
 # 车辆审核不通过
 def verify_refuse(request):
     vehicle_id = int(request.GET.get('vehicle_id', 0))
-
-    number = request.GET.get('number', 0)
-    page_num = request.GET.get('page_num', 0)
-    status = request.GET.get('status', 0)
-
-    url = '/verify?number=%s&page_num=%s&status=%s' % (number, page_num, status)
 
     if vehicle_id != 0:
         truck = Vehicle.objects.get(id=vehicle_id)
@@ -1032,6 +1067,12 @@ def verify_refuse(request):
         truck.reason = refuse_reason
 
         truck.save()
+
+    # 构建返回url
+    number = request.session.get('number', '')
+    status = request.session.get('status', '')
+    page_num = request.session.get('page_num', '')
+    url = '/verify?number=%s&page_num=%s&status=%s' % (number, page_num, status)
 
     return HttpResponseRedirect(url)
 
@@ -1146,10 +1187,12 @@ def export_xls(request):
         response.write(buf.getvalue())
         return response
     else:
-        number = request.GET.get('number', 0)
-        page_num = request.GET.get('page_num', 0)
-        status = request.GET.get('status', 0)
+        # 构建返回url
+        number = request.session.get('number', '')
+        status = request.session.get('status', '')
+        page_num = request.session.get('page_num', '')
         url = '/verify?number=%s&page_num=%s&status=%s' % (number, page_num, status)
+
         return HttpResponseRedirect(url)
 
 
@@ -1248,12 +1291,11 @@ def import_xls(request):
     return HttpResponseRedirect('/verify')
 
 
-# 测试
-def my_test(request):
-    if 'post' in request.method.lower():
-        content = request.POST.get('param')
-    else:
-        content = request.GET.get('param')
-    print(content)
+# 清空本单位全部车辆
+def clear_all(request):
+    user_id = request.GET.get('user_id', 0)
 
-    return HttpResponse('ok')
+    if user_id != 0:
+        Vehicle.objects.filter(enterprise_id=user_id).delete()
+
+    return HttpResponseRedirect('/vehicle')

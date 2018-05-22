@@ -100,8 +100,8 @@
 <div class="table_wrapper">
     <div class="table_head">
         <span>车辆列表</span>
-        <span class="number_word">大型车辆提交上限&nbsp;:&nbsp;{{ limit_number }}</span>
-        <span class="number_word">已提交大型车辆数&nbsp;:&nbsp;{{ applied_number }}</span>
+        <span class="number_word">非挂车提交上限&nbsp;:&nbsp;{{ limit_number }}</span>
+        <span class="number_word">已提交非挂车数&nbsp;:&nbsp;{{ applied_number }}</span>
     </div>
     <div class="table_container">
         <div class="search_input">
@@ -118,6 +118,7 @@
             </form>
             <span class="find_btn">查询</span>
             <span class="add_account" id="add">新增车辆</span>
+            <a href="javascript:clear_all('{{ user_id }}');"><span class="out">删除全部车辆</span></a>
             <a href="/static/excel/vehicle.xls"><span class="out outexcel">模版下载</span></a>
             <span class="out import-excel">导入车辆</span>
             {% if allow_submit %}
@@ -652,6 +653,13 @@
                 window.location.href = "/vehicle_submit_all";
             }
         });
+    }
+
+    // 删除本单位全部车辆
+    function clear_all(user_id) {
+        if (confirm('是否删除全部车辆信息？')) {
+            window.location.href = "/clear_all?user_id=" + user_id;
+        }
     }
 </script>
 </html>

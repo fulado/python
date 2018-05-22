@@ -28,7 +28,8 @@ urlpatterns = [
     url(r'^can_submit_all/?', views.can_submit_all),            # 判断是否可以提交全部车辆
     url(r'^export_xls/?', views.export_xls),                    # 导出待审核车辆
     url(r'^import_xls/?', views.import_xls),                    # 导入审核后的车辆数据
+    url(r'^clear_all/?', views.clear_all),                      # 清空本单位全部车辆
     # url(r'^generate_pwd/?', views.generate_pwd),
-    url(r'^my_test/?', views.my_test),                          # 测试用
+    # url(r'^my_test/?', views.my_test),                          # 测试用
     url(r'^/?', views.login),
 ]
