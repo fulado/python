@@ -14,8 +14,8 @@
       <file leaf-file-name="vehicle.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/vehicle.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="10870">
-              <caret line="664" column="7" lean-forward="true" selection-start-line="664" selection-start-column="7" selection-end-line="664" selection-end-column="7" />
+            <state relative-caret-position="14608">
+              <caret line="664" column="7" lean-forward="false" selection-start-line="664" selection-start-column="7" selection-end-line="664" selection-end-column="7" />
               <folding />
             </state>
           </provider>
@@ -24,7 +24,7 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tj_orta_app/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="446">
+            <state relative-caret-position="477">
               <caret line="1199" column="24" lean-forward="false" selection-start-line="1199" selection-start-column="24" selection-end-line="1199" selection-end-column="24" />
               <folding>
                 <element signature="e#9214#10860#0" expanded="false" />
@@ -54,7 +54,7 @@
       <file leaf-file-name="verify.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/verify.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1465">
+            <state relative-caret-position="3872">
               <caret line="176" column="89" lean-forward="false" selection-start-line="176" selection-start-column="83" selection-end-line="176" selection-end-column="89" />
               <folding />
             </state>
@@ -64,7 +64,7 @@
       <file leaf-file-name="enterprise.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/enterprise.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="259">
+            <state relative-caret-position="2332">
               <caret line="106" column="84" lean-forward="false" selection-start-line="106" selection-start-column="73" selection-end-line="106" selection-end-column="84" />
               <folding />
             </state>
@@ -74,7 +74,7 @@
       <file leaf-file-name="tests.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tj_orta_app/tests.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1058">
+            <state relative-caret-position="1452">
               <caret line="76" column="0" lean-forward="false" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
               <folding>
                 <element signature="e#0#32#0" expanded="true" />
@@ -87,8 +87,8 @@
       <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tj_orta_app/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="638">
-              <caret line="33" column="29" lean-forward="true" selection-start-line="33" selection-start-column="29" selection-end-line="33" selection-end-column="29" />
+            <state relative-caret-position="704">
+              <caret line="33" column="29" lean-forward="false" selection-start-line="33" selection-start-column="29" selection-end-line="33" selection-end-column="29" />
               <folding />
             </state>
           </provider>
@@ -119,7 +119,7 @@
       <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tj_orta/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="457">
+            <state relative-caret-position="1034">
               <caret line="47" column="1" lean-forward="false" selection-start-line="47" selection-start-column="1" selection-end-line="47" selection-end-column="1" />
               <folding />
             </state>
@@ -129,7 +129,7 @@
       <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tj_orta_app/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="406">
+            <state relative-caret-position="1298">
               <caret line="59" column="14" lean-forward="false" selection-start-line="59" selection-start-column="4" selection-end-line="59" selection-end-column="14" />
               <folding />
             </state>
@@ -237,7 +237,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -270,6 +269,7 @@
         </subPane>
       </pane>
       <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -397,24 +397,23 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16438356" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16438356" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32884616" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5021322" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33173078" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.32910156" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32884616" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33173078" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26057693" sideWeight="0.4978678" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
@@ -647,17 +646,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1342">
           <caret line="61" column="23" lean-forward="false" selection-start-line="61" selection-start-column="23" selection-end-line="61" selection-end-column="23" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/plist.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/plist.txt" />
     <entry file="file://$PROJECT_DIR$/list.txt" />
     <entry file="file://$PROJECT_DIR$/tj_orta_app/utils.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -669,7 +661,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tj_orta/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="457">
+        <state relative-caret-position="1034">
           <caret line="47" column="1" lean-forward="false" selection-start-line="47" selection-start-column="1" selection-end-line="47" selection-end-column="1" />
           <folding />
         </state>
@@ -677,7 +669,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tj_orta_app/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="406">
+        <state relative-caret-position="1298">
           <caret line="59" column="14" lean-forward="false" selection-start-line="59" selection-start-column="4" selection-end-line="59" selection-end-column="14" />
           <folding />
         </state>
@@ -695,7 +687,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tj_orta_app/tests.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1058">
+        <state relative-caret-position="1452">
           <caret line="76" column="0" lean-forward="false" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
           <folding>
             <element signature="e#0#32#0" expanded="true" />
@@ -706,15 +698,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tj_orta_app/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="638">
-          <caret line="33" column="29" lean-forward="true" selection-start-line="33" selection-start-column="29" selection-end-line="33" selection-end-column="29" />
+        <state relative-caret-position="704">
+          <caret line="33" column="29" lean-forward="false" selection-start-line="33" selection-start-column="29" selection-end-line="33" selection-end-column="29" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/enterprise.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="259">
+        <state relative-caret-position="2332">
           <caret line="106" column="84" lean-forward="false" selection-start-line="106" selection-start-column="73" selection-end-line="106" selection-end-column="84" />
           <folding />
         </state>
@@ -722,15 +714,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/vehicle.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="10870">
-          <caret line="664" column="7" lean-forward="true" selection-start-line="664" selection-start-column="7" selection-end-line="664" selection-end-column="7" />
+        <state relative-caret-position="14608">
+          <caret line="664" column="7" lean-forward="false" selection-start-line="664" selection-start-column="7" selection-end-line="664" selection-end-column="7" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/verify.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1465">
+        <state relative-caret-position="3872">
           <caret line="176" column="89" lean-forward="false" selection-start-line="176" selection-start-column="83" selection-end-line="176" selection-end-column="89" />
           <folding />
         </state>
@@ -738,7 +730,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tj_orta_app/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="446">
+        <state relative-caret-position="477">
           <caret line="1199" column="24" lean-forward="false" selection-start-line="1199" selection-start-column="24" selection-end-line="1199" selection-end-column="24" />
           <folding>
             <element signature="e#9214#10860#0" expanded="false" />
