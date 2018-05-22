@@ -151,7 +151,7 @@
                         <button type="button" class="see modify-vehicle-info" style="margin-right: 5px;" onclick="setVehicleInfo(
                         '{{ vehicle.vehicle_type.id }}', '{{ vehicle.number|linebreaksbr }}', '{{ vehicle.engine|linebreaksbr }}',
                         '{{ vehicle.vehicle_model|linebreaksbr }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
-                        '{{ vehicle.route|linebreaksbr }}', '{{ vehicle.id }}')">编辑</button>
+                        '{{ vehicle.route|linebreaksbr }}', '{{ vehicle.id }}', '{{ vehicle.status.id }}')">{% if vehicle.status.id == 1 %}编辑{% else %}查看{% endif %}</button>
                         {% if allow_submit and vehicle.status.id == 1 %}
                         <a href="javascript:submit_vehicle('{{ user_id }}', '{{ vehicle.id }}',  '{{ vehicle.vehicle_type.id }}',
                         '{{ vehicle.number }}', '{{ vehicle.engine }}', '{{ vehicle.vehicle_model }}',
@@ -562,7 +562,7 @@
     });
 
     // 填充编辑车辆模态框信息
-    function setVehicleInfo(vehicle_type, number, engine, vehicle_model, register_date, route, id) {
+    function setVehicleInfo(vehicle_type, number, engine, vehicle_model, register_date, route, id, status_id) {
          $('.modify-vehicle select').eq(0).val(vehicle_type);       // 车辆类型
          $('.modify-vehicle input').eq(0).val(number.replace("<br />",""));              // 号牌号码
          $('.modify-vehicle input').eq(1).val(engine.replace("<br />",""));              // 发动机型号
@@ -570,6 +570,11 @@
          $('.modify-vehicle input').eq(3).val(register_date);     // 车辆注册日期
          $('.modify-vehicle textarea').val(route.replace("<br />",""));                  // 运输路线
          $('.modify-vehicle input').eq(4).val(id);                  // 车辆id
+
+         if (status_id != '1') {
+            $('.modify-vehicle .clickbtn .save').hide();
+            $('.modify-vehicle .clickbtn .delete').hide();
+         }
     }
 
     // 跳转到指定页面

@@ -461,8 +461,8 @@ def vehicle_submit(request):
     try:
         truck.save()
 
-        # 如果是大型车辆, 该用户已提交车辆计数加1
-        if truck.vehicle_type_id == 1:
+        # 如果不是挂车, 该用户已提交车辆计数加1
+        if truck.vehicle_type_id != 15:
             user_id = int(request.session.get('user_id', ''))
 
             # 查询已提交申请车辆数, 限制提交车辆数
@@ -509,8 +509,9 @@ def can_submit_vehicle(request):
         result = False
         if user_id != 0:
             try:
+                applied_number = Vehicle.objects.exclude(vehicle_type_id=15).filter(status_id__in=[2, 3, 4]).count()
                 user = User.objects.get(id=user_id)
-                if user.applied_number < user.limit_number:
+                if applied_number < user.limit_number:
                     result = True
             except Exception as e:
                 print(e)
@@ -530,17 +531,18 @@ def can_submit_all(request):
         if user_id != 0:
             # 查询全已提交车辆和可提交车辆上限
             user = User.objects.get(id=user_id)
+            applied_number = Vehicle.objects.exclude(vehicle_type_id=15).filter(status_id__in=[2, 3, 4]).count()
             # 计算允许提交的车辆总数
-            allow_number = user.limit_number - user.applied_number
+            allow_number = user.limit_number - applied_number
             if allow_number < 0:
                 allow_number = 0
 
             # 查询本次需要提交的车辆
             vehicle_list = Vehicle.objects.filter(enterprise_id=user_id).filter(status_id=1)
 
-            # 本次需要提交的大型车辆总数
+            # 本次需要提交的非挂车辆总数
             vehicle_1_num = 0
-            # 本次需要提交的小型车辆和挂车总数
+            # 本次需要提交的挂车总数
             vehicle_other_num = 0
             # 信息不正确的车辆数量
             error_num = 0
@@ -571,14 +573,14 @@ def can_submit_all(request):
                     could_submit = False
 
                 if could_submit:
-                    if vehicle_type == 1:
-                        vehicle_1_num += 1
-                    else:
+                    if vehicle_type == 15:
                         vehicle_other_num += 1
+                    else:
+                        vehicle_1_num += 1
                 else:
                     error_num += 1
 
-            # 如果提交大型车辆的总数大于允许提交总数, 返回本次提交的数量和未提交的数量
+            # 如果提交的非挂车辆的总数大于允许提交总数, 返回本次提交的数量和未提交的数量
             ignore_num = 0
             if vehicle_1_num > allow_number:
                 result = False
@@ -710,20 +712,20 @@ def vehicle_submit_all(request):
         # 查询已提交申请车辆数, 限制提交车辆数
         user = User.objects.get(id=user_id)
         limit_number = user.limit_number
-        applied_number = user.applied_number
+        applied_number = Vehicle.objects.exclude(vehicle_type_id=15).filter(status_id__in=[2, 3, 4]).count()
 
-        # 判断是否到达上限, 如果达到, 则只能提交小型货车和挂车
+        # 判断是否到达上限, 如果达到, 则只能提交挂车
         if applied_number >= limit_number:
             truck_list = Vehicle.objects.filter(enterprise_id=user_id).filter(status_id=1).filter(vehicle_type_id__in=
-                                                                                                  [2, 15])
+                                                                                                  15)
         else:
             truck_list = Vehicle.objects.filter(enterprise_id=user_id).filter(status_id=1)
     # 判断查询结果集是否为空
     # [{'id': 9796, 'number': '津AQ5028', 'enterprise': 24, 'route': '津北线，复康路'},]
     if truck_list:
         for truck in truck_list:
-            # 如果到达提交上限, 并且车辆类型是大型车, 退出本次循环
-            if (applied_number >= limit_number) and (truck.vehicle_type_id == 1):
+            # 如果到达提交上限, 并且车辆类型不是挂车, 退出本次循环
+            if (applied_number >= limit_number) and (truck.vehicle_type_id != 15):
                 continue
             # 判断信息是否填写完整
             vehicle_type = truck.vehicle_type_id
@@ -762,7 +764,7 @@ def vehicle_submit_all(request):
                         Vehicle.objects.filter(id=truck.id).update(status_id=3)
 
                     # 已提交车辆数+1
-                    if truck.vehicle_type_id == 1:
+                    if truck.vehicle_type_id != 15:
                         applied_number += 1
                 except Exception as e:
                     print(e)
