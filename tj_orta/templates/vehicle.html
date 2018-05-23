@@ -152,7 +152,7 @@
                         <button type="button" class="see modify-vehicle-info" style="margin-right: 5px;" onclick="setVehicleInfo(
                         '{{ vehicle.vehicle_type.id }}', '{{ vehicle.number|linebreaksbr }}', '{{ vehicle.engine|linebreaksbr }}',
                         '{{ vehicle.vehicle_model|linebreaksbr }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
-                        '{{ vehicle.route|linebreaksbr }}', '{{ vehicle.id }}', '{{ vehicle.status.id }}')">{% if vehicle.status.id == 1 %}编辑{% else %}查看{% endif %}</button>
+                        '{{ vehicle.route|linebreaksbr }}', '{{ vehicle.id }}', '{{ vehicle.status.id }}')">{% if vehicle.status.id == 1 or vehicle.status.id == 5 %}编辑{% else %}查看{% endif %}</button>
                         {% if allow_submit and vehicle.status.id == 1 %}
                         <a href="javascript:submit_vehicle('{{ user_id }}', '{{ vehicle.id }}',  '{{ vehicle.vehicle_type.id }}',
                         '{{ vehicle.number }}', '{{ vehicle.engine }}', '{{ vehicle.vehicle_model }}',
@@ -433,7 +433,11 @@
 
         // 隐藏编辑车辆信息模态框
         $('.modify-vehicle .del').click(function() {
-            if (confirm('是否放弃修改？')) {
+            if ($('.modify-vehicle .clickbtn .save').css("display") == 'none'){
+                $('.modify-vehicle').hide();
+                $('.mask').hide();
+            }
+            else if (confirm('是否放弃修改？')) {
                 $('.modify-vehicle').hide();
                 $('.mask').hide();
             }
@@ -572,9 +576,12 @@
          $('.modify-vehicle textarea').val(route.replace("<br />",""));                  // 运输路线
          $('.modify-vehicle input').eq(4).val(id);                  // 车辆id
 
-         if (status_id != '1') {
+         if (status_id != '1' && status_id != '5' ) {
             $('.modify-vehicle .clickbtn .save').hide();
             $('.modify-vehicle .clickbtn .delete').hide();
+         } else {
+            $('.modify-vehicle .clickbtn .save').show();
+            $('.modify-vehicle .clickbtn .delete').show();
          }
     }
 
