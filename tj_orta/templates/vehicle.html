@@ -100,8 +100,8 @@
 <div class="table_wrapper">
     <div class="table_head">
         <span>车辆列表</span>
-        <span class="number_word">非挂车提交上限&nbsp;:&nbsp;{{ limit_number }}</span>
-        <span class="number_word">已提交非挂车数&nbsp;:&nbsp;{{ applied_number }}</span>
+        <span class="number_word">车辆提交上限&nbsp;:&nbsp;{{ limit_number }}</span>
+        <span class="number_word">已提交车辆数&nbsp;:&nbsp;{{ applied_number }}</span>
     </div>
     <div class="table_container">
         <div class="search_input">
@@ -486,10 +486,17 @@
             else if (route.length == 0) {
                 alert('请输入正确的行驶路线');
             }
-            else if (confirm('是否保存新增车辆信息？')) {
-                $('.add-vehicle form').submit();
-                $('.add-vehicle').hide();
-                $('.mask').hide();
+            else {
+                $.get('/is_vehicle_exist', {'number': number}, function(data) {
+                    if (data.result) {
+                        alert('当前号牌车辆已录入');
+                    }
+                    else if (confirm('是否保存新增车辆信息？')) {
+                        $('.add-vehicle form').submit();
+                        $('.add-vehicle').hide();
+                        $('.mask').hide();
+                    }
+                });
             }
         });
 
