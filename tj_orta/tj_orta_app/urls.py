@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^vehicle/?', views_vehicle.vehicle),
     url(r'^verify_pass/?', views.verify_pass),                  # 车辆审核通过
     url(r'^verify_refuse/?', views.verify_refuse),              # 车辆审核不通过
+    url(r'^export_to_ep/?', views.export_to_ep),                # 导出全部审核通过车辆到电警数据库
     url(r'^verify/?', views.verify),                            # 显示车辆审核页面
     url(r'^last/?', views_last.show_page),                      # 显示本月车辆下载页面
     url(r'^excel_import/?', views_vehicle.excel_import),

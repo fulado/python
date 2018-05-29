@@ -407,6 +407,10 @@ def verify_pass(request):
 
     if vehicle_id != 0:
         truck = Vehicle.objects.get(id=vehicle_id)
+        if truck.status_id == 2:
+            truck.hbj_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+        else:
+            truck.jgj_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
         truck.status_id += 1
 
         if truck.status_id == 4:
@@ -463,6 +467,10 @@ def verify_refuse(request):
 
     if vehicle_id != 0:
         truck = Vehicle.objects.get(id=vehicle_id)
+        if truck.status_id == 2:
+            truck.hbj_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+        else:
+            truck.jgj_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
         truck.status_id = 5
         refuse_reason = request.GET.get('refuse_reason', '')
         truck.reason = refuse_reason
@@ -580,6 +588,12 @@ def import_xls(request):
         else:
             continue
 
+        # 记录审核时间
+        if truck.status_id == 2:
+            truck.hbj_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+        else:
+            truck.jgj_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+
         # 审核通过
         if 'p' in vehicle_status.lower():
             truck.status_id += 1
@@ -650,3 +664,96 @@ def is_vehicle_exist(request):
         result = Vehicle.objects.filter(number=number).exists()
 
     return JsonResponse({'result': result})
+
+
+# 导出通过车辆数据给电警平台
+def export_to_ep(request):
+
+    authority_id = request.session.get('authority_id', 0)
+
+    if authority_id in (3, 99):
+        truck_list = Vehicle.objects.filter(status_id=4)
+    else:
+        truck_list = None
+
+    if truck_list:
+
+        # 创建工作簿
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('sheet1', cell_overwrite_ok=True)
+
+        # 设置表头
+        title = ['ID', 'HPHM', 'HPZL', 'WFDM', 'QSSJ', 'JZSJ']
+
+        # 生成表头
+        len_col = len(title)
+        for i in range(0, len_col):
+            ws.write(0, i, title[i])
+
+        # 写入车辆数据
+        i = 1
+        for truck in truck_list:
+
+            # 号牌号码
+            hphm = truck.number
+
+            # 号牌种类
+            if truck.vehicle_type_id == 1:
+                hpzl = '01'
+            elif truck.vehicle_type_id == 2:
+                hpzl = '02'
+            else:
+                hpzl = '15'
+
+            # id, 根据车辆id, 号牌号码, 号牌种类经过md5加密生成
+            truck_id = hashlib.md5(('%d%s%s' % (truck.id, hphm, hpzl)).encode('utf-8')).hexdigest()
+
+            # 违法代码
+            wfdm = '13444'
+
+            # 起始时间
+            jgj_time = truck.jgj_time
+            year = jgj_time.year
+            month = jgj_time.month
+
+            if month == 12:
+                year += 1
+                month = 1
+            else:
+                month += 1
+
+            qssj = '%d-%d-%d %s:%s:%s' % (year, month, 1, '00', '00', '00')
+
+            # 截止时间
+            if month == 12:
+                year += 1
+                month = 1
+            else:
+                month += 1
+
+            jzsj = '%d-%d-%d %s:%s:%s' % (year, month, 1, '00', '00', '00')
+
+            # 生成excle内容: ['ID', 'HPHM', 'HPZL', 'WFDM', 'QSSJ', 'JZSJ']
+            content = [truck_id, hphm, hpzl, wfdm, qssj, jzsj]
+
+            for j in range(0, len_col):
+                ws.write(i, j, content[j])
+            i += 1
+
+        # 内存文件操作
+        buf = io.BytesIO()
+
+        # 将文件保存在内存中
+        wb.save(buf)
+        response = HttpResponse(buf.getvalue(), content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename=vehicle_to_ep.xls'
+        response.write(buf.getvalue())
+        return response
+    else:
+        # 构建返回url
+        number = request.session.get('number', '')
+        status = request.session.get('status', '')
+        page_num = request.session.get('page_num', '')
+        url = '/verify?number=%s&page_num=%s&status=%s' % (number, page_num, status)
+
+        return HttpResponseRedirect(url)

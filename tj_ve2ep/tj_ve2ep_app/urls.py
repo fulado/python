@@ -1,4 +1,4 @@
-"""tj_orta URL Configuration
+"""tj_ve2ep URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.11/topics/http/urls/
@@ -13,24 +13,11 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
-from django.contrib import admin
-from apscheduler.schedulers.background import BackgroundScheduler
-from tj_orta_app.views_sys import forbid_submit, init_sys
+from django.conf.urls import url
+from . import views
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^', include('tj_orta_app.urls')),
+    url(r'^test/?', views.test),
+    url(r'^import_xls/?', views.import_xls),
+    url(r'^/?', views.show_import),
 ]
-
-
-# 定时任务
-Scheduler = BackgroundScheduler()
-# 每月25日0点, 禁止提交申请
-Scheduler.add_job(forbid_submit, 'cron', day=26, hour=0, minute=0, second=0)
-# 每月1日1点, 重置数据库
-Scheduler.add_job(init_sys, 'cron', day=29, hour=18, minute=38, second=0)
-
-Scheduler.start()
-
-

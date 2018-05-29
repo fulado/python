@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>外环线数据导入</title>
+</head>
+<body style="margin: auto; text-align: center;">
+    <h1 >外环线通行证审核通过车辆数据导入</h1>
+    <div>
+        <form action="/import_xls" enctype="multipart/form-data" method="post">
+            {% csrf_token %}
+            <label>选择文件</label>
+            <input type="file" name="excel_file" style="width: 300px; border: 1px solid black;" accept="application/vnd.ms-excel"/>
+            <button type="button">导入</button>
+        </form>
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+    // 导入车辆提交
+    var oButton = document.getElementsByTagName('button')[0];
+    var oInput = document.getElementsByTagName('input')[1];
+    var oForm = document.getElementsByTagName('form')[0];
+
+    oButton.onclick = function() {
+        // 判断是否选择文件
+        if (oInput.value.length > 0) {
+            oForm .submit();
+            alert('导入中，请耐心等候');
+        } else {
+            alert('请选择要导入的文件');
+        }
+    };
+</script>

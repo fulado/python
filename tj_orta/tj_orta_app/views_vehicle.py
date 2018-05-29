@@ -435,19 +435,25 @@ def excel_import(request):
 def vehicle_submit_all(request):
     # 获取session中的user_id, 根据user_id查询企业
     user_id = int(request.session.get('user_id', ''))
-
+    print(user_id)
     # 查询该企业的所有车辆数据
-    if user_id != '' and user_id != 1:
+    if user_id == 1:
+        user = User.objects.get(id=user_id)
+        limit_number = user.limit_number
+        applied_number = Vehicle.objects.exclude(vehicle_type_id=15).filter(status_id__in=[2, 3, 4]).count()
+        truck_list = Vehicle.objects.filter(status_id=1)
+    elif user_id != '':
         # 查询已提交申请车辆数, 限制提交车辆数
         user = User.objects.get(id=user_id)
         limit_number = user.limit_number
-        applied_number = Vehicle.objects.exclude(vehicle_type_id=15).filter(enterprise_id=user_id). \
+
+        applied_number = Vehicle.objects.exclude(vehicle_type_id=15).filter(enterprise_id=user_id).\
             filter(status_id__in=[2, 3, 4]).count()
 
         # 判断是否到达上限, 如果达到, 则只能提交挂车
         if applied_number >= limit_number:
-            truck_list = Vehicle.objects.filter(enterprise_id=user_id).filter(status_id=1).filter(vehicle_type_id__in=
-                                                                                                  15)
+            truck_list = Vehicle.objects.filter(enterprise_id=user_id).filter(status_id=1).\
+                filter(vehicle_type_id__in=15)
         else:
             truck_list = Vehicle.objects.filter(enterprise_id=user_id).filter(status_id=1)
     # 判断查询结果集是否为空
