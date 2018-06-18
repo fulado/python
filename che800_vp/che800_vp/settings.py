@@ -24,18 +24,34 @@ SECRET_KEY = 'f=o8=qkdx-^9ov^v+pc6o2m#(@)exmo+s#m5h%q2hbv!x9bh50'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # settings for development
-DEBUG = True
+# DEBUG = True
+#
+# ALLOWED_HOSTS = []
+#
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'che800_vp',
+#         'PORT': 3306,
+#         'HOST': '127.0.0.1',
+#         'USER': 'root',
+#         'PASSWORD': 'xiaobai',
+#     }
+# }
 
-ALLOWED_HOSTS = []
+# settings for production
+DEBUG = False
+
+ALLOWED_HOSTS = ['*', ]
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'che800_vp',
+        'NAME': 'violation',
         'PORT': 3306,
-        'HOST': '127.0.0.1',
+        'HOST': '192.168.100.248',
         'USER': 'root',
-        'PASSWORD': 'xiaobai',
+        'PASSWORD': 'yxtc_20921',
     }
 }
 

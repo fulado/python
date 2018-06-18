@@ -81,8 +81,10 @@ def test(request):
 # 根据用户提交的信息构造违章返回数据
 def get_violations(vehicleNumber, vehicleType):
     try:
+        db = get_db()
+
         # 从mongo数据中查询违章数据
-        vio_list = get_violation_from_mongodb(vehicleNumber, vehicleType)
+        vio_list = get_violation_from_mongodb(vehicleNumber, vehicleType, db)
 
         # 根据违法代码构造违法数据列表
         vio_data = []
@@ -103,18 +105,8 @@ def get_violations(vehicleNumber, vehicleType):
 
 
 # 根据车牌查询违章
-def get_violation_from_mongodb(vehicleNumber, vehicleType):
+def get_violation_from_mongodb(vehicleNumber, vehicleType, db):
     try:
-        # mongodb数据库ip, 端口
-        mongodb_ip = '127.0.0.1'
-        mongodb_port = 27017
-
-        # 创建连接对象
-        client = pymongo.MongoClient(host=mongodb_ip, port=mongodb_port)
-
-        # 获得数据库
-        db = client.violation
-
         # 在现场处罚表中查询违章
         result = db.ViolationUp.find({'hphm': vehicleNumber, 'hpzl': vehicleType})
 
@@ -141,10 +133,29 @@ def get_violation_from_mongodb(vehicleNumber, vehicleType):
 
 
 # 根据违法代码查询具体违法行为, 扣分, 罚款金额
-def get_activity_by_code(vio_code):
+def get_activity_by_code(vio_code, db):
     try:
-        vio_obj = VioCode.objects.get(code=vio_code)
+        vio_obj = db.v_ViolationCodeDic.find({'xfxw': vio_code})
         return vio_obj.activity, vio_obj.point, vio_obj.fine
+    except Exception as e:
+        print(e)
+        raise e
+
+
+# 获得MongoDB数据库连接
+def get_db():
+    try:
+        # mongodb数据库ip, 端口
+        mongodb_ip = '127.0.0.1'
+        mongodb_port = 27017
+
+        # 创建连接对象
+        client = pymongo.MongoClient(host=mongodb_ip, port=mongodb_port)
+
+        # 获得数据库
+        vio_db = client.violation
+
+        return vio_db
     except Exception as e:
         print(e)
         raise e
