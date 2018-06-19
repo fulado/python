@@ -12,19 +12,19 @@ import pymongo
 
 
 # just for test
-def test(request):
+def violation(request):
 
     # 判断请求ip是否在白名单中
     if 'HTTP_X_FORWARDED_FOR' in request.META.keys():
         ip_addr = request.META['HTTP_X_FORWARDED_FOR']
     else:
         ip_addr = request.META['REMOTE_ADDR']
-    print(ip_addr)
+    # print(ip_addr)
 
-    # 如果ip不在白名单返回状态码14
-    if not IpInfo.objects.filter(ip_addr=ip_addr).exists():
-        result = {'status': 14}
-        return JsonResponse(result)
+    # 如果ip不在白名单返回状态码14, 暂不校验ip
+    # if not IpInfo.objects.filter(ip_addr=ip_addr).exists():
+    #     result = {'status': 14}
+    #     return JsonResponse(result)
 
     # 获取请求表单对象
     if request.method == 'GET':
@@ -71,7 +71,7 @@ def test(request):
         return JsonResponse(result)
 
     # 查询违章信息
-    print('查询车辆, 号牌号码: %s, 号牌种类: %s' % (data['vehicleNumber'], data['vehicleType']))
+    # print('查询车辆, 号牌号码: %s, 号牌种类: %s' % (data['vehicleNumber'], data['vehicleType']))
 
     vio_data = get_violations(data['vehicleNumber'], data['vehicleType'])
 
@@ -81,6 +81,7 @@ def test(request):
 # 根据用户提交的信息构造违章返回数据
 def get_violations(vehicleNumber, vehicleType):
     try:
+        # 建立数据库连接
         db = get_db()
 
         # 从mongo数据中查询违章数据
@@ -89,9 +90,9 @@ def get_violations(vehicleNumber, vehicleType):
         # 根据违法代码构造违法数据列表
         vio_data = []
         for vio in vio_list:
-            vio_activity = get_activity_by_code(vio['code'])
+            vio_activity = db.v_ViolationCodeDic.find_one({'dm': vio['code']})
             vio_info = {'time': vio['time'], 'position': vio['position'], 'code': vio['code'],
-                        'activity': vio_activity[0], 'point': vio_activity[1], 'money': vio_activity[2],
+                        'activity': vio_activity['wfxw'], 'point': vio_activity['jfz'], 'money': vio_activity['fke1'],
                         'location': vio['location']}
             vio_data.append(vio_info)
 
@@ -133,20 +134,20 @@ def get_violation_from_mongodb(vehicleNumber, vehicleType, db):
 
 
 # 根据违法代码查询具体违法行为, 扣分, 罚款金额
-def get_activity_by_code(vio_code, db):
-    try:
-        vio_obj = db.v_ViolationCodeDic.find({'xfxw': vio_code})
-        return vio_obj.activity, vio_obj.point, vio_obj.fine
-    except Exception as e:
-        print(e)
-        raise e
+# def get_activity_by_code(vio_code, db):
+#     try:
+#         vio_obj = db.v_ViolationCodeDic.findOne({'dm': vio_code})
+#         return vio_obj['wfxw'], vio_obj['jfz'], vio_obj['fke1']
+#     except Exception as e:
+#         print(e)
+#         raise e
 
 
 # 获得MongoDB数据库连接
 def get_db():
     try:
         # mongodb数据库ip, 端口
-        mongodb_ip = '127.0.0.1'
+        mongodb_ip = '192.168.100.240'
         mongodb_port = 27017
 
         # 创建连接对象

@@ -3,6 +3,8 @@ import urllib
 import base64
 import json
 import pymongo
+import time
+import hashlib
 
 
 class ViolationException(Exception):
@@ -86,6 +88,29 @@ def get_violation_from_mongo():
         print(e)
 
 
+# 测试天津违章查询接口
+def test_tsn_vio(vehicle_number, vehicle_type):
+    # 构造查询数据
+    username = 'test'
+    password = 'test'
+    timestamp = int(time.time())
+    sign = hashlib.sha1(('%s%d%s' % (username, timestamp, password)).encode('utf-8')).hexdigest()
+
+    data = {'username': username, 'timestamp': timestamp, 'sign': sign, 'vehicleNumber': vehicle_number,
+            'vehicleType': vehicle_type}
+
+    # url转码
+    data = urllib.parse.urlencode(data)
+
+    # 接口地址
+    url = 'http://111.160.75.92:9528/violation'
+    request = urllib.request.Request(url, data.encode())
+
+    response = urllib.request.urlopen(request)
+
+    return response.read()
+
+
 if __name__ == '__main__':
     # cars = [{"engineNumber": "121111", "platNumber": "冀JD7697", "carType": "01"},
     #         {"engineNumber": "15E51A", "platNumber": "津CA9257", "carType": "01"},
@@ -97,4 +122,15 @@ if __name__ == '__main__':
     # except Exception as e:
     #     print(e)
 
-    get_violation_from_mongo()
+    # get_violation_from_mongo()
+    vehicle_number = '津NWX388'
+    vehicle_type = '02'
+
+    start_time = time.time()
+    for i in range(10):
+        response_data = test_tsn_vio(vehicle_number, vehicle_type)
+        # print(i, ' ')
+    end_time = time.time()
+
+    print(json.loads(response_data.decode('utf-8')))
+    print(end_time - start_time)
