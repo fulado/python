@@ -10,8 +10,10 @@ class ViolationException(Exception):
 
 
 def get_token():
-    data = '{"username":"ceshihttp","password":"ceshihttp"}'
-    url = 'http://192.168.100.234:7000/login'
+    # data = '{"username":"ceshihttp","password":"ceshihttp"}'
+    # url = 'http://192.168.100.234:7000/login'
+    data = '{"username":"pingan","password":"pingan123"}'
+    url = 'http://47.94.18.47/illegalData-search/login'
     data = get_json(get_response_encoded_data(url, data))
     # print(data)
     return data['token']
