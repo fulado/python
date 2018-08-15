@@ -1,20 +1,5 @@
 {% extends 'base.html' %}
 
-{% block head %}
-    <script type="text/javascript">
-        // 设置转办模态框信息
-        function setDeliverInfo() {
-            $('#deliverModal .modal-body span').eq(1).text($('.deliver-dept :selected').text());
-        }
-
-        // 提交转办请求
-        function submitDeliverInfo() {
-            var oForm = $('#agency_dept');
-            submitForm(oForm, 'GET', '/item/deliver_action');
-        }
-    </script>
-{% endblock %}
-
 <!-- 操作窗口 -->
 {% block operate %}
     <!-- 转办内容 -->
@@ -27,69 +12,59 @@
             <table>
                 <tr>
                     <td><span>事项编号</span></td>
-                    <td><input type="text" value="{{ item.id|default:'' }}" /></td>
+                    <td><input type="text" value="201703021101" /></td>
                     <td></td>
                     <td><span>工单编号</span></td>
-                    <td><input type="text" value="{{ item.order_id|default:'' }}" /></td>
+                    <td><input type="text" value="GD201703021101" /></td>
                     <td></td>
                     <td><span>紧急程度</span></td>
-                    <td>
-                        {% if item.emergency == 1 %}
-                        <input type="text" value="普通（3天）" />
-                        {% elif item.emergency == 2 %}
-                        <input type="text" value="加急（2天）" />
-                        {% elif item.emergency == 3 %}
-                        <input type="text" value="紧急（当日回复）" />
-                        {% elif item.emergency == 4 %}
-                        <input type="text" value="特急（两小时内回复）" />
-                        {% endif %}
-                    </td>
+                    <td><input type="text" value="普通(3天)" /></td>
                 </tr>
                 <tr>
-                    <td><span>求助号码</span></td>
-                    <td><input type="text" value="{{ item.sh_phone|default:'' }}" /></td>
+                    <td><span>求租号码</span></td>
+                    <td><input type="text" value="13901235678" /></td>
                     <td></td>
-                    <td><span>联系电话</span></td>
-                    <td><input type="text" value="{{ item.c_phone|default:'' }}" /></td>
+                    <td><span>联系号码</span></td>
+                    <td><input type="text" value="13901235678" /></td>
                     <td></td>
                     <td><span>求助人</span></td>
-                    <td><input type="text" value="{{ item.sh_person|default:'' }}" /></td>
+                    <td><input type="text" value="张先生" /></td>
                 </tr>
                 <tr>
                     <td><span>受理时间</span></td>
-                    <td><input type="text" value="{{ item.recd_time|default:'' }}" /></td>
+                    <td><input type="text" value="2018-04-10" /></td>
                     <td></td>
                     <td><span>转办时间</span></td>
-                    <td><input type="text" value="{{ item.deliver_time|default:'' }}" /></td>
+                    <td><input type="text" value="2018-04-16" /></td>
                     <td></td>
                     <td><span>转办人</span></td>
-                    <td><input type="text" value="{{ item.deliver_person|default:'' }}" /></td>
+                    <td><input type="text" value="张警官" /></td>
                 </tr>
                 <tr>
                     <td><span>求助类型</span></td>
                     <td colspan="7">
-                        <input type="text" value="{{ item.category1.name|default:'' }}" />
-                        <input type="text" value="{{ item.category2.name|default:'' }}" />
-                        <input type="text" value="{{ item.category3.name|default:'' }}" />
-                        <input type="text" value="{{ item.category4.name|default:'' }}" />
+                        <input type="text" value="资讯类" />
+                        <input type="text" value="交通设施" />
+                        <input type="text" value="信号灯" />
+                        <input type="text" value="故障" />
                     </td>
                 </tr>
                 <tr class="address">
                     <td><span>地址</span></td>
                     <td colspan="7">
-                        <input type="text" value="{{ item.d_address|default:'' }}" />
+                        <input type="text" value="和平区" />
                     </td>
                 </tr>
                 <tr class="summary">
                     <td><span>内容摘要</span></td>
                     <td colspan="7">
-                        <input type="text" value="{{ item.title|default:'' }}" />
+                        <input type="text" value="驾驶证丢失，无法处理违章，无法重新办证" />
                     </td>
                 </tr>
                 <tr>
                     <td><span>反映内容</span></td>
                     <td colspan="7">
-                        <textarea>{{ item.content|default:'' }}</textarea>
+                        <textarea>市民来电：2014年4月份违章，但是当时车辆和驾驶证被红桥支队扣下了，现在市民多个途径寻找驾驶证，但均未找到。处理当时的违法需要驾驶证，如果撤销不了违法信息接受处罚就不能换本或者是重新学驾驶证。张继德120224198310131715，津GQ3901。现在市民咨询，这种情况该怎么办？</textarea>
                     </td>
                 </tr>
             </table>
@@ -107,60 +82,59 @@
                 <tr>
                     <td><span>受理单位</span></td>
                     <td>
-                        <form id="agency_dept">
-                            <select name="assign_dept_id">
-                                {% for supervisor in supervisor_list %}
-                                    {% if item.assign_dept_id == supervisor.id %}
-                                        <option value="{{ supervisor.id }}" selected>{{ supervisor.name }}</option>
-                                    {% else %}
-                                        <option value="{{ supervisor.id }}">{{ supervisor.name }}</option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                            <input type="hidden" name="item_id" value="{{ item.id }}" />
-                        </form>
+                        <select name="">
+                            <option value="0">西青支队</option>
+                            <option value="1">东丽支队</option>
+                        </select>
                     </td>
                     <td></td>
                     <td><span>办理单位</span></td>
-                    <td><input type="text" value="{{ item.agency_dept.name|default:'' }}" /></td>
+                    <td><input type="text" /></td>
                     <td></td>
                     <td><span>任务状态</span></td>
-                    <td><input type="text" value="{{ item.status.status_name }}" /></td>
+                    <td><input type="text" value="未转办" /></td>
                 </tr>
                 <tr>
                     <td><span>受理人</span></td>
-                    <td><input type="text" value="{{ item.receiver.real_name|default:'' }}" /></td>
+                    <td><input type="text" /></td>
                     <td></td>
                     <td><span>受理时间</span></td>
-                    <td><input type="text" value="{{ item.receive_time|default:'' }}" /></td>
+                    <td><input type="text" /></td>
                 </tr>
                 <tr>
                     <td><span>办理人</span></td>
-                    <td><input type="text" value="{{ item.deal_person|default:'' }}" /></td>
+                    <td><input type="text" /></td>
                     <td></td>
                     <td><span>办理时间</span></td>
-                    <td><input type="text" value="{{ item.complete_time|default:'' }}" /></td>
+                    <td><input type="text" /></td>
+                </tr>
+                <tr>
+                    <td><span>办理人</span></td>
+                    <td><input type="text" /></td>
+                    <td></td>
+                    <td><span>办理时间</span></td>
+                    <td><input type="text" /></td>
                 </tr>
                 <tr>
                     <td><span>审批人</span></td>
-                    <td><input type="text" value="{{ item.check_person|default:'' }}" /></td>
+                    <td><input type="text" /></td>
                     <td></td>
                     <td><span>审批时间</span></td>
-                    <td><input type="text" value="{{ item.check_time|default:'' }}" /></td>
+                    <td><input type="text" /></td>
                 </tr>
                 <tr>
                     <td><span>回访人</span></td>
-                    <td><input type="text" value="{{ item.revisit_person|default:'' }}" /></td>
+                    <td><input type="text" /></td>
                     <td></td>
                     <td><span>反馈时间</span></td>
-                    <td><input type="text" value="{{ item.revisit_time|default:'' }}" /></td>
+                    <td><input type="text" /></td>
                 </tr>
             </table>
         </div>
         <div class="search-btn-group">
-            <a class="btn btn-default" data-toggle="modal" data-target="#deleteModal" data-backdrop="static">删除</a>
-            <a onclick="setDeliverInfo()" class="btn btn-default" data-toggle="modal" data-target="#deliverModal" data-backdrop="static">转办</a>
-            <a href="/item/return_last_page" class="btn btn-default">返回</a>
+            <a href="javascript:void(0)" class="btn btn-default" data-toggle="modal" data-target="#deleteModal" data-backdrop="static">删除</a>
+            <a href="javascript:void(0)" class="btn btn-default" data-toggle="modal" data-target="#deliverModal" data-backdrop="static">转办</a>
+            <a href="javascript:void(0)" class="btn btn-default">返回</a>
         </div>
     </div>
 
@@ -176,10 +150,10 @@
                     <h4 class="modal-title" id="deliverModalLabel">确认转办</h4>
                 </div>
                 <div class="modal-body">
-                    <p><span>是否要指派到</span><span style="color:red"></span><span>办理?</span></p>
+                    <p><span>是否要指派到</span><span>西青支队</span><span>办理?</span></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo()">确定</button>
+                    <button type="button" class="btn btn-primary">确定</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 </div>
             </div><!-- /.modal-content -->

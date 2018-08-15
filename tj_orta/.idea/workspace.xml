@@ -17,8 +17,8 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tj_orta_app/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1671">
-              <caret line="543" column="40" lean-forward="true" selection-start-line="488" selection-end-line="543" selection-end-column="40" />
+            <state>
+              <caret line="543" column="40" selection-start-line="488" selection-end-line="543" selection-end-column="40" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
                 <element signature="e#881#2236#0" />
@@ -34,11 +34,78 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="verify.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="verify.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/verify.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="442">
-              <caret line="110" column="56" lean-forward="true" selection-start-line="110" selection-start-column="56" selection-end-line="110" selection-end-column="56" />
+              <caret line="110" column="56" selection-start-line="110" selection-start-column="56" selection-end-line="110" selection-end-column="56" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/templates/main.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1401">
+              <caret line="107" column="31" selection-start-line="107" selection-start-column="24" selection-end-line="107" selection-end-column="31" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="company.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/static/js/company.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="189">
+              <caret line="170" selection-start-line="170" selection-end-line="176" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="paging.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/static/js/paging.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-4256">
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="md5.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/static/js/md5.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-105">
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="login.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/static/js/login.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="237">
+              <caret line="77" column="32" lean-forward="true" selection-start-line="68" selection-start-column="3" selection-end-line="77" selection-end-column="32" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="account_number.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/static/js/account_number.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="852">
+              <caret line="115" column="18" selection-start-line="115" selection-start-column="15" selection-end-line="115" selection-end-column="18" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="vehicle.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/vehicle.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-7606">
+              <caret line="106" column="34" selection-start-line="106" selection-start-column="34" selection-end-line="106" selection-end-column="34" />
             </state>
           </provider>
         </entry>
@@ -55,8 +122,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>id__in</find>
-      <find>vehicle_submit</find>
       <find>can_submit_vehicle</find>
       <find>ubmit</find>
       <find>submit_vehicle</find>
@@ -85,6 +150,8 @@
       <find>ver</find>
       <find>str</find>
       <find>xlwt</find>
+      <find>nav_bar</find>
+      <find>content_iframe</find>
     </findStrings>
     <replaceStrings>
       <replace>/static/</replace>
@@ -161,6 +228,12 @@
               <item name="tj_orta" type="b2602c69:ProjectViewProjectNode" />
               <item name="tj_orta" type="462c0819:PsiDirectoryNode" />
               <item name="static" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tj_orta" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tj_orta" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="js" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="tj_orta" type="b2602c69:ProjectViewProjectNode" />
@@ -319,7 +392,7 @@
       <window_info anchor="bottom" id="Version Control" order="10" show_stripe_button="false" weight="0.32910156" />
       <window_info anchor="bottom" id="Python Console" order="8" weight="0.32884616" />
       <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.4968017" weight="0.25496343" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18283582" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18496802" />
       <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
@@ -340,21 +413,21 @@
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.108208954" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="right" id="Data View" order="3" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32916266" />
-      <window_info anchor="bottom" id="Version Control" order="10" show_stripe_button="false" weight="0.32910156" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.33173078" />
-      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Python Console" order="8" weight="0.32884616" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.4978678" visible="true" weight="0.25" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.5021322" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Version Control" order="10" show_stripe_button="false" weight="0.32910156" />
+      <window_info anchor="bottom" id="Find" order="1" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Python Console" order="8" weight="0.32884616" />
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -369,46 +442,11 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/static/certification/201804321321261.jpg" />
-    <entry file="file://$PROJECT_DIR$/static/certification/201804321321423.jpg" />
     <entry file="file://$PROJECT_DIR$/static/certification/2018044fdasf374.jpg" />
     <entry file="jar://$APPLICATION_HOME_DIR$/lib/pycharm.jar!/resources/html5-schema/html5/web-forms.rnc">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="252">
           <caret line="302" column="22" selection-start-line="302" selection-start-column="22" selection-end-line="302" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/company.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="75" column="26" selection-start-line="75" selection-start-column="23" selection-end-line="75" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/account_number.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="115" column="18" selection-start-line="115" selection-start-column="15" selection-end-line="115" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/query.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-31" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/through.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="257">
-          <caret line="139" column="11" selection-start-line="139" selection-start-column="8" selection-end-line="139" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/login.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="77" column="32" lean-forward="true" selection-start-line="68" selection-start-column="3" selection-end-line="77" selection-end-column="32" />
         </state>
       </provider>
     </entry>
@@ -514,13 +552,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/main.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1456">
-          <caret line="56" column="45" selection-start-line="56" selection-start-column="41" selection-end-line="56" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/last.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1456">
@@ -573,9 +604,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="598">
           <caret line="26" column="6" selection-start-line="26" selection-start-column="2" selection-end-line="26" selection-end-column="6" />
-          <folding>
-            <element signature="e#641#682#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -583,13 +611,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="10894">
           <caret line="430" column="36" selection-start-line="332" selection-end-line="430" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/vehicle.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2756">
-          <caret line="106" column="34" selection-start-line="106" selection-start-column="34" selection-end-line="106" selection-end-column="34" />
         </state>
       </provider>
     </entry>
@@ -622,8 +643,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tj_orta_app/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1671">
-          <caret line="543" column="40" lean-forward="true" selection-start-line="488" selection-end-line="543" selection-end-column="40" />
+        <state>
+          <caret line="543" column="40" selection-start-line="488" selection-end-line="543" selection-end-column="40" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
             <element signature="e#881#2236#0" />
@@ -641,7 +662,77 @@
     <entry file="file://$PROJECT_DIR$/templates/verify.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="442">
-          <caret line="110" column="56" lean-forward="true" selection-start-line="110" selection-start-column="56" selection-end-line="110" selection-end-column="56" />
+          <caret line="110" column="56" selection-start-line="110" selection-start-column="56" selection-end-line="110" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/vehicle.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-7606">
+          <caret line="106" column="34" selection-start-line="106" selection-start-column="34" selection-end-line="106" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/js/md5.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-105">
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/js/login.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="237">
+          <caret line="77" column="32" lean-forward="true" selection-start-line="68" selection-start-column="3" selection-end-line="77" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/js/through.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-5894">
+          <caret line="38" column="26" lean-forward="true" selection-start-line="38" selection-start-column="26" selection-end-line="38" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/js/account_number.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="852">
+          <caret line="115" column="18" selection-start-line="115" selection-start-column="15" selection-end-line="115" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/js/query.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="728">
+          <caret line="28" column="13" lean-forward="true" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/js/paging.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4256">
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/js/company.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="170" selection-start-line="170" selection-end-line="176" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/main.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1401">
+          <caret line="107" column="31" selection-start-line="107" selection-start-column="24" selection-end-line="107" selection-end-column="31" />
         </state>
       </provider>
     </entry>

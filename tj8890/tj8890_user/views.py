@@ -293,3 +293,4 @@ def reset_password(request):
 
     user.save()
     return HttpResponseRedirect('/user/user')
+

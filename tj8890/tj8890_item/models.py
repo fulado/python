@@ -11,6 +11,11 @@ class Category(models.Model):
     cate = models.ForeignKey('self', null=True, blank=True)         # 所属分类
 
 
+# 事项办理状态
+class ItemStatus(models.Model):
+    status_name = models.CharField(max_length=50, null=True, blank=True)     # 事项状态
+
+
 #  事件模型
 class Item(models.Model):
     id = models.CharField(max_length=50, primary_key=True)              # 自动生成事件id
@@ -39,6 +44,7 @@ class Item(models.Model):
     attribute = models.CharField(max_length=50, null=True, blank=True)  # 问题属性
     title = models.CharField(max_length=50, null=True, blank=True)      # 标题
     summary = models.CharField(max_length=500, null=True, blank=True)   # 内容摘要
+    assign_dept = models.ForeignKey(Dept, null=True, blank=True, related_name='assign_dept_set')  # 指派承办部门
     agency_dept = models.ForeignKey(Dept, null=True, blank=True, related_name='agency_dept_set')  # 承办部门/牵头部门
     is_assist = models.BooleanField(default=False)                      # 是否协办
     assist_dept = models.ForeignKey(Dept, null=True, blank=True, related_name='assist_dept_set')  # 协办部门
@@ -47,7 +53,8 @@ class Item(models.Model):
     receive_time = models.DateTimeField(null=True, blank=True)          # 接件时间
     receive_limit = models.DateTimeField(null=True, blank=True)         # 接单时限
     deal_limit = models.DateTimeField(null=True, blank=True)            # 承办时限
-    status = models.IntegerField(default=1)  # 办件状态, 1-未转办, 2-已转办, 3-办理中, 4-已反馈, 5-已超时, 6-退回重办, 7-申请延期
+    # status = models.IntegerField(default=0)
+    status = models.ForeignKey(ItemStatus, null=True, blank=True, default=0)       # 办件状态, 1-未转办, 2-已转办, 3-办理中, 4-已反馈, 5-已超时, 6-退回重办, 7-申请延期
     is_overtime = models.BooleanField(default=False)                    # 是否超时
     comment = models.CharField(max_length=500, null=True, blank=True)   # 拟办意见
     leader_comment = models.CharField(max_length=500, null=True, blank=True)  # 领导批示

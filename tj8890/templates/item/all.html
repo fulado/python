@@ -287,23 +287,9 @@
                             {% elif item.emergency == 4 %}
                             <td>特急(两小时内回复)</td>
                         {% endif %}
-                        {% if item.status == 1 %}
-                            <td>未转办</td>
-                            {% elif item.status == 2 %}
-                            <td>已转办</td>
-                            {% elif item.status == 3 %}
-                            <td>办理中</td>
-                            {% elif item.status == 4 %}
-                            <td>已反馈</td>
-                            {% elif item.status == 5 %}
-                            <td>已超时</td>
-                            {% elif item.status == 6 %}
-                            <td>退回重办</td>
-                            {% elif item.status == 7 %}
-                            <td>申请延期</td>
-                        {% endif %}
+                        <td>{{ item.status.status_name }}</td>
                         <td>{{ item.recd_time }}</td>
-                        <td><a href="/item/not_deliver_detail"><button class="btn btn-default">查看</button></a></td>
+                        <td><a href="/item/detail?id={{ item.id }}"><button class="btn btn-default">查看</button></a></td>
                     </tr>
                 {% endfor %}
             </tbody>

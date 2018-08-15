@@ -1,183 +1,337 @@
 {% extends 'base.html' %}
 
-<!-- 操作窗口 -->
-{% block operate %}
-    <!-- 转办内容 -->
-    <div class="deliver-content">
-        <div class="bar"></div>
-        <div class="title">
-            <p>转办内容<p>
-        </div>
-        <div class="content">
+{% block head %}
+    <style type="text/css" media="screen">
+        .search{
+            height: 304px;
+        }
+
+        .result{
+            top: 426px;
+        }
+
+        .divide-page{
+            top: 981px;
+        }
+
+        .search .search-btn-group{
+            left: 422px;
+            top: 250px;
+        }
+    </style>
+
+    <script type="text/javascript">
+        $(function() {
+            // 事项二类选择后, 三类对应变化
+            $('.search select').eq(1).change(function() {
+                val = $(this).val();
+                if (val == 0) {
+                    $('.search select').eq(2).val(0);
+                    $('.search select').eq(2).attr("disabled","disabled");
+                } else {
+                    $('.search select').eq(2).removeAttr("disabled");
+                    var cate3 = $('.search input:hidden').eq(0).val();
+                    setCateInfo($(this), $('.search select').eq(2));
+                }
+
+                $('.search select').eq(2).change();
+            });
+
+            // 事项三类选择后, 四类对应变化
+            $('.search select').eq(2).change(function() {
+                val = $(this).val();
+                if (val == 0) {
+                    $('.search select').eq(3).val(0);
+                    $('.search select').eq(3).attr("disabled","disabled");
+                } else {
+                    $('.search select').eq(3).removeAttr("disabled");
+                    var cate4 = $('.search input:hidden').eq(1).val();
+                    setCateInfo($(this), $('.search select').eq(3), cate4);
+                }
+            });
+
+            // 选择的开始时间不能大于结束时间
+            $('.datetime-picker').eq(0).datetimepicker().click(function() {
+                var endTime = $('.datetime-picker').eq(1).val();
+                $('.datetime-picker').eq(0).datetimepicker("setEndDate", endTime)
+            });
+            $('.datetime-picker').eq(2).datetimepicker().click(function() {
+                var endTime = $('.datetime-picker').eq(3).val();
+                $('.datetime-picker').eq(2).datetimepicker("setEndDate", endTime)
+            });
+
+            // 选择的结束时间不能小于开始时间
+            $('.datetime-picker').eq(1).datetimepicker().click(function() {
+                var startTime = $('.datetime-picker').eq(0).val();
+                $('.datetime-picker').eq(1).datetimepicker("setStartDate", startTime)
+            });
+            $('.datetime-picker').eq(3).datetimepicker().click(function() {
+                var startTime = $('.datetime-picker').eq(2).val();
+                $('.datetime-picker').eq(3).datetimepicker("setStartDate", startTime)
+            });
+        });
+
+        // 重置查询选项
+        function resetSearchInfo() {
+            // 获取服务器给的默认时间
+            var default_time_begin = $('.search input:hidden').eq(2).val();
+            var default_time_end = $('.search input:hidden').eq(3).val();
+
+            // 重置时间
+            $('.datetime-picker').eq(0).val(default_time_begin);
+            $('.datetime-picker').eq(1).val(default_time_end);
+            $('.datetime-picker').eq(2).val(default_time_begin);
+            $('.datetime-picker').eq(3).val(default_time_end);
+
+            // 重置事项分类
+            $('.search select').eq(0).val(0);
+            $('.search select').eq(1).val(0);
+            $('.search select').eq(1).change();
+
+            // 重置流转情况
+            $('.search select').eq(4).val(0);
+
+            // 重置紧急程度
+            $('.search select').eq(5).val(0);
+        }
+
+        // 选择不同的上级选项, 下级选择框相应变化
+        function setCateInfo(parentObj, childObj, childId) {
+            // 设置查询下级复选框登记
+            var childId = childId || 0;
+            // 用户选择上级选项的id
+            var parent_id = parentObj.val();
+            // 通过Ajax获取二级部门
+            $.get('/item/cate_search', {'parent_id': parent_id}, function(data) {
+                // 清空二级部门选择中的全部选项
+                childObj.empty();
+                // 根据查询结果, 添加二级部门子元素
+                var newOption = $('<option></option>').val(0).text('全部');
+                childObj.append(newOption);
+                for (i in data.cate_list) {
+                    if (childId == data.cate_list[i].id) {
+                        var newOption = $('<option selected></option>').val(data.cate_list[i].id).text(data.cate_list[i].name);
+                    } else {
+                        var newOption = $('<option></option>').val(data.cate_list[i].id).text(data.cate_list[i].name);
+                    }
+                    childObj.append(newOption);
+                }
+            });
+        }
+    </script>
+{% endblock %}}
+
+<!-- 检索/添加 -->
+{% block search %}
+    <!-- 事件检索 -->
+    <div class="search">
+        <form action="/item/all" method="GET">
             <table>
-                <tr>
-                    <td><span>事项编号</span></td>
-                    <td><input type="text" value="201703021101" /></td>
-                    <td></td>
-                    <td><span>工单编号</span></td>
-                    <td><input type="text" value="GD201703021101" /></td>
-                    <td></td>
-                    <td><span>紧急程度</span></td>
-                    <td><input type="text" value="普通(3天)" /></td>
-                </tr>
-                <tr>
-                    <td><span>求租号码</span></td>
-                    <td><input type="text" value="13901235678" /></td>
-                    <td></td>
-                    <td><span>联系号码</span></td>
-                    <td><input type="text" value="13901235678" /></td>
-                    <td></td>
-                    <td><span>求助人</span></td>
-                    <td><input type="text" value="张先生" /></td>
-                </tr>
                 <tr>
                     <td><span>受理时间</span></td>
-                    <td><input type="text" value="2018-04-10" /></td>
+                    <td>
+                        <input type="text" class="datetime-picker" name="recd_time_begin" value="{{ recd_time_begin }}">
+                        ~
+                        <input type="text" class="datetime-picker" name="recd_time_end" value="{{ recd_time_end }}">
+                    </td>
                     <td></td>
                     <td><span>转办时间</span></td>
-                    <td><input type="text" value="2018-04-16" /></td>
-                    <td></td>
-                    <td><span>转办人</span></td>
-                    <td><input type="text" value="张警官" /></td>
-                </tr>
-                <tr>
-                    <td><span>求助类型</span></td>
-                    <td colspan="7">
-                        <input type="text" value="资讯类" />
-                        <input type="text" value="交通设施" />
-                        <input type="text" value="信号灯" />
-                        <input type="text" value="故障" />
-                    </td>
-                </tr>
-                <tr class="address">
-                    <td><span>地址</span></td>
-                    <td colspan="7">
-                        <input type="text" value="和平区" />
-                    </td>
-                </tr>
-                <tr class="summary">
-                    <td><span>内容摘要</span></td>
-                    <td colspan="7">
-                        <input type="text" value="驾驶证丢失，无法处理违章，无法重新办证" />
-                    </td>
-                </tr>
-                <tr>
-                    <td><span>反映内容</span></td>
-                    <td colspan="7">
-                        <textarea>市民来电：2014年4月份违章，但是当时车辆和驾驶证被红桥支队扣下了，现在市民多个途径寻找驾驶证，但均未找到。处理当时的违法需要驾驶证，如果撤销不了违法信息接受处罚就不能换本或者是重新学驾驶证。张继德120224198310131715，津GQ3901。现在市民咨询，这种情况该怎么办？</textarea>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-
-    <!-- 转办部门 -->
-    <div class="deliver-dept">
-        <div class="bar"></div>
-        <div class="title">
-            <p>转办单位<p>
-        </div>
-        <div class="content">
-            <table>
-                <tr>
-                    <td><span>受理单位</span></td>
                     <td>
-                        <select name="">
-                            <option value="0">西青支队</option>
-                            <option value="1">东丽支队</option>
+                        <input type="text" class="datetime-picker" name="deliver_time_begin" value="{{ deliver_time_begin }}">
+                        ~
+                        <input type="text" class="datetime-picker" name="deliver_time_end" value="{{ deliver_time_end }}">
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>求助类别</span></td>
+                    <td colspan="5">
+                        <select name="cate1">
+                            {% if cate1 == 0 %}
+                            <option value="0" selected>全部</option>
+                            {% else %}
+                            <option value="0">全部</option>
+                            {% endif %}
+                            {% for cate in cate1_list %}
+                            {% if cate1 == cate.id %}
+                            <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                            {% else %}
+                            <option value="{{ cate.id }}">{{ cate.name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                        <select name="cate2">
+                            {% if cate2 == 0 %}
+                            <option value="0" selected>全部</option>
+                            {% else %}
+                            <option value="0">全部</option>
+                            {% endif %}
+                            {% for cate in cate2_list %}
+                            {% if cate2 == cate.id %}
+                            <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                            {% else %}
+                            <option value="{{ cate.id }}">{{ cate.name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                        {% if cate2 == 0 %}
+                        <select name="cate3" disabled>
+                        {% else %}
+                        <select name="cate3">
+                        {% endif %}
+                            {% if cate3 == 0 %}
+                            <option value="0" selected>全部</option>
+                            {% else %}
+                            <option value="0">全部</option>
+                            {% endif %}
+                            {% for cate in cate3_list %}
+                            {% if cate3 == cate.id %}
+                            <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                            {% else %}
+                            <option value="{{ cate.id }}">{{ cate.name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                        {% if cate3 == 0 %}
+                        <select name="cate4" disabled>
+                        {% else %}
+                        <select name="cate4">
+                        {% endif %}
+                            {% if cate4 == 0 %}
+                            <option value="0" selected>全部</option>
+                            {% else %}
+                            <option value="0">全部</option>
+                            {% endif %}
+                            {% for cate in cate4_list %}
+                            {% if cate4 == cate.id %}
+                            <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                            {% else %}
+                            <option value="{{ cate.id }}">{{ cate.name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                        <input type="hidden" value="{{ cate3 }}" />
+                        <input type="hidden" value="{{ cate4 }}" />
+                        <input type="hidden" value="{{ default_time_begin }}" />
+                        <input type="hidden" value="{{ default_time_end }}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>流转情况</span></td>
+                    <td>
+                        <select name="status">
+                            <option value="{{ status }}" selected>{{ status_list }}</option>
                         </select>
                     </td>
                     <td></td>
-                    <td><span>办理单位</span></td>
-                    <td><input type="text" /></td>
-                    <td></td>
-                    <td><span>任务状态</span></td>
-                    <td><input type="text" value="未转办" /></td>
+                    <td><span>紧急程度</span></td>
+                    <td>
+                        <select name="emergency">
+                            {% for e in emergency_list %}
+                            {% if emergency == forloop.counter|add:-1 %}
+                            <option value="{{ forloop.counter|add:-1 }}" selected>{{ e }}</option>
+                            {% else %}
+                            <option value="{{ forloop.counter|add:-1 }}">{{ e }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </td>
                 </tr>
                 <tr>
-                    <td><span>受理人</span></td>
-                    <td><input type="text" /></td>
-                    <td></td>
-                    <td><span>受理时间</span></td>
-                    <td><input type="text" /></td>
-                </tr>
-                <tr>
-                    <td><span>办理人</span></td>
-                    <td><input type="text" /></td>
-                    <td></td>
-                    <td><span>办理时间</span></td>
-                    <td><input type="text" /></td>
-                </tr>
-                <tr>
-                    <td><span>办理人</span></td>
-                    <td><input type="text" /></td>
-                    <td></td>
-                    <td><span>办理时间</span></td>
-                    <td><input type="text" /></td>
-                </tr>
-                <tr>
-                    <td><span>审批人</span></td>
-                    <td><input type="text" /></td>
-                    <td></td>
-                    <td><span>审批时间</span></td>
-                    <td><input type="text" /></td>
-                </tr>
-                <tr>
-                    <td><span>回访人</span></td>
-                    <td><input type="text" /></td>
-                    <td></td>
-                    <td><span>反馈时间</span></td>
-                    <td><input type="text" /></td>
+                    <td><span>关键字检索</span></td>
+                    <td colspan="5">
+                        <input type="text" value="请输入关键字">
+                    </td>
                 </tr>
             </table>
-        </div>
-        <div class="search-btn-group">
-            <a href="javascript:void(0)" class="btn btn-default" data-toggle="modal" data-target="#deleteModal" data-backdrop="static">删除</a>
-            <a href="javascript:void(0)" class="btn btn-default" data-toggle="modal" data-target="#deliverModal" data-backdrop="static">转办</a>
-            <a href="javascript:void(0)" class="btn btn-default">返回</a>
-        </div>
+            <div class="search-btn-group">
+                <input type="submit" class="btn btn-default"  value="查询" />
+                <a href="javascript:resetSearchInfo();" class="btn btn-default">重置</a>
+            </div>
+        </form>
     </div>
+{% endblock %}
 
-    <!-- 模态框（Modal） -->
-    <!-- 确认转办 -->
-    <div class="modal fade" id="deliverModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
-                    </button>
-                    <h4 class="modal-title" id="deliverModalLabel">确认转办</h4>
-                </div>
-                <div class="modal-body">
-                    <p><span>是否要指派到</span><span>西青支队</span><span>办理?</span></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">确定</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal -->
+<!-- 检索结果 -->
+{% block result %}
+<!-- 检索结果 -->
+    <div class="result">
+        <div class="bar02"></div>
+        <table class="table table-striped table-hover text-center">
+            <thead>
+                <tr>
+                    <td>事项编号</td>
+                    <td>内容摘要</td>
+                    <td>紧急程度</td>
+                    <td>流转情况</td>
+                    <td>录入时间</td>
+                    <td>操作</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in mp.object_list %}
+                    <tr>
+                        <td>{{ item.id }}</td>
+                        <td>{{ item.title }}</td>
+                        {% if item.emergency == 1 %}
+                            <td>普通(3天)</td>
+                            {% elif item.emergency == 2 %}
+                            <td>加急(2天)</td>
+                            {% elif item.emergency == 3 %}
+                            <td>紧急(当日回复)</td>
+                            {% elif item.emergency == 4 %}
+                            <td>特急(两小时内回复)</td>
+                        {% endif %}
+                        {% if item.status == 1 %}
+                            <td>未转办</td>
+                            {% elif item.status == 2 %}
+                            <td>已转办</td>
+                            {% elif item.status == 3 %}
+                            <td>办理中</td>
+                            {% elif item.status == 4 %}
+                            <td>已反馈</td>
+                            {% elif item.status == 5 %}
+                            <td>已超时</td>
+                            {% elif item.status == 6 %}
+                            <td>退回重办</td>
+                            {% elif item.status == 7 %}
+                            <td>申请延期</td>
+                        {% endif %}
+                        <td>{{ item.recd_time }}</td>
+                        <td><a href="/item/not_deliver_detail?id={{ item.id }}"><button class="btn btn-default">查看</button></a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+{% endblock %}
 
-    <!-- 确认删除 -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
-                    </button>
-                    <h4 class="modal-title" id="deleteModalLabel">确认删除</h4>
-                </div>
-                <div class="modal-body">
-                    <p>是否删除该事项?</span></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">确定</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal -->
+<!-- 分页 -->
+{% block page %}
+    <!-- 分页 -->
+    <div class="divide-page">
+        <form action="/item/all" method="GET" class="goto">
+            <span>到</span>
+                <input type="hidden" name="supervisor_id" value="0"/>
+                <input type="hidden" name="dept_id" value="0"/>
+                <input type="text" name="page_num" />
+            <span>页</span>
+        </form>
+        <p class="current-total">
+            共<span>{{ mp.total_pages }}</span>页/<span>{{ mp.total_objects }}</span>条数据
+        </p>
+
+        <ul class="page">
+            <a href="/item/all?page_num=1"><li>首页</li></a>
+            <a href="/item/all?page_num={{ mp.current_num|add:-1 }}"><li>上一页</li></a>
+            {% for num in mp.page_range %}
+                {% if num == mp.current_num %}
+                <a href="/item/all?page_num={{ num }}"><li class="number current-page">{{ num }}</li></a>
+                {% else %}
+                <a href="/item/all?page_num={{ num }}"><li class="number">{{ num }}</li></a>
+                {% endif %}
+            {% endfor %}
+            <a href="/item/all?page_num={{ mp.current_num|add:1 }}"><li>下一页</li></a>
+            <a href="/item/all?page_num={{ mp.total_pages }}"><li>末页</li></a>
+        </ul>
     </div>
 {% endblock %}

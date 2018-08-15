@@ -1,7 +1,7 @@
-from django.shortcuts import HttpResponse
+from django.shortcuts import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import Item, Category
+from .models import Item, Category, Dept
 from tj8890.utils import MyPaginator
 import random
 import time
@@ -70,9 +70,36 @@ def create_item(request):
     return HttpResponse('创建成功')
 
 
-# 显示全部事项页面
+# 显示main页面
+def main_show(request):
+    # 查询各类事项数量
+    count_0 = Item.objects.all().count()
+    count_1 = Item.objects.filter(status=1).count()
+    count_2 = Item.objects.filter(status=2).count()
+    count_3 = Item.objects.filter(status=3).count()
+    count_4 = Item.objects.filter(status=4).count()
+    count_5 = Item.objects.filter(status=5).count()
+    count_6 = Item.objects.filter(status=6).count()
+    count_7 = Item.objects.filter(status=7).count()
+
+    context = {'count_0': count_0,
+               'count_1': count_1,
+               'count_2': count_2,
+               'count_3': count_3,
+               'count_4': count_4,
+               'count_5': count_5,
+               'count_6': count_6,
+               'count_7': count_7,
+               }
+
+    return render(request, 'main.html', context)
+
+
+# 显示各类别事项页面
 def all_show(request):
-    title = ['办理事项管理', '全部事项']
+    # 获取分项title
+    second_title = request.GET.get('title')
+    title = ['办理事项管理', second_title]
 
     # 获得办单提交的信息
     cate1 = int(request.GET.get('cate1', 0))
@@ -145,12 +172,27 @@ def all_show(request):
     mp = MyPaginator()
     mp.paginate(item_list, 10, page_num)
 
-    context = {'title': title, 'status': status, 'emergency': emergency, 'mp': mp, 'cate1_list': cate1_list,
-               'cate2_list': cate2_list, 'cate3_list': cate3_list, 'cate4_list': cate4_list, 'status_list': STATUS_LIST,
-               'emergency_list': EMERGENCY_LIST, 'cate1': cate1, 'cate2': cate2, 'cate3': cate3, 'cate4': cate4,
-               'recd_time_begin': recd_time_begin, 'recd_time_end': recd_time_end,
-               'deliver_time_begin': deliver_time_begin, 'deliver_time_end': deliver_time_end,
-               'default_time_begin': default_time_begin, 'default_time_end': default_time_end}
+    context = {'title': title,
+               'status': status,
+               'emergency': emergency,
+               'mp': mp,
+               'cate1_list': cate1_list,
+               'cate2_list': cate2_list,
+               'cate3_list': cate3_list,
+               'cate4_list': cate4_list,
+               'status_list': STATUS_LIST,
+               'emergency_list': EMERGENCY_LIST,
+               'cate1': cate1,
+               'cate2': cate2,
+               'cate3': cate3,
+               'cate4': cate4,
+               'recd_time_begin': recd_time_begin,
+               'recd_time_end': recd_time_end,
+               'deliver_time_begin': deliver_time_begin,
+               'deliver_time_end': deliver_time_end,
+               'default_time_begin': default_time_begin,
+               'default_time_end': default_time_end,
+               }
 
     return render(request, 'item/all.html', context)
 
@@ -172,5 +214,36 @@ def cate_search(request):
 
 
 # 未转办事项详情
-def not_deliver_detail(request):
-    return render(request, 'item/not_deliver.html')
+def detail_show(request):
+    title = ['办理事项管理', '事项详情']
+
+    # 获取事项id
+    item_id = request.GET.get('id', '0')
+
+    # 根据id查询事项
+    item_info = Item.objects.get(id=item_id)
+
+    # 查询部门
+    supervisor_list = Dept.objects.filter(supervisor__isnull=True).filter(is_delete=False)
+
+    context = {'title': title,
+               'item': item_info,
+               'supervisor_list': supervisor_list,
+               }
+
+    return render(request, 'item/detail.html', context)
+
+
+# 转办
+def deliver_action(request):
+    item_id = request.GET.get('item_id', '0')
+    dept_id = request.GET.get('assign_dept_id', '0')
+
+    item_info = Item.objects.get(id=item_id)
+
+    item_info.status_id = 2
+    item_info.assign_dept_id = dept_id
+
+    item_info.save()
+
+    return HttpResponseRedirect('/item/detail?id=%s' % item_info.id)

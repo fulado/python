@@ -381,11 +381,19 @@ tbody td{
     color: #FFFFFF;
 }
 
+/* 内容框 */
+.frame-content{
+    position: absolute;
+    left: 223px;
+    top: 101px;
+    width: 1036px;
+}
+
 /* 转办内容栏 */
 .deliver-content{
     position:absolute;
-    left: 223px;
-    top: 101px;
+    /*left: 223px;*/
+    /*top: 101px;*/
     width: 1036px;
     height: 572px;
     border: 1px solid #CFCFCF;
