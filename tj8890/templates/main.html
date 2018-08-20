@@ -12,10 +12,7 @@
             $('.navi .list-group-item').click(function() {
                 $('.navi .list-group-item').removeClass('active');
                 $(this).addClass('active');
-            });
 
-            // 点击导航栏按钮, 打开相应页面
-            $('.nav_bar').click(function() {
                 var contentUrl =$(this).attr('href-url');
                 $('#content-iframe').attr('src',contentUrl);
             });
@@ -24,131 +21,133 @@
 {% endblock %}
 
 {% block navi %}
-    <!-- 标题栏 -->
-    <div class="banner">
-        <img class="img01" src="/static/image/mark1.png" alt="警徽" />
-        <p class="title">天津市公安交通管理局便民专线服务平台</p>
-        <p class="user">
-            欢迎&nbsp;:&nbsp;<span>指挥室</span>&nbsp;>&nbsp;<span>应急综合科</span>&nbsp;>&nbsp;<span>张亮</span>
-            &nbsp;|&nbsp;<a href="#">退出</a>
-        </p>
-    </div>
-    <!-- 侧标导航栏 -->
-    <div class="navi" >
-        <div class="panel-group" id="accordion">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <img src="/static/image/icon01.png" alt="icon01">
-                        <a data-toggle="collapse" data-parent="#accordion"
-                           href="#collapseOne">
-                            办理事项管理
-                        </a>
-                    </h4>
-                </div>
-                <div id="collapseOne" class="panel-collapse collapse">
-                    <div class="panel-body">
-                        <a href="/item/all?title=全部事项&status=0" class="list-group-item">全部事项<span class="badge">{{ count_0 }}</span></a>
-                        <a href="/item/all?title=未转办事项&status=1" class="list-group-item">未转办事项<span class="badge">{{ count_1 }}</span></a>
-                        <a href="/item/all?title=已转办事项&status=2" class="list-group-item">已转办事项<span class="badge">{{ count_2 }}</span></a>
-                        <a href="/item/all?title=办理中事项&status=3" class="list-group-item">办理中事项<span class="badge">{{ count_3 }}</span></a>
-                        <a href="/item/all?title=已反馈事项&status=4" class="list-group-item">已反馈事项<span class="badge">{{ count_4 }}</span></a>
-                        <a href="/item/all?title=已超时事项&status=5" class="list-group-item">已超时事项<span class="badge">{{ count_5 }}</span></a>
-                        <a href="/item/all?title=退回重办事项&status=6" class="list-group-item">退回重办事项<span class="badge">{{ count_6 }}</span></a>
-                        <a href="/item/all?title=申请延期事项&status=7" class="list-group-item">申请延期事项<span class="badge">{{ count_7 }}</span></a>
+    <div class="container">
+        <!-- 标题栏 -->
+        <div class="banner">
+            <img class="img01" src="/static/image/mark1.png" alt="警徽" />
+            <p class="title">天津市公安交通管理局便民专线服务平台</p>
+            <p class="user">
+                欢迎&nbsp;:&nbsp;<span>指挥室</span>&nbsp;>&nbsp;<span>应急综合科</span>&nbsp;>&nbsp;<span>张亮</span>
+                &nbsp;|&nbsp;<a href="#">退出</a>
+            </p>
+        </div>
+        <!-- 侧标导航栏 -->
+        <div class="navi" >
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <img src="/static/image/icon01.png" alt="icon01">
+                            <a data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseOne">
+                                办理事项管理
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <a href="#" href-url="/item/all?title=全部事项&status=0" class="list-group-item">全部事项<span class="badge">{{ count_0 }}</span></a>
+                            <a href="#" href-url="/item/all?title=未转办事项&status=1" class="list-group-item">未转办事项<span class="badge">{{ count_1 }}</span></a>
+                            <a href="#" href-url="/item/all?title=已转办事项&status=2" class="list-group-item">已转办事项<span class="badge">{{ count_2 }}</span></a>
+                            <a href="#" href-url="/item/all?title=办理中事项&status=3" class="list-group-item">办理中事项<span class="badge">{{ count_3 }}</span></a>
+                            <a href="#" href-url="/item/all?title=已反馈事项&status=4" class="list-group-item">已反馈事项<span class="badge">{{ count_4 }}</span></a>
+                            <a href="#" href-url="/item/all?title=已超时事项&status=5" class="list-group-item">已超时事项<span class="badge">{{ count_5 }}</span></a>
+                            <a href="#" href-url="/item/all?title=退回重办事项&status=6" class="list-group-item">退回重办事项<span class="badge">{{ count_6 }}</span></a>
+                            <a href="#" href-url="/item/all?title=申请延期事项&status=7" class="list-group-item">申请延期事项<span class="badge">{{ count_7 }}</span></a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <img src="/static/image/icon02.png" alt="icon02">
-                        <a data-toggle="collapse" data-parent="#accordion"
-                           href="#collapseTwo">
-                            办结事项管理
-                        </a>
-                    </h4>
-                </div>
-                <div id="collapseTwo" class="panel-collapse collapse">
-                    <div class="panel-body clearfix">
-                        <a href-url="/item/all" class="list-group-item">全部2事项2<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">未转办2事项2<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">已转办2事项2<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">办理中2事项2<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">已反馈2事项2<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">已超时2事项2<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">退回重办2事项2<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">申请延期2事项2<span class="badge">10</span></a>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <img src="/static/image/icon02.png" alt="icon02">
+                            <a data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseTwo">
+                                办结事项管理
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse">
+                        <div class="panel-body clearfix">
+                            <a href-url="/item/all" class="list-group-item">全部2事项2<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">未转办2事项2<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已转办2事项2<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">办理中2事项2<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已反馈2事项2<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已超时2事项2<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">退回重办2事项2<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">申请延期2事项2<span class="badge">10</span></a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <img src="/static/image/icon03.png" alt="icon03">
-                        <a data-toggle="collapse" data-parent="#accordion"
-                           href="#collapseThree">
-                            统计分析
-                        </a>
-                    </h4>
-                </div>
-                <div id="collapseThree" class="panel-collapse collapse">
-                    <div class="panel-body">
-                        <a href="#" class="list-group-item">全部3事项3<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">未转办3事项3<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">已转办3事项3<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">办理中3事项3<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">已反馈3事项3<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">已超时3事项3<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">退回重办3事项3<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">申请延期3事项3<span class="badge">10</span></a>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <img src="/static/image/icon03.png" alt="icon03">
+                            <a data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseThree">
+                                统计分析
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseThree" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <a href="#" class="list-group-item">全部3事项3<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">未转办3事项3<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已转办3事项3<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">办理中3事项3<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已反馈3事项3<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已超时3事项3<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">退回重办3事项3<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">申请延期3事项3<span class="badge">10</span></a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <img src="/static/image/icon04.png" alt="icon04">
-                        <a data-toggle="collapse" data-parent="#accordion"
-                           href="#collapseFour">
-                            知识库管理
-                        </a>
-                    </h4>
-                </div>
-                <div id="collapseFour" class="panel-collapse collapse">
-                    <div class="panel-body">
-                        <a href="#" class="list-group-item">全部4事项4<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">未转办4事项4<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">已转办4事项4<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">办理中4事项4<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">已反馈4事项4<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">已超时4事项4<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">退回重办4事项4<span class="badge">10</span></a>
-                        <a href="#" class="list-group-item">申请延期4事项4<span class="badge">10</span></a>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <img src="/static/image/icon04.png" alt="icon04">
+                            <a data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseFour">
+                                知识库管理
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseFour" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <a href="#" class="list-group-item">全部4事项4<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">未转办4事项4<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已转办4事项4<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">办理中4事项4<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已反馈4事项4<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">已超时4事项4<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">退回重办4事项4<span class="badge">10</span></a>
+                            <a href="#" class="list-group-item">申请延期4事项4<span class="badge">10</span></a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <img src="/static/image/icon05.png" alt="icon05">
-                        <a data-toggle="collapse" data-parent="#accordion"
-                           href="#collapseFive">
-                            用户管理
-                        </a>
-                    </h4>
-                </div>
-                <div id="collapseFive" class="panel-collapse collapse">
-                    <div class="panel-body">
-                        <a href="/user/user" class="list-group-item">人员管理</a>
-                        <a href="/user/dept" class="list-group-item">部门管理</a>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <img src="/static/image/icon05.png" alt="icon05">
+                            <a data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseFive">
+                                用户管理
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseFive" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <a href="/user/user" class="list-group-item">人员管理</a>
+                            <a href="/user/dept" class="list-group-item">部门管理</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="frame-content">
-        <iframe src="/item/all" frameborder="0" width="100%" height="100%" id="content-iframe"></iframe>
+        <div class="frame-content">
+            <iframe src="/item/all" frameborder="0" width="100%" height="100%" id="content-iframe"></iframe>
+        </div>
     </div>
 {% endblock %}

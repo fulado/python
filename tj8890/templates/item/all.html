@@ -6,14 +6,6 @@
             height: 304px;
         }
 
-        .result{
-            top: 426px;
-        }
-
-        .divide-page{
-            top: 981px;
-        }
-
         .search .search-btn-group{
             left: 422px;
             top: 250px;
@@ -120,6 +112,24 @@
         }
     </script>
 {% endblock %}}
+
+<!-- 当前位置 -->
+{% block location %}
+    <div class="location">
+        <p><span>办理事项管理</span>&nbsp;>&nbsp;<span>None</span></p>
+        <!-- 搜索框 -->
+        <div class="input-group">
+            <label for="search01" id="search01_label">请输入关键字</label>
+            <input type="text" class="form-control" id="search01" />
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </span>
+        </div>
+    </div>
+    <div class="bar01"></div>
+{% endblock %}
 
 <!-- 检索/添加 -->
 {% block search %}

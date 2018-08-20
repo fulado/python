@@ -98,7 +98,7 @@ def main_show(request):
 # 显示各类别事项页面
 def all_show(request):
     # 获取分项title
-    second_title = request.GET.get('title')
+    second_title = request.GET.get('title', '全部事项')
     title = ['办理事项管理', second_title]
 
     # 获得办单提交的信息

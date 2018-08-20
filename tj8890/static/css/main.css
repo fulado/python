@@ -5,6 +5,11 @@
 * @Last Modified time: 2018-04-16 18:32:05
 */
 
+/* 清除浮动 */
+.clearfix:after, .clearfix:before{content: ""; display: table;}
+.clearfix:after{clear: both;}
+.clearfix{zoom: 1;}
+
 *{
     font-family: "Microsoft Yahei";
 }
@@ -96,9 +101,9 @@ select,input{
 
 /* 当前位置 */
 .location{
-    position: absolute;
-    left: 223px;
-    top: 101px;
+    /* position: absolute; */
+    /* left: 223px;
+    top: 101px; */
     width: 1036px;
     height: 40px;
     background-color: #EFEFEF;
@@ -138,8 +143,6 @@ select,input{
 
 .bar01{
     position: absolute;
-    left: 223px;
-    top: 141px;
     width: 1036px;
     height: 4px;
     background-color: #00A9EE;
@@ -147,19 +150,16 @@ select,input{
 
 /* 检索栏 */
 .search{
-    position:absolute;
-    left: 223px;
-    top: 101px;
+    position:relative;
     width: 1036px;
     height: 174px;
     border: 1px solid #CFCFCF;
     border-radius: 2px;
+    margin-top: -40px;
+    margin-bottom: 20px;
 }
 
 .search p{
-    position: absolute;
-    left: 25px;
-    top: 68px;
     width: 65px;
     height: 14px;
     font-size: 14px;
@@ -281,14 +281,12 @@ select,input{
 
 /* 显示结果栏 */
 .result{
-    position:absolute;
-    left: 223px;
-    top: 296px;
+    position: relative;
     width: 1036px;
     height: 533px;
     border: 1px solid #CFCFCF;
     border-radius: 2px;
-    padding: 0px;
+    margin-bottom: 20px;
 }
 
 .bar02{
@@ -331,7 +329,6 @@ tbody td{
 /* 分页 */
 .divide-page{
     position: absolute;
-    top: 851px;
     right: 20px;
     width: 770px;
     height: 35px;
@@ -381,41 +378,41 @@ tbody td{
     color: #FFFFFF;
 }
 
-/* 内容框 */
 .frame-content{
     position: absolute;
     left: 223px;
     top: 101px;
-    width: 1036px;
+    width: 1046px;
+    height: 1050px;
+    overflow: hidden;
 }
 
 /* 转办内容栏 */
 .deliver-content{
-    position:absolute;
-    /*left: 223px;*/
-    /*top: 101px;*/
+    position: relative;
     width: 1036px;
     height: 572px;
     border: 1px solid #CFCFCF;
     border-radius: 2px;
+    margin-bottom: 20px;
 }
 
 .deliver-content .bar{
-    position: absolute;
+    position: relative;
     left: -1px;
-    top: 38px;
+    top: 0px;
     width: 1036px;
     height: 4px;
     background-color: #00A9EE;
 }
 
 .deliver-content .title{
-    position:absolute;
+    position: relative;
     left: 0px;
-    top: 42px;
+    top: 0px;
     width: 1036px;
     height: 39px;
-    border-bottom: 1px solid #F0F0F0;
+    border: 1px solid #F0F0F0;
 }
 
 .deliver-content .title p,
@@ -472,15 +469,14 @@ tbody td{
 }
 
 .deliver-dept{
-    position:absolute;
-    left: 223px;
-    top: 692px;
+    position: relative;
+    /* left: 223px;
+    top: 692px; */
     width: 1036px;
     height: 433px;
     border: 1px solid #CFCFCF;
     border-radius: 2px;
     padding: 0px;
-    margin-bottom: 50px;
 }
 
 .deliver-dept .bar{

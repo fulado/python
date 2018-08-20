@@ -47,41 +47,30 @@
     {% endblock %}
 </head>
 <body>
-    <div class="container">
-        <!-- 导航栏 -->
-        {% block navi %}
-        {% endblock %}
 
-        <!-- 当前位置 -->
-        <div class="location">
-            <p><span>{{title.0}}</span>&nbsp;>&nbsp;<span>{{title.1}}</span></p>
-            <!-- 搜索框 -->
-            <div class="input-group">
-                <label for="search01" id="search01_label">请输入关键字</label>
-                <input type="text" class="form-control" id="search01" />
-                <span class="input-group-btn">
-                    <button class="btn btn-default" type="button">
-                        <span class="glyphicon glyphicon-search"></span>
-                    </button>
-                </span>
-            </div>
-        </div>
-        <div class="bar01"></div>
-        <!-- 检索/添加 -->
-        {% block search %}
-        {% endblock %}
+    <!-- 导航栏 -->
+    {% block navi %}
+    {% endblock %}
 
-        <!-- 操作窗口 -->
-        {% block operate %}
-        {% endblock %}
 
-        <!-- 检索结果 -->
-        {% block result %}
-        {% endblock %}
+    <!-- 当前位置 -->
+    {% block location %}
+    {% endblock %}
 
-        <!-- 分页 -->
-        {% block page %}
-        {% endblock %}
-    </div>
+    <!-- 检索/添加 -->
+    {% block search %}
+    {% endblock %}
+
+    <!-- 操作窗口 -->
+    {% block operate %}
+    {% endblock %}
+
+    <!-- 检索结果 -->
+    {% block result %}
+    {% endblock %}
+
+    <!-- 分页 -->
+    {% block page %}
+    {% endblock %}
 </body>
 </html>
