@@ -108,29 +108,42 @@ def all_show(request):
     cate4 = int(request.GET.get('cate4', 0))
     status = int(request.GET.get('status', 0))
     emergency = int(request.GET.get('emergency', 0))
-    recd_time_begin = request.GET.get('recd_time_begin', 0)
-    recd_time_end = request.GET.get('recd_time_end', 0)
-    deliver_time_begin = request.GET.get('deliver_time_begin', 0)
-    deliver_time_end = request.GET.get('deliver_time_end', 0)
+    recd_time_begin = request.GET.get('recd_time_begin', '0')
+    recd_time_end = request.GET.get('recd_time_end', '0')
+    deliver_time_begin = request.GET.get('deliver_time_begin', '0')
+    deliver_time_end = request.GET.get('deliver_time_end', '0')
+
+    # 将检索信息保存到session
+    request.session['second_title'] = second_title
+    request.session['cate1'] = cate1
+    request.session['cate2'] = cate2
+    request.session['cate3'] = cate3
+    request.session['cate4'] = cate4
+    request.session['status'] = status
+    request.session['emergency'] = emergency
+    request.session['recd_time_begin'] = recd_time_begin
+    request.session['recd_time_end'] = recd_time_end
+    request.session['deliver_time_begin'] = deliver_time_begin
+    request.session['deliver_time_end'] = deliver_time_end
 
     # 查询事项全部事项
     item_list = Item.objects.all().order_by('-recd_time')
 
     # 按照表单中的的信息进行过滤
-    if recd_time_begin == 0:
+    if recd_time_begin == '0':
         recd_time_begin = time.strftime('%Y-1-1', time.localtime())
     else:
         item_list = item_list.filter(recd_time__gte=recd_time_begin)
-    if recd_time_end == 0:
+    if recd_time_end == '0':
         recd_time_end = time.strftime('%Y-%m-%d', time.localtime())
     else:
         item_list = item_list.filter(recd_time__lte=recd_time_end)
 
-    if deliver_time_begin == 0:
+    if deliver_time_begin == '0':
         deliver_time_begin = time.strftime('%Y-1-1', time.localtime())
     else:
         item_list = item_list.filter(deliver_time__gte=deliver_time_begin)
-    if deliver_time_end == 0:
+    if deliver_time_end == '0':
         deliver_time_end = time.strftime('%Y-%m-%d', time.localtime())
     else:
         item_list = item_list.filter(deliver_time__lte=deliver_time_end)
@@ -246,4 +259,22 @@ def deliver_action(request):
 
     item_info.save()
 
-    return HttpResponseRedirect('/item/detail?id=%s' % item_info.id)
+    # 从session中获取检索信息
+    second_title = request.session.get('second_title', '全部事项')
+    cate1 = request.session.get('cate1', 0)
+    cate2 = request.session.get('cate2', 0)
+    cate3 = request.session.get('cate3', 0)
+    cate4 = request.session.get('cate4', 0)
+    status = request.session.get('status', 0)
+    emergency = request.session.get('emergency', 0)
+    recd_time_begin = request.session.get('recd_time_begin', 0)
+    recd_time_end = request.session.get('recd_time_end', 0)
+    deliver_time_begin = request.session.get('deliver_time_begin', 0)
+    deliver_time_end = request.session.get('deliver_time_end', 0)
+
+    url = '/item/all?title=%s&cate1=%s&cate2=%s&cate3=%s&cate4=%s&status=%s&emergency=%s&recd_time_begin=%s&' \
+          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s' % \
+          (second_title, cate1, cate2, cate3, cate4, status, emergency, recd_time_begin, recd_time_end,
+           deliver_time_begin, deliver_time_end)
+
+    return HttpResponseRedirect(url)
