@@ -12,6 +12,7 @@ EMERGENCY_LIST = ['全部', '普通(3天)', '加急(2天)', '紧急(当日回复
 
 # 创建n条事件数据
 def create_item(request):
+    print(1)
     for i in range(1, 135):
         item = Item()
         if i < 10:
@@ -30,7 +31,7 @@ def create_item(request):
         item.area = '和平区'
         item.recoder = '李申'
         item.emergency = random.randint(1, 4)
-        item.status = random.randint(1, 7)
+        item.status_id = random.randint(1, 7)
         item.category1_id = random.randint(1, 3)
         item.category2_id = random.randint(4, 12)
 
@@ -61,7 +62,7 @@ def create_item(request):
         item.title = cate_name
 
         # 生成随机时间 '2016-12-21 15:49:20'
-        str_time = '20%d-%d-%d %d:%d:%d' % (random.randint(10, 18), random.randint(1, 12), random.randint(1, 28),
+        str_time = '2018-%d-%d %d:%d:%d' % (random.randint(1, 12), random.randint(1, 28),
                                             random.randint(0, 23), random.randint(0, 59), random.randint(0, 59))
         item.recd_time = str_time
         item.deliver_time = str_time
@@ -112,6 +113,7 @@ def all_show(request):
     recd_time_end = request.GET.get('recd_time_end', '0')
     deliver_time_begin = request.GET.get('deliver_time_begin', '0')
     deliver_time_end = request.GET.get('deliver_time_end', '0')
+    keyword = request.GET.get('keyword', '')
 
     # 将检索信息保存到session
     request.session['second_title'] = second_title
@@ -125,13 +127,14 @@ def all_show(request):
     request.session['recd_time_end'] = recd_time_end
     request.session['deliver_time_begin'] = deliver_time_begin
     request.session['deliver_time_end'] = deliver_time_end
+    request.session['keyword'] = keyword
 
     # 查询事项全部事项
     item_list = Item.objects.all().order_by('-recd_time')
 
     # 按照表单中的的信息进行过滤
     if recd_time_begin == '0':
-        recd_time_begin = time.strftime('%Y-1-1', time.localtime())
+        recd_time_begin = time.strftime('%Y-01-01', time.localtime())
     else:
         item_list = item_list.filter(recd_time__gte=recd_time_begin)
     if recd_time_end == '0':
@@ -140,7 +143,7 @@ def all_show(request):
         item_list = item_list.filter(recd_time__lte=recd_time_end)
 
     if deliver_time_begin == '0':
-        deliver_time_begin = time.strftime('%Y-1-1', time.localtime())
+        deliver_time_begin = time.strftime('%Y-01-01', time.localtime())
     else:
         item_list = item_list.filter(deliver_time__gte=deliver_time_begin)
     if deliver_time_end == '0':
@@ -149,7 +152,7 @@ def all_show(request):
         item_list = item_list.filter(deliver_time__lte=deliver_time_end)
 
     # 按照服务器的时间, 把默认起止事件传给客户端
-    default_time_begin = time.strftime('%Y-1-1', time.localtime())
+    default_time_begin = time.strftime('%Y-01-01', time.localtime())
     default_time_end = time.strftime('%Y-%m-%d', time.localtime())
 
     if cate1 != 0:
@@ -172,6 +175,10 @@ def all_show(request):
         print(emergency)
         item_list = item_list.filter(emergency=emergency)
         print('emergency: %d' % (len(item_list)))
+
+    # 关键字检索
+    if keyword != '':
+        item_list = item_list.filter(id__contains=keyword)
 
     # 事项分类
     cate1_list = Category.objects.filter(level=1)
@@ -256,6 +263,7 @@ def deliver_action(request):
 
     item_info.status_id = 2
     item_info.assign_dept_id = dept_id
+    item_info.deliver_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
     item_info.save()
 
@@ -271,10 +279,77 @@ def deliver_action(request):
     recd_time_end = request.session.get('recd_time_end', 0)
     deliver_time_begin = request.session.get('deliver_time_begin', 0)
     deliver_time_end = request.session.get('deliver_time_end', 0)
+    keyword = request.session.get('keyword', '')
 
     url = '/item/all?title=%s&cate1=%s&cate2=%s&cate3=%s&cate4=%s&status=%s&emergency=%s&recd_time_begin=%s&' \
-          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s' % \
+          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s&keyword=%s' % \
           (second_title, cate1, cate2, cate3, cate4, status, emergency, recd_time_begin, recd_time_end,
-           deliver_time_begin, deliver_time_end)
+           deliver_time_begin, deliver_time_end, keyword)
+
+    return HttpResponseRedirect(url)
+
+
+# 撤销转办
+def deliver_cancel(request):
+    item_id = request.GET.get('item_id', '0')
+
+    item_info = Item.objects.get(id=item_id)
+
+    item_info.status_id = 1
+    item_info.assign_dept_id = None
+    item_info.deliver_time = None
+
+    item_info.save()
+
+    # 从session中获取检索信息
+    second_title = request.session.get('second_title', '全部事项')
+    cate1 = request.session.get('cate1', 0)
+    cate2 = request.session.get('cate2', 0)
+    cate3 = request.session.get('cate3', 0)
+    cate4 = request.session.get('cate4', 0)
+    status = request.session.get('status', 0)
+    emergency = request.session.get('emergency', 0)
+    recd_time_begin = request.session.get('recd_time_begin', 0)
+    recd_time_end = request.session.get('recd_time_end', 0)
+    deliver_time_begin = request.session.get('deliver_time_begin', 0)
+    deliver_time_end = request.session.get('deliver_time_end', 0)
+    keyword = request.session.get('keyword', '')
+
+    url = '/item/all?title=%s&cate1=%s&cate2=%s&cate3=%s&cate4=%s&status=%s&emergency=%s&recd_time_begin=%s&' \
+          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s&keyword=%s' % \
+          (second_title, cate1, cate2, cate3, cate4, status, emergency, recd_time_begin, recd_time_end,
+           deliver_time_begin, deliver_time_end, keyword)
+
+    return HttpResponseRedirect(url)
+
+
+# 催办
+def urge(request):
+    item_id = request.GET.get('item_id', '0')
+
+    item_info = Item.objects.get(id=item_id)
+
+    item_info.is_urge = True
+
+    item_info.save()
+
+    # 从session中获取检索信息
+    second_title = request.session.get('second_title', '全部事项')
+    cate1 = request.session.get('cate1', 0)
+    cate2 = request.session.get('cate2', 0)
+    cate3 = request.session.get('cate3', 0)
+    cate4 = request.session.get('cate4', 0)
+    status = request.session.get('status', 0)
+    emergency = request.session.get('emergency', 0)
+    recd_time_begin = request.session.get('recd_time_begin', 0)
+    recd_time_end = request.session.get('recd_time_end', 0)
+    deliver_time_begin = request.session.get('deliver_time_begin', 0)
+    deliver_time_end = request.session.get('deliver_time_end', 0)
+    keyword = request.session.get('keyword', '')
+
+    url = '/item/all?title=%s&cate1=%s&cate2=%s&cate3=%s&cate4=%s&status=%s&emergency=%s&recd_time_begin=%s&' \
+          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s&keyword=%s' % \
+          (second_title, cate1, cate2, cate3, cate4, status, emergency, recd_time_begin, recd_time_end,
+           deliver_time_begin, deliver_time_end, keyword)
 
     return HttpResponseRedirect(url)

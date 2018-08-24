@@ -80,7 +80,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'tj8890',
-        'HOST': 'localhost',
+        'HOST': '118.24.96.90',
         'PORT': 3306,
         'USER': 'root',
         'PASSWORD': 'xiaobai',
@@ -99,7 +99,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

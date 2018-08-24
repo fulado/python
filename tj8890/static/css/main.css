@@ -383,7 +383,7 @@ tbody td{
     left: 223px;
     top: 101px;
     width: 1046px;
-    height: 1050px;
+    height: 1550px;
     overflow: hidden;
 }
 
@@ -391,7 +391,7 @@ tbody td{
 .deliver-content{
     position: relative;
     width: 1036px;
-    height: 572px;
+    height: 542px;
     border: 1px solid #CFCFCF;
     border-radius: 2px;
     margin-bottom: 20px;
@@ -416,7 +416,9 @@ tbody td{
 }
 
 .deliver-content .title p,
-.deliver-dept .title p{
+.deliver-dept .title p,
+.feedback-content .title p,
+.revisit-content .title p{
     font-size: 16px;
     color: #00A9EE;
     line-height: 39px;
@@ -424,14 +426,12 @@ tbody td{
 }
 
 .deliver-content .content table,
-.deliver-dept .content table{
+.deliver-dept .content table,
+.feedback-content .content table,
+.revisit-content .content table{
     position: absolute;
     left: 25px;
     top: 61px;
-}
-
-.deliver-content .content table{
-    top: 91px;
 }
 
 .deliver-content .content table,
@@ -439,7 +439,13 @@ tbody td{
 .deliver-content .content td,
 .deliver-dept .content table,
 .deliver-dept .content tr,
-.deliver-dept .content td{
+.deliver-dept .content td,
+.feedback-content .content table,
+.feedback-content .content tr,
+.feedback-content .content td,
+.revisit-content .content table,
+.revisit-content .content tr,
+.revisit-content .content td{
     font-size: 14px;
     margin: auto;
     padding: 10px;
@@ -447,7 +453,9 @@ tbody td{
 }
 
 .deliver-content .content span,
-.deliver-dept .content span{
+.deliver-dept .content span,
+.feedback-content .content span,
+.revisit-content .content span{
     text-align: justify;
     text-align-last:justify;
     display: inline-block;
@@ -473,13 +481,15 @@ tbody td{
     /* left: 223px;
     top: 692px; */
     width: 1036px;
-    height: 433px;
+    height: 333px;
     border: 1px solid #CFCFCF;
     border-radius: 2px;
     padding: 0px;
 }
 
-.deliver-dept .bar{
+.deliver-dept .bar,
+.feedback-content .bar,
+.revisit-content .bar{
     position: absolute;
     left: -1px;
     top: 0px;
@@ -488,7 +498,9 @@ tbody td{
     background-color: #00A9EE;
 }
 
-.deliver-dept .title{
+.deliver-dept .title,
+.feedback-content .title,
+.revisit-content .title{
     position:absolute;
     left: 0px;
     top: 5px;
@@ -497,8 +509,45 @@ tbody td{
     border-bottom: 1px solid #F0F0F0;
 }
 
-.deliver-dept .search-btn-group{
-    position: absolute;
+.operation .search-btn-group{
+    position: relative;
     left: 356px;
-    top: 381px;
+    margin: 20px;
+}
+
+.feedback-content{
+    position: relative;
+    /* left: 223px;
+    top: 692px; */
+    width: 1036px;
+    height: 283px;
+    border: 1px solid #CFCFCF;
+    border-radius: 2px;
+    padding: 0px;
+    margin-top: 20px;
+}
+
+.feedback-content .content textarea{
+    width: 430px;
+    height: 134px;
+    resize: none;
+    border-radius: 4px;
+    border: 1px solid #A6B9C8;
+    padding-left: 5px;
+}
+
+.feedback-content .content input{
+    width: 430px;
+}
+
+.revisit-content{
+    position: relative;
+    /* left: 223px;
+    top: 692px; */
+    width: 1036px;
+    height: 173px;
+    border: 1px solid #CFCFCF;
+    border-radius: 2px;
+    padding: 0px;
+    margin-top: 20px;
 }
