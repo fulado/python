@@ -9,7 +9,8 @@ urlpatterns = [
     url(r'^detail/?', views.detail_show),
     url(r'^deliver_action/?', views.deliver_action),    # 转办
     url(r'^deliver_cancel/?', views.deliver_cancel),    # 撤销转办
-    url(r'^urge/?', views.urge),  # 催办
+    url(r'^remind_item/?', views.remind_item),  # 催办
+    url(r'^return_item/?', views.return_item),  # 退回重办
     url(r'^cate_search/?', views.cate_search),
 ]
 

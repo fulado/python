@@ -24,7 +24,9 @@ def create_admin(request):
 
 # 显示登录页
 def login(request):
-    return render(request, 'user/login.html')
+    error = False
+    context = {'error': error}
+    return render(request, 'user/login.html', context)
 
 
 # 登录服务
@@ -48,12 +50,25 @@ def login_service(request):
             error = True
     else:
         error = True
-    print(error)
+
     if error:
+        # 登录失败
         context = {'username': username, 'password': password, 'error': error}
         return render(request, 'user/login.html', context)
     else:
-        return HttpResponse('登陆成功')
+        # 登录成功
+
+        # 保存用户信息到session
+        request.session['user_id'] = user.id
+
+        if user.dept.supervisor is not None:
+            request.session['dept_id'] = user.dept.supervisor.id
+        else:
+            request.session['dept_id'] = user.dept.id
+
+        request.session['authority'] = user.authority
+
+        return HttpResponseRedirect('/item/main')
 
 
 # 显示部门管理页

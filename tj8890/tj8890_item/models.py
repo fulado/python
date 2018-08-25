@@ -54,7 +54,7 @@ class Item(models.Model):
     receive_limit = models.DateTimeField(null=True, blank=True)         # 接单时限
     deal_limit = models.DateTimeField(null=True, blank=True)            # 承办时限
     # status = models.IntegerField(default=0)
-    status = models.ForeignKey(ItemStatus, null=True, blank=True, default=1)       # 办件状态, 1-未转办, 2-已转办, 3-办理中, 4-已反馈, 5-已超时, 6-退回重办, 7-申请延期
+    status = models.ForeignKey(ItemStatus, null=True, blank=True, default=1)       # 办件状态, 1-未转办, 2-已转办, 3-办理中, 4-已反馈, 5-已超时, 6-退回重办, 7-申请延期, 66-办结
     is_overtime = models.BooleanField(default=False)                    # 是否超时
     comment = models.CharField(max_length=500, null=True, blank=True)   # 拟办意见
     leader_comment = models.CharField(max_length=500, null=True, blank=True)  # 领导批示
@@ -83,4 +83,3 @@ class Item(models.Model):
     name = models.CharField(max_length=20, null=True, blank=True)       # 姓名/名称
     is_scene = models.BooleanField(default=False)                       # 是否出现场
     is_delete = models.BooleanField(default=False)                      # 是否删除
-    is_urge = models.BooleanField(default=False)                        # 是否催办

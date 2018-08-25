@@ -5,6 +5,11 @@
         .modal-dialog{
             height: 500px;
         }
+        .search p {
+            position: absolute;
+            left: 25px;
+            top: 65px;
+        }
     </style>
 
     <script type="text/javascript">
@@ -100,6 +105,24 @@
             }
         }
     </script>
+{% endblock %}
+
+<!-- 当前位置 -->
+{% block location %}
+    <div class="location">
+        <p><span>人员管理</span></p>
+        <!-- 搜索框 -->
+        <div class="input-group">
+            <label for="search01" id="search01_label">请输入关键字</label>
+            <input type="text" class="form-control" id="search01" />
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </span>
+        </div>
+    </div>
+    <div class="bar01"></div>
 {% endblock %}
 
 <!-- 检索/添加 -->

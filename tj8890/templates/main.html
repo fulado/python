@@ -34,6 +34,7 @@
         <!-- 侧标导航栏 -->
         <div class="navi" >
             <div class="panel-group" id="accordion">
+                {% if request.session.authority == 2 or request.session.authority == 1 %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
@@ -46,40 +47,44 @@
                     </div>
                     <div id="collapseOne" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <a href="#" href-url="/item/all?title=全部事项&status=0" class="list-group-item">全部事项<span class="badge">{{ count_0 }}</span></a>
-                            <a href="#" href-url="/item/all?title=未转办事项&status=1" class="list-group-item">未转办事项<span class="badge">{{ count_1 }}</span></a>
-                            <a href="#" href-url="/item/all?title=已转办事项&status=2" class="list-group-item">已转办事项<span class="badge">{{ count_2 }}</span></a>
-                            <a href="#" href-url="/item/all?title=办理中事项&status=3" class="list-group-item">办理中事项<span class="badge">{{ count_3 }}</span></a>
-                            <a href="#" href-url="/item/all?title=已反馈事项&status=4" class="list-group-item">已反馈事项<span class="badge">{{ count_4 }}</span></a>
-                            <a href="#" href-url="/item/all?title=已超时事项&status=5" class="list-group-item">已超时事项<span class="badge">{{ count_5 }}</span></a>
-                            <a href="#" href-url="/item/all?title=退回重办事项&status=6" class="list-group-item">退回重办事项<span class="badge">{{ count_6 }}</span></a>
-                            <a href="#" href-url="/item/all?title=申请延期事项&status=7" class="list-group-item">申请延期事项<span class="badge">{{ count_7 }}</span></a>
+                            <a href="#" href-url="/item/all?title=全部事项&status=0" class="list-group-item">全部事项</a>
+                            <a href="#" href-url="/item/all?title=未转办事项&status=1" class="list-group-item">未转办事项</a>
+                            <a href="#" href-url="/item/all?title=已转办事项&status=2" class="list-group-item">已转办事项</a>
+                            <a href="#" href-url="/item/all?title=办理中事项&status=3" class="list-group-item">办理中事项</a>
+                            <a href="#" href-url="/item/all?title=办理中事项&status=8" class="list-group-item">催办事项</a>
+                            <a href="#" href-url="/item/all?title=已反馈事项&status=4" class="list-group-item">已反馈事项</a>
+                            <a href="#" href-url="/item/all?title=退回重办事项&status=6" class="list-group-item">退回重办事项</a>
+                            <a href="#" href-url="/item/all?title=申请延期事项&status=7" class="list-group-item">申请延期事项</a>
                         </div>
                     </div>
                 </div>
+                {% endif %}
+                {% if request.session.authority == 3 or request.session.authority == 1 %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            <img src="/static/image/icon02.png" alt="icon02">
+                            <img src="/static/image/icon01.png" alt="icon01">
                             <a data-toggle="collapse" data-parent="#accordion"
                                href="#collapseTwo">
-                                办结事项管理
+                                办理事项管理2
                             </a>
                         </h4>
                     </div>
                     <div id="collapseTwo" class="panel-collapse collapse">
                         <div class="panel-body clearfix">
-                            <a href-url="/item/all" class="list-group-item">全部2事项2<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">未转办2事项2<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">已转办2事项2<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">办理中2事项2<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">已反馈2事项2<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">已超时2事项2<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">退回重办2事项2<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">申请延期2事项2<span class="badge">10</span></a>
+                            <a href="#" href-url="/item/all?title=全部事项&status=0" class="list-group-item">全部事项</a>
+                            <a href="#" href-url="/item/all?title=未转办事项&status=1" class="list-group-item">未转办事项</a>
+                            <a href="#" href-url="/item/all?title=已转办事项&status=2" class="list-group-item">已转办事项</a>
+                            <a href="#" href-url="/item/all?title=办理中事项&status=3" class="list-group-item">办理中事项</a>
+                            <a href="#" href-url="/item/all?title=办理中事项&status=8" class="list-group-item">催办事项</a>
+                            <a href="#" href-url="/item/all?title=已反馈事项&status=4" class="list-group-item">已反馈事项</a>
+                            <a href="#" href-url="/item/all?title=退回重办事项&status=6" class="list-group-item">退回重办事项</a>
+                            <a href="#" href-url="/item/all?title=申请延期事项&status=7" class="list-group-item">申请延期事项</a>
                         </div>
                     </div>
                 </div>
+                {% endif %}
+                {% if request.session.authority == 3 or request.session.authority == 1 %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
@@ -103,6 +108,7 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
@@ -126,6 +132,7 @@
                         </div>
                     </div>
                 </div>
+                {% if request.session.authority == 2 or request.session.authority == 1 %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
@@ -138,11 +145,12 @@
                     </div>
                     <div id="collapseFive" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <a href="/user/user" class="list-group-item">人员管理</a>
-                            <a href="/user/dept" class="list-group-item">部门管理</a>
+                            <a href="#" href-url="/user/user" class="list-group-item">人员管理</a>
+                            <a href="#" href-url="/user/dept" class="list-group-item">部门管理</a>
                         </div>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
 

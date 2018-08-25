@@ -57,9 +57,9 @@
         <form action="/user/login/" method="post" onsubmit="return loginCheck()">
             {%csrf_token%}
             <label for="username" id="label01">用户名{{result}}</label>
-            <input type="text" name="username" class="username" id="username" value="{{username}}"/>
+            <input type="text" name="username" class="username" id="username" value="{{username|default:''}}"/>
             <label for="password" id="label02">密&nbsp&nbsp&nbsp码</label>
-            <input type="password" name="password" class="password" id="password" value="{{password}}"/>
+            <input type="password" name="password" class="password" id="password" value="{{password|default:''}}"/>
             <input type="submit" value="登   录" class="submit" />
             {%if error%}
             <div>

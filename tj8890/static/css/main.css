@@ -418,7 +418,8 @@ tbody td{
 .deliver-content .title p,
 .deliver-dept .title p,
 .feedback-content .title p,
-.revisit-content .title p{
+.revisit-content .title p,
+.delay-content .title p{
     font-size: 16px;
     color: #00A9EE;
     line-height: 39px;
@@ -428,7 +429,8 @@ tbody td{
 .deliver-content .content table,
 .deliver-dept .content table,
 .feedback-content .content table,
-.revisit-content .content table{
+.revisit-content .content table,
+.delay-content .content table{
     position: absolute;
     left: 25px;
     top: 61px;
@@ -445,7 +447,10 @@ tbody td{
 .feedback-content .content td,
 .revisit-content .content table,
 .revisit-content .content tr,
-.revisit-content .content td{
+.revisit-content .content td,
+.delay-content .content table,
+.delay-content .content tr,
+.delay-content .content td{
     font-size: 14px;
     margin: auto;
     padding: 10px;
@@ -455,7 +460,8 @@ tbody td{
 .deliver-content .content span,
 .deliver-dept .content span,
 .feedback-content .content span,
-.revisit-content .content span{
+.revisit-content .content span,
+.delay-content .content span{
     text-align: justify;
     text-align-last:justify;
     display: inline-block;
@@ -489,7 +495,8 @@ tbody td{
 
 .deliver-dept .bar,
 .feedback-content .bar,
-.revisit-content .bar{
+.revisit-content .bar,
+.delay-content .bar{
     position: absolute;
     left: -1px;
     top: 0px;
@@ -500,7 +507,8 @@ tbody td{
 
 .deliver-dept .title,
 .feedback-content .title,
-.revisit-content .title{
+.revisit-content .title,
+.delay-content .title{
     position:absolute;
     left: 0px;
     top: 5px;
@@ -527,7 +535,8 @@ tbody td{
     margin-top: 20px;
 }
 
-.feedback-content .content textarea{
+.feedback-content .content textarea,
+.delay-content .content textarea{
     width: 430px;
     height: 134px;
     resize: none;
@@ -536,11 +545,27 @@ tbody td{
     padding-left: 5px;
 }
 
+.delay-content .content textarea{
+    height: 70px;
+}
+
 .feedback-content .content input{
     width: 430px;
 }
 
 .revisit-content{
+    position: relative;
+    /* left: 223px;
+    top: 692px; */
+    width: 1036px;
+    height: 173px;
+    border: 1px solid #CFCFCF;
+    border-radius: 2px;
+    padding: 0px;
+    margin-top: 20px;
+}
+
+.delay-content{
     position: relative;
     /* left: 223px;
     top: 692px; */

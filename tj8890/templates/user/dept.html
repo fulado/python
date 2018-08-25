@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 
 {% block head %}
+    <style type="text/css">
+        .search p {
+            position: absolute;
+            left: 25px;
+            top: 65px;
+        }
+    </style>
+
     <script type="text/javascript">
         // 一级部门id全局变量, 是否有其它方法代替全局变量?
         var supervisorId;
@@ -49,6 +57,24 @@
             $('#supervisor_name').val(oSelect.find(":selected").text());
         }
     </script>
+{% endblock %}
+
+<!-- 当前位置 -->
+{% block location %}
+    <div class="location">
+        <p><span>人员管理</span></p>
+        <!-- 搜索框 -->
+        <div class="input-group">
+            <label for="search01" id="search01_label">请输入关键字</label>
+            <input type="text" class="form-control" id="search01" />
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </span>
+        </div>
+    </div>
+    <div class="bar01"></div>
 {% endblock %}
 
 <!-- 部门检索/添加 -->
