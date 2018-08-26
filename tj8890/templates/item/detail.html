@@ -263,9 +263,10 @@
 
     <div class="operation">
         <div class="search-btn-group">
-            {% if item.status.id == 1 %}
+            {% if item.status.id == 1 and request.session.authority == 2 or request.session.authority == 1 %}
             <a class="btn btn-default" data-toggle="modal" data-target="#deleteModal" data-backdrop="static">删除</a>
             {% endif %}
+            {% if request.session.authority == 2 or request.session.authority == 1 %}
             {% if item.status.id == 1 %}
             <a onclick="setDeliverInfo()" class="btn btn-default" data-toggle="modal" data-target="#deliverModal" data-backdrop="static">转办</a>
             {% elif item.status.id == 2 %}
@@ -279,6 +280,15 @@
             {% if item.status.id == 7 %}
             <a class="btn btn-default" data-toggle="modal" data-target="#delayAdmitModal" data-backdrop="static">同意</a>
             <a class="btn btn-default" data-toggle="modal" data-target="#delayRejectModal" data-backdrop="static">驳回</a>
+            {% endif %}
+            {% endif %}
+            {% if request.session.authority == 3 or request.session.authority == 1 %}
+            {% if item.status.id == 2 %}
+            <a class="btn btn-default" data-toggle="modal" data-target="#deliverCancelModal" data-backdrop="static">接单</a>
+            <a class="btn btn-default" data-toggle="modal" data-target="#deliverCancelModal" data-backdrop="static">拒接</a>
+            {% else %}
+            <a class="btn btn-default" data-toggle="modal" data-target="#urgelModal" data-backdrop="static">提交办结</a>
+            <a class="btn btn-default" data-toggle="modal" data-target="#urgelModal" data-backdrop="static">申请延期</a>
             {% endif %}
             <a href="javascript: history.back(-1);" class="btn btn-default">返回</a>
         </div>

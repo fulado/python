@@ -24,8 +24,8 @@ def create_admin(request):
 
 # 显示登录页
 def login(request):
-    error = False
-    context = {'error': error}
+    login_error = False
+    context = {'login_error': login_error}
     return render(request, 'user/login.html', context)
 
 
@@ -44,16 +44,16 @@ def login_service(request):
         user = user_list[0]
 
         if password_encrypted == user.password:
-            error = False
+            login_error = False
         else:
             # 密码不同返回错误
-            error = True
+            login_error = True
     else:
-        error = True
+        login_error = True
 
-    if error:
+    if login_error:
         # 登录失败
-        context = {'username': username, 'password': password, 'error': error}
+        context = {'username': username, 'password': password, 'login_error': login_error}
         return render(request, 'user/login.html', context)
     else:
         # 登录成功
@@ -61,10 +61,13 @@ def login_service(request):
         # 保存用户信息到session
         request.session['user_id'] = user.id
 
-        if user.dept.supervisor is not None:
-            request.session['dept_id'] = user.dept.supervisor.id
+        if user.dept is not None:
+            if user.dept.supervisor is not None:
+                request.session['dept_id'] = user.dept.supervisor.id
+            else:
+                request.session['dept_id'] = user.dept.id
         else:
-            request.session['dept_id'] = user.dept.id
+            request.session['dept_id'] = 1
 
         request.session['authority'] = user.authority
 

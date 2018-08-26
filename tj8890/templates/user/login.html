@@ -61,7 +61,7 @@
             <label for="password" id="label02">密&nbsp&nbsp&nbsp码</label>
             <input type="password" name="password" class="password" id="password" value="{{password|default:''}}"/>
             <input type="submit" value="登   录" class="submit" />
-            {%if error%}
+            {%if login_error%}
             <div>
                 <img src="/static/image/exclamation.png" alt="感叹号" />
                 <p>用户名或密码错误</p>
