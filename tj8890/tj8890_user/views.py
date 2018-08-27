@@ -70,6 +70,7 @@ def login_service(request):
             request.session['dept_id'] = 1
 
         request.session['authority'] = user.authority
+        request.session['user'] = user
 
         return HttpResponseRedirect('/item/main')
 
@@ -312,3 +313,10 @@ def reset_password(request):
     user.save()
     return HttpResponseRedirect('/user/user')
 
+
+# 退出登录
+def logout(request):
+    request.session.clear()
+    request.session.flush()
+
+    return HttpResponseRedirect('/')

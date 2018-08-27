@@ -11,6 +11,10 @@ urlpatterns = [
     url(r'^deliver_cancel/?', views.deliver_cancel),    # 撤销转办
     url(r'^remind_item/?', views.remind_item),  # 催办
     url(r'^return_item/?', views.return_item),  # 退回重办
+
+    url(r'^accept_item/?', views.accept_item),  # 客户端接受转办事项
+    url(r'^reject_item/?', views.reject_item),  # 客户端拒收转办事项
+
     url(r'^cate_search/?', views.cate_search),
 ]
 
