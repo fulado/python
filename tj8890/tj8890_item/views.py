@@ -274,7 +274,10 @@ def deliver_action(request):
     item_info.assign_dept_id = dept_id
     item_info.deliver_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
-    item_info.save()
+    try:
+        item_info.save()
+    except Exception as e:
+        print(e)
 
     # 从session中获取检索信息
     second_title = request.session.get('second_title', '全部事项')
@@ -308,7 +311,10 @@ def deliver_cancel(request):
     item_info.assign_dept_id = None
     item_info.deliver_time = None
 
-    item_info.save()
+    try:
+        item_info.save()
+    except Exception as e:
+        print(e)
 
     # 从session中获取检索信息
     second_title = request.session.get('second_title', '全部事项')
@@ -338,9 +344,12 @@ def remind_item(request):
 
     item_info = Item.objects.get(id=item_id)
 
-    item_info.is_remind = True
+    item_info.status_id = 8
 
-    item_info.save()
+    try:
+        item_info.save()
+    except Exception as e:
+        print(e)
 
     # 从session中获取检索信息
     second_title = request.session.get('second_title', '全部事项')
@@ -372,7 +381,10 @@ def return_item(request):
 
     item_info.status_id = 6
 
-    item_info.save()
+    try:
+        item_info.save()
+    except Exception as e:
+        print(e)
 
     # 从session中获取检索信息
     second_title = request.session.get('second_title', '全部事项')
@@ -404,7 +416,10 @@ def save_item(request):
 
     item_info.status_id = 66
 
-    item_info.save()
+    try:
+        item_info.save()
+    except Exception as e:
+        print(e)
 
     # 从session中获取检索信息
     second_title = request.session.get('second_title', '全部事项')
@@ -445,7 +460,10 @@ def accept_item(request):
     item_info.receiver = user
     item_info.receive_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
-    item_info.save()
+    try:
+        item_info.save()
+    except Exception as e:
+        print(e)
 
     # 从session中获取检索信息
     second_title = request.session.get('second_title', '全部事项')
@@ -478,7 +496,89 @@ def reject_item(request):
     item_info.status_id = 1
     item_info.assign_dept_id = None
 
-    item_info.save()
+    try:
+        item_info.save()
+    except Exception as e:
+        print(e)
+
+    # 从session中获取检索信息
+    second_title = request.session.get('second_title', '全部事项')
+    cate1 = request.session.get('cate1', 0)
+    cate2 = request.session.get('cate2', 0)
+    cate3 = request.session.get('cate3', 0)
+    cate4 = request.session.get('cate4', 0)
+    status = request.session.get('status', 0)
+    emergency = request.session.get('emergency', 0)
+    recd_time_begin = request.session.get('recd_time_begin', 0)
+    recd_time_end = request.session.get('recd_time_end', 0)
+    deliver_time_begin = request.session.get('deliver_time_begin', 0)
+    deliver_time_end = request.session.get('deliver_time_end', 0)
+    keyword = request.session.get('keyword', '')
+
+    url = '/item/all?title=%s&cate1=%s&cate2=%s&cate3=%s&cate4=%s&status=%s&emergency=%s&recd_time_begin=%s&' \
+          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s&keyword=%s' % \
+          (second_title, cate1, cate2, cate3, cate4, status, emergency, recd_time_begin, recd_time_end,
+           deliver_time_begin, deliver_time_end, keyword)
+
+    return HttpResponseRedirect(url)
+
+
+# 客户端提交办结
+def complete_item(request):
+    item_id = request.GET.get('item_id', '0')
+    item_result = request.GET.get('item_result', '')
+    # item_answer = request.GET.get('item_answer', '')
+
+    item_info = Item.objects.get(id=item_id)
+
+    item_info.status_id = 66
+    item_info.result = item_result
+    # item_Info.answer = item_answer
+
+    try:
+        item_info.save()
+    except Exception as e:
+        print(e)
+
+    # 从session中获取检索信息
+    second_title = request.session.get('second_title', '全部事项')
+    cate1 = request.session.get('cate1', 0)
+    cate2 = request.session.get('cate2', 0)
+    cate3 = request.session.get('cate3', 0)
+    cate4 = request.session.get('cate4', 0)
+    status = request.session.get('status', 0)
+    emergency = request.session.get('emergency', 0)
+    recd_time_begin = request.session.get('recd_time_begin', 0)
+    recd_time_end = request.session.get('recd_time_end', 0)
+    deliver_time_begin = request.session.get('deliver_time_begin', 0)
+    deliver_time_end = request.session.get('deliver_time_end', 0)
+    keyword = request.session.get('keyword', '')
+
+    url = '/item/all?title=%s&cate1=%s&cate2=%s&cate3=%s&cate4=%s&status=%s&emergency=%s&recd_time_begin=%s&' \
+          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s&keyword=%s' % \
+          (second_title, cate1, cate2, cate3, cate4, status, emergency, recd_time_begin, recd_time_end,
+           deliver_time_begin, deliver_time_end, keyword)
+
+    return HttpResponseRedirect(url)
+
+
+# 客户端申请延期
+def delay_item(request):
+    item_id = request.GET.get('item_id', '0')
+    delay_reason = request.GET.get('delay_reason', '')
+    delay_to_time = request.GET.get('delay_to_time', '')
+
+    item_info = Item.objects.get(id=item_id)
+
+    item_info.status_id = 7
+    item_info.delay_reason = delay_reason
+    item_info.delay_apply_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+    item_info.delay_to_time = delay_to_time
+
+    try:
+        item_info.save()
+    except Exception as e:
+        print(e)
 
     # 从session中获取检索信息
     second_title = request.session.get('second_title', '全部事项')

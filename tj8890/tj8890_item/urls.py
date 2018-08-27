@@ -9,11 +9,13 @@ urlpatterns = [
     url(r'^detail/?', views.detail_show),
     url(r'^deliver_action/?', views.deliver_action),    # 转办
     url(r'^deliver_cancel/?', views.deliver_cancel),    # 撤销转办
-    url(r'^remind_item/?', views.remind_item),  # 催办
-    url(r'^return_item/?', views.return_item),  # 退回重办
+    url(r'^remind_item/?', views.remind_item),          # 催办
+    url(r'^return_item/?', views.return_item),          # 退回重办
 
-    url(r'^accept_item/?', views.accept_item),  # 客户端接受转办事项
-    url(r'^reject_item/?', views.reject_item),  # 客户端拒收转办事项
+    url(r'^accept_item/?', views.accept_item),          # 客户端接受转办事项
+    url(r'^reject_item/?', views.reject_item),          # 客户端拒收转办事项
+    url(r'^complete_item/?', views.complete_item),      # 客户端办结事项
+    url(r'^delay_item/?', views.delay_item),            # 客户端延期申请
 
     url(r'^cate_search/?', views.cate_search),
 ]

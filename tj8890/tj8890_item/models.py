@@ -54,9 +54,9 @@ class Item(models.Model):
     receive_limit = models.DateTimeField(null=True, blank=True)         # 接单时限
     deal_limit = models.DateTimeField(null=True, blank=True)            # 承办时限
     # status = models.IntegerField(default=0)
-    status = models.ForeignKey(ItemStatus, null=True, blank=True, default=1)       # 办件状态, 1-未转办, 2-已转办, 3-办理中, 4-已反馈, 5-已超时, 6-退回重办, 7-申请延期, 66-办结
+    status = models.ForeignKey(ItemStatus, null=True, blank=True, default=1)  # 办件状态, 1-未转办, 2-已转办, 3-办理中, 4-已反馈, 5-已超时, 6-退回重办, 7-申请延期, 66-办结
     is_overtime = models.BooleanField(default=False)                    # 是否超时
-    comment = models.CharField(max_length=500, null=True, blank=True)   # 拟办意见
+    comment = models.CharField(max_length=500, null=True, blank=True)       # 拟办意见
     leader_comment = models.CharField(max_length=500, null=True, blank=True)  # 领导批示
     result = models.CharField(max_length=500, null=True, blank=True)         # 办理结果
     complete_time = models.DateTimeField(null=True, blank=True)              # 办结时间
@@ -71,9 +71,9 @@ class Item(models.Model):
     return_time = models.DateTimeField(null=True, blank=True)           # 退回时间
     revisit_time = models.DateTimeField(null=True, blank=True)          # 回访时间
     revisit_person = models.ForeignKey(User, null=True, blank=True, related_name='revisit_person_set')  # 回访人
-    evaluation = models.CharField(max_length=200, null=True, blank=True)  # 评价结果
-    revisit_content = models.CharField(max_length=500, null=True, blank=True)  # 回访内容
-    is_archived = models.BooleanField(default=False)  # 是否直接归档
+    evaluation = models.CharField(max_length=200, null=True, blank=True)        # 评价结果
+    revisit_content = models.CharField(max_length=500, null=True, blank=True)   # 回访内容
+    is_archived = models.BooleanField(default=False)                            # 是否直接归档
     archive_reason = models.CharField(max_length=50, null=True, blank=True)  # 直接归档理由
     check_result = models.CharField(max_length=50, null=True, blank=True)  # 审核结果
     check_comments = models.CharField(max_length=500, null=True, blank=True)  # 审核意见
@@ -83,3 +83,6 @@ class Item(models.Model):
     name = models.CharField(max_length=20, null=True, blank=True)       # 姓名/名称
     is_scene = models.BooleanField(default=False)                       # 是否出现场
     is_delete = models.BooleanField(default=False)                      # 是否删除
+    delay_reason = models.CharField(max_length=500, null=True, blank=True)         # 延期理由
+    delay_apply_time = models.DateTimeField(null=True, blank=True)      # 延期申请时间
+    delay_to_time = models.DateTimeField(null=True, blank=True)      # 延期到时间

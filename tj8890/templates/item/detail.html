@@ -29,6 +29,12 @@
             else if (status == 31) {
                 submitForm(oForm, 'GET', '/item/reject_item');
             }
+            else if (status == 33) {
+                submitForm(oForm, 'GET', '/item/complete_item');
+            }
+            else if (status == 35) {
+                submitForm(oForm, 'GET', '/item/delay_item');
+            }
         }
     </script>
 {% endblock %}
@@ -177,7 +183,7 @@
         </div>
     </div>
 
-    {% if item.status.id == 4 or item.status.id == 3 %}
+    {% if item.status.id == 3 and request.session.authority == 3 or item.status.id == 4 or item.status.id == 6 %}
     <!-- 反馈信息 -->
     <div class="feedback-content">
         <div class="bar"></div>
@@ -188,14 +194,14 @@
             <table>
                 <tr>
                     <td><span>办理情况</span></td>
-                    <td><textarea>{{ item.result|default:'' }}</textarea></td>
+                    <td><textarea name="item_result">{{ item.result|default:'' }}</textarea></td>
                     <td></td>
                     <td><span></span></td>
                     <td></td>
                 </tr>
                 <tr>
                     <td><span>答复内容</span></td>
-                    <td><input type="text" value="事实属实，已处理" /></td>
+                    <td><input type="text" name="item_answer" value="事实属实，已处理" /></td>
                     <td></td>
                     <!--<td><span>求助满意度</span></td>-->
                     <!--<td>-->
@@ -209,7 +215,9 @@
             </table>
         </div>
     </div>
+    {% endif %}
 
+    {% if item.status.id == 4 or item.status.id == 6 %}
     <!-- 回访情况 -->
     <div class="revisit-content">
         <div class="bar"></div>
@@ -240,7 +248,8 @@
     </div>
     {% endif %}
 
-    {% if item.status.id == 7 %}
+
+    {% if item.status.id == 3 and request.session.authority == 3 or item.status.id == 7  %}
     <!-- 延期申请 -->
     <div class="delay-content">
         <div class="bar"></div>
@@ -251,16 +260,16 @@
             <table>
                 <tr>
                     <td><span>延期理由</span></td>
-                    <td rowspan="2"><textarea></textarea></td>
+                    <td rowspan="2"><textarea name="delay_reason"></textarea></td>
                     <td></td>
                     <td><span>申请时间</span></td>
-                    <td><input type="text" /></td>
+                    <td><input type="text" />{{ item.delay_apply_time|default:'' }}</td>
                 </tr>
                 <tr>
                     <td></td>
                     <td></td>
                     <td><span>延期时间</span></td>
-                    <td><input type="text" /></td>
+                    <td><input type="text" name="delay_to_time" />{{ item.delay_to_time|default:'' }}</td>
                 </tr>
             </table>
         </div>
