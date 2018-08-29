@@ -443,6 +443,76 @@ def save_item(request):
     return HttpResponseRedirect(url)
 
 
+# 同意延期
+def delay_approve_item(request):
+    item_id = request.GET.get('item_id', '0')
+
+    item_info = Item.objects.get(id=item_id)
+
+    item_info.status_id = 3
+
+    try:
+        item_info.save()
+    except Exception as e:
+        print(e)
+
+    # 从session中获取检索信息
+    second_title = request.session.get('second_title', '全部事项')
+    cate1 = request.session.get('cate1', 0)
+    cate2 = request.session.get('cate2', 0)
+    cate3 = request.session.get('cate3', 0)
+    cate4 = request.session.get('cate4', 0)
+    status = request.session.get('status', 0)
+    emergency = request.session.get('emergency', 0)
+    recd_time_begin = request.session.get('recd_time_begin', 0)
+    recd_time_end = request.session.get('recd_time_end', 0)
+    deliver_time_begin = request.session.get('deliver_time_begin', 0)
+    deliver_time_end = request.session.get('deliver_time_end', 0)
+    keyword = request.session.get('keyword', '')
+
+    url = '/item/all?title=%s&cate1=%s&cate2=%s&cate3=%s&cate4=%s&status=%s&emergency=%s&recd_time_begin=%s&' \
+          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s&keyword=%s' % \
+          (second_title, cate1, cate2, cate3, cate4, status, emergency, recd_time_begin, recd_time_end,
+           deliver_time_begin, deliver_time_end, keyword)
+
+    return HttpResponseRedirect(url)
+
+
+# 驳回延期
+def delay_reject_item(request):
+    item_id = request.GET.get('item_id', '0')
+
+    item_info = Item.objects.get(id=item_id)
+
+    item_info.status_id = 3
+
+    try:
+        item_info.save()
+    except Exception as e:
+        print(e)
+
+    # 从session中获取检索信息
+    second_title = request.session.get('second_title', '全部事项')
+    cate1 = request.session.get('cate1', 0)
+    cate2 = request.session.get('cate2', 0)
+    cate3 = request.session.get('cate3', 0)
+    cate4 = request.session.get('cate4', 0)
+    status = request.session.get('status', 0)
+    emergency = request.session.get('emergency', 0)
+    recd_time_begin = request.session.get('recd_time_begin', 0)
+    recd_time_end = request.session.get('recd_time_end', 0)
+    deliver_time_begin = request.session.get('deliver_time_begin', 0)
+    deliver_time_end = request.session.get('deliver_time_end', 0)
+    keyword = request.session.get('keyword', '')
+
+    url = '/item/all?title=%s&cate1=%s&cate2=%s&cate3=%s&cate4=%s&status=%s&emergency=%s&recd_time_begin=%s&' \
+          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s&keyword=%s' % \
+          (second_title, cate1, cate2, cate3, cate4, status, emergency, recd_time_begin, recd_time_end,
+           deliver_time_begin, deliver_time_end, keyword)
+
+    return HttpResponseRedirect(url)
+
+
 # 客户端接受转办事项
 def accept_item(request):
     item_id = request.GET.get('item_id', '0')

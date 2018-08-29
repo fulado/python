@@ -66,7 +66,7 @@
                             <img src="/static/image/icon01.png" alt="icon01">
                             <a data-toggle="collapse" data-parent="#accordion"
                                href="#collapseTwo">
-                                办理事项管理2
+                                办理事项管理
                             </a>
                         </h4>
                     </div>
@@ -83,31 +83,31 @@
                     </div>
                 </div>
                 {% endif %}
-                {% if request.session.authority == 3 or request.session.authority == 1 %}
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <img src="/static/image/icon03.png" alt="icon03">
-                            <a data-toggle="collapse" data-parent="#accordion"
-                               href="#collapseThree">
-                                统计分析
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapseThree" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            <a href="#" class="list-group-item">全部3事项3<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">未转办3事项3<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">已转办3事项3<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">办理中3事项3<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">已反馈3事项3<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">已超时3事项3<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">退回重办3事项3<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">申请延期3事项3<span class="badge">10</span></a>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
+                <!--{% if request.session.authority == 3 or request.session.authority == 1 %}-->
+                <!--<div class="panel panel-default">-->
+                    <!--<div class="panel-heading">-->
+                        <!--<h4 class="panel-title">-->
+                            <!--<img src="/static/image/icon03.png" alt="icon03">-->
+                            <!--<a data-toggle="collapse" data-parent="#accordion"-->
+                               <!--href="#collapseThree">-->
+                                <!--统计分析-->
+                            <!--</a>-->
+                        <!--</h4>-->
+                    <!--</div>-->
+                    <!--<div id="collapseThree" class="panel-collapse collapse">-->
+                        <!--<div class="panel-body">-->
+                            <!--<a href="#" class="list-group-item">全部3事项3<span class="badge">10</span></a>-->
+                            <!--<a href="#" class="list-group-item">未转办3事项3<span class="badge">10</span></a>-->
+                            <!--<a href="#" class="list-group-item">已转办3事项3<span class="badge">10</span></a>-->
+                            <!--<a href="#" class="list-group-item">办理中3事项3<span class="badge">10</span></a>-->
+                            <!--<a href="#" class="list-group-item">已反馈3事项3<span class="badge">10</span></a>-->
+                            <!--<a href="#" class="list-group-item">已超时3事项3<span class="badge">10</span></a>-->
+                            <!--<a href="#" class="list-group-item">退回重办3事项3<span class="badge">10</span></a>-->
+                            <!--<a href="#" class="list-group-item">申请延期3事项3<span class="badge">10</span></a>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--{% endif %}-->
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
@@ -120,14 +120,8 @@
                     </div>
                     <div id="collapseFour" class="panel-collapse collapse">
                         <div class="panel-body">
-                            <a href="#" class="list-group-item">全部4事项4<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">未转办4事项4<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">已转办4事项4<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">办理中4事项4<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">已反馈4事项4<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">已超时4事项4<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">退回重办4事项4<span class="badge">10</span></a>
-                            <a href="#" class="list-group-item">申请延期4事项4<span class="badge">10</span></a>
+                            <a href="#" href-url="/info/all_show" class="list-group-item">查询内容</a>
+                            <a href="#" href-url="/info/detail_show" class="list-group-item">添加内容</a>
                         </div>
                     </div>
                 </div>
