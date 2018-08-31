@@ -135,27 +135,27 @@
 {% block search %}
     <!-- 事件检索 -->
     <div class="search">
-        <form action="/info/all" method="GET">
+        <form action="/info/all_show" method="GET">
             <table>
                 <tr>
-                    <td><span>受理时间</span></td>
+                    <td><span>上传时间</span></td>
                     <td>
-                        <input type="text" class="datetime-picker" name="recd_time_begin" value="{{ recd_time_begin }}">
+                        <input type="text" class="datetime-picker" name="recd_time_begin" value="{{ request.session.recd_time_begin }}">
                         ~
-                        <input type="text" class="datetime-picker" name="recd_time_end" value="{{ recd_time_end }}">
+                        <input type="text" class="datetime-picker" name="recd_time_end" value="{{ request.session.recd_time_end }}">
                     </td>
                 </tr>
                 <tr>
                     <td><span>求助类别</span></td>
                     <td colspan="5">
                         <select name="cate1">
-                            {% if cate1 == 0 %}
+                            {% if request.session.cate1 == 0 %}
                             <option value="0" selected>全部</option>
                             {% else %}
                             <option value="0">全部</option>
                             {% endif %}
                             {% for cate in cate1_list %}
-                            {% if cate1 == cate.id %}
+                            {% if request.session.cate1 == cate.id %}
                             <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
                             {% else %}
                             <option value="{{ cate.id }}">{{ cate.name }}</option>
@@ -163,59 +163,55 @@
                             {% endfor %}
                         </select>
                         <select name="cate2">
-                            {% if cate2 == 0 %}
+                            {% if request.session.cate2 == 0 %}
                             <option value="0" selected>全部</option>
                             {% else %}
                             <option value="0">全部</option>
                             {% endif %}
                             {% for cate in cate2_list %}
-                            {% if cate2 == cate.id %}
+                            {% if request.session.cate2 == cate.id %}
                             <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
                             {% else %}
                             <option value="{{ cate.id }}">{{ cate.name }}</option>
                             {% endif %}
                             {% endfor %}
                         </select>
-                        {% if cate2 == 0 %}
+                        {% if request.session.cate2 == 0 %}
                         <select name="cate3" disabled>
                         {% else %}
                         <select name="cate3">
                         {% endif %}
-                            {% if cate3 == 0 %}
+                            {% if request.session.cate3 == 0 %}
                             <option value="0" selected>全部</option>
                             {% else %}
                             <option value="0">全部</option>
                             {% endif %}
                             {% for cate in cate3_list %}
-                            {% if cate3 == cate.id %}
+                            {% if request.session.cate3 == cate.id %}
                             <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
                             {% else %}
                             <option value="{{ cate.id }}">{{ cate.name }}</option>
                             {% endif %}
                             {% endfor %}
                         </select>
-                        {% if cate3 == 0 %}
+                        {% if request.session.cate3 == 0 %}
                         <select name="cate4" disabled>
                         {% else %}
                         <select name="cate4">
                         {% endif %}
-                            {% if cate4 == 0 %}
+                            {% if request.session.cate4 == 0 %}
                             <option value="0" selected>全部</option>
                             {% else %}
                             <option value="0">全部</option>
                             {% endif %}
                             {% for cate in cate4_list %}
-                            {% if cate4 == cate.id %}
+                            {% if request.session.cate4 == cate.id %}
                             <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
                             {% else %}
                             <option value="{{ cate.id }}">{{ cate.name }}</option>
                             {% endif %}
                             {% endfor %}
                         </select>
-                        <input type="hidden" value="{{ cate3 }}" />
-                        <input type="hidden" value="{{ cate4 }}" />
-                        <input type="hidden" value="{{ default_time_begin }}" />
-                        <input type="hidden" value="{{ default_time_end }}" />
                     </td>
                 </tr>
                 <tr>
@@ -258,7 +254,7 @@
                         <td>{{ info.cate1.name }}&nbsp;-&nbsp;{{ info.cate2.name }}&nbsp;-&nbsp;{{ info.cate3.name }}&nbsp;-&nbsp;{{ info.cate4.name }}</td>
                         <td>{{ info.upload_user.dept.name }}&nbsp;-&nbsp;{{ info.upload_user.dept.supervisor.name }}</td>
                         <td>{{ info.upload_time }}</td>
-                        <td><a href="/info/detail?id={{ item.id }}"><button class="btn btn-default">查看</button></a></td>
+                        <td><a href="/info/detail_show?id={{ info.id }}&delete=1&add=0"><button class="btn btn-default">查看</button></a></td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -270,10 +266,8 @@
 {% block page %}
     <!-- 分页 -->
     <div class="divide-page">
-        <form action="/item/all" method="GET" class="goto">
+        <form action="/info/all_show" method="GET" class="goto">
             <span>到</span>
-                <input type="hidden" name="supervisor_id" value="0"/>
-                <input type="hidden" name="dept_id" value="0"/>
                 <input type="text" name="page_num" />
             <span>页</span>
         </form>
@@ -282,17 +276,17 @@
         </p>
 
         <ul class="page">
-            <a href="/item/all?page_num=1"><li>首页</li></a>
-            <a href="/item/all?page_num={{ mp.current_num|add:-1 }}"><li>上一页</li></a>
+            <a href="/info/all_show?page_num=1"><li>首页</li></a>
+            <a href="/info/all_show?page_num={{ mp.current_num|add:-1 }}"><li>上一页</li></a>
             {% for num in mp.page_range %}
                 {% if num == mp.current_num %}
-                <a href="/item/all?page_num={{ num }}"><li class="number current-page">{{ num }}</li></a>
+                <a href="/info/all_show?page_num={{ num }}"><li class="number current-page">{{ num }}</li></a>
                 {% else %}
-                <a href="/item/all?page_num={{ num }}"><li class="number">{{ num }}</li></a>
+                <a href="/info/all_show?page_num={{ num }}"><li class="number">{{ num }}</li></a>
                 {% endif %}
             {% endfor %}
-            <a href="/item/all?page_num={{ mp.current_num|add:1 }}"><li>下一页</li></a>
-            <a href="/item/all?page_num={{ mp.total_pages }}"><li>末页</li></a>
+            <a href="/info/all_show?page_num={{ mp.current_num|add:1 }}"><li>下一页</li></a>
+            <a href="/info/all_show?page_num={{ mp.total_pages }}"><li>末页</li></a>
         </ul>
     </div>
 {% endblock %}

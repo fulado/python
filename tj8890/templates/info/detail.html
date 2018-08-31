@@ -3,19 +3,19 @@
 {% block head %}
     <script type="text/javascript">
         // 设置转办模态框信息
-        function setDeliverInfo() {
+        function setDeliverInfo(){
             $('#deliverModal .modal-body span').eq(1).text($('.deliver-dept :selected').text());
         }
 
         // 提交转办请求
-        function submitDeliverInfo(status) {
-            var oForm = $('#agency_dept');
+        function submitDeliverInfo(status){
+            var oForm = $('#info_data');
 
-            if (status == 2) {
-                submitForm(oForm, 'GET', '/item/deliver_action');
+            if (status == 1){
+                submitForm(oForm, 'GET', '/info/save_info');
             }
-            else if (status == 1) {
-                submitForm(oForm, 'GET', '/item/deliver_cancel');
+            else{
+                submitForm(oForm, 'GET', '/info/delete_info');
             }
         }
     </script>
@@ -30,157 +30,114 @@
             <p>知识详情<p>
         </div>
         <div class="content">
-            <table>
-                <tr>
-                    <td><span>名称</span></td>
-                    <td><input type="text" value="{{ info.info_name|default:'' }}" /></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td><span>内容摘要</span></td>
-                    <td colspan="7">
-                        <input type="text" value="故障 " />
-                    </td>
-                </tr>
-                <tr>
-                    <td><span>求助类型</span></td>
-                    <td colspan="7">
-                        <input type="text" value="{{ item.category1.name|default:'' }}" />
-                        <input type="text" value="{{ item.category2.name|default:'' }}" />
-                        <input type="text" value="{{ item.category3.name|default:'' }}" />
-                        <input type="text" value="{{ item.category4.name|default:'' }}" />
-                    </td>
-                </tr>
-                <tr>
-                    <td><span>知识正文</span></td>
-                    <td colspan="7">
-                        <textarea></textarea>
-                    </td>
-                </tr>
-            </table>
+            <form id="info_data">
+                <table>
+                    <tr>
+                        <td><span>名称</span></td>
+                        <td><input type="text" name="info_name" value="{{ info.info_name|default:'' }}" /></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><span>内容摘要</span></td>
+                        <td colspan="7">
+                            <input type="text" name="info_abstract" value="{{ info.info_abstract|default:'' }}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span>求助类型</span></td>
+                        <td colspan="7">
+                            <select name="cate1">
+                                {% if request.session.cate1 == 0 %}
+                                <option value="0" selected>全部</option>
+                                {% else %}
+                                <option value="0">全部</option>
+                                {% endif %}
+                                {% for cate in cate1_list %}
+                                {% if info.cate1.id == cate.id %}
+                                <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                                {% else %}
+                                <option value="{{ cate.id }}">{{ cate.name }}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                            <select name="cate2">
+                                {% if request.session.cate2 == 0 %}
+                                <option value="0" selected>全部</option>
+                                {% else %}
+                                <option value="0">全部</option>
+                                {% endif %}
+                                {% for cate in cate2_list %}
+                                {% if info.cate2.id == cate.id %}
+                                <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                                {% else %}
+                                <option value="{{ cate.id }}">{{ cate.name }}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                            {% if request.session.cate2 == 0 %}
+                            <select name="cate3" disabled>
+                            {% else %}
+                            <select name="cate3">
+                            {% endif %}
+                                {% if request.session.cate3 == 0 %}
+                                <option value="0" selected>全部</option>
+                                {% else %}
+                                <option value="0">全部</option>
+                                {% endif %}
+                                {% for cate in cate3_list %}
+                                {% if info.cate3.id == cate.id %}
+                                <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                                {% else %}
+                                <option value="{{ cate.id }}">{{ cate.name }}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                            {% if request.session.cate3 == 0 %}
+                            <select name="cate4" disabled>
+                            {% else %}
+                            <select name="cate4">
+                            {% endif %}
+                                {% if request.session.cate4 == 0 %}
+                                <option value="0" selected>全部</option>
+                                {% else %}
+                                <option value="0">全部</option>
+                                {% endif %}
+                                {% for cate in cate4_list %}
+                                {% if info.cate4.id == cate.id %}
+                                <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                                {% else %}
+                                <option value="{{ cate.id }}">{{ cate.name }}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span>知识正文</span></td>
+                        <td colspan="7">
+                            <textarea name="info_content">{{ info.info_content|default:'' }}</textarea>
+                        </td>
+                    </tr>
+                </table>
+                <input type="hidden" name="id" value="{{ info.id }}" />
+            </form>
         </div>
     </div>
 
     <div class="operation">
         <div class="search-btn-group">
-            {% if item.status.id == 1 and request.session.authority == 2 or request.session.authority == 1 %}
+            {% if can_delete == 1 and request.session.authority == 2 or request.session.authority == 1 %}
             <a class="btn btn-default" data-toggle="modal" data-target="#deleteModal" data-backdrop="static">删除</a>
             {% endif %}
-            {% if request.session.authority == 2 or request.session.authority == 1 %}
-            {% if item.status.id == 1 %}
-            <a onclick="setDeliverInfo()" class="btn btn-default" data-toggle="modal" data-target="#deliverModal" data-backdrop="static">转办</a>
-            {% elif item.status.id == 2 %}
-            <a class="btn btn-default" data-toggle="modal" data-target="#deliverCancelModal" data-backdrop="static">撤销</a>
-            {% elif item.status.id == 3 %}
-            <a class="btn btn-default" data-toggle="modal" data-target="#urgeModal" data-backdrop="static">催办</a>
-            {% elif item.status.id == 4 %}
-            <a class="btn btn-default" data-toggle="modal" data-target="#returnModal" data-backdrop="static">退回重办</a>
-            <a class="btn btn-default" data-toggle="modal" data-target="#saveModal" data-backdrop="static">办结保存</a>
-            {% endif %}
-            {% if item.status.id == 7 %}
-            <a class="btn btn-default" data-toggle="modal" data-target="#delayAdmitModal" data-backdrop="static">同意</a>
-            <a class="btn btn-default" data-toggle="modal" data-target="#delayRejectModal" data-backdrop="static">驳回</a>
-            {% endif %}
-            {% endif %}
-            {% if request.session.authority == 3 or request.session.authority == 1 %}
-            {% if item.status.id == 2 %}
-            <a class="btn btn-default" data-toggle="modal" data-target="#acceptModal" data-backdrop="static">接单</a>
-            <a class="btn btn-default" data-toggle="modal" data-target="#rejectModal" data-backdrop="static">拒接</a>
-            {% else %}
-            <a class="btn btn-default" data-toggle="modal" data-target="#completeModal" data-backdrop="static">提交办结</a>
-            <a class="btn btn-default" data-toggle="modal" data-target="#delayApplyModal" data-backdrop="static">申请延期</a>
-            {% endif %}
+            {% if can_save == 1 %}
+            <a class="btn btn-default" data-toggle="modal" data-target="#saveModal" data-backdrop="static">保存</a>
             {% endif %}
             <a href="javascript: history.back(-1);" class="btn btn-default">返回</a>
         </div>
     </div>
 
     <!-- 模态框（Modal） -->
-    <!-- 确认转办 -->
-    <div class="modal fade" id="deliverModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
-                    </button>
-                    <h4 class="modal-title" id="deliverModalLabel">确认转办</h4>
-                </div>
-                <div class="modal-body">
-                    <p><span>是否要指派到</span><span style="color:red"></span><span>办理?</span></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(2)">确定</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal -->
-    </div>
-
-    <!-- 撤销转办 -->
-    <div class="modal fade" id="deliverCancelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
-                    </button>
-                    <h4 class="modal-title" id="deliverCancelModalLabel">撤销转办</h4>
-                </div>
-                <div class="modal-body">
-                    <p><span>是否撤销转办该事项?</span></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(8)">确定</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal -->
-    </div>
-
-    <!-- 催办 -->
-    <div class="modal fade" id="urgeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
-                    </button>
-                    <h4 class="modal-title" id="urgeModalLabel">催办提醒</h4>
-                </div>
-                <div class="modal-body">
-                    <p><span>是否催办该事项?</span></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(80)">确定</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal -->
-    </div>
-
-    <!-- 退回重办 -->
-    <div class="modal fade" id="returnModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
-                    </button>
-                    <h4 class="modal-title" id="returnModalLabel">退回重办</h4>
-                </div>
-                <div class="modal-body">
-                    <p><span>是否退回重办该事项?</span></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(6)">确定</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal -->
-    </div>
-
-    <!-- 办结保存 -->
+    <!-- 确认保存 -->
     <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          aria-hidden="true">
         <div class="modal-dialog">
@@ -188,139 +145,13 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
                     </button>
-                    <h4 class="modal-title" id="saveModalLabel">办结保存</h4>
+                    <h4 class="modal-title" id="saveModalLabel">确认保存</h4>
                 </div>
                 <div class="modal-body">
-                    <p><span>是否确认该事项已办结并存入办结事项?</span></p>
+                    <p><span>是否保存该新增知识?</span></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(66)">确定</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal -->
-    </div>
-
-    <!-- 同意延期 -->
-    <div class="modal fade" id="delayAdmitModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
-                    </button>
-                    <h4 class="modal-title" id="delayAdmitModalLabel">同意延期</h4>
-                </div>
-                <div class="modal-body">
-                    <p><span>是否确认同意该事项延期申请?</span></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(71)">确定</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal -->
-    </div>
-
-    <!-- 驳回延期 -->
-    <div class="modal fade" id="delayRejectModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
-                    </button>
-                    <h4 class="modal-title" id="delayRejectModalLabel">驳回延期</h4>
-                </div>
-                <div class="modal-body">
-                    <p><span>是否确认驳回该事项延期申请?</span></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(70)">确定</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal -->
-    </div>
-
-    <!-- 客户端接单 -->
-    <div class="modal fade" id="acceptModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
-                    </button>
-                    <h4 class="modal-title" id="acceptModalLabel">接受转办</h4>
-                </div>
-                <div class="modal-body">
-                    <p><span>是否确认接受该转办事项?</span></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(32)">确定</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal -->
-    </div>
-
-    <!-- 客户端拒单 -->
-    <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
-                    </button>
-                    <h4 class="modal-title" id="rejectModalLabel">拒绝转办</h4>
-                </div>
-                <div class="modal-body">
-                    <p><span>是否确认拒绝该转办事项?</span></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(31)">确定</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal -->
-    </div>
-
-    <!-- 客户端提交办结 -->
-    <div class="modal fade" id="completeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
-                    </button>
-                    <h4 class="modal-title" id="completeModalLabel">提交办结</h4>
-                </div>
-                <div class="modal-body">
-                    <p><span>是否确认该事项已办结?</span></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(33)">确定</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal -->
-    </div>
-
-    <!-- 客户端申请延期 -->
-    <div class="modal fade" id="delayApplyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
-                    </button>
-                    <h4 class="modal-title" id="delayApplyModalLabel">申请延期</h4>
-                </div>
-                <div class="modal-body">
-                    <p><span>是否确认该事项申请延期办理?</span></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(35)">确定</button>
+                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(1)">确定</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 </div>
             </div><!-- /.modal-content -->
@@ -338,10 +169,10 @@
                     <h4 class="modal-title" id="deleteModalLabel">确认删除</h4>
                 </div>
                 <div class="modal-body">
-                    <p>是否删除该事项?</span></p>
+                    <p>是否删除该知识?</span></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">确定</button>
+                    <button type="button" class="btn btn-primary" onclick="submitDeliverInfo(0)">确定</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 </div>
             </div><!-- /.modal-content -->
