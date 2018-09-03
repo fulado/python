@@ -5,6 +5,7 @@ from .models import User, Dept
 import hashlib
 from tj8890.utils import MyPaginator
 from django.http import HttpResponseRedirect
+from tj8890.decorator import login_check
 
 
 # 创建超级用户
@@ -76,6 +77,7 @@ def login_service(request):
 
 
 # 显示部门管理页
+@login_check
 def dept_show(request):
     # 获取所有的一级部门
     supervisor_list = Dept.objects.filter(supervisor__isnull=True).filter(is_delete=False)
@@ -173,6 +175,7 @@ def dept_del(request):
 
 
 # 显示用户管理页
+@login_check
 def user_show(request):
     # 获取所有的一级部门
     supervisor_list = Dept.objects.filter(supervisor__isnull=True).filter(is_delete=False)

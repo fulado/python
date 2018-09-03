@@ -5,8 +5,22 @@ from .models import Item, Category, Dept
 from tj8890.utils import MyPaginator
 import random
 import time
+import xlrd
+from tj8890.decorator import login_check
 
-STATUS_LIST = ['全部', '未转办', '已转办', '办理中', '已反馈', '已超时', '退回重办', '申请延期']
+STATUS_LIST = ['全部', '未转办', '已转办', '办理中', '已反馈', '已超时', '退回重办', '申请延期', '催办', '办结']
+
+STATUS_DIC = {0: '全部',
+              1: '未转办',
+              2: '已转办',
+              3: '办理中',
+              4: '已反馈',
+              5: '已超时',
+              6: '退回重办',
+              7: '申请延期',
+              8: '催办',
+              66: '办结'
+              }
 EMERGENCY_LIST = ['全部', '普通(3天)', '加急(2天)', '紧急(当日回复)', '特急(两小时内回复)']
 
 
@@ -72,6 +86,7 @@ def create_item(request):
 
 
 # 显示main页面
+@login_check
 def main_show(request):
     # 查询各类事项数量
     count_0 = Item.objects.all().count()
@@ -97,11 +112,8 @@ def main_show(request):
 
 
 # 显示各类别事项页面
+@login_check
 def all_show(request):
-    # 获取分项title
-    second_title = request.GET.get('title', '全部事项')
-    title = ['办理事项管理', second_title]
-
     # 获得办单提交的信息
     cate1 = int(request.GET.get('cate1', 0))
     cate2 = int(request.GET.get('cate2', 0))
@@ -114,6 +126,10 @@ def all_show(request):
     deliver_time_begin = request.GET.get('deliver_time_begin', '0')
     deliver_time_end = request.GET.get('deliver_time_end', '0')
     keyword = request.GET.get('keyword', '')
+
+    # 获取分项title
+    second_title = STATUS_DIC[status]
+    title = ['办理事项管理', second_title]
 
     # 将检索信息保存到session
     request.session['second_title'] = second_title
@@ -243,6 +259,7 @@ def cate_search(request):
 
 
 # 未转办事项详情
+@login_check
 def detail_show(request):
     title = ['办理事项管理', '事项详情']
 
@@ -670,3 +687,46 @@ def delay_item(request):
            deliver_time_begin, deliver_time_end, keyword)
 
     return HttpResponseRedirect(url)
+
+
+# 导入事项数据
+def import_excel(request):
+    # 获取用户上传的excel文件, 文件不存储, 在内存中对文件进行操作
+    excel_file = request.FILES.get('excel_file')
+
+    # 打开excel文件, 直接从内存读取文件内容
+    workbook = xlrd.open_workbook(filename=None, file_contents=excel_file.read())
+    # 获得sheets列表
+    sheets = workbook.sheet_names()
+    # 获得第一个sheet对象
+    worksheet = workbook.sheet_by_name(sheets[0])
+    # 遍历
+    for i in range(1, worksheet.nrows):
+        # 读取一条车辆信息
+        # ctype： 0-empty, 1-string, 2-number, 3-date, 4-boolean, 5-error
+
+        try:
+            # 创建一条事项数据
+            item_info = Item()
+
+            item_info.order_id = worksheet.cell_value(i, 0)  # 工单编号
+            item_info.source = worksheet.cell_value(i, 1)  # 求助来源
+            item_info.sh_phone = worksheet.cell_value(i, 3)  # 求助号码
+            item_info.sh_person = worksheet.cell_value(i, 4)  # 求助人员
+            item_info.c_phone = worksheet.cell_value(i, 5)  # 联系电话
+            item_info.area = worksheet.cell_value(i, 8)  # 所在区域
+            item_info.recorder = worksheet.cell_value(i, 12)  # 录入人员
+            item_info.recd_time = worksheet.cell_value(i, 13)  # 录入时间
+            item_info.title = worksheet.cell_value(i, 20)  # 标题
+            item_info.summary = worksheet.cell_value(i, 21)  # 内容摘要
+
+            item_info.save()
+            # print(item_info.order_id)
+            # print(item_info.source)
+            # print(item_info.title)
+            # print(item_info.summary)
+            # print(i)
+        except Exception as e:
+            print(e)
+
+    return HttpResponseRedirect('/item/all')

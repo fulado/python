@@ -4,11 +4,13 @@ from .models import Information
 from tj8890.utils import MyPaginator
 
 import time
+from tj8890.decorator import login_check
 
 # Create your views here.
 
 
 # 显示所有知识页面
+@login_check
 def all_show(request):
     title = ['知识库管理', '内容查询']
 
@@ -77,6 +79,7 @@ def all_show(request):
 
 
 # 显示知识详情页面
+@login_check
 def detail_show(request):
     title = ['知识库管理', '添加内容']
 

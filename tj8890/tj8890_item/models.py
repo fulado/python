@@ -18,14 +18,14 @@ class ItemStatus(models.Model):
 
 #  事件模型
 class Item(models.Model):
-    id = models.CharField(max_length=50, primary_key=True)              # 自动生成事件id
+    # id = models.CharField(max_length=50, primary_key=True)              # 自动生成事件id
     order_id = models.CharField(max_length=50, null=True, blank=True)   # 工单编号
     source = models.CharField(max_length=50, null=True, blank=True)     # 求助来源
     category1 = models.ForeignKey(Category, null=True, blank=True, related_name='category1_set')  # 求助类别1
     category2 = models.ForeignKey(Category, null=True, blank=True, related_name='category2_set')  # 求助类别2
     category3 = models.ForeignKey(Category, null=True, blank=True, related_name='category3_set')  # 求助类别3
     category4 = models.ForeignKey(Category, null=True, blank=True, related_name='category4_set')  # 求助类别4
-    sh_phone = models.CharField(max_length=20, null=True, blank=True)   # 求租号码
+    sh_phone = models.CharField(max_length=20, null=True, blank=True)   # 求助号码
     sh_person = models.CharField(max_length=50, null=True, blank=True)  # 求助人员
     c_phone = models.CharField(max_length=20, null=True, blank=True)    # 联系电话
     fax = models.CharField(max_length=20, null=True, blank=True)        # 传真

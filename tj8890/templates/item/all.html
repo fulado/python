@@ -110,6 +110,11 @@
                 }
             });
         }
+
+        function submitImportFile() {
+            var oForm = $('#importExcel');
+            submitForm(oForm, 'POST', '/item/import_excel');
+        }
     </script>
 {% endblock %}}
 
@@ -118,23 +123,29 @@
     <div class="location">
         <p><span>{{ title.0 }}</span>&nbsp;>&nbsp;<span>{{ title.1 }}</span></p>
         <!-- 搜索框 -->
-        <div class="input-group">
-            <label for="search01" id="search01_label">请输入关键字</label>
-            <input type="text" class="form-control" id="search01" />
-            <span class="input-group-btn">
-                <button class="btn btn-default" type="button">
-                    <span class="glyphicon glyphicon-search"></span>
-                </button>
-            </span>
-        </div>
+        <!--<div class="input-group">-->
+            <!--<label for="search01" id="search01_label">请输入关键字</label>-->
+            <!--<input type="text" class="form-control" id="search01" />-->
+            <!--<span class="input-group-btn">-->
+                <!--<button class="btn btn-default" type="button">-->
+                    <!--<span class="glyphicon glyphicon-search"></span>-->
+                <!--</button>-->
+            <!--</span>-->
+        <!--</div>-->
     </div>
     <div class="bar01"></div>
+
 {% endblock %}
 
 <!-- 检索/添加 -->
 {% block search %}
     <!-- 事件检索 -->
     <div class="search">
+        <!-- 导入按钮 -->
+        <div class="import-group">
+            <a class="btn btn-default" data-toggle="modal" data-target="#importModal" data-backdrop="static">导入</a>
+        </div>
+
         <form action="/item/all" method="GET">
             <table>
                 <tr>
@@ -313,10 +324,18 @@
     <div class="divide-page">
         <form action="/item/all" method="GET" class="goto">
             <span>到</span>
-                <input type="hidden" name="supervisor_id" value="0"/>
-                <input type="hidden" name="dept_id" value="0"/>
                 <input type="text" name="page_num" />
-                <input type="hidden" name="recd_time_begin" value="{{  }}" />
+                <input type="hidden" name="recd_time_begin" value="{{ recd_time_begin }}" />
+                <input type="hidden" name="recd_time_end" value="{{ recd_time_end }}" />
+                <input type="hidden" name="deliver_time_begin" value="{{ deliver_time_begin }}" />
+                <input type="hidden" name="deliver_time_end" value="{{ deliver_time_end }}" />
+                <input type="hidden" name="cate1" value="{{ cate1 }}" />
+                <input type="hidden" name="cate2" value="{{ cate2 }}" />
+                <input type="hidden" name="cate3" value="{{ cate3 }}" />
+                <input type="hidden" name="cate4" value="{{ cate4 }}" />
+                <input type="hidden" name="status" value="{{ status }}" />
+                <input type="hidden" name="emergency" value="{{ emergency }}" />
+                <input type="hidden" name="keyword" value="{{ keyword }}" />
             <span>页</span>
         </form>
         <p class="current-total">
@@ -324,17 +343,46 @@
         </p>
 
         <ul class="page">
-            <a href="/item/all?page_num=1"><li>首页</li></a>
-            <a href="/item/all?page_num={{ mp.current_num|add:-1 }}"><li>上一页</li></a>
+            <a href="/item/all?page_num=1&recd_time_begin={{ recd_time_begin }}&recd_time_end={{ recd_time_end }}&deliver_time_begin={{ deliver_time_begin }}&deliver_time_end={{ deliver_time_end }}&cate1={{ cate1 }}&cate2={{ cate2 }}&cate3={{ cate3 }}&cate4={{ cate4 }}&status={{ status }}&emergency={{ emergency }}"><li>首页</li></a>
+            <a href="/item/all?page_num={{ mp.current_num|add:-1 }}&recd_time_begin={{ recd_time_begin }}&recd_time_end={{ recd_time_end }}&deliver_time_begin={{ deliver_time_begin }}&deliver_time_end={{ deliver_time_end }}&cate1={{ cate1 }}&cate2={{ cate2 }}&cate3={{ cate3 }}&cate4={{ cate4 }}&status={{ status }}&emergency={{ emergency }}"><li>上一页</li></a>
             {% for num in mp.page_range %}
                 {% if num == mp.current_num %}
-                <a href="/item/all?page_num={{ num }}"><li class="number current-page">{{ num }}</li></a>
+                <a href="/item/all?page_num={{ num }}&recd_time_begin={{ recd_time_begin }}&recd_time_end={{ recd_time_end }}&deliver_time_begin={{ deliver_time_begin }}&deliver_time_end={{ deliver_time_end }}&cate1={{ cate1 }}&cate2={{ cate2 }}&cate3={{ cate3 }}&cate4={{ cate4 }}&status={{ status }}&emergency={{ emergency }}"><li class="number current-page">{{ num }}</li></a>
                 {% else %}
-                <a href="/item/all?page_num={{ num }}"><li class="number">{{ num }}</li></a>
+                <a href="/item/all?page_num={{ num }}&recd_time_begin={{ recd_time_begin }}&recd_time_end={{ recd_time_end }}&deliver_time_begin={{ deliver_time_begin }}&deliver_time_end={{ deliver_time_end }}&cate1={{ cate1 }}&cate2={{ cate2 }}&cate3={{ cate3 }}&cate4={{ cate4 }}&status={{ status }}&emergency={{ emergency }}"><li class="number">{{ num }}</li></a>
                 {% endif %}
             {% endfor %}
-            <a href="/item/all?page_num={{ mp.current_num|add:1 }}"><li>下一页</li></a>
-            <a href="/item/all?page_num={{ mp.total_pages }}"><li>末页</li></a>
+            <a href="/item/all?page_num={{ mp.current_num|add:1 }}&recd_time_begin={{ recd_time_begin }}&recd_time_end={{ recd_time_end }}&deliver_time_begin={{ deliver_time_begin }}&deliver_time_end={{ deliver_time_end }}&cate1={{ cate1 }}&cate2={{ cate2 }}&cate3={{ cate3 }}&cate4={{ cate4 }}&status={{ status }}&emergency={{ emergency }}"><li>下一页</li></a>
+            <a href="/item/all?page_num={{ mp.total_pages }}&recd_time_begin={{ recd_time_begin }}&recd_time_end={{ recd_time_end }}&deliver_time_begin={{ deliver_time_begin }}&deliver_time_end={{ deliver_time_end }}&cate1={{ cate1 }}&cate2={{ cate2 }}&cate3={{ cate3 }}&cate4={{ cate4 }}&status={{ status }}&emergency={{ emergency }}"><li>末页</li></a>
         </ul>
+    </div>
+{% endblock %}
+
+{% block operate %}
+<!--上传文件模态框-->
+    <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                    </button>
+                    <h4 class="modal-title" id="saveModalLabel">导入数据</h4>
+                </div>
+                <div class="modal-body">
+                    <form enctype="multipart/form-data" method="post" id="importExcel">
+                        {% csrf_token %}
+                        <div class="selFile">
+                            <!--<label for="reason" style="">选择文件</label>-->
+                            <input type="file" name="excel_file" style="outline: none;cursor: pointer; width:300px; margin-left: 100px;" accept="application/vnd.ms-excel"/>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" onclick="submitImportFile()">确定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
     </div>
 {% endblock %}

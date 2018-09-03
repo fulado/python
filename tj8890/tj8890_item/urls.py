@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^complete_item/?', views.complete_item),      # 客户端办结事项
     url(r'^delay_item/?', views.delay_item),            # 客户端延期申请
 
+    url(r'^import_excel/?', views.import_excel),  # 客户端延期申请
     url(r'^cate_search/?', views.cate_search),
 ]
 
