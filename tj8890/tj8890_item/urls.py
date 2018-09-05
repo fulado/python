@@ -2,7 +2,7 @@ from django.conf.urls import include, url
 from . import views
 
 urlpatterns = [
-    # url(r'^create_item/', views.create_item),  # 创建1条事件数据
+    url(r'^create_item/', views.create_item),  # 创建1条事件数据
     url(r'^main/?', views.main_show),
     url(r'^all/?', views.all_show),
     # url(r'^not_deliver/?', views.not_deliver_show),
@@ -21,6 +21,6 @@ urlpatterns = [
     url(r'^delay_item/?', views.delay_item),            # 客户端延期申请
 
     url(r'^import_excel/?', views.import_excel),  # 客户端延期申请
-    url(r'^cate_search/?', views.cate_search),
+    # url(r'^cate_search/?', views.cate_search),
 ]
 

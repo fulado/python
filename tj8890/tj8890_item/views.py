@@ -1,14 +1,14 @@
 from django.shortcuts import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import Item, Category, Dept
+from .models import Item, Cate, Dept
 from tj8890.utils import MyPaginator
 import random
 import time
 import xlrd
 from tj8890.decorator import login_check
 
-STATUS_LIST = ['全部', '未转办', '已转办', '办理中', '已反馈', '已超时', '退回重办', '申请延期', '催办', '办结']
+STATUS_LIST = ['全部', '未转办', '已转办', '办理中', '已反馈', '已超时', '退回重办', '申请延期', '催办', '退驳', '办结']
 
 STATUS_DIC = {0: '全部',
               1: '未转办',
@@ -19,6 +19,7 @@ STATUS_DIC = {0: '全部',
               6: '退回重办',
               7: '申请延期',
               8: '催办',
+              9: '退驳',
               66: '办结'
               }
 EMERGENCY_LIST = ['全部', '普通(3天)', '加急(2天)', '紧急(当日回复)', '特急(两小时内回复)']
@@ -29,12 +30,12 @@ def create_item(request):
     print(1)
     for i in range(1, 135):
         item = Item()
-        if i < 10:
-            item.id = '20170411000' + str(i)
-        elif i < 100:
-            item.id = '2017041100' + str(i)
-        else:
-            item.id = '201704110' + str(i)
+        # if i < 10:
+        #     item.id = '20170411000' + str(i)
+        # elif i < 100:
+        #     item.id = '2017041100' + str(i)
+        # else:
+        #     item.id = '201704110' + str(i)
         item.summary = '''市民来电：2014年4月份违章，但是当时车辆和驾驶证被红桥支队扣下了，现在市民多个途径寻找驾驶证，但均未找到。
         处理当时的违法需要驾驶证，如果撤销不了违法信息接受处罚就不能换本或者是重新学驾驶证。张继德，120224198310131715，津GQ3901。
         现在市民咨询，这种情况该怎么办？'''
@@ -69,11 +70,11 @@ def create_item(request):
         elif item.category3_id == 40:
             item.category4_id = random.randint(60, 74)
 
-        if item.category4_id is not None:
-            cate_name = Category.objects.get(id=item.category4_id).name
-        else:
-            cate_name = '驾驶证丢失'
-        item.title = cate_name
+        # if item.category4_id is not None:
+        #     cate_name = Category.objects.get(id=item.category4_id).name
+        # else:
+        #     cate_name = '驾驶证丢失'
+        # item.title = cate_name
 
         # 生成随机时间 '2016-12-21 15:49:20'
         str_time = '2018-%d-%d %d:%d:%d' % (random.randint(1, 12), random.randint(1, 28),
@@ -115,16 +116,11 @@ def main_show(request):
 @login_check
 def all_show(request):
     # 获得办单提交的信息
-    cate1 = int(request.GET.get('cate1', 0))
-    cate2 = int(request.GET.get('cate2', 0))
-    cate3 = int(request.GET.get('cate3', 0))
-    cate4 = int(request.GET.get('cate4', 0))
+    cate = int(request.GET.get('cate', 0))
     status = int(request.GET.get('status', 0))
     emergency = int(request.GET.get('emergency', 0))
-    recd_time_begin = request.GET.get('recd_time_begin', '0')
-    recd_time_end = request.GET.get('recd_time_end', '0')
-    deliver_time_begin = request.GET.get('deliver_time_begin', '0')
-    deliver_time_end = request.GET.get('deliver_time_end', '0')
+    accept_time_begin = request.GET.get('accept_time_begin', '0')
+    accept_time_end = request.GET.get('accept_time_end', '0')
     keyword = request.GET.get('keyword', '')
 
     # 获取分项title
@@ -133,20 +129,15 @@ def all_show(request):
 
     # 将检索信息保存到session
     request.session['second_title'] = second_title
-    request.session['cate1'] = cate1
-    request.session['cate2'] = cate2
-    request.session['cate3'] = cate3
-    request.session['cate4'] = cate4
+    request.session['cate'] = cate
     request.session['status'] = status
     request.session['emergency'] = emergency
-    request.session['recd_time_begin'] = recd_time_begin
-    request.session['recd_time_end'] = recd_time_end
-    request.session['deliver_time_begin'] = deliver_time_begin
-    request.session['deliver_time_end'] = deliver_time_end
+    request.session['accept_time_begin'] = accept_time_begin
+    request.session['accept_time_end'] = accept_time_end
     request.session['keyword'] = keyword
 
     # 查询事项全部事项
-    item_list = Item.objects.all().order_by('-recd_time')
+    item_list = Item.objects.all().order_by('-receive_time')
 
     # 根据用户所在部门过滤检索结果
     authority = request.session.get('authority', 2)
@@ -158,58 +149,27 @@ def all_show(request):
             item_list = item_list.filter(assign_dept_id=dept_id)
 
     # 按照表单中的的信息进行过滤
-    if recd_time_begin == '0':
-        recd_time_begin = time.strftime('%Y-01-01', time.localtime())
-    else:
-        item_list = item_list.filter(recd_time__gte=recd_time_begin)
-    if recd_time_end == '0':
-        recd_time_end = time.strftime('%Y-%m-%d', time.localtime())
-    else:
-        item_list = item_list.filter(recd_time__lte=recd_time_end)
+    if accept_time_begin == '0':
+        accept_time_begin = time.strftime('%Y-01-01', time.localtime())
 
-    if deliver_time_begin == '0':
-        deliver_time_begin = time.strftime('%Y-01-01', time.localtime())
-    else:
-        item_list = item_list.filter(deliver_time__gte=deliver_time_begin)
-    if deliver_time_end == '0':
-        deliver_time_end = time.strftime('%Y-%m-%d', time.localtime())
-    else:
-        item_list = item_list.filter(deliver_time__lte=deliver_time_end)
+    if accept_time_end == '0':
+        accept_time_end = time.strftime('%Y-%m-%d', time.localtime())
 
-    # 按照服务器的时间, 把默认起止事件传给客户端
-    default_time_begin = time.strftime('%Y-01-01', time.localtime())
-    default_time_end = time.strftime('%Y-%m-%d', time.localtime())
+    item_list = item_list.filter(accept_time__lte=accept_time_end)
+    item_list = item_list.filter(accept_time__gte=accept_time_begin)
 
-    if cate1 != 0:
-        item_list = item_list.filter(category1_id=cate1)
-        # print('cate1: %d' % (len(item_list)))
-    if cate2 != 0:
-        item_list = item_list.filter(category2_id=cate2)
-        # print('cate2: %d' % (len(item_list)))
-    if cate3 != 0:
-        item_list = item_list.filter(category3_id=cate3)
-        # print('cate3: %d' % (len(item_list)))
-    if cate4 != 0:
-        item_list = item_list.filter(category4_id=cate4)
-        # print('cate4: %d' % (len(item_list)))
+    if cate != 0:
+        item_list = item_list.filter(cate_id=cate)
+
     if status != 0:
-        # print('status: %d' % status)
         item_list = item_list.filter(status=status)
-        # print('status: %d' % (len(item_list)))
+
     if emergency != 0:
-        # print(emergency)
         item_list = item_list.filter(emergency=emergency)
-        # print('emergency: %d' % (len(item_list)))
 
     # 关键字检索
     if keyword != '':
         item_list = item_list.filter(id__contains=keyword)
-
-    # 事项分类
-    cate1_list = Category.objects.filter(level=1)
-    cate2_list = Category.objects.filter(level=2)
-    cate3_list = Category.objects.filter(cate_id=cate2)
-    cate4_list = Category.objects.filter(cate_id=cate3)
 
     # 获得用户指定的页面
     page_num = int(request.GET.get('page_num', 1))
@@ -217,45 +177,43 @@ def all_show(request):
     mp = MyPaginator()
     mp.paginate(item_list, 10, page_num)
 
-    context = {'title': title,
-               'status': status,
-               'emergency': emergency,
-               'mp': mp,
-               'cate1_list': cate1_list,
-               'cate2_list': cate2_list,
-               'cate3_list': cate3_list,
-               'cate4_list': cate4_list,
-               'status_list': STATUS_LIST,
+    context = {
+               # 'title': title,
+               # 'status': status,
+               # 'emergency': emergency,
+               # 'mp': mp,
+               # 'cate_list': cate1_list,
+               # 'status_list': STATUS_LIST,
                'emergency_list': EMERGENCY_LIST,
-               'cate1': cate1,
-               'cate2': cate2,
-               'cate3': cate3,
-               'cate4': cate4,
-               'recd_time_begin': recd_time_begin,
-               'recd_time_end': recd_time_end,
-               'deliver_time_begin': deliver_time_begin,
-               'deliver_time_end': deliver_time_end,
-               'default_time_begin': default_time_begin,
-               'default_time_end': default_time_end,
+               # 'cate1': cate1,
+               # 'cate2': cate2,
+               # 'cate3': cate3,
+               # 'cate4': cate4,
+               # 'recd_time_begin': recd_time_begin,
+               # 'recd_time_end': recd_time_end,
+               # 'deliver_time_begin': deliver_time_begin,
+               # 'deliver_time_end': deliver_time_end,
+               # 'default_time_begin': default_time_begin,
+               # 'default_time_end': default_time_end,
                }
 
     return render(request, 'item/all.html', context)
 
 
 # 查询事项分类
-def cate_search(request):
-    parent_id = request.GET.get('parent_id')
-
-    # 查询数据
-    cate_list = Category.objects.filter(cate_id=parent_id)
-
-    # 构建返回的Json数组格式数据
-    data = []
-    for cate in cate_list:
-        cate_info = {'id': cate.id, 'name': cate.name}
-        data.append(cate_info)
-
-    return JsonResponse({'cate_list': data})
+# def cate_search(request):
+#     parent_id = request.GET.get('parent_id')
+#
+#     # 查询数据
+#     cate_list = Category.objects.filter(cate_id=parent_id)
+#
+#     # 构建返回的Json数组格式数据
+#     data = []
+#     for cate in cate_list:
+#         cate_info = {'id': cate.id, 'name': cate.name}
+#         data.append(cate_info)
+#
+#     return JsonResponse({'cate_list': data})
 
 
 # 未转办事项详情

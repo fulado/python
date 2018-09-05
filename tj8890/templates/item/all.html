@@ -1,17 +1,6 @@
 {% extends 'base.html' %}
 
 {% block head %}
-    <style type="text/css" media="screen">
-        .search{
-            height: 304px;
-        }
-
-        .search .search-btn-group{
-            left: 422px;
-            top: 250px;
-        }
-    </style>
-
     <script type="text/javascript">
         $(function() {
             // 事项二类选择后, 三类对应变化
@@ -149,105 +138,36 @@
         <form action="/item/all" method="GET">
             <table>
                 <tr>
-                    <td><span>受理时间</span></td>
+                    <td><span>接件时间</span></td>
                     <td>
-                        <input type="text" class="datetime-picker" name="recd_time_begin" value="{{ recd_time_begin }}">
+                        <input type="text" class="datetime-picker" name="accept_time_begin" value="{{ request.session.accept_time_begin }}">
                         ~
-                        <input type="text" class="datetime-picker" name="recd_time_end" value="{{ recd_time_end }}">
-                    </td>
-                    <td></td>
-                    <td><span>转办时间</span></td>
-                    <td>
-                        <input type="text" class="datetime-picker" name="deliver_time_begin" value="{{ deliver_time_begin }}">
-                        ~
-                        <input type="text" class="datetime-picker" name="deliver_time_end" value="{{ deliver_time_end }}">
+                        <input type="text" class="datetime-picker" name="accept_time_end" value="{{ request.session.accept_time_end }}">
                     </td>
                 </tr>
                 <tr>
                     <td><span>求助类别</span></td>
-                    <td colspan="5">
-                        <select name="cate1">
-                            {% if cate1 == 0 %}
+                    <td>
+                        <select name="cate">
+                            {% if cate == 0 %}
                             <option value="0" selected>全部</option>
                             {% else %}
                             <option value="0">全部</option>
                             {% endif %}
                             {% for cate in cate1_list %}
                             {% if cate1 == cate.id %}
-                            <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                            <option value="{{ request.session.cate.id }}" selected>{{ request.session.cate.name }}</option>
                             {% else %}
-                            <option value="{{ cate.id }}">{{ cate.name }}</option>
+                            <option value="{{ request.session.cate.id }}">{{ request.session.cate.name }}</option>
                             {% endif %}
                             {% endfor %}
                         </select>
-                        <select name="cate2">
-                            {% if cate2 == 0 %}
-                            <option value="0" selected>全部</option>
-                            {% else %}
-                            <option value="0">全部</option>
-                            {% endif %}
-                            {% for cate in cate2_list %}
-                            {% if cate2 == cate.id %}
-                            <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
-                            {% else %}
-                            <option value="{{ cate.id }}">{{ cate.name }}</option>
-                            {% endif %}
-                            {% endfor %}
-                        </select>
-                        {% if cate2 == 0 %}
-                        <select name="cate3" disabled>
-                        {% else %}
-                        <select name="cate3">
-                        {% endif %}
-                            {% if cate3 == 0 %}
-                            <option value="0" selected>全部</option>
-                            {% else %}
-                            <option value="0">全部</option>
-                            {% endif %}
-                            {% for cate in cate3_list %}
-                            {% if cate3 == cate.id %}
-                            <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
-                            {% else %}
-                            <option value="{{ cate.id }}">{{ cate.name }}</option>
-                            {% endif %}
-                            {% endfor %}
-                        </select>
-                        {% if cate3 == 0 %}
-                        <select name="cate4" disabled>
-                        {% else %}
-                        <select name="cate4">
-                        {% endif %}
-                            {% if cate4 == 0 %}
-                            <option value="0" selected>全部</option>
-                            {% else %}
-                            <option value="0">全部</option>
-                            {% endif %}
-                            {% for cate in cate4_list %}
-                            {% if cate4 == cate.id %}
-                            <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
-                            {% else %}
-                            <option value="{{ cate.id }}">{{ cate.name }}</option>
-                            {% endif %}
-                            {% endfor %}
-                        </select>
-                        <input type="hidden" value="{{ cate3 }}" />
-                        <input type="hidden" value="{{ cate4 }}" />
-                        <input type="hidden" value="{{ default_time_begin }}" />
-                        <input type="hidden" value="{{ default_time_end }}" />
                     </td>
                 </tr>
                 <tr>
-                    <td><span>流转情况</span></td>
+                    <td><span>标题检索</span></td>
                     <td>
-                        <select name="status">
-                            {% for s in status_list %}
-                            {% if status == forloop.counter|add:-1 %}
-                            <option value="{{ forloop.counter|add:-1 }}" selected>{{ s }}</option>
-                            {% else %}
-                            <option value="{{ forloop.counter|add:-1 }}">{{ s }}</option>
-                            {% endif %}
-                            {% endfor %}
-                        </select>
+                        <input type="text" value="请输入关键字" name="keyword">
                     </td>
                     <td></td>
                     <td><span>紧急程度</span></td>
@@ -261,12 +181,6 @@
                             {% endif %}
                             {% endfor %}
                         </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><span>关键字检索</span></td>
-                    <td colspan="5">
-                        <input type="text" name="keyword">
                     </td>
                 </tr>
             </table>
@@ -290,7 +204,7 @@
                     <td>内容摘要</td>
                     <td>紧急程度</td>
                     <td>流转情况</td>
-                    <td>录入时间</td>
+                    <td>接件时间</td>
                     <td>操作</td>
                 </tr>
             </thead>

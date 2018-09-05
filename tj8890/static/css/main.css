@@ -170,7 +170,7 @@ select,input{
 .search{
     position:relative;
     width: 1036px;
-    height: 174px;
+    height: 210px;
     border: 1px solid #CFCFCF;
     border-radius: 2px;
     margin-top: -40px;
@@ -232,7 +232,7 @@ select,input{
 .search .search-btn-group{
     position: absolute;
     left: 356px;
-    top: 120px;
+    top: 160px;
 }
 
 .search-btn-group .btn{
@@ -573,8 +573,6 @@ tbody td{
 
 .revisit-content{
     position: relative;
-    /* left: 223px;
-    top: 692px; */
     width: 1036px;
     height: 173px;
     border: 1px solid #CFCFCF;
