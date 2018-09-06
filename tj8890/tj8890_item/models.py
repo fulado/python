@@ -23,7 +23,6 @@ class ItemStatus(models.Model):
 #  事件模型
 class Item(models.Model):
     id = models.CharField(max_length=50, primary_key=True)                      # 工单编号
-    source = models.CharField(max_length=50, null=True, blank=True)             # 求助来源
     cate = models.ForeignKey(Cate, null=True, blank=True)                       # 求助类别
     person = models.CharField(max_length=20, null=True, blank=True)             # 求助人员
     phone = models.CharField(max_length=20, null=True, blank=True)              # 联系电话
@@ -31,7 +30,7 @@ class Item(models.Model):
     emergency = models.IntegerField(default=1)  # 紧急程度, 1-普通(3天), 2-加急(2天), 3-紧急(当日回复), 4-特急(两小时内回复)
     title = models.CharField(max_length=50, null=True, blank=True)              # 标题
     content = models.CharField(max_length=500, null=True, blank=True)           # 内容
-    accept_time = models.DateTimeField(null=True, blank=True)                  # 接件时间
+    accept_time = models.DateTimeField(null=True, blank=True)                   # 接件时间
     limit_time = models.DateTimeField(null=True, blank=True)                    # 承办时限
     # 办件状态, 1-未转办, 2-已转办, 3-办理中, 4-已反馈, 5-已超时, 6-退回重办, 7-申请延期, 8-催办，9-退驳 ,66-办结
     status = models.ForeignKey(ItemStatus, null=True, blank=True, default=1)

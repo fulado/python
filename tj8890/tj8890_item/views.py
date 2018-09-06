@@ -19,9 +19,10 @@ STATUS_DIC = {0: '全部',
               6: '退回重办',
               7: '申请延期',
               8: '催办',
-              9: '退驳',
+              9: '回驳',
               66: '办结'
               }
+
 EMERGENCY_LIST = ['全部', '普通(3天)', '加急(2天)', '紧急(当日回复)', '特急(两小时内回复)']
 
 
@@ -125,19 +126,10 @@ def all_show(request):
 
     # 获取分项title
     second_title = STATUS_DIC[status]
-    title = ['办理事项管理', second_title]
-
-    # 将检索信息保存到session
-    request.session['second_title'] = second_title
-    request.session['cate'] = cate
-    request.session['status'] = status
-    request.session['emergency'] = emergency
-    request.session['accept_time_begin'] = accept_time_begin
-    request.session['accept_time_end'] = accept_time_end
-    request.session['keyword'] = keyword
+    title = ['办理事项管理', second_title + '事项']
 
     # 查询事项全部事项
-    item_list = Item.objects.all().order_by('-receive_time')
+    item_list = Item.objects.all().order_by('-accept_time')
 
     # 根据用户所在部门过滤检索结果
     authority = request.session.get('authority', 2)
@@ -177,25 +169,38 @@ def all_show(request):
     mp = MyPaginator()
     mp.paginate(item_list, 10, page_num)
 
+    # 将检索信息保存到session
+    request.session['title'] = title
+    request.session['cate'] = cate
+    request.session['status'] = status
+    request.session['emergency'] = emergency
+    request.session['accept_time_begin'] = accept_time_begin
+    request.session['accept_time_end'] = accept_time_end
+    request.session['keyword'] = keyword
+
+    # 事项分类
+    cate_list = Cate.objects.all()
+
     context = {
-               # 'title': title,
-               # 'status': status,
-               # 'emergency': emergency,
-               # 'mp': mp,
-               # 'cate_list': cate1_list,
-               # 'status_list': STATUS_LIST,
-               'emergency_list': EMERGENCY_LIST,
-               # 'cate1': cate1,
-               # 'cate2': cate2,
-               # 'cate3': cate3,
-               # 'cate4': cate4,
-               # 'recd_time_begin': recd_time_begin,
-               # 'recd_time_end': recd_time_end,
-               # 'deliver_time_begin': deliver_time_begin,
-               # 'deliver_time_end': deliver_time_end,
-               # 'default_time_begin': default_time_begin,
-               # 'default_time_end': default_time_end,
-               }
+        # 'title': title,
+        # 'status': status,
+        # 'emergency': emergency,
+        'mp': mp,
+        # 'cate_list': cate1_list,
+        # 'status_list': STATUS_LIST,
+        'emergency_list': EMERGENCY_LIST,
+        'cate_list': cate_list,
+        # 'cate1': cate1,
+        # 'cate2': cate2,
+        # 'cate3': cate3,
+        # 'cate4': cate4,
+        # 'recd_time_begin': recd_time_begin,
+        # 'recd_time_end': recd_time_end,
+        # 'deliver_time_begin': deliver_time_begin,
+        # 'deliver_time_end': deliver_time_end,
+        # 'default_time_begin': default_time_begin,
+        # 'default_time_end': default_time_end,
+    }
 
     return render(request, 'item/all.html', context)
 
@@ -654,37 +659,86 @@ def import_excel(request):
 
     # 打开excel文件, 直接从内存读取文件内容
     workbook = xlrd.open_workbook(filename=None, file_contents=excel_file.read())
+
     # 获得sheets列表
     sheets = workbook.sheet_names()
-    # 获得第一个sheet对象
-    worksheet = workbook.sheet_by_name(sheets[0])
-    # 遍历
-    for i in range(1, worksheet.nrows):
-        # 读取一条车辆信息
-        # ctype： 0-empty, 1-string, 2-number, 3-date, 4-boolean, 5-error
 
-        try:
+    # 获得第一个sheet对象, 导入办理类数据
+    worksheet = workbook.sheet_by_name(sheets[0])
+
+    for i in range(1, worksheet.nrows):
+        # ctype： 0-empty, 1-string, 2-number, 3-date, 4-boolean, 5-error
+        item_id = worksheet.cell_value(i, 0)
+
+        item_list = Item.objects.filter(id=item_id)
+
+        if item_list:
+            item_info = item_list[0]
+        else:
             # 创建一条事项数据
             item_info = Item()
 
-            item_info.order_id = worksheet.cell_value(i, 0)  # 工单编号
-            item_info.source = worksheet.cell_value(i, 1)  # 求助来源
-            item_info.sh_phone = worksheet.cell_value(i, 3)  # 求助号码
-            item_info.sh_person = worksheet.cell_value(i, 4)  # 求助人员
-            item_info.c_phone = worksheet.cell_value(i, 5)  # 联系电话
-            item_info.area = worksheet.cell_value(i, 8)  # 所在区域
-            item_info.recorder = worksheet.cell_value(i, 12)  # 录入人员
-            item_info.recd_time = worksheet.cell_value(i, 13)  # 录入时间
-            item_info.title = worksheet.cell_value(i, 20)  # 标题
-            item_info.summary = worksheet.cell_value(i, 21)  # 内容摘要
+            item_info.id = worksheet.cell_value(i, 0)               # 工单编号
+            item_info.cate_id = 1                                   # 事项类别
+            item_info.person = worksheet.cell_value(i, 4)           # 求助人员
+            item_info.area = worksheet.cell_value(i, 8)             # 所在区域
+            item_info.title = worksheet.cell_value(i, 20)           # 标题
+            item_info.content = worksheet.cell_value(i, 21)         # 内容
+            item_info.accept_time = worksheet.cell_value(i, 27)     # 接件时间
+            item_info.limit_time = worksheet.cell_value(i, 28)      # 承办时限
 
+            if worksheet.cell_value(i, 5) == '' or worksheet.cell(i, 5).ctype == 0:
+                item_info.phone = worksheet.cell_value(i, 3)        # 联系电话
+            else:
+                item_info.phone = worksheet.cell_value(i, 5)        # 联系电话
+
+            if worksheet.cell_value(i, 14)[0: 2] == '普通':
+                item_info.emergency = 1                             # 紧急程度
+
+        try:
             item_info.save()
-            # print(item_info.order_id)
-            # print(item_info.source)
-            # print(item_info.title)
-            # print(item_info.summary)
-            # print(i)
         except Exception as e:
             print(e)
+
+    # 获取后面4个sheet对象, 导入举报类、投诉类、建议类、表扬类数据
+    for j in range(1, 4):
+        worksheet = workbook.sheet_by_name(sheets[j])
+
+        for i in range(1, worksheet.nrows):
+            item_id = worksheet.cell_value(i, 0)
+
+            item_list = Item.objects.filter(id=item_id)
+
+            if item_list:
+                item_info = item_list[0]
+            else:
+                # 创建一条事项数据
+                item_info = Item()
+
+                item_info.id = worksheet.cell_value(i, 0)  # 工单编号
+                item_info.cate_id = j + 1  # 事项类别
+                item_info.person = worksheet.cell_value(i, 4)  # 求助人员
+                item_info.area = worksheet.cell_value(i, 8)  # 所在区域
+                item_info.title = worksheet.cell_value(i, 10)  # 标题
+                item_info.content = worksheet.cell_value(i, 14)  # 内容
+
+                if worksheet.cell_value(i, 23) != '' and worksheet.cell(i, 23).ctype != 0:
+                    item_info.accept_time = worksheet.cell_value(i, 23)  # 接件时间
+                if worksheet.cell_value(i, 25) != '' and worksheet.cell(i, 25).ctype != 0:
+                    item_info.limit_time = worksheet.cell_value(i, 25)  # 承办时限
+
+                if worksheet.cell_value(i, 7) == '' or worksheet.cell(i, 7).ctype == 0:
+                    item_info.phone = worksheet.cell_value(i, 5)  # 联系电话
+                else:
+                    item_info.phone = worksheet.cell_value(i, 7)  # 联系电话
+
+                if worksheet.cell_value(i, 16)[0: 2] == '普通':
+                    item_info.emergency = 1  # 紧急程度
+
+            try:
+                item_info.save()
+            except Exception as e:
+                print(item_info.id, item_info.cate_id, item_info.person, item_info.title)
+                print(e)
 
     return HttpResponseRedirect('/item/all')

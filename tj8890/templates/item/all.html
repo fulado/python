@@ -110,7 +110,7 @@
 <!-- 当前位置 -->
 {% block location %}
     <div class="location">
-        <p><span>{{ title.0 }}</span>&nbsp;>&nbsp;<span>{{ title.1 }}</span></p>
+        <p><span>{{ request.session.title.0 }}</span>&nbsp;>&nbsp;<span>{{ request.session.title.1 }}</span></p>
         <!-- 搜索框 -->
         <!--<div class="input-group">-->
             <!--<label for="search01" id="search01_label">请输入关键字</label>-->
@@ -144,21 +144,20 @@
                         ~
                         <input type="text" class="datetime-picker" name="accept_time_end" value="{{ request.session.accept_time_end }}">
                     </td>
-                </tr>
-                <tr>
+                    <td></td>
                     <td><span>求助类别</span></td>
                     <td>
                         <select name="cate">
-                            {% if cate == 0 %}
+                            {% if request.session.cate == 0 %}
                             <option value="0" selected>全部</option>
                             {% else %}
                             <option value="0">全部</option>
                             {% endif %}
-                            {% for cate in cate1_list %}
-                            {% if cate1 == cate.id %}
-                            <option value="{{ request.session.cate.id }}" selected>{{ request.session.cate.name }}</option>
+                            {% for cate in cate_list %}
+                            {% if request.session.cate == cate.id %}
+                            <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
                             {% else %}
-                            <option value="{{ request.session.cate.id }}">{{ request.session.cate.name }}</option>
+                            <option value="{{ cate.id }}">{{ cate.name }}</option>
                             {% endif %}
                             {% endfor %}
                         </select>
@@ -167,7 +166,7 @@
                 <tr>
                     <td><span>标题检索</span></td>
                     <td>
-                        <input type="text" value="请输入关键字" name="keyword">
+                        <input type="text" placeholder="请输入关键字" name="keyword">
                     </td>
                     <td></td>
                     <td><span>紧急程度</span></td>
@@ -188,6 +187,7 @@
                 <input type="submit" class="btn btn-default"  value="查询" />
                 <a href="javascript:resetSearchInfo();" class="btn btn-default">重置</a>
             </div>
+            <input type="hidden" value="{{ request.session.status }}" name="status" />
         </form>
     </div>
 {% endblock %}
@@ -205,6 +205,7 @@
                     <td>紧急程度</td>
                     <td>流转情况</td>
                     <td>接件时间</td>
+                    <td>承办时限</td>
                     <td>操作</td>
                 </tr>
             </thead>
@@ -222,8 +223,9 @@
                             {% elif item.emergency == 4 %}
                             <td>特急(两小时内回复)</td>
                         {% endif %}
-                        <td>{{ item.status.status_name }}</td>
-                        <td>{{ item.recd_time }}</td>
+                        <td>{{ item.status.status_name|default:'' }}</td>
+                        <td>{{ item.accept_time }}</td>
+                        <td>{{ item.limit_time|default:'' }}</td>
                         <td><a href="/item/detail?id={{ item.id }}"><button class="btn btn-default">查看</button></a></td>
                     </tr>
                 {% endfor %}
@@ -257,17 +259,17 @@
         </p>
 
         <ul class="page">
-            <a href="/item/all?page_num=1&recd_time_begin={{ recd_time_begin }}&recd_time_end={{ recd_time_end }}&deliver_time_begin={{ deliver_time_begin }}&deliver_time_end={{ deliver_time_end }}&cate1={{ cate1 }}&cate2={{ cate2 }}&cate3={{ cate3 }}&cate4={{ cate4 }}&status={{ status }}&emergency={{ emergency }}"><li>首页</li></a>
-            <a href="/item/all?page_num={{ mp.current_num|add:-1 }}&recd_time_begin={{ recd_time_begin }}&recd_time_end={{ recd_time_end }}&deliver_time_begin={{ deliver_time_begin }}&deliver_time_end={{ deliver_time_end }}&cate1={{ cate1 }}&cate2={{ cate2 }}&cate3={{ cate3 }}&cate4={{ cate4 }}&status={{ status }}&emergency={{ emergency }}"><li>上一页</li></a>
+            <a href="/item/all?page_num=1&accept_time_begin={{ request.session.accept_time_begin }}&accept_time_end={{ request.session.accept_time_end }}&cate={{ request.session.cate }}&status={{ request.session.status }}&emergency={{ request.session.emergency }}"><li>首页</li></a>
+            <a href="/item/all?page_num={{ mp.current_num|add:-1 }}&accept_time_begin={{ request.session.accept_time_begin }}&accept_time_end={{ request.session.accept_time_end }}&cate={{ request.session.cate }}&status={{ request.session.status }}&emergency={{ request.session.emergency }}"><li>上一页</li></a>
             {% for num in mp.page_range %}
                 {% if num == mp.current_num %}
-                <a href="/item/all?page_num={{ num }}&recd_time_begin={{ recd_time_begin }}&recd_time_end={{ recd_time_end }}&deliver_time_begin={{ deliver_time_begin }}&deliver_time_end={{ deliver_time_end }}&cate1={{ cate1 }}&cate2={{ cate2 }}&cate3={{ cate3 }}&cate4={{ cate4 }}&status={{ status }}&emergency={{ emergency }}"><li class="number current-page">{{ num }}</li></a>
+                <a href="/item/all?page_num={{ num }}&accept_time_begin={{ request.session.accept_time_begin }}&accept_time_end={{ request.session.accept_time_end }}&cate={{ request.session.cate }}&status={{ request.session.status }}&emergency={{ request.session.emergency }}"><li class="number current-page">{{ num }}</li></a>
                 {% else %}
-                <a href="/item/all?page_num={{ num }}&recd_time_begin={{ recd_time_begin }}&recd_time_end={{ recd_time_end }}&deliver_time_begin={{ deliver_time_begin }}&deliver_time_end={{ deliver_time_end }}&cate1={{ cate1 }}&cate2={{ cate2 }}&cate3={{ cate3 }}&cate4={{ cate4 }}&status={{ status }}&emergency={{ emergency }}"><li class="number">{{ num }}</li></a>
+                <a href="/item/all?page_num={{ num }}&accept_time_begin={{ request.session.accept_time_begin }}&accept_time_end={{ request.session.accept_time_end }}&cate={{ request.session.cate }}&status={{ request.session.status }}&emergency={{ request.session.emergency }}"><li class="number">{{ num }}</li></a>
                 {% endif %}
             {% endfor %}
-            <a href="/item/all?page_num={{ mp.current_num|add:1 }}&recd_time_begin={{ recd_time_begin }}&recd_time_end={{ recd_time_end }}&deliver_time_begin={{ deliver_time_begin }}&deliver_time_end={{ deliver_time_end }}&cate1={{ cate1 }}&cate2={{ cate2 }}&cate3={{ cate3 }}&cate4={{ cate4 }}&status={{ status }}&emergency={{ emergency }}"><li>下一页</li></a>
-            <a href="/item/all?page_num={{ mp.total_pages }}&recd_time_begin={{ recd_time_begin }}&recd_time_end={{ recd_time_end }}&deliver_time_begin={{ deliver_time_begin }}&deliver_time_end={{ deliver_time_end }}&cate1={{ cate1 }}&cate2={{ cate2 }}&cate3={{ cate3 }}&cate4={{ cate4 }}&status={{ status }}&emergency={{ emergency }}"><li>末页</li></a>
+            <a href="/item/all?page_num={{ mp.current_num|add:1 }}&accept_time_begin={{ request.session.accept_time_begin }}&accept_time_end={{ request.session.accept_time_end }}&cate={{ request.session.cate }}&status={{ request.session.status }}&emergency={{ request.session.emergency }}"><li>下一页</li></a>
+            <a href="/item/all?page_num={{ mp.total_pages }}&accept_time_begin={{ request.session.accept_time_begin }}&accept_time_end={{ request.session.accept_time_end }}&cate={{ request.session.cate }}&status={{ request.session.status }}&emergency={{ request.session.emergency }}"><li>末页</li></a>
         </ul>
     </div>
 {% endblock %}
