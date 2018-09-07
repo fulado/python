@@ -13,9 +13,19 @@
                 $('.navi .list-group-item').removeClass('active');
                 $(this).addClass('active');
 
-                var contentUrl =$(this).attr('href-url');
+                var contentUrl = $(this).attr('href-url');
                 $('#content-iframe').attr('src',contentUrl);
             });
+
+            function changeFrameHeight(){
+                var ifm = document.getElementById("content-iframe");
+                ifm.height = document.documentElement.clientHeight;
+
+            }
+
+            window.onresize = function(){
+                 changeFrameHeight();
+            }
         })
     </script>
 {% endblock %}
@@ -50,13 +60,14 @@
                             <a href="#" href-url="/item/all?title=全部事项&status=0" class="list-group-item">全部事项</a>
                             <a href="#" href-url="/item/all?title=未转办事项&status=1" class="list-group-item">未转办事项</a>
                             <a href="#" href-url="/item/all?title=已转办事项&status=2" class="list-group-item">已转办事项</a>
-                            <a href="#" href-url="/item/all?title=已转办事项&status=9" class="list-group-item">回驳事项</a>
+                            <a href="#" href-url="/item/all?title=回驳事项&status=9" class="list-group-item">回驳事项</a>
                             <a href="#" href-url="/item/all?title=办理中事项&status=3" class="list-group-item">办理中事项</a>
-                            <a href="#" href-url="/item/all?title=办理中事项&status=8" class="list-group-item">催办事项</a>
+                            <a href="#" href-url="/item/all?title=催办事项&status=8" class="list-group-item">催办事项</a>
+                            <a href="#" href-url="/item/all?title=超时事项&status=10" class="list-group-item">超时事项</a>
                             <a href="#" href-url="/item/all?title=已反馈事项&status=4" class="list-group-item">已反馈事项</a>
                             <a href="#" href-url="/item/all?title=退回重办事项&status=6" class="list-group-item">退回重办事项</a>
                             <a href="#" href-url="/item/all?title=申请延期事项&status=7" class="list-group-item">申请延期事项</a>
-                            <a href="#" href-url="/item/all?title=申请延期事项&status=66" class="list-group-item">办结事项</a>
+                            <a href="#" href-url="/item/all?title=办结事项&status=66" class="list-group-item">办结事项</a>
                         </div>
                     </div>
                 </div>
@@ -150,7 +161,8 @@
         </div>
 
         <div class="frame-content">
-            <iframe src="/item/all" frameborder="0" width="100%" height="100%" id="content-iframe"></iframe>
+            <!--<iframe src="/item/all" frameborder="0" width="100%" height="100%" id="content-iframe"></iframe>-->
+            <iframe id="content-iframe" name="mainFrame" scrolling="no" src="/item/all" frameborder="0" width="100%" height="100%" onload="changeFrameHeight()" frameborder="0"></iframe>
         </div>
     </div>
 {% endblock %}

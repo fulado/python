@@ -3,6 +3,16 @@
 {% block head %}
     <script type="text/javascript">
         $(function() {
+            // 日期组件初始化
+            $('.datetime-picker').datetimepicker({
+                language: 'zh-CN',          //显示中文
+                format: 'yyyy-mm-dd',       //显示格式
+                minView: 2,                 //设置只显示到月份
+                initialDate: new Date(),    //初始化当前日期
+                autoclose: true,            //选中自动关闭
+                todayBtn: true              //显示今日按钮
+            });
+
             // 事项二类选择后, 三类对应变化
             $('.search select').eq(1).change(function() {
                 val = $(this).val();

@@ -2,6 +2,18 @@
 
 {% block head %}
     <script type="text/javascript">
+        $(function() {
+            // 日期组件初始化
+            $('.datetime-picker').datetimepicker({
+                language: 'zh-CN',          //显示中文
+                format: 'yyyy-mm-dd hh:ii:ss',       //显示格式
+                minView: 1,                 //设置只显示到小时
+                initialDate: new Date(),    //初始化当前日期
+                autoclose: true,            //选中自动关闭
+                todayBtn: true              //显示今日按钮
+            });
+        });
+
         // 设置转办模态框信息
         function setDeliverInfo() {
             $('#deliverModal .modal-body span').eq(1).text($('.deliver-dept :selected').text());
@@ -117,12 +129,12 @@
     <div class="deliver-dept">
         <div class="bar"></div>
         <div class="title">
-            <p>转办单位<p>
+            <p>办理单位<p>
         </div>
         <div class="content">
             <table>
                 <tr>
-                    <td><span>受理单位</span></td>
+                    <td><span>办理单位</span></td>
                     <td>
                         <form id="agency_dept">
                             <select name="assign_dept_id">
@@ -138,39 +150,23 @@
                         </form>
                     </td>
                     <td></td>
-                    <td><span>办理单位</span></td>
-                    <td><input type="text" value="{{ item.agency_dept.name|default:'' }}" /></td>
+                    <td><span>办理时限</span></td>
+                    <td>
+                        {% if request.session.authority == 3 %}
+                        <input type="text" value="{{ request.session.accept_time_begin }}">
+                        {% else %}
+                        <input type="text" class="datetime-picker" name="accept_time_begin" value="{{ request.session.accept_time_begin }}">
+                        {% endif %}
+                    </td>
                     <td></td>
                     <td><span>任务状态</span></td>
                     <td><input type="text" value="{{ item.status.status_name }}" /></td>
                 </tr>
                 <tr>
-                    <td><span>受理人</span></td>
-                    <td><input type="text" value="{{ item.receiver.real_name|default:'' }}" /></td>
-                    <td></td>
-                    <td><span>受理时间</span></td>
-                    <td><input type="text" value="{{ item.receive_time|default:'' }}" /></td>
-                </tr>
-                <tr>
-                    <td><span>办理人</span></td>
-                    <td><input type="text" value="{{ item.deal_person|default:'' }}" /></td>
-                    <td></td>
-                    <td><span>办理时间</span></td>
-                    <td><input type="text" value="{{ item.complete_time|default:'' }}" /></td>
-                </tr>
-                <tr>
-                    <td><span>审批人</span></td>
-                    <td><input type="text" value="{{ item.check_person|default:'' }}" /></td>
-                    <td></td>
-                    <td><span>审批时间</span></td>
-                    <td><input type="text" value="{{ item.check_time|default:'' }}" /></td>
-                </tr>
-                <tr>
-                    <td><span>回访人</span></td>
-                    <td><input type="text" value="{{ item.revisit_person|default:'' }}" /></td>
-                    <td></td>
-                    <td><span>反馈时间</span></td>
-                    <td><input type="text" value="{{ item.revisit_time|default:'' }}" /></td>
+                    <td><span>回驳原因</span></td>
+                    <td colspan="7">
+                        <textarea>{{ item.reject_reason|default:'' }}</textarea>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -192,10 +188,10 @@
                     <td><span></span></td>
                     <td></td>
                 </tr>
-                <tr>
-                    <td><span>答复内容</span></td>
-                    <td><input type="text" name="item_answer" value="事实属实，已处理" /></td>
-                    <td></td>
+                <!--<tr>-->
+                    <!--<td><span>答复内容</span></td>-->
+                    <!--<td><input type="text" name="item_answer" value="事实属实，已处理" /></td>-->
+                    <!--<td></td>-->
                     <!--<td><span>求助满意度</span></td>-->
                     <!--<td>-->
                         <!--<select>-->
@@ -204,7 +200,7 @@
                             <!--<option>不满意</option>-->
                         <!--</select>-->
                     <!--</td>-->
-                </tr>
+                <!--</tr>-->
             </table>
         </div>
     </div>
@@ -252,17 +248,12 @@
         <div class="content">
             <table>
                 <tr>
-                    <td><span>延期理由</span></td>
-                    <td rowspan="2"><textarea name="delay_reason"></textarea></td>
-                    <td></td>
-                    <td><span>申请时间</span></td>
-                    <td><input type="text" />{{ item.delay_apply_time|default:'' }}</td>
+                    <td><span>延期时间</span></td>
+                    <td><input type="text" class="datetime-picker" name="delay_time" />{{ item.delay_to_time|default:'' }}</td>
                 </tr>
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td><span>延期时间</span></td>
-                    <td><input type="text" name="delay_to_time" />{{ item.delay_to_time|default:'' }}</td>
+                    <td><span>延期理由</span></td>
+                    <td rowspan="2"><textarea name="delay_reason"></textarea></td>
                 </tr>
             </table>
         </div>
