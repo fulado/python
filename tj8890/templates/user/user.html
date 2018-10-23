@@ -15,32 +15,32 @@
     <script type="text/javascript">
         $(function() {
             // 人员检索添加框, 选择不同的一级部门, 二级部门的选项相应变化
-            $('.search .custom-select').first().change(function() {
-                setDeptInfo($(this), $('.search .custom-select').last());
-            });
+            // $('.search .custom-select').first().change(function() {
+            //     setDeptInfo($(this), $('.search .custom-select').last());
+            // });
 
             // 添加人员模态框, 选择不同的一级部门, 二级部门的选项相应变化
-            $('#addModal .modal-body select').first().change(function() {
-                setDeptInfo($(this), $('#addModal .modal-body select').eq(1));
-            });
-            $('#addModal .modal-body select').first().change();
+            // $('#addModal .modal-body select').first().change(function() {
+            //     setDeptInfo($(this), $('#addModal .modal-body select').eq(1));
+            // });
+            // $('#addModal .modal-body select').first().change();
 
             // 编辑人员模态框, 选择不同的一级部门, 二级部门的选项相应变化
-            $('#editModal .modal-body select').first().change(function() {
-                setDeptInfo($(this), $('#editModal .modal-body select').eq(1));
-            });
+            // $('#editModal .modal-body select').first().change(function() {
+            //     setDeptInfo($(this), $('#editModal .modal-body select').eq(1));
+            // });
         });
 
         // 打开人员编辑窗口时, 预先填充人员信息
-        function setUserInfo(supervisorId, deptId, realName, username, duty, number, authority, phone, id) {
+        function setUserInfo(deptId, realName, username, duty, number, authority, phone, id) {
             // 设置一级部门选项
-            $('#editModal .modal-body select').eq(0).val(supervisorId);
+            $('#editModal .modal-body select').eq(0).val(deptId);
             // 根据一级部门选择, 自动刷新下属二级部门
-            setDeptInfo($('#editModal .modal-body select').first(), $('#editModal .modal-body select').eq(1), deptId)
+            // setDeptInfo($('#editModal .modal-body select').first(), $('#editModal .modal-body select').eq(1), deptId)
             // 设置职务
-            $('#editModal .modal-body select').eq(2).val(duty);
+            $('#editModal .modal-body select').eq(1).val(duty);
             // 设置权限
-            $('#editModal .modal-body select').eq(3).val(authority);
+            $('#editModal .modal-body select').eq(2).val(authority);
             // 设置姓名
             $('#editModal .modal-body input').eq(0).val(realName);
             // 设置帐号
@@ -131,16 +131,17 @@
     <div class="search">
         <p>部门选择&nbsp;:</p>
         <form action="/user/user" method="GET">
-            <select class="custom-select" name="supervisor_id">
-                {% for supervisor in supervisor_list %}
-                    {% if supervisor.id == supervisor_id %}
-                    <option value="{{ supervisor.id }}" selected>{{ supervisor.name }}</option>
-                    {% else %}
-                    <option value="{{ supervisor.id }}">{{ supervisor.name }}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
-            <select class="custom-select" id="dept02" name="dept_id">
+            <!--<select class="custom-select" name="supervisor_id">-->
+                <!--{% for supervisor in supervisor_list %}-->
+                    <!--{% if supervisor.id == supervisor_id %}-->
+                    <!--<option value="{{ supervisor.id }}" selected>{{ supervisor.name }}</option>-->
+                    <!--{% else %}-->
+                    <!--<option value="{{ supervisor.id }}">{{ supervisor.name }}</option>-->
+                    <!--{% endif %}-->
+                <!--{% endfor %}-->
+            <!--</select>-->
+            <select class="custom-select" name="dept_id">
+                <option value="0">全部</option>
                 {% for dept in dept_list %}
                 {% if dept.id == dept_id %}
                     <option value="{{ dept.id }}" selected>{{ dept.name }}</option>
@@ -152,7 +153,7 @@
             <div class="search-btn-group">
                 <input type="submit" class="btn btn-default"  value="查询" />
                 <a href="javascript:void(0)" class="btn btn-default" data-toggle="modal" data-target="#addModal" data-backdrop="static">添加</a>
-                <a href="javascript:void(0)" class="btn btn-default">重置</a>
+                <input type="reset" class="btn btn-default" value="重置">
             </div>
         </form>
     </div>
@@ -174,28 +175,34 @@
                 <form action="/user/user_add" method="GET">
                     <div class="modal-body">
                         <table>
-                            <tr>
-                                <td><span>所属单位</span></td>
-                                <td>
-                                    <select name="supervisor_id">
-                                        {% for supervisor in supervisor_list %}
-                                        <option value="{{ supervisor.id }}">{{ supervisor.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </td>
-                                <td></td>
-                                <td><span>所属科室</span></td>
-                                <td>
-                                    <select name="dept_id">
-                                    </select>
-                                </td>
-                            </tr>
+                            <!--<tr>-->
+                                <!--<td><span>所属单位</span></td>-->
+                                <!--<td>-->
+                                    <!--<select name="supervisor_id">-->
+                                        <!--{% for supervisor in supervisor_list %}-->
+                                        <!--<option value="{{ supervisor.id }}">{{ supervisor.name }}</option>-->
+                                        <!--{% endfor %}-->
+                                    <!--</select>-->
+                                <!--</td>-->
+                                <!--<td></td>-->
+                                <!--<td><span>所属科室</span></td>-->
+                                <!--<td>-->
+                                    <!--<select name="dept_id">-->
+                                    <!--</select>-->
+                                <!--</td>-->
+                            <!--</tr>-->
                             <tr>
                                 <td><span>姓名</span></td>
                                 <td><input type="text" name="real_name" /></td>
                                 <td></td>
-                                <td><span>登陆账号:</span></td>
-                                <td><input type="text" name="username" /></td>
+                                <td><span>所属单位</span></td>
+                                <td>
+                                    <select name="dept_id">
+                                        {% for dept in dept_list %}
+                                        <option value="{{ dept.id }}">{{ dept.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
                             </tr>
                             <tr>
                                 <td><span>职务</span></td>
@@ -207,28 +214,27 @@
                                     </select>
                                 </td>
                                 <td></td>
-                                <td><span>登陆密码</span></td>
-                                <td><input type="text" name="password" /></td>
+                                <td><span>登陆账号:</span></td>
+                                <td><input type="text" name="username" /></td>
                             </tr>
                             <tr>
                                 <td><span>警号</span></td>
                                 <td><input type="text" name="number" /></td>
                                 <td></td>
-                                <td><span>管理权限</span></td>
-                                <td>
-                                    <select name="authority">
-                                        <option value="1" selected>管理员</option>
-                                        <option value="2">管理端用户</option>
-                                        <option value="3">客户端用户</option>
-                                    </select>
-                                </td>
+                                <td><span>登陆密码</span></td>
+                                <td><input type="text" name="password" /></td>
                             </tr>
                             <tr>
                                 <td><span>联系电话</span></td>
                                 <td><input type="text" name="phone" /></td>
                                 <td></td>
-                                <td></td>
-                                <td></td>
+                                <td><span>管理权限</span></td>
+                                <td>
+                                    <select name="authority">
+                                        <option value="2">管理端用户</option>
+                                        <option value="3">客户端用户</option>
+                                    </select>
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -250,7 +256,6 @@
             <thead>
                 <tr>
                     <td>单位</td>
-                    <td>科室</td>
                     <td>姓名</td>
                     <td>职务</td>
                     <td>警号</td>
@@ -261,15 +266,13 @@
             <tbody>
                 {% for user in mp.object_list %}
                 <tr>
-                    <td>{{ user.dept.supervisor.name }}</td>
                     <td>{{ user.dept.name }}</td>
                     <td>{{ user.real_name }}</td>
                     <td>{{ user.duty }}</td>
                     <td>{{ user.number }}</td>
                     <td>{{ user.phone }}</td>
-                    <td><button onclick="setUserInfo({{ user.dept.supervisor.id }}, {{ user.dept.id }}, '{{ user.real_name }}',
-                    '{{ user.username }}', '{{ user.duty }}', '{{ user.number }}', {{ user.authority }}, '{{ user.phone }}',
-                    {{ user.id }})"
+                    <td><button onclick="setUserInfo({{ user.dept.id }}, '{{ user.real_name }}', '{{ user.username }}',
+                    '{{ user.duty }}', '{{ user.number }}', {{ user.authority }}, '{{ user.phone }}', {{ user.id }})"
                                 class="btn btn-default" data-toggle="modal" data-target="#editModal"
                                 data-backdrop="static">编辑</button></td>
                 </tr>
@@ -292,19 +295,32 @@
                     {% csrf_token %}
                     <div class="modal-body">
                         <table>
+                            <!--<tr>-->
+                                <!--<td><span>所属单位</span></td>-->
+                                <!--<td>-->
+                                    <!--<select name="supervisor_id">-->
+                                        <!--{% for supervisor in supervisor_list %}-->
+                                        <!--<option value="{{ supervisor.id }}">{{ supervisor.name }}</option>-->
+                                        <!--{% endfor %}-->
+                                    <!--</select>-->
+                                <!--</td>-->
+                                <!--<td></td>-->
+                                <!--<td><span>所属科室</span></td>-->
+                                <!--<td>-->
+                                    <!--<select name="dept_id" id="select-dept">-->
+                                        <!--{% for dept in dept_list %}-->
+                                        <!--<option value="{{ dept.id }}">{{ dept.name }}</option>-->
+                                        <!--{% endfor %}-->
+                                    <!--</select>-->
+                                <!--</td>-->
+                            <!--</tr>-->
                             <tr>
+                                <td><span>姓名</span></td>
+                                <td><input type="text" name="real_name" value="" /></td>
+                                <td></td>
                                 <td><span>所属单位</span></td>
                                 <td>
-                                    <select name="supervisor_id">
-                                        {% for supervisor in supervisor_list %}
-                                        <option value="{{ supervisor.id }}">{{ supervisor.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </td>
-                                <td></td>
-                                <td><span>所属科室</span></td>
-                                <td>
-                                    <select name="dept_id" id="select-dept">
+                                    <select name="dept_id">
                                         {% for dept in dept_list %}
                                         <option value="{{ dept.id }}">{{ dept.name }}</option>
                                         {% endfor %}
@@ -312,43 +328,36 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><span>姓名</span></td>
-                                <td><input type="text" name="real_name" value="" /></td>
+                                <td><span>职务</span></td>
+                                <td>
+                                    <select name="duty">
+                                        <option value="警员">民警</option>
+                                        <option value="文职">文职</option>
+                                        <option value="科长">科长</option>
+                                    </select>
+                                </td>
                                 <td></td>
                                 <td><span>登陆账号:</span></td>
                                 <td><input type="text" name="username" value="" /></td>
                             </tr>
                             <tr>
-                                <td><span>职务</span></td>
-                                <td>
-                                    <select name="duty">
-                                        <option value="警员">警员</option>
-                                        <option value="协警">协警</option>
-                                        <option value="科长">科长</option>
-                                    </select>
-                                </td>
+                                <td><span>警号</span></td>
+                                <td><input type="text" name="number" value="" /></td>
                                 <td></td>
                                 <td><span>登陆密码</span></td>
                                 <td><input type="password" name="password" value="123456" /></td>
                             </tr>
                             <tr>
-                                <td><span>警号</span></td>
-                                <td><input type="text" name="number" value="" /></td>
+                                <td><span>联系电话</span></td>
+                                <td><input type="text" name="phone" value="" /></td>
                                 <td></td>
                                 <td><span>管理权限</span></td>
                                 <td>
                                     <select name="authority">
-                                        <option value="1">管理员</option>
                                         <option value="2">管理端用户</option>
                                         <option value="3">客户端用户</option>
                                     </select>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td><span>联系电话</span></td>
-                                <td><input type="text" name="phone" value="" /></td>
-                                <td></td>
-                                <td></td>
                                 <td><input type="hidden" name="user_id" value="" /></td>
                             </tr>
                         </table>

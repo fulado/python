@@ -16,16 +16,6 @@
                 var contentUrl = $(this).attr('href-url');
                 $('#content-iframe').attr('src',contentUrl);
             });
-
-            function changeFrameHeight(){
-                var ifm = document.getElementById("content-iframe");
-                ifm.height = document.documentElement.clientHeight;
-
-            }
-
-            window.onresize = function(){
-                 changeFrameHeight();
-            }
         })
     </script>
 {% endblock %}
@@ -60,7 +50,7 @@
                             <a href="#" href-url="/item/all?title=全部事项&status=0" class="list-group-item">全部事项</a>
                             <a href="#" href-url="/item/all?title=未转办事项&status=1" class="list-group-item">未转办事项</a>
                             <a href="#" href-url="/item/all?title=已转办事项&status=2" class="list-group-item">已转办事项</a>
-                            <a href="#" href-url="/item/all?title=回驳事项&status=9" class="list-group-item">回驳事项</a>
+                            <a href="#" href-url="/item/all?title=回驳事项&status=9" class="list-group-item">退回事项</a>
                             <a href="#" href-url="/item/all?title=办理中事项&status=3" class="list-group-item">办理中事项</a>
                             <a href="#" href-url="/item/all?title=催办事项&status=8" class="list-group-item">催办事项</a>
                             <a href="#" href-url="/item/all?title=超时事项&status=10" class="list-group-item">超时事项</a>
@@ -89,6 +79,7 @@
                             <a href="#" href-url="/item/all?title=待接单事项&status=2" class="list-group-item">已转办单事项</a>
                             <a href="#" href-url="/item/all?title=办理中事项&status=3" class="list-group-item">办理中事项</a>
                             <a href="#" href-url="/item/all?title=催办事项&status=8" class="list-group-item">催办事项</a>
+                            <a href="#" href-url="/item/all?title=超时事项&status=10" class="list-group-item">超时事项</a>
                             <a href="#" href-url="/item/all?title=已反馈事项&status=4" class="list-group-item">已反馈事项</a>
                             <a href="#" href-url="/item/all?title=退回重办事项&status=6" class="list-group-item">退回重办事项</a>
                             <a href="#" href-url="/item/all?title=申请延期事项&status=7" class="list-group-item">申请延期事项</a>
@@ -121,23 +112,23 @@
                     <!--</div>-->
                 <!--</div>-->
                 <!--{% endif %}-->
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <img src="/static/image/icon04.png" alt="icon04">
-                            <a data-toggle="collapse" data-parent="#accordion"
-                               href="#collapseFour">
-                                知识库管理
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapseFour" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            <a href="#" href-url="/info/all_show" class="list-group-item">查询内容</a>
-                            <a href="#" href-url="/info/detail_show?delete=0&add=1" class="list-group-item">添加内容</a>
-                        </div>
-                    </div>
-                </div>
+                <!--<div class="panel panel-default">-->
+                    <!--<div class="panel-heading">-->
+                        <!--<h4 class="panel-title">-->
+                            <!--<img src="/static/image/icon04.png" alt="icon04">-->
+                            <!--<a data-toggle="collapse" data-parent="#accordion"-->
+                               <!--href="#collapseFour">-->
+                                <!--知识库管理-->
+                            <!--</a>-->
+                        <!--</h4>-->
+                    <!--</div>-->
+                    <!--<div id="collapseFour" class="panel-collapse collapse">-->
+                        <!--<div class="panel-body">-->
+                            <!--<a href="#" href-url="/info/all_show" class="list-group-item">查询内容</a>-->
+                            <!--<a href="#" href-url="/info/detail_show?delete=0&add=1" class="list-group-item">添加内容</a>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
                 {% if request.session.authority == 2 or request.session.authority == 1 %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -162,7 +153,7 @@
 
         <div class="frame-content">
             <!--<iframe src="/item/all" frameborder="0" width="100%" height="100%" id="content-iframe"></iframe>-->
-            <iframe id="content-iframe" name="mainFrame" scrolling="no" src="/item/all" frameborder="0" width="100%" height="100%" onload="changeFrameHeight()" frameborder="0"></iframe>
+            <iframe id="content-iframe" name="mainFrame" scrolling="auto" src="/item/all" frameborder="0" width="100%" height="100%" frameborder="0"></iframe>
         </div>
     </div>
 {% endblock %}

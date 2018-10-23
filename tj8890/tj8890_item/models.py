@@ -5,10 +5,11 @@ from tj8890_user.models import Dept, User
 
 
 # 事件类型模型
-# class Category(models.Model):
-#     name = models.CharField(max_length=50, null=True, blank=True)   # 分类名称
-#     level = models.IntegerField(null=True, blank=True)              # 分类等级
-#     cate = models.ForeignKey('self', null=True, blank=True)         # 所属分类
+class Category(models.Model):
+    name = models.CharField(max_length=50, null=True, blank=True)   # 分类名称
+    level = models.IntegerField(null=True, blank=True)              # 分类等级
+    cate = models.ForeignKey('self', null=True, blank=True)         # 所属分类
+
 
 # 事件分类
 class Cate(models.Model):
@@ -35,6 +36,13 @@ class Item(models.Model):
     # 办件状态, 1-未转办, 2-已转办, 3-办理中, 4-已反馈, 5-已超时, 6-退回重办, 7-申请延期, 8-催办，9-退驳 ,66-办结
     status = models.ForeignKey(ItemStatus, null=True, blank=True, default=1)
     assign_dept = models.ForeignKey(Dept, null=True, blank=True)                # 转办部门
+    dead_time = models.DateTimeField(null=True, blank=True)                     # 办理时限
     accept_user = models.ForeignKey(User, null=True, blank=True, related_name='accept_user')   # 接收人员
     reject_user = models.ForeignKey(User, null=True, blank=True, related_name='reject_user')   # 回驳人员
-    reject_reason = models.CharField(max_length=500, null=True, blank=True)     # 退回原因
+    reject_reason = models.CharField(max_length=500, null=True, blank=True)     # 回驳原因
+    result = models.CharField(max_length=500, null=True, blank=True)            # 办理情况
+    delay_time = models.DateTimeField(null=True, blank=True)                    # 延期时间
+    delay_reason = models.CharField(max_length=500, null=True, blank=True)      # 延期原因
+    return_reason = models.CharField(max_length=500, null=True, blank=True)     # 退回重办原因
+    save_time = models.DateTimeField(null=True, blank=True)                     # 办结时间
+    is_exported = models.BooleanField(default=False)                            # 是否已经导出

@@ -3,6 +3,7 @@ from django.shortcuts import HttpResponse
 from django.http import JsonResponse
 from .models import User, Dept
 import hashlib
+import time
 from tj8890.utils import MyPaginator
 from django.http import HttpResponseRedirect
 from tj8890.decorator import login_check
@@ -63,15 +64,18 @@ def login_service(request):
         request.session['user_id'] = user.id
 
         if user.dept is not None:
-            if user.dept.supervisor is not None:
-                request.session['dept_id'] = user.dept.supervisor.id
-            else:
-                request.session['dept_id'] = user.dept.id
+            request.session['dept_id'] = user.dept.id
         else:
             request.session['dept_id'] = 1
 
         request.session['authority'] = user.authority
         request.session['user'] = user
+
+        default_time_begin = time.strftime('%Y-01-01', time.localtime())
+        default_time_end = time.strftime('%Y-%m-%d', time.localtime())
+
+        request.session['default_time_begin'] = default_time_begin
+        request.session['default_time_end'] = default_time_end
 
         return HttpResponseRedirect('/item/main')
 
@@ -178,30 +182,39 @@ def dept_del(request):
 @login_check
 def user_show(request):
     # 获取所有的一级部门
-    supervisor_list = Dept.objects.filter(supervisor__isnull=True).filter(is_delete=False)
+    dept_list = Dept.objects.filter(supervisor__isnull=True).filter(is_delete=False)
 
     # 页面标题
     title = ['用户管理', '人员管理']
 
     # 获取用户选择的部门id, 默认是0
-    supervisor_id = int(request.GET.get('supervisor_id', 0))
+    # supervisor_id = int(request.GET.get('supervisor_id', 0))
     dept_id = int(request.GET.get('dept_id', 0))
+
+    request.session['dept_id'] = dept_id
 
     # 查询二级部门
     # 如果一级部门id等于0, 取一级部门列表中的一个作为上级部门
-    if supervisor_id == 0:
-        dept_list = Dept.objects.filter(supervisor=supervisor_list[0].id)
-        # 查询全部人员
+    # if supervisor_id == 0:
+    #     dept_list = Dept.objects.filter(supervisor=supervisor_list[0].id)
+    #     # 查询全部人员
+    #     user_list = User.objects.all()
+    # else:
+    #     dept_list = Dept.objects.filter(supervisor=supervisor_id)
+    #     # 查询用户指定
+    #     # 如果二级部门id等于0, 查询全部的属于该二级部门上级部门的用户
+    #     if dept_id == 0:
+    #         user_list = User.objects.filter(dept=supervisor_id)
+    #     else:
+    #         # 如果二级部门id不等于0, 查询该二级部门下的全部人员
+    #         user_list = User.objects.filter(dept=dept_id)
+
+    # 如果部门id等于0, 查询全部的属id为1的部门的用户
+    if dept_id == 0:
         user_list = User.objects.all()
     else:
-        dept_list = Dept.objects.filter(supervisor=supervisor_id)
-        # 查询用户指定
-        # 如果二级部门id等于0, 查询全部的属于该二级部门上级部门的用户
-        if dept_id == 0:
-            user_list = User.objects.filter(dept=supervisor_id)
-        else:
-            # 如果二级部门id不等于0, 查询该二级部门下的全部人员
-            user_list = User.objects.filter(dept=dept_id)
+        # 如果二级部门id不等于0, 查询该二级部门下的全部人员
+        user_list = User.objects.filter(dept=dept_id)
 
     # 获得用户指定的页面
     page_num = int(request.GET.get('page_num', 1))
@@ -209,8 +222,7 @@ def user_show(request):
     mp = MyPaginator()
     mp.paginate(user_list, 10, page_num)
 
-    context = {'title': title, 'supervisor_list': supervisor_list, 'dept_list': dept_list,
-               'supervisor_id': supervisor_id, 'dept_id': dept_id, 'mp': mp}
+    context = {'title': title, 'dept_list': dept_list, 'dept_id': dept_id, 'mp': mp}
     return render(request, 'user/user.html', context)
 
 
@@ -231,7 +243,7 @@ def dept_search(request):
 # 添加人员
 def user_add(request):
     # 获取用户信息
-    supervisor_id = int(request.GET.get('supervisor_id'))
+    # supervisor_id = int(request.GET.get('supervisor_id'))
     username = request.GET.get('username')
     password = request.GET.get('password')
     real_name = request.GET.get('real_name', None)
@@ -258,14 +270,14 @@ def user_add(request):
         user.authority = authority
 
     user.save()
-    url = '/user/user?supervisor_id=%d&dept_id=%d' % (supervisor_id, dept_id)
+    url = '/user/user?dept_id=%d' % request.session.get('dept_id', 0)
 
     return HttpResponseRedirect(url)
 
 
 # 编辑人员
 def user_modify(request):
-    supervisor_id = int(request.GET.get('supervisor_id'))
+    # supervisor_id = int(request.GET.get('supervisor_id'))
     dept_id = int(request.GET.get('dept_id'))
     real_name = request.GET.get('real_name')
     username = request.GET.get('username')
@@ -286,21 +298,21 @@ def user_modify(request):
     user.phone = phone
 
     user.save()
-    url = '/user/user?supervisor_id=%d&dept_id=%d' % (supervisor_id, dept_id)
+    url = '/user/user?dept_id=%d' % request.session.get('dept_id', 0)
 
     return HttpResponseRedirect(url)
 
 
 # 删除人员
 def user_del(request):
-    supervisor_id = int(request.GET.get('supervisor_id'))
-    dept_id = int(request.GET.get('dept_id'))
+    # supervisor_id = int(request.GET.get('supervisor_id'))
+    # dept_id = int(request.GET.get('dept_id'))
     user_id = int(request.GET.get('user_id'))
 
     user = User.objects.filter(id=user_id)[0]
 
     user.delete()
-    url = '/user/user?supervisor_id=%d&dept_id=%d' % (supervisor_id, dept_id)
+    url = '/user/user?dept_id=%d' % request.session.get('dept_id', 0)
 
     return HttpResponseRedirect(url)
 
