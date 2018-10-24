@@ -1,6 +1,7 @@
 from django.shortcuts import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from .models import Item, Cate, Dept
+from django.db.models import Q
+from .models import Item, Cate, Dept, Category
 from tj8890.utils import MyPaginator
 import random
 import time
@@ -165,7 +166,7 @@ def all_show(request):
 
     # 关键字检索
     if keyword != '':
-        item_list = item_list.filter(title__contains=keyword)
+        item_list = item_list.filter(Q(content__contains=keyword) | Q(id__contains=keyword))
 
     # 获得用户指定的页面
     page_num = int(request.GET.get('page_num', 1))
@@ -239,9 +240,13 @@ def detail_show(request):
     # 查询部门
     supervisor_list = Dept.objects.filter(supervisor__isnull=True).filter(is_delete=False)
 
+    # 查询事项大类
+    cate1_list = Category.objects.filter(level=2)
+
     context = {'title': title,
                'item': item_info,
                'supervisor_list': supervisor_list,
+               'cate1_list': cate1_list,
                }
 
     return render(request, 'item/detail.html', context)
@@ -280,6 +285,8 @@ def deliver_action(request):
     item_info.status_id = 2
     item_info.assign_dept_id = dept_id
     item_info.dead_time = dead_time
+    item_info.approval_content = None
+    item_info.approval_person = None
 
     try:
         item_info.save()
@@ -499,13 +506,17 @@ def accept_item(request):
 def reject_item(request):
     item_id = request.GET.get('item_id', '0')
     reject_reason = request.GET.get('reject_reason', '')
+    approval_content = request.GET.get('approval_content', '')
+    approval_person = request.GET.get('approval_person', '')
 
     item_info = Item.objects.get(id=item_id)
 
     item_info.status_id = 9  # 回驳事项
-    item_info.assign_dept_id = None
+    # item_info.assign_dept_id = None
     item_info.reject_user_id = request.session.get('user_id')
     item_info.reject_reason = reject_reason
+    item_info.approval_content = approval_content
+    item_info.approval_person = approval_person
 
     try:
         item_info.save()
@@ -530,11 +541,15 @@ def reject_item(request):
 def complete_item(request):
     item_id = request.GET.get('item_id', '0')
     item_result = request.GET.get('item_result', '')
+    approval_content = request.GET.get('approval_content', '')
+    approval_person = request.GET.get('approval_person', '')
 
     item_info = Item.objects.get(id=item_id)
 
     item_info.status_id = 4
     item_info.result = item_result
+    item_info.approval_content = approval_content
+    item_info.approval_person = approval_person
 
     try:
         item_info.save()
@@ -560,12 +575,16 @@ def delay_item(request):
     item_id = request.GET.get('item_id', '0')
     delay_reason = request.GET.get('delay_reason', '')
     delay_time = request.GET.get('delay_time', '')
+    approval_content = request.GET.get('approval_content', '')
+    approval_person = request.GET.get('approval_person', '')
 
     item_info = Item.objects.get(id=item_id)
 
     item_info.status_id = 7
     item_info.delay_reason = delay_reason
     item_info.delay_time = delay_time
+    item_info.approval_content = approval_content
+    item_info.approval_person = approval_person
 
     try:
         item_info.save()

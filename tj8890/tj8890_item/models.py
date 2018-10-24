@@ -46,3 +46,8 @@ class Item(models.Model):
     return_reason = models.CharField(max_length=500, null=True, blank=True)     # 退回重办原因
     save_time = models.DateTimeField(null=True, blank=True)                     # 办结时间
     is_exported = models.BooleanField(default=False)                            # 是否已经导出
+    approval_content = models.CharField(max_length=500, null=True, blank=True)  # 审批内容
+    approval_person = models.CharField(max_length=20, null=True, blank=True)    # 审批人
+    cate1 = models.ForeignKey(Category, null=True, blank=True)  # 求助类别
+    cate2 = models.ForeignKey(Category, null=True, blank=True)  # 求助类别
+    cate3 = models.ForeignKey(Category, null=True, blank=True)  # 求助类别

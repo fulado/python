@@ -445,7 +445,8 @@ tbody td{
 .revisit-content .title p,
 .delay-content .title p,
 .reject-item .title p,
-.return-item .title p{
+.return-item .title p,
+.approval-item .title p{
     font-size: 16px;
     color: #00A9EE;
     line-height: 39px;
@@ -458,7 +459,8 @@ tbody td{
 .revisit-content .content table,
 .delay-content .content table,
 .reject-item .content table,
-.return-item .content table{
+.return-item .content table,
+.approval-item .content table{
     position: absolute;
     left: 25px;
     top: 61px;
@@ -484,7 +486,10 @@ tbody td{
 .reject-item .content td,
 .return-item .content table,
 .return-item .content tr,
-.return-item .content td{
+.return-item .content td,
+.approval-item .content table,
+.approval-item .content tr,
+.approval-item .content td{
     font-size: 14px;
     margin: auto;
     padding: 10px;
@@ -497,7 +502,8 @@ tbody td{
 .revisit-content .content span,
 .delay-content .content span,
 .reject-item .content span,
-.return-item .content span{
+.return-item .content span,
+.approval-item .content span{
     text-align: justify;
     text-align-last:justify;
     display: inline-block;
@@ -510,7 +516,8 @@ tbody td{
 }
 
 .deliver-content .content textarea,
-.reject-item .content textarea{
+.reject-item .content textarea,
+.approval-item .content textarea{
     width: 720px;
     height: 134px;
     resize: none;
@@ -519,8 +526,8 @@ tbody td{
     padding-left: 5px;
 }
 
-.reject-item .content textarea{
-    width: 430px;
+.reject-item .content textarea,
+.approval-item .content textarea{
     height: 90px;
 }
 
@@ -548,12 +555,25 @@ tbody td{
     margin-top: 20px;
 }
 
+.approval-item{
+    position: relative;
+    /* left: 223px;
+    top: 692px; */
+    width: 1030px;
+    height: 190px;
+    border: 1px solid #CFCFCF;
+    border-radius: 2px;
+    padding: 0px;
+    margin-top: 20px;
+}
+
 .deliver-dept .bar,
 .feedback-content .bar,
 .revisit-content .bar,
 .delay-content .bar,
 .reject-item .bar,
-.return-item .bar{
+.return-item .bar,
+.approval-item .bar{
     position: absolute;
     left: -1px;
     top: 0px;
@@ -567,7 +587,8 @@ tbody td{
 .revisit-content .title,
 .delay-content .title,
 .reject-item .title,
-.return-item .title{
+.return-item .title,
+.approval-item .title{
     position:absolute;
     left: 0px;
     top: 5px;
@@ -577,10 +598,11 @@ tbody td{
 }
 
 .operation .search-btn-group{
-    position: relative;
-    width: 380px;
-    left: 356px;
-    margin: 20px;
+    width: 500px;
+    margin: 0px auto;
+    margin-top: 20px;
+    margin-bottom: 50px;
+    text-align: center;
 }
 
 .feedback-content,

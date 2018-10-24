@@ -15,7 +15,7 @@
 
             // 事项二类选择后, 三类对应变化
             $('.search select').eq(1).change(function() {
-                val = $(this).val();
+                var val = $(this).val();
                 if (val == 0) {
                     $('.search select').eq(2).val(0);
                     $('.search select').eq(2).attr("disabled","disabled");
@@ -30,7 +30,7 @@
 
             // 事项三类选择后, 四类对应变化
             $('.search select').eq(2).change(function() {
-                val = $(this).val();
+                var val = $(this).val();
                 if (val == 0) {
                     $('.search select').eq(3).val(0);
                     $('.search select').eq(3).attr("disabled","disabled");
@@ -183,7 +183,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><span>标题检索</span></td>
+                    <td><span>关键字检索</span></td>
                     <td>
                         <input type="text" placeholder="请输入关键字" name="keyword" value="{{ request.session.keyword|default:'' }}">
                     </td>
