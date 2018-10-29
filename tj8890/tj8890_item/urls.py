@@ -23,7 +23,9 @@ urlpatterns = [
 
     url(r'^import_excel/?', views.import_excel),        # 导入事项数据
     url(r'^export_excel/?', views.export_excel),        # 导出办结事项
-    # url(r'^cate_search/?', views.cate_search),
+    url(r'^cate_search/?', views.cate_search),
     url(r'^over_time_test/?', views.check_dead_time),   # 测试是否超时
+
+    url(r'^item_count/?', views.item_count),   # 获取各类事项总数
 ]
 

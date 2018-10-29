@@ -23,6 +23,6 @@ from tj8890_item.views import check_dead_time
 scheduler = BackgroundScheduler()
 
 # 每小时判断一次
-scheduler.add_job(check_dead_time, 'cron', second=0)
+scheduler.add_job(check_dead_time, 'cron', minute=0, second=0)
 
 scheduler.start()

@@ -1,5 +1,5 @@
-from django.shortcuts import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import HttpResponse, HttpResponseRedirect, render
+from django.http import JsonResponse
 from django.db.models import Q
 from .models import Item, Cate, Dept, Category
 from tj8890.utils import MyPaginator
@@ -17,12 +17,13 @@ STATUS_DIC = {0: '全部',
               2: '已转办',
               3: '办理中',
               4: '已反馈',
-              5: '已超时',
-              6: '退回重办',
+              5: '超时',
+              6: '重办',
               7: '申请延期',
               8: '催办',
-              9: '回驳',
+              9: '退单',
               10: '超时',
+              11: '驳回延期',
               66: '办结'
               }
 
@@ -93,24 +94,44 @@ def create_item(request):
 # 显示main页面
 @login_check
 def main_show(request):
-    # 查询各类事项数量
-    count_0 = Item.objects.all().count()
-    count_1 = Item.objects.filter(status=1).count()
-    count_2 = Item.objects.filter(status=2).count()
-    count_3 = Item.objects.filter(status=3).count()
-    count_4 = Item.objects.filter(status=4).count()
-    count_5 = Item.objects.filter(status=5).count()
-    count_6 = Item.objects.filter(status=6).count()
-    count_7 = Item.objects.filter(status=7).count()
+    authority = request.session.get('authority', 2)
 
-    context = {'count_0': count_0,
-               'count_1': count_1,
-               'count_2': count_2,
-               'count_3': count_3,
-               'count_4': count_4,
-               'count_5': count_5,
-               'count_6': count_6,
-               'count_7': count_7,
+    if authority == 2:
+        # 查询各类事项数量
+        init = Item.objects.filter(status=1).count()
+        delivered = Item.objects.filter(status=2).count()
+        reject = Item.objects.filter(status=9).count()
+        handling = Item.objects.filter(status=3).count()
+        urge = Item.objects.filter(status=8).count()
+        overtime = Item.objects.filter(status=10).count()
+        complete = Item.objects.filter(status=4).count()
+        retreat = Item.objects.filter(status=6).count()
+        delay = Item.objects.filter(status=7).count()
+        refuse = Item.objects.filter(status=11).count()
+    else:
+        dept_id = request.session.get('dept_id', 0)
+
+        init = 0
+        delivered = Item.objects.filter(status=2).filter(assign_dept_id=dept_id).count()
+        reject = 0
+        handling = Item.objects.filter(status=3).filter(assign_dept_id=dept_id).count()
+        urge = Item.objects.filter(status=8).filter(assign_dept_id=dept_id).count()
+        overtime = Item.objects.filter(status=10).filter(assign_dept_id=dept_id).count()
+        complete = Item.objects.filter(status=4).filter(assign_dept_id=dept_id).count()
+        retreat = Item.objects.filter(status=6).filter(assign_dept_id=dept_id).count()
+        delay = Item.objects.filter(status=7).filter(assign_dept_id=dept_id).count()
+        refuse = Item.objects.filter(status=11).filter(assign_dept_id=dept_id).count()
+
+    context = {'count_init': init,
+               'count_delivered': delivered,
+               'count_reject': reject,
+               'count_handling': handling,
+               'count_urge': urge,
+               'count_overtime': overtime,
+               'count_complete': complete,
+               'count_retreat': retreat,
+               'count_delay': delay,
+               'count_refuse': refuse,
                }
 
     return render(request, 'main.html', context)
@@ -211,19 +232,19 @@ def all_show(request):
 
 
 # 查询事项分类
-# def cate_search(request):
-#     parent_id = request.GET.get('parent_id')
-#
-#     # 查询数据
-#     cate_list = Category.objects.filter(cate_id=parent_id)
-#
-#     # 构建返回的Json数组格式数据
-#     data = []
-#     for cate in cate_list:
-#         cate_info = {'id': cate.id, 'name': cate.name}
-#         data.append(cate_info)
-#
-#     return JsonResponse({'cate_list': data})
+def cate_search(request):
+    parent_id = int(request.GET.get('parent_id'))
+
+    # 查询数据
+    cate_list = Category.objects.filter(cate_id=parent_id)
+
+    # 构建返回的Json数组格式数据
+    data = []
+    for cate in cate_list:
+        cate_info = {'id': cate.id, 'name': cate.name}
+        data.append(cate_info)
+
+    return JsonResponse({'cate_list': data})
 
 
 # 未转办事项详情
@@ -242,11 +263,19 @@ def detail_show(request):
 
     # 查询事项大类
     cate1_list = Category.objects.filter(level=2)
+    # 查询事项二类
+    cate1_id = item_info.cate1_id if item_info.cate1_id else cate1_list[0].id
+    cate2_list = Category.objects.filter(level=3).filter(cate_id=cate1_id)
+    # 查询事项三类
+    cate2_id = item_info.cate2_id if item_info.cate2_id else cate2_list[0].id
+    cate3_list = Category.objects.filter(level=4).filter(cate_id=cate2_id)
 
     context = {'title': title,
                'item': item_info,
                'supervisor_list': supervisor_list,
                'cate1_list': cate1_list,
+               'cate2_list': cate2_list,
+               'cate3_list': cate3_list,
                }
 
     return render(request, 'item/detail.html', context)
@@ -279,6 +308,9 @@ def deliver_action(request):
     item_id = request.GET.get('item_id', '0')
     dept_id = request.GET.get('assign_dept_id', '0')
     dead_time = request.GET.get('dead_time', '')
+    cate1_id = int(request.GET.get('cate1', 0))
+    cate2_id = int(request.GET.get('cate2', 0))
+    cate3_id = int(request.GET.get('cate3', 0))
 
     item_info = Item.objects.get(id=item_id)
 
@@ -287,6 +319,9 @@ def deliver_action(request):
     item_info.dead_time = dead_time
     item_info.approval_content = None
     item_info.approval_person = None
+    item_info.cate1_id = cate1_id if cate1_id else None
+    item_info.cate2_id = cate2_id if cate2_id else None
+    item_info.cate3_id = cate3_id if cate3_id else None
 
     try:
         item_info.save()
@@ -372,6 +407,8 @@ def return_item(request):
 
     item_info.status_id = 6
     item_info.return_reason = return_reason
+    item_info.approval_content = None
+    item_info.approval_person = None
 
     try:
         item_info.save()
@@ -428,6 +465,10 @@ def delay_approve_item(request):
 
     item_info.status_id = 3
     item_info.dead_time = item_info.delay_time
+    item_info.approval_content = None
+    item_info.approval_person = None
+    item_info.delay_time = None
+    item_info.delay_reason = None
 
     try:
         item_info.save()
@@ -454,7 +495,9 @@ def delay_reject_item(request):
 
     item_info = Item.objects.get(id=item_id)
 
-    item_info.status_id = 3
+    item_info.status_id = 11
+    item_info.approval_content = None
+    item_info.approval_person = None
 
     try:
         item_info.save()
@@ -502,7 +545,7 @@ def accept_item(request):
     return HttpResponseRedirect(url)
 
 
-# 客户端拒收转办事项
+# 客户端退单
 def reject_item(request):
     item_id = request.GET.get('item_id', '0')
     reject_reason = request.GET.get('reject_reason', '')
@@ -517,6 +560,8 @@ def reject_item(request):
     item_info.reject_reason = reject_reason
     item_info.approval_content = approval_content
     item_info.approval_person = approval_person
+    item_info.delay_reason = None
+    item_info.delay_time = None
 
     try:
         item_info.save()
@@ -550,6 +595,7 @@ def complete_item(request):
     item_info.result = item_result
     item_info.approval_content = approval_content
     item_info.approval_person = approval_person
+    item_info.return_reason = None
 
     try:
         item_info.save()
@@ -761,7 +807,7 @@ def export_excel(request):
 
 # 判断是否超时
 def check_dead_time():
-    item_list = Item.objects.filter(status_id__in=[3, 6, 8])
+    item_list = Item.objects.filter(status_id__in=[3, 6, 8, 11])
 
     current_time = time.time()
 
@@ -772,3 +818,48 @@ def check_dead_time():
         if current_time > dead_time:
             item_info.status_id = 10
             item_info.save()
+
+
+# 显示各类事项总数
+def item_count(request):
+    authority = request.session.get('authority', 2)
+
+    if authority == 2:
+        # 查询各类事项数量
+        init = Item.objects.filter(status=1).count()
+        delivered = Item.objects.filter(status=2).count()
+        reject = Item.objects.filter(status=9).count()
+        handling = Item.objects.filter(status=3).count()
+        urge = Item.objects.filter(status=8).count()
+        overtime = Item.objects.filter(status=10).count()
+        complete = Item.objects.filter(status=4).count()
+        retreat = Item.objects.filter(status=6).count()
+        delay = Item.objects.filter(status=7).count()
+        refuse = Item.objects.filter(status=11).count()
+    else:
+        dept_id = request.session.get('dept_id', 0)
+
+        init = 0
+        delivered = Item.objects.filter(status=2).filter(assign_dept_id=dept_id).count()
+        reject = 0
+        handling = Item.objects.filter(status=3).filter(assign_dept_id=dept_id).count()
+        urge = Item.objects.filter(status=8).filter(assign_dept_id=dept_id).count()
+        overtime = Item.objects.filter(status=10).filter(assign_dept_id=dept_id).count()
+        complete = Item.objects.filter(status=4).filter(assign_dept_id=dept_id).count()
+        retreat = Item.objects.filter(status=6).filter(assign_dept_id=dept_id).count()
+        delay = Item.objects.filter(status=7).filter(assign_dept_id=dept_id).count()
+        refuse = Item.objects.filter(status=11).filter(assign_dept_id=dept_id).count()
+
+    data = {'init': init,
+            'delivered': delivered,
+            'reject': reject,
+            'handling': handling,
+            'urge': urge,
+            'overtime': overtime,
+            'complete': complete,
+            'retreat': retreat,
+            'delay': delay,
+            'refuse': refuse,
+            }
+
+    return JsonResponse(data)

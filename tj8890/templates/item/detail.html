@@ -15,6 +15,7 @@
 
             // 事项二类选择后, 三类对应变化
             $('.deliver-content select').eq(0).change(function() {
+                $.ajaxSettings.async = false;
                 var val = $(this).val();
                 if (val == 0) {
                     $('.deliver-content select').eq(1).val(0);
@@ -22,7 +23,7 @@
                 } else {
                     $('.deliver-content select').eq(1).removeAttr("disabled");
                     // var cate3 = $('.deliver-content input:hidden').eq(0).val();
-                    setCateInfo($(this), $('.deliver-content select').eq(1));
+                    setCateInfo($(this), $('.deliver-content select').eq(1), 0);
                 }
 
                 $('.deliver-content select').eq(1).change();
@@ -37,14 +38,14 @@
                 } else {
                     $('.deliver-content select').eq(2).removeAttr("disabled");
                     // var cate4 = $('.search input:hidden').eq(1).val();
-                    setCateInfo($(this), $('.deliver-content select').eq(3), cate4);
+                    setCateInfo($(this), $('.deliver-content select').eq(2), 0);
                 }
             });
         });
 
         // 选择不同的上级选项, 下级选择框相应变化
         function setCateInfo(parentObj, childObj, childId) {
-            // 设置查询下级复选框登记
+            // 设置查询下级复选框等级
             var childId = childId || 0;
             // 用户选择上级选项的id
             var parent_id = parentObj.val();
@@ -53,7 +54,7 @@
                 // 清空二级部门选择中的全部选项
                 childObj.empty();
                 // 根据查询结果, 添加二级部门子元素
-                var newOption = $('<option></option>').val(0).text('全部');
+                // var newOption = $('<option></option>').val(0).text('待定');
                 childObj.append(newOption);
                 for (i in data.cate_list) {
                     if (childId == data.cate_list[i].id) {
@@ -77,9 +78,18 @@
 
             if (status == 'delivery') {
                 var val = $('#agency_dept .datetime-picker').val();
+
                 if (val.length == 0) {
                     alert('转办时间不能为空!');
                 } else {
+                    var cate1 = $('.deliver-content select').eq(0).val();
+                    var cate2 = $('.deliver-content select').eq(1).val();
+                    var cate3 = $('.deliver-content select').eq(2).val();
+
+                    $('.deliver-dept input:hidden').eq(1).val(cate1);
+                    $('.deliver-dept input:hidden').eq(2).val(cate2);
+                    $('.deliver-dept input:hidden').eq(3).val(cate3);
+
                     submitForm(oForm, 'GET', '/item/deliver_action');
                 }
             }
@@ -243,25 +253,41 @@
                     <td><span>事项大类</span></td>
                     <td>
                         <select name="cate1">
-                            <option value="0">全部</option>
+                            <!--<option value="0">待定</option>-->
                             {% for cate in cate1_list %}
                             {% if item.cate1.id == cate.id %}
                             <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
                             {% else %}
                             <option value="{{ cate.id }}">{{ cate.name }}</option>
                             {% endif %}
-                            {{% endfor %}}
+                            {% endfor %}
                         </select>
                     </td>
                     <td></td>
                     <td><span>事项二类</span></td>
                     <td>
-                        <select name="cate2"></select>
+                        <select name="cate2">
+                            {% for cate in cate2_list %}
+                            {% if item.cate2.id == cate.id %}
+                            <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                            {% else %}
+                            <option value="{{ cate.id }}">{{ cate.name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
                     </td>
                     <td></td>
                     <td><span>事项三类</span></td>
                     <td>
-                        <select name="cate3"></select>
+                        <select name="cate3">
+                            {% for cate in cate3_list %}
+                            {% if item.cate3.id == cate.id %}
+                            <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                            {% else %}
+                            <option value="{{ cate.id }}">{{ cate.name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
                     </td>
                 </tr>
                 <tr>
@@ -313,21 +339,45 @@
                         <td><input type="text" value="{{ item.status.status_name }}" /></td>
                     </tr>
                 </table>
+                <input type="hidden" name="cate1" />
+                <input type="hidden" name="cate2" />
+                <input type="hidden" name="cate3" />
             </form>
         </div>
     </div>
+
+    <!-- 管理端显示退回重办信息 -->
+    {% if request.session.authority == 3 and item.status.id == 6 %}
+    <div class="return-item">
+        <div class="bar"></div>
+        <div class="title">
+            <p>退回重办<p>
+        </div>
+        <div class="content">
+            <form id="return_form">
+                <table>
+                    <tr>
+                        <td><span>重办原因</span></td>
+                        <td><textarea name="return_reason" placeholder="请填写退回重办原因">{{ item.return_reason|default:'' }}</textarea></td>
+                    </tr>
+                </table>
+                <input type="hidden" name="item_id" value="{{ item.id }}" />
+            </form>
+        </div>
+    </div>
+    {% endif %}
 
     <!--管理端显示退回信息-->
     {% if item.status.id == 9 %}
     <div class="reject-item">
         <div class="bar"></div>
         <div class="title">
-            <p>退回信息<p>
+            <p>退单信息<p>
         </div>
         <div class="content">
             <table>
                 <tr>
-                    <td rowspan="2"><span>退回原因</span></td>
+                    <td rowspan="2"><span>退单原因</span></td>
                     <td colspan="4" rowspan="2">
                         <textarea style="width: 430px;">{{ item.reject_reason|default:'' }}</textarea>
                     </td>
@@ -343,36 +393,9 @@
     </div>
     {% endif %}
 
-    <!-- 客户端退回 -->
-    {% if request.session.authority == 3 %}
-    {% if item.status.id == 2 or item.status.id == 3 or item.status.id == 8 or item.status.id == 6 or item.status.id == 10 %}
-    <div class="reject-item">
-        <div class="bar"></div>
-        <div class="title">
-            <p>退回信息<p>
-        </div>
-        <div class="content">
-            <table>
-                <tr>
-                    <form id="reject_form">
-                        <td rowspan="2"><span>退回原因</span></td>
-                        <td colspan="4" rowspan="2">
-                            <textarea id="reject_reason" name="reject_reason"></textarea>
-                        </td>
-                        <input type="hidden" name="item_id" value="{{ item.id }}" />
-                        <input type="hidden" name="approval_content" />
-                        <input type="hidden" name="approval_person" />
-                    </form>
-                <tr>
-            </table>
-        </div>
-    </div>
-    {% endif %}
-    {% endif %}
-
     <!-- 反馈信息 -->
     {% if request.session.authority == 3 %}
-    {% if item.status.id == 3  or item.status.id == 8 or item.status.id == 10 or item.status.id == 6 %}
+    {% if item.status.id == 3 or item.status.id == 4 or item.status.id == 8 or item.status.id == 10 or item.status.id == 6 or item.status.id == 11 %}
     <div class="feedback-content">
         <div class="bar"></div>
         <div class="title">
@@ -383,7 +406,7 @@
                 <tr>
                     <form id="complete_form">
                         <td><span>办理情况</span></td>
-                        <td><textarea id="complete_info" name="item_result">{{ item.result|default:'' }}</textarea></td>
+                        <td><textarea id="complete_info" name="item_result" placeholder="请填写详细的事项办理情况说明">{{ item.result|default:'' }}</textarea></td>
                         <td></td>
                         <input type="hidden" name="item_id" value="{{ item.id }}" />
                         <input type="hidden" name="approval_content" />
@@ -474,29 +497,8 @@
         <!--</div>-->
     <!--</div>-->
 
-    <!-- 退回重办 -->
-    {% if request.session.authority == 2 and item.status.id == 4 or item.status.id == 6 %}
-    <div class="return-item">
-        <div class="bar"></div>
-        <div class="title">
-            <p>退回重办<p>
-        </div>
-        <div class="content">
-            <form id="return_form">
-                <table>
-                    <tr>
-                        <td><span>退回原因</span></td>
-                        <td><textarea name="return_reason">{{ item.return_reason|default:'' }}</textarea></td>
-                    </tr>
-                </table>
-                <input type="hidden" name="item_id" value="{{ item.id }}" />
-            </form>
-        </div>
-    </div>
-    {% endif %}
-
     {% if request.session.authority == 3 %}
-    {% if item.status.id == 3 or item.status.id == 8 or item.status.id == 10 or item.status.id == 6 %}
+    {% if item.status.id == 3 or item.status.id == 8 or item.status.id == 10 or item.status.id == 6 or item.status.id == 11%}
     <!-- 客户端延期申请 -->
     <div class="delay-content">
         <div class="bar"></div>
@@ -508,11 +510,11 @@
                 <table>
                     <tr>
                         <td><span>延期时间</span></td>
-                        <td><input id="delay_time" type="text" class="datetime-picker" name="delay_time" value="{{ item.delay_time|date:'Y-m-d H:i:s'|default:'' }}" /></td>
+                        <td><input id="delay_time" type="text" class="datetime-picker" name="delay_time" value="{{ item.delay_time|date:'Y-m-d H:i:s'|default:'' }}" placeholder="请选择时间" /></td>
                     </tr>
                     <tr>
                         <td><span>延期理由</span></td>
-                        <td rowspan="2"><textarea id="delay_reason" name="delay_reason">{{ item.delay_reason|default:'' }}</textarea></td>
+                        <td rowspan="2"><textarea id="delay_reason" name="delay_reason" placeholder="请填写申请延期原因">{{ item.delay_reason|default:'' }}</textarea></td>
                     </tr>
                 </table>
                 <input type="hidden" name="item_id" value="{{ item.id }}" />
@@ -546,8 +548,35 @@
     </div>
     {% endif %}
 
+    <!-- 客户端退回 -->
+    {% if request.session.authority == 3 %}
+    {% if item.status.id == 2 or item.status.id == 3 or item.status.id == 8 or item.status.id == 6 or item.status.id == 10 or item.status.id == 11 %}
+    <div class="reject-item">
+        <div class="bar"></div>
+        <div class="title">
+            <p>退单信息<p>
+        </div>
+        <div class="content">
+            <table>
+                <tr>
+                    <form id="reject_form">
+                        <td rowspan="2"><span>退单原因</span></td>
+                        <td colspan="4" rowspan="2">
+                            <textarea id="reject_reason" name="reject_reason" placeholder="如退回该事项，请填写退回原因"></textarea>
+                        </td>
+                        <input type="hidden" name="item_id" value="{{ item.id }}" />
+                        <input type="hidden" name="approval_content" />
+                        <input type="hidden" name="approval_person" />
+                    </form>
+                <tr>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+    {% endif %}
+
     <!--显示领导审批-->
-    {% if item.status.id == 4 or item.status.id == 7 or item.status.id == 9 or item.status.id == 66 or request.session.authority == 3 %}
+    {% if item.status.id == 4 or item.status.id == 6 or item.status.id == 7 or item.status.id == 9 or item.status.id == 66 or request.session.authority == 3 %}
     <div class="approval-item">
         <div class="bar"></div>
         <div class="title">
@@ -558,14 +587,37 @@
                 <tr>
                     <td rowspan="2"><span>审批意见</span></td>
                     <td colspan="4" rowspan="2">
-                        <textarea id="approval-content" style="width: 430px;">{{ item.approval_content|default:'' }}</textarea>
+                        <textarea id="approval-content" style="width: 430px;" placeholder="请填写领导审批意见">{{ item.approval_content|default:'' }}</textarea>
                     </td>
                     <td></td>
                     <td><span>审批人</span></td>
-                    <td><input id="approval-person" type="text" value="{{ item.approval_person|default:'' }}" /></td>
+                    <td><input id="approval-person" type="text" value="{{ item.approval_person|default:'' }}" placeholder="请填写审批人姓名" /></td>
             </table>
         </div>
     </div>
+    {% endif %}
+
+    <!-- 管理端退回重办 -->
+    {% if request.session.authority == 2 %}
+    {% if item.status.id == 4 or item.status.id == 6 %}
+    <div class="return-item">
+        <div class="bar"></div>
+        <div class="title">
+            <p>退回重办<p>
+        </div>
+        <div class="content">
+            <form id="return_form">
+                <table>
+                    <tr>
+                        <td><span>重办原因</span></td>
+                        <td><textarea name="return_reason" placeholder="请填写退回重办原因">{{ item.return_reason|default:'' }}</textarea></td>
+                    </tr>
+                </table>
+                <input type="hidden" name="item_id" value="{{ item.id }}" />
+            </form>
+        </div>
+    </div>
+    {% endif %}
     {% endif %}
 
     <div class="operation">
@@ -592,11 +644,11 @@
             {% if request.session.authority == 3 %}
                 {% if item.status.id == 2 %}
                 <a class="btn btn-default" data-toggle="modal" data-target="#acceptModal" data-backdrop="static">接单</a>
-                <a class="btn btn-default" data-toggle="modal" data-target="#rejectModal" data-backdrop="static">退回</a>
-                {% elif item.status.id == 3 or item.status.id == 8 or item.status.id == 6 or item.status.id == 10 %}
+                <a class="btn btn-default" data-toggle="modal" data-target="#rejectModal" data-backdrop="static">退单</a>
+                {% elif item.status.id == 3 or item.status.id == 8 or item.status.id == 6 or item.status.id == 10 or item.status.id == 11 %}
                 <a class="btn btn-default" data-toggle="modal" data-target="#completeModal" data-backdrop="static">提交办结</a>
                 <a class="btn btn-default" data-toggle="modal" data-target="#delayApplyModal" data-backdrop="static">申请延期</a>
-                <a class="btn btn-default" data-toggle="modal" data-target="#rejectModal" data-backdrop="static">退回</a>
+                <a class="btn btn-default" data-toggle="modal" data-target="#rejectModal" data-backdrop="static">退单</a>
                 {% endif %}
             {% endif %}
             <a href="javascript: history.back(-1);" class="btn btn-default">返回</a>
@@ -780,7 +832,7 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
                     </button>
-                    <h4 class="modal-title" id="rejectModalLabel">退回事项</h4>
+                    <h4 class="modal-title" id="rejectModalLabel">退单事项</h4>
                 </div>
                 <div class="modal-body">
                     <p><span>是否确认退回该事项?</span></p>

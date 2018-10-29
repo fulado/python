@@ -48,6 +48,6 @@ class Item(models.Model):
     is_exported = models.BooleanField(default=False)                            # 是否已经导出
     approval_content = models.CharField(max_length=500, null=True, blank=True)  # 审批内容
     approval_person = models.CharField(max_length=20, null=True, blank=True)    # 审批人
-    cate1 = models.ForeignKey(Category, null=True, blank=True)  # 求助类别
-    cate2 = models.ForeignKey(Category, null=True, blank=True)  # 求助类别
-    cate3 = models.ForeignKey(Category, null=True, blank=True)  # 求助类别
+    cate1 = models.ForeignKey(Category, related_name='cate1', null=True, blank=True)  # 求助类别
+    cate2 = models.ForeignKey(Category, related_name='cate2', null=True, blank=True)  # 求助类别
+    cate3 = models.ForeignKey(Category, related_name='cate3', null=True, blank=True)  # 求助类别
