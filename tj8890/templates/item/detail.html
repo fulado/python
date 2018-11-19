@@ -13,7 +13,7 @@
                 todayBtn: true              //显示今日按钮
             });
 
-            // 事项二类选择后, 三类对应变化
+            // 事项一类选择后, 二类对应变化
             $('.deliver-content select').eq(0).change(function() {
                 $.ajaxSettings.async = false;
                 var val = $(this).val();
@@ -29,7 +29,7 @@
                 $('.deliver-content select').eq(1).change();
             });
 
-            // 事项三类选择后, 四类对应变化
+            // 事项二类选择后, 三类对应变化
             $('.deliver-content select').eq(1).change(function() {
                 var val = $(this).val();
                 if (val == 0) {

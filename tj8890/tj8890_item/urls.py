@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'^all/?', views.all_show),
     # url(r'^not_deliver/?', views.not_deliver_show),
     url(r'^detail/?', views.detail_show),
+
     url(r'^deliver_action/?', views.deliver_action),            # 转办
     url(r'^deliver_cancel/?', views.deliver_cancel),            # 撤销转办
     url(r'^remind_item/?', views.remind_item),                  # 催办
@@ -27,5 +28,9 @@ urlpatterns = [
     url(r'^over_time_test/?', views.check_dead_time),   # 测试是否超时
 
     url(r'^item_count/?', views.item_count),   # 获取各类事项总数
+    url(r'^cate_add/?', views.cate_add),
+    url(r'^cate_modify/?', views.cate_modify),
+    url(r'^cate_del/?', views.cate_del),
+    url(r'^cate/?', views.cate_show),
 ]
 

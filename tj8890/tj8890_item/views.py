@@ -160,7 +160,7 @@ def all_show(request):
 
     if authority == 3:
         dept_id = request.session.get('dept_id', 0)
-
+        print(dept_id)
         if dept_id != 0:
             item_list = item_list.filter(assign_dept_id=dept_id)
 
@@ -863,3 +863,156 @@ def item_count(request):
             }
 
     return JsonResponse(data)
+
+
+# 显示事项登录页面
+def cate_show(request):
+
+    level = int(request.GET.get('level', 1))
+
+    cate1_id = int(request.GET.get('cate1', 0))
+    cate2_id = int(request.GET.get('cate2', 0))
+
+    # 获得用户指定的页面
+    page_num = int(request.GET.get('page_num', 1))
+
+    # 查询事项大类
+    cate1_list = Category.objects.filter(level=2)
+
+    # 查询事项二类
+    cate1_id = cate1_id if cate1_id else cate1_list[0].id
+    cate1 = Category.objects.get(id=cate1_id)
+    cate2_list = Category.objects.filter(level=3).filter(cate_id=cate1_id)
+
+    # 查询事项三类
+    cate2 = Category.objects.get(id=cate2_id) if cate2_id else None
+    cate3_list = Category.objects.filter(level=4).filter(cate_id=cate2_id)
+
+    if level == 1:
+        cate_list = cate1_list
+    elif level == 2:
+        cate_list = cate2_list
+    elif level == 3:
+        cate_list = cate3_list
+    else:
+        cate_list = []
+
+    # 分页
+    mp = MyPaginator()
+    mp.paginate(cate_list, 10, page_num)
+
+    request.session['level'] = level
+    request.session['cate1_id'] = cate1_id
+    request.session['cate2_id'] = cate2_id
+
+    context = {
+        'level': level,
+        'cate1': cate1,
+        'cate2': cate2,
+        'cate1_id': cate1_id,
+        'cate2_id': cate2_id,
+        'cate1_list': cate1_list,
+        'cate2_list': cate2_list,
+        'cate3_list': cate3_list,
+        'mp': mp,
+    }
+
+    return render(request, 'item/cate.html', context)
+
+
+# 编辑分类
+def cate_modify(request):
+    cate_id = int(request.GET.get('cate_id', 0))
+    cate_name = request.GET.get('cate_name', 0)
+    super_id = int(request.GET.get('super_id', 0))
+
+    cate_list = Category.objects.filter(id=cate_id)
+
+    level = request.session.get('level', 1)
+    cate1_id = request.session.get('cate1_id', 0)
+    cate2_id = request.session.get('cate2_id', 0)
+
+    url = '/item/cate?level=%s&cate1=%s&cate2=%s' % (level, cate1_id, cate2_id)
+
+    if cate_list:
+        cate = cate_list[0]
+    else:
+        return HttpResponseRedirect(url)
+
+    if cate_name:
+        cate.name = cate_name
+
+    if super_id:
+        cate.cate_id = super_id
+
+    try:
+        cate.save()
+    except Exception as e:
+        print(e)
+
+    return HttpResponseRedirect(url)
+
+
+# 删除分类
+def cate_del(request):
+    cate_id = int(request.GET.get('cate_id', 0))
+
+    cate_list = Category.objects.filter(id=cate_id)
+
+    level = request.session.get('level', 1)
+    cate1_id = request.session.get('cate1_id', 0)
+    cate2_id = request.session.get('cate2_id', 0)
+
+    url = '/item/cate?level=%s&cate1=%s&cate2=%s' % (level, cate1_id, cate2_id)
+
+    if cate_list:
+        cate = cate_list[0]
+    else:
+        return HttpResponseRedirect(url)
+
+    # 查询分类是否包含子类
+
+    try:
+        cate.delete()
+    except Exception as e:
+        print(e)
+
+    return HttpResponseRedirect(url)
+
+
+# 添加分类
+def cate_add(request):
+    cate_name = request.GET.get('cate_name', '')
+    cate_level = request.GET.get('level', '')
+    super_id = request.GET.get('super_id', 0)
+
+    level = request.session.get('level', 1)
+    cate1_id = request.session.get('cate1_id', 0)
+    cate2_id = request.session.get('cate2_id', 0)
+
+    url = '/item/cate?level=%s&cate1=%s&cate2=%s' % (level, cate1_id, cate2_id)
+
+    if not cate_name:
+        return HttpResponseRedirect(url)
+
+    if '一' in cate_level:
+        cate_level = 2
+    elif '二' in cate_level:
+        cate_level = 3
+    elif '三' in cate_level:
+        cate_level = 4
+    else:
+        cate_level = 2
+    print(cate_name, cate_level)
+    cate = Category()
+    cate.name = cate_name
+    cate.level = cate_level
+    if super_id:
+        cate.cate_id = super_id
+
+    try:
+        cate.save()
+    except Exception as e:
+        print(e)
+
+    return HttpResponseRedirect(url)
