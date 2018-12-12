@@ -69,7 +69,8 @@ def login_service(request):
             request.session['dept_id'] = 1
 
         request.session['authority'] = user.authority
-        request.session['user'] = user
+        request.session['real_name'] = user.real_name
+        request.session['dept_name'] = user.dept.name
 
         default_time_begin = time.strftime('%Y-01-01', time.localtime())
         default_time_end = time.strftime('%Y-%m-%d', time.localtime())

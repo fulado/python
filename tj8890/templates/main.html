@@ -45,7 +45,7 @@
             <img class="img01" src="/static/image/mark1.png" alt="警徽" />
             <p class="title">天津市公安交通管理局便民专线服务平台</p>
             <p class="user">
-                欢迎&nbsp;:&nbsp;<span>{{ request.session.user.dept.name }}</span>&nbsp;>&nbsp;<span>{{ request.session.user.real_name }}</span>
+                欢迎&nbsp;:&nbsp;<span>{{ request.session.dept_name }}</span>&nbsp;>&nbsp;<span>{{ request.session.real_name }}</span>
                 &nbsp;|&nbsp;<a href="/user/logout">退出</a>
             </p>
         </div>

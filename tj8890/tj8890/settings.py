@@ -89,7 +89,7 @@ DATABASES = {
         # 'HOST': '127.0.0.1',
         'PORT': 3306,
         'USER': 'root',
-        'PASSWORD': 'Bpo@2018',
+        'PASSWORD': 'yxtc_20921',
     }
 }
 
@@ -116,4 +116,4 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
