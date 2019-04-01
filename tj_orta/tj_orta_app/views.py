@@ -417,8 +417,17 @@ def verify_pass(request):
             # 生成通行证图片
             # 生成通行证id, 201805+车牌号+三位随机数
             # 获取当前年, 月
-            year = time.localtime().tm_year
-            month = time.localtime().tm_mon
+            submit_time = truck.submit_time
+
+            year = submit_time.timetuple().tm_year
+            month = submit_time.timetuple().tm_mon
+            day = 1
+
+            month_verify = time.localtime().tm_mon
+
+            if month != month_verify:
+                day = time.localtime().tm_mday
+
             # 如果是12月, 则年+1, 月变为1; 否则, 月+1
             if month == 12:
                 year += 1
@@ -436,7 +445,7 @@ def verify_pass(request):
             truck.cert_id = certification_id
             # 计算通行证截至日期
             end_day = calendar.monthrange(year, month)[1]
-            limit_data = '%d年%d月%d日 — %d年%d月%d日' % (year, month, 1, year, month, end_day)
+            limit_data = '%d年%d月%d日 — %d年%d月%d日' % (year, month, day, year, month, end_day)
             number = '%s' % truck.number
             enterprise_name = truck.enterprise.enterprise_name
             route = truck.route
@@ -713,8 +722,12 @@ def export_to_ep(request):
 
             # 起始时间
             jgj_time = truck.jgj_time
-            year = jgj_time.year
-            month = jgj_time.month
+            if jgj_time:
+                year = jgj_time.year
+                month = jgj_time.month
+            else:  # 临时设置为5, 以后把这段删除
+                year = 2018
+                month = 5
 
             if month == 12:
                 year += 1
