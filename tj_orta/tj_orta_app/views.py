@@ -620,8 +620,17 @@ def import_xls(request):
             # 生成通行证图片
             # 生成通行证id, 201805+车牌号+三位随机数
             # 获取当前年, 月
-            year = time.localtime().tm_year
-            month = time.localtime().tm_mon
+            submit_time = truck.submit_time
+
+            year = submit_time.timetuple().tm_year
+            month = submit_time.timetuple().tm_mon
+            day = 1
+
+            month_verify = time.localtime().tm_mon
+
+            if month != month_verify:
+                day = time.localtime().tm_mday
+
             # 如果是12月, 则年+1, 月变为1; 否则, 月+1
             if month == 12:
                 year += 1
@@ -639,7 +648,7 @@ def import_xls(request):
             truck.cert_id = certification_id
             # 计算通行证截至日期
             end_day = calendar.monthrange(year, month)[1]
-            limit_data = '%d年%d月%d日 — %d年%d月%d日' % (year, month, 1, year, month, end_day)
+            limit_data = '%d年%d月%d日 — %d年%d月%d日' % (year, month, day, year, month, end_day)
             number = '%s' % truck.number
             enterprise_name = truck.enterprise.enterprise_name
             route = truck.route
@@ -649,7 +658,11 @@ def import_xls(request):
 
             generate_certification(certification_id, limit_data, number, enterprise_name, route, file_name)
 
-        truck.save()
+            # 存入数据库
+        try:
+            truck.save()
+        except Exception as e:
+            print(e)
 
     return HttpResponseRedirect('/verify')
 
