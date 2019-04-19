@@ -201,6 +201,7 @@ def vehicle_submit(request):
         truck.submit_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
     else:
         truck.status_id = 3
+        truck.submit_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
     # 存入数据库
     try:

@@ -61,6 +61,8 @@ class Vehicle(models.Model):
     reason = models.CharField(max_length=100, null=True, blank=True)        # 未通过原因
     file_name = models.CharField(max_length=100, null=True, blank=True)     # 通行证完整保存路径
     cert_id = models.CharField(max_length=30, null=True, blank=True)        # 通行证id
+    start_time = models.DateTimeField(null=True, blank=True)                # 通行证有效期起始时间
+    end_time = models.DateTimeField(null=True, blank=True)                  # 通行证有效期截止时间
 
 
 # 系统状态表
