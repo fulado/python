@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from .models import Backup1, Vehicle, SysStatus, User
 from tj_orta import settings
 import os
@@ -72,4 +73,51 @@ def forbid_submit():
     sys_status = SysStatus.objects.get(id=1)
     sys_status.allow_submit = False
     sys_status.save()
-    print('submit forbidden!')
+    print('submit is forbidden!')
+
+
+# 允许提交申请
+def permit_submit():
+    sys_status = SysStatus.objects.get(id=1)
+    sys_status.allow_submit = True
+    sys_status.save()
+    print('submit is permitted!')
+
+
+# 重置系统请求
+def init_sys_request(request):
+    init_sys()
+
+    # 构建返回url
+    number = request.session.get('number', '')
+    status = request.session.get('status', '')
+    page_num = request.session.get('page_num', '')
+    url = '/verify?number=%s&page_num=%s&status=%s' % (number, page_num, status)
+
+    return HttpResponseRedirect(url)
+
+
+# 禁止提交请求
+def forbid_submit_request(request):
+    forbid_submit()
+
+    # 构建返回url
+    number = request.session.get('number', '')
+    status = request.session.get('status', '')
+    page_num = request.session.get('page_num', '')
+    url = '/verify?number=%s&page_num=%s&status=%s' % (number, page_num, status)
+
+    return HttpResponseRedirect(url)
+
+
+# 允许提交请求
+def permit_submit_request(request):
+    permit_submit()
+
+    # 构建返回url
+    number = request.session.get('number', '')
+    status = request.session.get('status', '')
+    page_num = request.session.get('page_num', '')
+    url = '/verify?number=%s&page_num=%s&status=%s' % (number, page_num, status)
+
+    return HttpResponseRedirect(url)

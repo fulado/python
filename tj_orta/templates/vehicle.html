@@ -159,7 +159,7 @@
                         '{{ vehicle.register_date|date:'Y-m-d' }}', '{{ vehicle.route|linebreaksbr }}');" class="see" style="margin-right: 5px;">提交</a>
                         {% endif %}
                         {% if vehicle.status.id == 4 %}
-                        <a href="/static/certification/{{ vehicle.file_name }}" target="_Blank" class="see download" style="margin-right: 5px;">下载</a>
+                        <a href="/download_certification?file_name={{ vehicle.file_name }}&month=1" target="_Blank" class="see download" style="margin-right: 5px;">下载</a>
                         {% endif %}
                     </td>
                 </tr>

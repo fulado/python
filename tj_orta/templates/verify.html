@@ -108,6 +108,9 @@
                 </select>
                 <input type="submit" class="find_btn" value="查询" style="padding: 0px;"/>
             </form>
+            <a href="#"><span class="out outexcel reset">重置系统</span></a>
+            <a href="/forbid_submit"><span class="out outexcel">禁止提交申请</span></a>
+            <a href="/permit_submit"><span class="out outexcel">允许提交申请</span></a>
             <a href="/export_to_ep"><span class="out outexcel">导出审核通过车辆</span></a>
             <a href="/export_xls"><span class="out outexcel">导出待审核车辆</span></a>
             <a href="#"><span class="in inexcel">导入审核后车辆</span></a>
@@ -362,7 +365,7 @@
 
 <script type="text/javascript">
     $(function() {
-        // 显示编辑车辆信息模态框
+        // 显示审核车辆信息模态框
         $('.table_box .verify-vehicle-info').click(function() {
             $('.verify-vehicle').show();
             $('.mask').show();
@@ -421,6 +424,13 @@
                 $('.pop-up1 form').submit();
             } else {
                 alert('请选择需要导入的文件');
+            }
+        });
+
+        // 重置系统
+        $('.search_input .reset').click(function() {
+            if (confirm('是否重置系统？')) {
+                window.location.href = "/init_sys";
             }
         });
     });

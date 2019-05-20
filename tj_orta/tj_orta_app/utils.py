@@ -11,6 +11,7 @@ import random
 
 from .models import Vehicle
 
+
 # 生成通行证图片
 def generate_certification(certification_id, limit_data, number, enterprise_name, route, file_name):
     # 设置输出文字内容
@@ -20,6 +21,14 @@ def generate_certification(certification_id, limit_data, number, enterprise_name
     number = '牌照号：%s' % number
     enterprise_name = '所属企业: %s' % enterprise_name
     route = '行驶路线：%s' % route
+
+    route_list = list(route)
+    i = 1
+    while i * 40 < len(route):
+        route_list.insert(i * 40, '\n')
+        i += 1
+
+    route_print = ''.join(route_list)
 
     instrument_title = '使用说明'
     instrument_line_1 = '1.持此证每日9时至16时可在外环线上按照证上指定路线行驶。'
@@ -55,8 +64,8 @@ def generate_certification(certification_id, limit_data, number, enterprise_name
     point_y += step_y
     draw.text((70, point_y), enterprise_name, font=font, fill=(0, 0, 0))
     point_y += step_y
-    draw.text((70, point_y), route, font=font, fill=(0, 0, 0))
-    point_y += step_y
+    draw.text((70, point_y), route_print, font=font, fill=(0, 0, 0))
+    point_y += step_y + 20 * i
 
     # 输出说明文字
     step_y = 40
@@ -133,6 +142,7 @@ def verify_vehicle_pass(truck):
     # 生成通行证图片
     # 生成通行证id, 201805+车牌号+三位随机数
     # 获取当前年, 月
+
     submit_time = truck.submit_time
 
     year = submit_time.timetuple().tm_year

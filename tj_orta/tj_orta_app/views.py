@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import HttpResponseRedirect
 from django.http import JsonResponse
 from django.shortcuts import HttpResponse
+from django.http import FileResponse
 from .models import User, Vehicle
 from tj_orta.utils import MyPaginator
 from .utils import verify_vehicle, verify_vehicle_pass
@@ -558,6 +559,12 @@ def import_xls(request):
             # 读取未通过原因
             if worksheet.cell(i, 9).ctype != 5 and worksheet.cell_value(i, 9) != '':
                 truck.reason = worksheet.cell_value(i, 9)  # 未通过原因
+
+            # 存入数据库
+            try:
+                truck.save()
+            except Exception as e:
+                print(e)
         else:
             continue
 
@@ -664,3 +671,19 @@ def export_to_ep(request):
         url = '/verify?number=%s&page_num=%s&status=%s' % (number, page_num, status)
 
         return HttpResponseRedirect(url)
+
+
+def download_certification(request):
+    file_name = request.GET.get('file_name')
+    month = int(request.GET.get('month', 1))
+
+    if month == 1:
+        file_path = r'%s/certification/%s' % (settings.FILE_DIR, file_name)
+    else:
+        file_path = r'%s/certification_backup/%s' % (settings.FILE_DIR, file_name)
+
+    file = open(file_path, 'rb')
+    response = FileResponse(file)
+    response['Content-Type'] = 'application/octet-stream'
+    response['Content-Disposition'] = 'attachment;filename=' + file_name
+    return response
