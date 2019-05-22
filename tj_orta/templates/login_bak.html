@@ -76,57 +76,52 @@
         <!--<span class="number_word">提交审核车辆数: &nbsp;</span>-->
         <!--<span class="number"></span>-->
         <!--<span class="tooltip_btn" id='user_setting'>个人设置</span>-->
-        <!--<a href="/download"><span class="tooltip_btn" style="width: 150px;">通行证查询下载</span></a>-->
+        <a href="/download"><span class="tooltip_btn" style="width: 150px;">通行证查询下载</span></a>
     </div>
 </div>
-<!--<div class="form_wrapper">-->
-    <!--<form action="/login_handle" method="post" id="form_box">-->
-        <!--{% csrf_token %}-->
-        <!--<div class="login_btn">用户登录</div>-->
-        <!--<div class="form_group">-->
-            <!--<span class="word">账号</span>-->
-            <!--<input type="text" placeholder="输入账号" id="username" name="username" class=""/>-->
-        <!--</div>-->
-        <!--<div class="form_group">-->
-            <!--<span class="word">密码</span>-->
-            <!--<input type="password" placeholder="输入密码" id="psw" name="password"/>-->
-        <!--</div>-->
-        <!--<div class="form_group">-->
-            <!--<span class="word" style="margin-left: 15px;">验证码</span>-->
-            <!--<input type="text" placeholder="输入验证码" id="yz" class="yz" name="check_code"/>-->
-            <!--<div class="YZ_img">-->
-                <!--<img src="/check_code" alt="" width="100%" height="100%"/>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div class="login_button" id="login_button">登录</div>-->
-        <!--&lt;!&ndash;<div class="login_button link_button" id="link_button">直接查询</div>&ndash;&gt;-->
-        <!--&lt;!&ndash; <div class="login_button operation" id="operation">申请流程下载</div> &ndash;&gt;-->
-    <!--</form>-->
-    <!--<p style="font-size: 20px; text-align: center; margin-top: 10px;">{{ msg }}</p>-->
-<!--</div>-->
+<div class="form_wrapper">
+    <form action="/login_handle" method="post" id="form_box">
+        {% csrf_token %}
+        <div class="login_btn">用户登录</div>
+        <div class="form_group">
+            <span class="word">账号</span>
+            <input type="text" placeholder="输入账号" id="username" name="username" class=""/>
+        </div>
+        <div class="form_group">
+            <span class="word">密码</span>
+            <input type="password" placeholder="输入密码" id="psw" name="password"/>
+        </div>
+        <div class="form_group">
+            <span class="word" style="margin-left: 15px;">验证码</span>
+            <input type="text" placeholder="输入验证码" id="yz" class="yz" name="check_code"/>
+            <div class="YZ_img">
+                <img src="/check_code" alt="" width="100%" height="100%"/>
+            </div>
+        </div>
+        <div class="login_button" id="login_button">登录</div>
+        <!--<div class="login_button link_button" id="link_button">直接查询</div>-->
+        <!-- <div class="login_button operation" id="operation">申请流程下载</div> -->
+    </form>
+    <p style="font-size: 20px; text-align: center; margin-top: 10px;">{{ msg }}</p>
+</div>
 
 <!--模态框-公告-->
 <div class="announce">
-    <h1>关于外环线日间通行证网址变更的通知</h1>
-    <br/>
-    <br/>
+    <h1>关于重新审核外环线日间通行证申领资格的通知</h1>
     <p>各领证单位：</p>
-    <br/>
-    <p>外环线通行证网址变更为：<a href="http://39.106.89.116:10071">http://39.106.89.116:10071</a>，请各单位登陆新网址办理通行证业务。</p>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;按照局工作部署，为规范和加强外环线日间通行证审核，定于每年年底前对所有领取外环线日间通行证的车辆进行重新审核，由相关委办局或相关单位上级
+        行政主管部门重新向我局提交函件，明确通行依据和车辆明细，经局批准后，方准许有关车辆在下一年度领取外环线日间通行证。现已将各单位外环线日间
+        通行证申领资格延期至2019年3月底，请各申请单位于2019年3月15日前，协调上级行政主管部门向我局提交函件，申请2019年度外环线日间通行证。
+        逾期未提交或未按规定及时提交的，我局将于2019年4月份起，取消该单位外环线日间通行证申领资格。
+        环城四区交警支队核发的外环线日间通行证参照上述要求执行，由申请单位向发证支队重新提交申请。</p>
     <p style="text-align: right;">特此通知。</p>
     <p style="text-align: right;">交管局秩序支队</p>
     <p style="text-align: right;">通行证管理办公室</p>
-    <p style="text-align: right;">2019年5月20日</p>
-    <!--<div>-->
-        <!--<button class="btn" disabled>已阅读</button>-->
-        <!--<p class="time">（<span>5</span>）</p>-->
-    <!--</div>-->
+    <p style="text-align: right;">2019年2月26日</p>
+    <div>
+        <button class="btn" disabled>已阅读</button>
+        <p class="time">（<span>5</span>）</p>
+    </div>
 </div>
 
 </body>
@@ -159,17 +154,17 @@
         });
 
         // 计时
-        // var total_time = 4;
-        // function time_left() {
-        //     $('.announce span').text(total_time);
-        //     total_time--;
-        //
-        //     if (total_time < 0) {
-        //         $('.announce .btn').removeAttr("disabled");
-        //         clearInterval(time_counter);
-        //     }
-        // }
-        // var time_counter = setInterval(time_left,1000);
+        var total_time = 4;
+        function time_left() {
+            $('.announce span').text(total_time);
+            total_time--;
+
+            if (total_time < 0) {
+                $('.announce .btn').removeAttr("disabled");
+                clearInterval(time_counter);
+            }
+        }
+        var time_counter = setInterval(time_left,1000);
     });
 </script>
 </html>

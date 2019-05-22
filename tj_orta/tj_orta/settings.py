@@ -28,9 +28,9 @@ SECRET_KEY = 'awgn&oirft*niq0-#2jbk7%vctqnq!9#l66kk#xsbdqn_ugf5k'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 # settings for development
-# DEBUG = True
-#
-# ALLOWED_HOSTS = []
+DEBUG = True
+
+ALLOWED_HOSTS = []
 
 # DATABASES = {
 #     'default': {
@@ -48,32 +48,32 @@ SECRET_KEY = 'awgn&oirft*niq0-#2jbk7%vctqnq!9#l66kk#xsbdqn_ugf5k'
 #
 # ALLOWED_HOSTS = ['*', ]
 #
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'tj_orta',
-#         'PORT': 3306,
-#         'HOST': '192.168.100.248',
-#         'USER': 'root',
-#         'PASSWORD': 'yxtc_20921',
-#     }
-# }
-
-# settings for production
-DEBUG = False
-
-ALLOWED_HOSTS = ['*', ]
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'whx_pass',
+        'NAME': 'tj_orta',
         'PORT': 3306,
-        'HOST': 'rm-2zea9z45nxl14k73v.mysql.rds.aliyuncs.com',
-        'USER': 'whx',
+        'HOST': '192.168.100.248',
+        'USER': 'root',
         'PASSWORD': 'yxtc_20921',
     }
 }
+
+# settings for production
+# DEBUG = False
+#
+# ALLOWED_HOSTS = ['*', ]
+#
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'whx_pass',
+#         'PORT': 3306,
+#         'HOST': 'rm-2zea9z45nxl14k73v.mysql.rds.aliyuncs.com',
+#         'USER': 'whx',
+#         'PASSWORD': 'yxtc_20921',
+#     }
+# }
 
 
 # Application definition

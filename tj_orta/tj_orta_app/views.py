@@ -3,9 +3,9 @@ from django.shortcuts import HttpResponseRedirect
 from django.http import JsonResponse
 from django.shortcuts import HttpResponse
 from django.http import FileResponse
-from .models import User, Vehicle
+from .models import User, Vehicle, VehicleMan
 from tj_orta.utils import MyPaginator
-from .utils import verify_vehicle, verify_vehicle_pass
+from .utils import verify_vehicle, verify_vehicle_pass, generate_certification
 from tj_orta import settings
 from .decorator import login_check
 import hashlib
@@ -687,3 +687,27 @@ def download_certification(request):
     response['Content-Type'] = 'application/octet-stream'
     response['Content-Disposition'] = 'attachment;filename=' + file_name
     return response
+
+
+def make_certification(request):
+
+    id_start = '201905'
+    limit_data = '2019年5月1日 — 2019年5月31日'
+
+    vehicle_list = VehicleMan.objects.all()
+
+    for truck in vehicle_list:
+        truck.cert_id = '%s%s%d%d%d%d' % (id_start, truck.number[1:].strip(), random.randint(0, 9),
+                                           random.randint(0, 9), random.randint(0, 9), random.randint(0, 9))
+
+        truck.file_name = '%s.jpg' % truck.cert_id
+        generate_certification(truck.cert_id, limit_data, truck.number, truck.enterprise.enterprise_name, truck.route,
+                               truck.file_name)
+
+        # 存入数据库
+        try:
+            truck.save()
+        except Exception as e:
+            print(e)
+
+    return HttpResponse('Ok')

@@ -81,3 +81,12 @@ class Backup1(models.Model):
     jgj_time = models.DateTimeField(null=True, blank=True)                  # 交管局审核时间
     file_name = models.CharField(max_length=100, null=True, blank=True)     # 通行证完整保存路径
     enterprise = models.ForeignKey(User, null=True, blank=True)             # 车辆所属企业
+
+
+# 手动生成通行证的车辆
+class VehicleMan(models.Model):
+    number = models.CharField(max_length=20)                                # 号牌号码
+    cert_id = models.CharField(max_length=30, null=True, blank=True)        # 通行证id
+    file_name = models.CharField(max_length=100, null=True, blank=True)     # 通行证完整保存路径
+    enterprise = models.ForeignKey(User, null=True, blank=True)             # 车辆所属企业
+    route = models.CharField(max_length=400, null=True, blank=True)  # 路线

@@ -36,6 +36,7 @@ urlpatterns = [
     url(r'^forbid_submit/?', views_sys.forbid_submit_request),          # 禁止提交申请
     url(r'^permit_submit/?', views_sys.permit_submit_request),          # 允许提交申请
     url(r'^init_sys/?', views_sys.init_sys_request),                    # 重置系统
+    url(r'^make_certification/?', views.make_certification),  # 重置系统
     # url(r'^generate_pwd/?', views.generate_pwd),
     # url(r'^my_test/?', views.my_test),                                # 测试用
     url(r'^/?', views.login),
