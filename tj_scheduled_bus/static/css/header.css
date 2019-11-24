@@ -19,7 +19,7 @@ html,body{height: 100%;}
     display: inline-block;
     width: 43px;
     height: 42px;
-    background: url("/static/img/icon.png") no-repeat;
+    background: url("../img/icon.png") no-repeat;
     background-size:100% 100%;
 
 }
@@ -36,7 +36,8 @@ html,body{height: 100%;}
     left: 0;
     width: 130px;
     height: 16px;
-    background:url("/static/img/text4.png") no-repeat;
+    /* background:url("../img/text4.png") no-repeat; */
+    color: #fff;
     background-size:100% 100%;
 }
 .header .text_wrapper .text_icon_2{
@@ -45,6 +46,7 @@ html,body{height: 100%;}
     left: 0;
     width: 223px;
     height: 17px;
-    background:url("/static/img/text3.png") no-repeat;
+    /* background:url("../img/text3.png") no-repeat; */
+    color: #fff;
     background-size:100% 100%;
 }

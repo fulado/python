@@ -79,9 +79,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'tj_scheduled_bus',
         'HOST': '127.0.0.1',
-        'PORT': 63226,
+        'PORT': 3306,
         'USER': 'root',
-        'PASSWORD': 'Init1234',
+        'PASSWORD': 'xiaobai',
     }
 }
 

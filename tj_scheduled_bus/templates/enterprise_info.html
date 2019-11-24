@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<!-- saved from url=(0056)http://yjhctxz.ethane.com.cn:10245/traffic/company/index -->
+<html><head lang="en"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <!-- 目前仅限360急速浏览 webkit:急速  ie-comp:ie兼容模式   ie-stand: ie标准模式 -->
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/initial.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/account_number.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/modle.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/paging.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/darktooltip.css"/>
+
+    <style type="text/css">
+        .pop-up form div input{
+            display: inline-block;
+            width: 260px;
+        }
+        .my-modal-footer .save {
+            background-color: #25B4B2;
+        }
+        .my-modal-title{
+            text-align: center;
+            font-size: 20px;
+        }
+        .pop-up form div select{
+            width: 360px;
+            height: 32px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            border: solid 1px #eeeeee;
+            text-indent: 0.5em;
+            outline: none;
+            width: 260px;
+        }
+
+        .my-modal-footer .btn{
+            margin-left: 0px;
+        }
+    </style>
+    <title></title>
+</head>
+<body>
+
+<!-- 企业信息 -->
+<div class="pop-up add-enterprise" style="height: 760px;">
+
+    <div class="my-modal-body" style="margin-top: 20px;">
+        <form id="form_1" action="/enterprise_add" method="POST">
+            {% csrf_token %}
+            <div class="ePrisename">
+                <label for="ePrisename">审核状态</label>
+                <span>此处加入审核状态</span>
+            </div>
+            <div class="ePrisename">
+                <label for="ePrisename">车辆所属</label>
+                <input name="own" type="checkbox" style="width: 20px; height: 20px; margin: 0px; vertical-align: middle;" />
+                <span style="margin-right: 20px;">自有</span>
+                <input name="rent" type="checkbox" onchange="showRentInfo(this.checked)" id="isRent" style="width: 20px; height: 20px; margin: 0px; vertical-align: middle;" />
+                <span>租赁</span>
+            </div>
+            <div class="ePrisename">
+                <label for="ePrisename">企业名称</label>
+                <input type="text" placeholder="输入企业名称" id="ePrisename" name="companyName" data-inputid="77">
+            </div>
+            <div class="organization">
+                <label for="organization">统一社会信用代码</label>
+                <input type="text" placeholder="输入组织机构代码" id="organization" name="orgCode">
+            </div>
+            <div class="corporation">
+                <label for="corporation">法人</label>
+                <input type="text" placeholder="输入法人姓名" id="corporation" name="corName" data-nameid="109">
+            </div>
+            <div class="contacts">
+                <label for="contacts">联系人</label>
+                <input type="text" placeholder="输入联系人姓名" id="contacts" name="contect">
+            </div>
+            <div class="contactway">
+                <label for="contactway">联系方式</label>
+                <input type="text" placeholder="输入联系人的联系方式" id="contactway" name="conMobile">
+            </div>
+            <div class="contactway">
+                <label for="user">营业执照</label>
+                <input type="file" name="file" id="file" onchange="getPhotoSize(this)" />
+            </div>
+            <div class="contactway">
+                <label for="user">法人身份证正面</label>
+                <input type="file" name="file" id="file" onchange="getPhotoSize(this)" />
+            </div>
+            <div class="contactway">
+                <label for="user">法人身份证反面</label>
+                <input type="file" name="file" id="file" onchange="getPhotoSize(this)" />
+            </div>
+
+            <p style="margin: auto; font-size: 16px;text-align: center; margin-bottom: 10px;" class="rent_title" hidden>租赁车辆相关信息</p>
+            <div class="rent_name" hidden>
+                <label for="contacts">租赁公司名称</label>
+                <input type="text" placeholder="租赁公司名称" id="contacts" name="contect">
+            </div>
+            <div class="rent_owner" hidden>
+                <label for="contacts">租赁公司法人</label>
+                <input type="text" placeholder="租赁公司法人" id="contacts" name="contect">
+            </div>
+            <div class="rent_contact" hidden>
+                <label for="contacts">租赁公司联系人</label>
+                <input type="text" placeholder="输入联系人姓名" id="contacts" name="contect">
+            </div>
+            <div class="rent_phone" hidden>
+                <label for="contacts">租赁公司联系方式</label>
+                <input type="text" placeholder="输入联系人姓名" id="contacts" name="contect">
+            </div>
+            <div class="rent_license" hidden>
+                <label for="user">租赁公司营业执照</label>
+                <input type="file" name="file" id="file" onchange="getPhotoSize(this)" />
+            </div>
+            <div class="rent_contract" hidden>
+                <label for="user">租赁合同</label>
+                <input type="file" name="file" id="file" onchange="getPhotoSize(this)" />
+            </div>
+        </form>
+    </div>
+    <div class="my-modal-footer">
+        <div class="clickbtn" style="margin: 5px;width: 410px;text-align: center;margin-left: 25px;">
+            <button type="button" class="btn save">保存</button>
+            <button type="button" class="btn reset" style="display: none;">重置</button>
+            <button type="button" class="btn del" style="margin: 0px;">取消</button>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑企业信息 -->
+<div class="pop-up modify-enterprise" style="display: none;height: 760px;">
+    <div class="my-modal-title">
+        <p>编辑企业</p>
+    </div>
+    <div class="my-modal-body" style="margin-top: 20px;">
+        <form action="#" method="POST">
+            {%csrf_token%}
+            <p style="margin: auto;font-size: 16px;text-align: center;margin-bottom: 10px;">企业信息</p>
+            <div class="ePrisename">
+                <label for="ePrisename">企业名称</label>
+                <input type="text" placeholder="输入企业名称" id="ePrisename" name="companyName" value="中铁四局集团有限公司"/>
+            </div>
+            <div class="contact">
+                <label for="contact">联系方式(企业)</label>
+                <input type="text" placeholder="输入企业联系方式" id="contact" name="tel" value="24413299"/>
+            </div>
+            <div class="corporation">
+                <label for="corporation">法人</label>
+                <input type="text" placeholder="输入法人姓名" id="corporation" name="corName" value="张河川"/>
+            </div>
+            <div class="organization">
+                <label for="organization">组织机构的代码</label>
+                <input type="text" placeholder="输入组织机构代码" id="organization" name="orgCode" value="913400001491855256"/>
+            </div>
+            <p style="margin: auto;font-size: 16px;text-align: center;margin-bottom: 10px;">联系人信息</p>
+            <div class="contacts">
+                <label for="contacts">联系人</label>
+                <input type="text" placeholder="输入联系人姓名" id="contacts" name="contect" value="王海兵"/>
+            </div>
+            <div class="contactway">
+                <label for="contactway">联系方式(联系人)</label>
+                <input type="text" placeholder="输入联系人的联系方式" id="contactway" name="conMobile" value="18622313664"/>
+            </div>
+            <p style="margin: auto;font-size: 16px;text-align: center;margin-bottom: 10px;">帐号信息</p>
+            <div class="user">
+                <label for="user">账号</label>
+                <input type="text" placeholder="输入账号" id="user" name="username" />
+            </div>
+            <div class="pwd">
+                <label for="pwd">密码</label>
+                <input type="password" placeholder="输入密码" id="pwd" name="password"/>
+            </div>
+            <div class="pwd">
+                <label for="pwd">帐号权限</label>
+                <select name="author">
+                    <option value="1">企业权限</option>
+                    <option value="2">环保局权限</option>
+                    <option value="3">交管局权限</option>
+                </select>
+            </div>
+            <div class="limit">
+                <label>通行证申请上限</label>
+                <input type="text" placeholder="输入可申请通行证上限" name="limit_number" />
+            </div>
+            <input type="hidden" name="id" />
+        </form>
+    </div>
+    <div class="my-modal-footer">
+        <div class="clickbtn" style="margin: 5px;width: 460px;text-align: center;">
+            <button type="button" class="btn save">保存</button>
+            <button type="button" class="btn delete">删除</button>
+            <button type="button" class="btn del" style="margin: 0px;">取消</button>
+        </div>
+    </div>
+</div>
+<div class="mask" style="display: none;"></div>
+<input type="hidden" id="pageNum" value="1">
+
+<script type="text/javascript" src="/static/js/jquery-3.1.0.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="/static/js/through.js"></script>
+<script type="text/javascript" src="/static/js/query.js"></script>
+<script type="text/javascript" src="/static/js/paging.js"></script>
+<script type="text/javascript" src="/static/js/md5.js"></script>
+<script type="text/javascript" src="/static/js/jquery.darktooltip.js"></script>
+
+<script type="text/javascript">
+
+    $(function() {
+
+        // 显示新增企业模态框
+        $('.search_input .add_company').click(function(){
+            $('.add-enterprise').show();
+            $('.mask').show();
+        });
+
+        // 隐藏新增企业模态框
+        $('.add-enterprise .del').click(function() {
+            if (confirm('是否取消新增？')) {
+                $('.add-enterprise').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 保存新增企业
+        $('.add-enterprise .save').click(function() {
+            var username = $('.add-enterprise .user input').val();
+            var password = $('.add-enterprise .pwd input').val();
+            if (username == '') {
+                alert('用户名不能为空');
+            }
+            else if (password == '') {
+                alert('密码不能为空');
+            }
+            else {
+                // 判断用户名是否已经存在
+                $.get('/is_user_exist', {'username': username}, function(data) {
+                    if (data.is_exist) {
+                        alert('账号名称已经存在，请使用其它账号名称');
+                    }
+                    else if (confirm('是否保存新增企业信息？')) {
+                        $('.add-enterprise form').submit();
+                        $('.add-enterprise').hide();
+                        $('.mask').hide();
+                    }
+                });
+            }
+        });
+
+        // 显示编辑企业模态框
+        $('.table_box .see').click(function(){
+            $('.modify-enterprise').show();
+            $('.mask').show();
+        });
+
+        // 隐藏编辑企业模态框
+        $('.modify-enterprise .del').click(function() {
+            if (confirm('是否取消编辑？')) {
+                $('.modify-enterprise').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 保存编辑企业信息
+        $('.modify-enterprise .save').click(function() {
+            var username = $('.modify-enterprise .user input').val();
+            var password = $('.modify-enterprise .pwd input').val();
+            var id = $('.modify-enterprise input').last().val();
+
+            if (username == '') {
+                alert('用户名不能为空');
+            }
+            else if (password == '') {
+                alert('密码不能为空');
+            }
+            else {
+                // 判断用户名是否已经存在
+                $.get('/is_user_exist', {'username': username, 'id': id}, function(data) {
+                    if (data.is_exist) {
+                        alert('账号名称已经存在，请使用其它账号名称');
+                    }
+                    else if (confirm('是否保存企业信息？')) {
+                        $('.modify-enterprise form').prop('action', '/enterprise_modify');
+                        $('.modify-enterprise form').submit();
+                        $('.modify-enterprise').hide();
+                        $('.mask').hide();
+                    }
+                });
+            }
+        });
+
+        // 编辑企业信息表单提交: 删除
+        $('.modify-enterprise .delete').click(function() {
+            if (confirm('是否删除该企业？')) {
+                $('.modify-enterprise form').prop('action', '/enterprise_delete');
+                $('.modify-enterprise form').submit();
+                $('.modify-enterprise').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 提交企业查询表单
+        $('#find_btn').click(function() {
+            $('.search_input form').submit();
+        });
+
+    });
+
+    // 填充编辑企业模态框信息
+    function setUserInfo(username, authority, enterprise_name, enterprise_phone, legal_person,
+                    organization_code, contact, contact_phone, id, limit_number) {
+        $('.modify-enterprise .ePrisename input').val(enterprise_name);     // 企业名称
+        $('.modify-enterprise .contact input').val(enterprise_phone);       // 企业联系方式
+        $('.modify-enterprise .corporation input').val(legal_person);       // 法人
+        $('.modify-enterprise .organization input').val(organization_code); // 组织机构代码
+        $('.modify-enterprise .contacts input').val(contact);               // 联系人
+        $('.modify-enterprise .contactway input').val(contact_phone);       // 联系方式
+        $('.modify-enterprise .user input').val(username);                  // 帐号
+        $('.modify-enterprise select').val(authority);                      // 权限
+        $('.modify-enterprise input').last().val(id);                       // id
+        $('.modify-enterprise .limit input').val(limit_number);             // 车辆数量
+
+        $('.modify-enterprise .pwd input').val('########');                 // 密码
+    }
+
+
+
+    // 跳转到指定页面
+    function jump() {
+        $('#pageToolbar form').submit();
+    }
+
+    //判断照片大小
+    function getPhotoSize(obj){
+        //文件type
+        var photoExt = obj.value.substr(obj.value.lastIndexOf(".")).toLowerCase();
+        if(!(photoExt=='.jpg'||photoExt=='.png'||photoExt=='.jpeg'||photoExt=='.bmp')){
+            alert("文件格式不符合要求！");
+            document.getElementById('file').value='';
+            return false;
+        }
+        var fileSize = 0;
+        var isIE = /msie/i.test(navigator.userAgent) && !window.opera;
+        if (isIE && !obj.files) {
+            var filePath = obj.value;
+            var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+            var file = fileSystem.GetFile (filePath);
+            fileSize = file.Size;
+        }
+        else{
+            fileSize = obj.files[0].size;
+        }
+        //文件大小
+        fileSize=Math.round(fileSize/1024*100)/100;
+        if(fileSize>=200){
+            alert("图片过大，超过200k,请选择较小的图片");
+            document.getElementById('file').value='';
+            return false;
+        }
+        imgChange();
+    }
+
+    // 显示/隐藏租赁信息
+    function showRentInfo(isRent) {
+        if (isRent) {
+            $('.rent_title').show();
+            $('.rent_name').show();
+            $('.rent_owner').show();
+            $('.rent_contact').show();
+            $('.rent_phone').show();
+            $('.rent_license').show();
+            $('.rent_contract').show();
+
+        } else {
+            $('.rent_title').hide();
+            $('.rent_name').hide();
+            $('.rent_owner').hide();
+            $('.rent_contact').hide();
+            $('.rent_phone').hide();
+            $('.rent_license').hide();
+            $('.rent_contract').hide();
+        }
+    }
+</script>
+
+</body></html>

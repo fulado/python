@@ -58,9 +58,12 @@ body{
     font-size: 18px;
     line-height: 60px;
     margin-left: 30px;
+    display: inline-block;
+    width: 120px;
 }
 .form_wrapper .form_group input{
-    width: 400px;
+    display: inline-block;
+    width: 270px!important;
     height: 90%;
     border-radius: 4px;
     margin-left: 10px;
@@ -117,7 +120,7 @@ body{
 }
 
 .yz{
-    width: 236px!important;
+    width: 136px!important;
 }
 
 /*媒体查询*/
