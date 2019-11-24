@@ -4,6 +4,12 @@
 from tj_orta import settings
 from PIL import Image, ImageFont, ImageDraw
 import qrcode
+import time
+import datetime
+import calendar
+import random
+
+from .models import Vehicle
 
 
 # 生成通行证图片
@@ -15,6 +21,14 @@ def generate_certification(certification_id, limit_data, number, enterprise_name
     number = '牌照号：%s' % number
     enterprise_name = '所属企业: %s' % enterprise_name
     route = '行驶路线：%s' % route
+
+    route_list = list(route)
+    i = 1
+    while i * 40 < len(route):
+        route_list.insert(i * 40, '\n')
+        i += 1
+
+    route_print = ''.join(route_list)
 
     instrument_title = '使用说明'
     instrument_line_1 = '1.持此证每日9时至16时可在外环线上按照证上指定路线行驶。'
@@ -50,8 +64,8 @@ def generate_certification(certification_id, limit_data, number, enterprise_name
     point_y += step_y
     draw.text((70, point_y), enterprise_name, font=font, fill=(0, 0, 0))
     point_y += step_y
-    draw.text((70, point_y), route, font=font, fill=(0, 0, 0))
-    point_y += step_y
+    draw.text((70, point_y), route_print, font=font, fill=(0, 0, 0))
+    point_y += step_y + 20 * i
 
     # 输出说明文字
     step_y = 40
@@ -102,3 +116,93 @@ def generate_qrcode(data):
 if __name__ == '__main__':
     generate_certification('12345', '2018年5月31日', '津A12345', '哇哈哈哈哈哈哈', '牛牛牛', 'test_123.jpg')
 
+
+# 车辆审核
+def verify_vehicle(vehicle_id):
+
+    try:
+        truck = Vehicle.objects.get(id=vehicle_id)
+    except Exception as e:
+        print(e)
+
+    # 判断车辆审核状态
+    if truck.status_id == 2:
+        truck.hbj_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+    else:
+        truck.jgj_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+    truck.status_id += 1
+
+    # 审核通过
+    if truck.status_id == 4:
+        verify_vehicle_pass(truck)
+
+
+# 车辆审核通过
+def verify_vehicle_pass(truck):
+    # 生成通行证图片
+    # 生成通行证id, 201805+车牌号+三位随机数
+    # 获取当前年, 月
+
+    submit_time = truck.submit_time
+
+    year = submit_time.timetuple().tm_year
+    month = submit_time.timetuple().tm_mon
+    day = 1
+
+    month_verify = time.localtime().tm_mon
+
+    # 如果提交时间不等于审核时间，通行证开始日期为审核通过的后一天
+    if month != month_verify:
+        day = time.localtime().tm_mday + 1
+
+    # 如果是12月, 则年+1, 月变为1; 否则, 月+1
+    if month == 12:
+        year += 1
+        month = 1
+    else:
+        month += 1
+
+    end_day = calendar.monthrange(year, month)[1]
+
+    # 防止其实日期带截止日期
+    if day > end_day:
+        day = end_day
+
+    # 保存通行证有效期起止时间
+    truck.start_time = datetime.datetime(year, month, day)
+
+    # 通行证截止日期为下个月的1日0点，此数据导出给电警平台使用
+    if month == 12:
+        end_month = 1
+        end_year = year + 1
+    else:
+        end_month = month + 1
+        end_year = year
+
+    truck.end_time = datetime.datetime(end_year, end_month, 1)
+
+    if month < 10:
+        id_start = '%d0%d' % (year, month)
+    else:
+        id_start = '%d%d' % (year, month)
+
+    certification_id = '%s%s%d%d%d' % (id_start, truck.number[1:].strip(), random.randint(0, 9),
+                                       random.randint(0, 9), random.randint(0, 9))
+    truck.cert_id = certification_id
+    # 计算通行证截至日期
+    end_day = calendar.monthrange(year, month)[1]
+    limit_data = '%d年%d月%d日 — %d年%d月%d日' % (year, month, day, year, month, end_day)
+    number = '%s' % truck.number
+    enterprise_name = truck.enterprise.enterprise_name
+    route = truck.route
+    # 图片文件名
+    file_name = r'%s/certification/%s.jpg' % (settings.FILE_DIR, certification_id)
+    truck.file_name = '%s.jpg' % certification_id
+
+    generate_certification(certification_id, limit_data, number, enterprise_name, route, file_name)
+
+    # 存入数据库
+    try:
+        truck.save()
+    except Exception as e:
+        print(e)

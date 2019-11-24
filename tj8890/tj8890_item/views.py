@@ -1,11 +1,13 @@
-from django.shortcuts import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import HttpResponse, HttpResponseRedirect, render
 from django.http import JsonResponse
-from .models import Item, Cate, Dept
+from django.db.models import Q
+from .models import Item, Cate, Dept, Category
 from tj8890.utils import MyPaginator
 import random
 import time
 import xlrd
+import xlwt
+import io
 from tj8890.decorator import login_check
 
 STATUS_LIST = ['全部', '未转办', '已转办', '办理中', '已反馈', '已超时', '退回重办', '申请延期', '催办', '退驳', '办结']
@@ -15,12 +17,13 @@ STATUS_DIC = {0: '全部',
               2: '已转办',
               3: '办理中',
               4: '已反馈',
-              5: '已超时',
-              6: '退回重办',
+              5: '超时',
+              6: '重办',
               7: '申请延期',
               8: '催办',
-              9: '回驳',
+              9: '退单',
               10: '超时',
+              11: '驳回延期',
               66: '办结'
               }
 
@@ -91,24 +94,44 @@ def create_item(request):
 # 显示main页面
 @login_check
 def main_show(request):
-    # 查询各类事项数量
-    count_0 = Item.objects.all().count()
-    count_1 = Item.objects.filter(status=1).count()
-    count_2 = Item.objects.filter(status=2).count()
-    count_3 = Item.objects.filter(status=3).count()
-    count_4 = Item.objects.filter(status=4).count()
-    count_5 = Item.objects.filter(status=5).count()
-    count_6 = Item.objects.filter(status=6).count()
-    count_7 = Item.objects.filter(status=7).count()
+    authority = request.session.get('authority', 2)
 
-    context = {'count_0': count_0,
-               'count_1': count_1,
-               'count_2': count_2,
-               'count_3': count_3,
-               'count_4': count_4,
-               'count_5': count_5,
-               'count_6': count_6,
-               'count_7': count_7,
+    if authority == 2:
+        # 查询各类事项数量
+        init = Item.objects.filter(status=1).count()
+        delivered = Item.objects.filter(status=2).count()
+        reject = Item.objects.filter(status=9).count()
+        handling = Item.objects.filter(status=3).count()
+        urge = Item.objects.filter(status=8).count()
+        overtime = Item.objects.filter(status=10).count()
+        complete = Item.objects.filter(status=4).count()
+        retreat = Item.objects.filter(status=6).count()
+        delay = Item.objects.filter(status=7).count()
+        refuse = Item.objects.filter(status=11).count()
+    else:
+        dept_id = request.session.get('dept_id', 0)
+
+        init = 0
+        delivered = Item.objects.filter(status=2).filter(assign_dept_id=dept_id).count()
+        reject = 0
+        handling = Item.objects.filter(status=3).filter(assign_dept_id=dept_id).count()
+        urge = Item.objects.filter(status=8).filter(assign_dept_id=dept_id).count()
+        overtime = Item.objects.filter(status=10).filter(assign_dept_id=dept_id).count()
+        complete = Item.objects.filter(status=4).filter(assign_dept_id=dept_id).count()
+        retreat = Item.objects.filter(status=6).filter(assign_dept_id=dept_id).count()
+        delay = Item.objects.filter(status=7).filter(assign_dept_id=dept_id).count()
+        refuse = Item.objects.filter(status=11).filter(assign_dept_id=dept_id).count()
+
+    context = {'count_init': init,
+               'count_delivered': delivered,
+               'count_reject': reject,
+               'count_handling': handling,
+               'count_urge': urge,
+               'count_overtime': overtime,
+               'count_complete': complete,
+               'count_retreat': retreat,
+               'count_delay': delay,
+               'count_refuse': refuse,
                }
 
     return render(request, 'main.html', context)
@@ -137,7 +160,7 @@ def all_show(request):
 
     if authority == 3:
         dept_id = request.session.get('dept_id', 0)
-
+        print(dept_id)
         if dept_id != 0:
             item_list = item_list.filter(assign_dept_id=dept_id)
 
@@ -148,7 +171,9 @@ def all_show(request):
     if accept_time_end == '0':
         accept_time_end = time.strftime('%Y-%m-%d', time.localtime())
 
-    item_list = item_list.filter(accept_time__lte=accept_time_end)
+    accept_time_end_for_query = '%s 23:59:59' % accept_time_end
+
+    item_list = item_list.filter(accept_time__lte=accept_time_end_for_query)
     item_list = item_list.filter(accept_time__gte=accept_time_begin)
 
     if cate != 0:
@@ -162,7 +187,7 @@ def all_show(request):
 
     # 关键字检索
     if keyword != '':
-        item_list = item_list.filter(id__contains=keyword)
+        item_list = item_list.filter(Q(content__contains=keyword) | Q(id__contains=keyword))
 
     # 获得用户指定的页面
     page_num = int(request.GET.get('page_num', 1))
@@ -207,19 +232,19 @@ def all_show(request):
 
 
 # 查询事项分类
-# def cate_search(request):
-#     parent_id = request.GET.get('parent_id')
-#
-#     # 查询数据
-#     cate_list = Category.objects.filter(cate_id=parent_id)
-#
-#     # 构建返回的Json数组格式数据
-#     data = []
-#     for cate in cate_list:
-#         cate_info = {'id': cate.id, 'name': cate.name}
-#         data.append(cate_info)
-#
-#     return JsonResponse({'cate_list': data})
+def cate_search(request):
+    parent_id = int(request.GET.get('parent_id'))
+
+    # 查询数据
+    cate_list = Category.objects.filter(cate_id=parent_id)
+
+    # 构建返回的Json数组格式数据
+    data = []
+    for cate in cate_list:
+        cate_info = {'id': cate.id, 'name': cate.name}
+        data.append(cate_info)
+
+    return JsonResponse({'cate_list': data})
 
 
 # 未转办事项详情
@@ -236,24 +261,67 @@ def detail_show(request):
     # 查询部门
     supervisor_list = Dept.objects.filter(supervisor__isnull=True).filter(is_delete=False)
 
+    # 查询事项大类
+    cate1_list = Category.objects.filter(level=2)
+    # 查询事项二类
+    cate1_id = item_info.cate1_id if item_info.cate1_id else cate1_list[0].id
+    cate2_list = Category.objects.filter(level=3).filter(cate_id=cate1_id)
+    # 查询事项三类
+    cate2_id = item_info.cate2_id if item_info.cate2_id else cate2_list[0].id
+    cate3_list = Category.objects.filter(level=4).filter(cate_id=cate2_id)
+
     context = {'title': title,
                'item': item_info,
                'supervisor_list': supervisor_list,
+               'cate1_list': cate1_list,
+               'cate2_list': cate2_list,
+               'cate3_list': cate3_list,
                }
 
     return render(request, 'item/detail.html', context)
+
+
+# 删除事项
+def delete_item(request):
+    try:
+        item_id = request.GET.get('item_id')
+        Item.objects.get(id=item_id).delete()
+    except Exception as e:
+        print(e)
+
+    # 从session中获取检索信息
+    cate = request.session.get('cate', 0)
+    status = request.session.get('status', 0)
+    emergency = request.session.get('emergency', 0)
+    accept_time_begin = request.session.get('accept_time_begin', '0')
+    accept_time_end = request.session.get('accept_time_end', '0')
+    keyword = request.session.get('keyword', '')
+
+    url = '/item/all?cate=%s&status=%s&emergency=%s&accept_time_begin=%s&accept_time_end=%s&keyword=%s' % \
+          (cate, status, emergency, accept_time_begin, accept_time_end, keyword)
+
+    return HttpResponseRedirect(url)
 
 
 # 转办
 def deliver_action(request):
     item_id = request.GET.get('item_id', '0')
     dept_id = request.GET.get('assign_dept_id', '0')
+    dead_time = request.GET.get('dead_time', '')
+    cate1_id = int(request.GET.get('cate1', 0))
+    cate2_id = int(request.GET.get('cate2', 0))
+    cate3_id = int(request.GET.get('cate3', 0))
 
     item_info = Item.objects.get(id=item_id)
 
     item_info.status_id = 2
     item_info.assign_dept_id = dept_id
-    item_info.deliver_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+    item_info.dead_time = dead_time
+    item_info.approval_content = None
+    item_info.approval_person = None
+    item_info.cate1_id = cate1_id if cate1_id else None
+    item_info.cate2_id = cate2_id if cate2_id else None
+    item_info.cate3_id = cate3_id if cate3_id else None
 
     try:
         item_info.save()
@@ -261,23 +329,15 @@ def deliver_action(request):
         print(e)
 
     # 从session中获取检索信息
-    second_title = request.session.get('second_title', '全部事项')
-    cate1 = request.session.get('cate1', 0)
-    cate2 = request.session.get('cate2', 0)
-    cate3 = request.session.get('cate3', 0)
-    cate4 = request.session.get('cate4', 0)
+    cate = request.session.get('cate', 0)
     status = request.session.get('status', 0)
     emergency = request.session.get('emergency', 0)
-    recd_time_begin = request.session.get('recd_time_begin', 0)
-    recd_time_end = request.session.get('recd_time_end', 0)
-    deliver_time_begin = request.session.get('deliver_time_begin', 0)
-    deliver_time_end = request.session.get('deliver_time_end', 0)
+    accept_time_begin = request.session.get('accept_time_begin', '0')
+    accept_time_end = request.session.get('accept_time_end', '0')
     keyword = request.session.get('keyword', '')
 
-    url = '/item/all?title=%s&cate1=%s&cate2=%s&cate3=%s&cate4=%s&status=%s&emergency=%s&recd_time_begin=%s&' \
-          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s&keyword=%s' % \
-          (second_title, cate1, cate2, cate3, cate4, status, emergency, recd_time_begin, recd_time_end,
-           deliver_time_begin, deliver_time_end, keyword)
+    url = '/item/all?cate=%s&status=%s&emergency=%s&accept_time_begin=%s&accept_time_end=%s&keyword=%s' % \
+          (cate, status, emergency, accept_time_begin, accept_time_end, keyword)
 
     return HttpResponseRedirect(url)
 
@@ -290,7 +350,7 @@ def deliver_cancel(request):
 
     item_info.status_id = 1
     item_info.assign_dept_id = None
-    item_info.deliver_time = None
+    item_info.dead_time = None
 
     try:
         item_info.save()
@@ -298,23 +358,15 @@ def deliver_cancel(request):
         print(e)
 
     # 从session中获取检索信息
-    second_title = request.session.get('second_title', '全部事项')
-    cate1 = request.session.get('cate1', 0)
-    cate2 = request.session.get('cate2', 0)
-    cate3 = request.session.get('cate3', 0)
-    cate4 = request.session.get('cate4', 0)
+    cate = request.session.get('cate', 0)
     status = request.session.get('status', 0)
     emergency = request.session.get('emergency', 0)
-    recd_time_begin = request.session.get('recd_time_begin', 0)
-    recd_time_end = request.session.get('recd_time_end', 0)
-    deliver_time_begin = request.session.get('deliver_time_begin', 0)
-    deliver_time_end = request.session.get('deliver_time_end', 0)
+    accept_time_begin = request.session.get('accept_time_begin', '0')
+    accept_time_end = request.session.get('accept_time_end', '0')
     keyword = request.session.get('keyword', '')
 
-    url = '/item/all?title=%s&cate1=%s&cate2=%s&cate3=%s&cate4=%s&status=%s&emergency=%s&recd_time_begin=%s&' \
-          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s&keyword=%s' % \
-          (second_title, cate1, cate2, cate3, cate4, status, emergency, recd_time_begin, recd_time_end,
-           deliver_time_begin, deliver_time_end, keyword)
+    url = '/item/all?cate=%s&status=%s&emergency=%s&accept_time_begin=%s&accept_time_end=%s&keyword=%s' % \
+          (cate, status, emergency, accept_time_begin, accept_time_end, keyword)
 
     return HttpResponseRedirect(url)
 
@@ -333,23 +385,15 @@ def remind_item(request):
         print(e)
 
     # 从session中获取检索信息
-    second_title = request.session.get('second_title', '全部事项')
-    cate1 = request.session.get('cate1', 0)
-    cate2 = request.session.get('cate2', 0)
-    cate3 = request.session.get('cate3', 0)
-    cate4 = request.session.get('cate4', 0)
+    cate = request.session.get('cate', 0)
     status = request.session.get('status', 0)
     emergency = request.session.get('emergency', 0)
-    recd_time_begin = request.session.get('recd_time_begin', 0)
-    recd_time_end = request.session.get('recd_time_end', 0)
-    deliver_time_begin = request.session.get('deliver_time_begin', 0)
-    deliver_time_end = request.session.get('deliver_time_end', 0)
+    accept_time_begin = request.session.get('accept_time_begin', '0')
+    accept_time_end = request.session.get('accept_time_end', '0')
     keyword = request.session.get('keyword', '')
 
-    url = '/item/all?title=%s&cate1=%s&cate2=%s&cate3=%s&cate4=%s&status=%s&emergency=%s&recd_time_begin=%s&' \
-          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s&keyword=%s' % \
-          (second_title, cate1, cate2, cate3, cate4, status, emergency, recd_time_begin, recd_time_end,
-           deliver_time_begin, deliver_time_end, keyword)
+    url = '/item/all?cate=%s&status=%s&emergency=%s&accept_time_begin=%s&accept_time_end=%s&keyword=%s' % \
+          (cate, status, emergency, accept_time_begin, accept_time_end, keyword)
 
     return HttpResponseRedirect(url)
 
@@ -357,10 +401,14 @@ def remind_item(request):
 # 退回重办
 def return_item(request):
     item_id = request.GET.get('item_id', '0')
+    return_reason = request.GET.get('return_reason', '')
 
     item_info = Item.objects.get(id=item_id)
 
     item_info.status_id = 6
+    item_info.return_reason = return_reason
+    item_info.approval_content = None
+    item_info.approval_person = None
 
     try:
         item_info.save()
@@ -368,23 +416,15 @@ def return_item(request):
         print(e)
 
     # 从session中获取检索信息
-    second_title = request.session.get('second_title', '全部事项')
-    cate1 = request.session.get('cate1', 0)
-    cate2 = request.session.get('cate2', 0)
-    cate3 = request.session.get('cate3', 0)
-    cate4 = request.session.get('cate4', 0)
+    cate = request.session.get('cate', 0)
     status = request.session.get('status', 0)
     emergency = request.session.get('emergency', 0)
-    recd_time_begin = request.session.get('recd_time_begin', 0)
-    recd_time_end = request.session.get('recd_time_end', 0)
-    deliver_time_begin = request.session.get('deliver_time_begin', 0)
-    deliver_time_end = request.session.get('deliver_time_end', 0)
+    accept_time_begin = request.session.get('accept_time_begin', '0')
+    accept_time_end = request.session.get('accept_time_end', '0')
     keyword = request.session.get('keyword', '')
 
-    url = '/item/all?title=%s&cate1=%s&cate2=%s&cate3=%s&cate4=%s&status=%s&emergency=%s&recd_time_begin=%s&' \
-          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s&keyword=%s' % \
-          (second_title, cate1, cate2, cate3, cate4, status, emergency, recd_time_begin, recd_time_end,
-           deliver_time_begin, deliver_time_end, keyword)
+    url = '/item/all?cate=%s&status=%s&emergency=%s&accept_time_begin=%s&accept_time_end=%s&keyword=%s' % \
+          (cate, status, emergency, accept_time_begin, accept_time_end, keyword)
 
     return HttpResponseRedirect(url)
 
@@ -396,6 +436,7 @@ def save_item(request):
     item_info = Item.objects.get(id=item_id)
 
     item_info.status_id = 66
+    item_info.save_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
     try:
         item_info.save()
@@ -403,23 +444,15 @@ def save_item(request):
         print(e)
 
     # 从session中获取检索信息
-    second_title = request.session.get('second_title', '全部事项')
-    cate1 = request.session.get('cate1', 0)
-    cate2 = request.session.get('cate2', 0)
-    cate3 = request.session.get('cate3', 0)
-    cate4 = request.session.get('cate4', 0)
+    cate = request.session.get('cate', 0)
     status = request.session.get('status', 0)
     emergency = request.session.get('emergency', 0)
-    recd_time_begin = request.session.get('recd_time_begin', 0)
-    recd_time_end = request.session.get('recd_time_end', 0)
-    deliver_time_begin = request.session.get('deliver_time_begin', 0)
-    deliver_time_end = request.session.get('deliver_time_end', 0)
+    accept_time_begin = request.session.get('accept_time_begin', '0')
+    accept_time_end = request.session.get('accept_time_end', '0')
     keyword = request.session.get('keyword', '')
 
-    url = '/item/all?title=%s&cate1=%s&cate2=%s&cate3=%s&cate4=%s&status=%s&emergency=%s&recd_time_begin=%s&' \
-          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s&keyword=%s' % \
-          (second_title, cate1, cate2, cate3, cate4, status, emergency, recd_time_begin, recd_time_end,
-           deliver_time_begin, deliver_time_end, keyword)
+    url = '/item/all?cate=%s&status=%s&emergency=%s&accept_time_begin=%s&accept_time_end=%s&keyword=%s' % \
+          (cate, status, emergency, accept_time_begin, accept_time_end, keyword)
 
     return HttpResponseRedirect(url)
 
@@ -431,6 +464,11 @@ def delay_approve_item(request):
     item_info = Item.objects.get(id=item_id)
 
     item_info.status_id = 3
+    item_info.dead_time = item_info.delay_time
+    item_info.approval_content = None
+    item_info.approval_person = None
+    item_info.delay_time = None
+    item_info.delay_reason = None
 
     try:
         item_info.save()
@@ -438,23 +476,15 @@ def delay_approve_item(request):
         print(e)
 
     # 从session中获取检索信息
-    second_title = request.session.get('second_title', '全部事项')
-    cate1 = request.session.get('cate1', 0)
-    cate2 = request.session.get('cate2', 0)
-    cate3 = request.session.get('cate3', 0)
-    cate4 = request.session.get('cate4', 0)
+    cate = request.session.get('cate', 0)
     status = request.session.get('status', 0)
     emergency = request.session.get('emergency', 0)
-    recd_time_begin = request.session.get('recd_time_begin', 0)
-    recd_time_end = request.session.get('recd_time_end', 0)
-    deliver_time_begin = request.session.get('deliver_time_begin', 0)
-    deliver_time_end = request.session.get('deliver_time_end', 0)
+    accept_time_begin = request.session.get('accept_time_begin', '0')
+    accept_time_end = request.session.get('accept_time_end', '0')
     keyword = request.session.get('keyword', '')
 
-    url = '/item/all?title=%s&cate1=%s&cate2=%s&cate3=%s&cate4=%s&status=%s&emergency=%s&recd_time_begin=%s&' \
-          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s&keyword=%s' % \
-          (second_title, cate1, cate2, cate3, cate4, status, emergency, recd_time_begin, recd_time_end,
-           deliver_time_begin, deliver_time_end, keyword)
+    url = '/item/all?cate=%s&status=%s&emergency=%s&accept_time_begin=%s&accept_time_end=%s&keyword=%s' % \
+          (cate, status, emergency, accept_time_begin, accept_time_end, keyword)
 
     return HttpResponseRedirect(url)
 
@@ -465,7 +495,9 @@ def delay_reject_item(request):
 
     item_info = Item.objects.get(id=item_id)
 
-    item_info.status_id = 3
+    item_info.status_id = 11
+    item_info.approval_content = None
+    item_info.approval_person = None
 
     try:
         item_info.save()
@@ -473,23 +505,15 @@ def delay_reject_item(request):
         print(e)
 
     # 从session中获取检索信息
-    second_title = request.session.get('second_title', '全部事项')
-    cate1 = request.session.get('cate1', 0)
-    cate2 = request.session.get('cate2', 0)
-    cate3 = request.session.get('cate3', 0)
-    cate4 = request.session.get('cate4', 0)
+    cate = request.session.get('cate', 0)
     status = request.session.get('status', 0)
     emergency = request.session.get('emergency', 0)
-    recd_time_begin = request.session.get('recd_time_begin', 0)
-    recd_time_end = request.session.get('recd_time_end', 0)
-    deliver_time_begin = request.session.get('deliver_time_begin', 0)
-    deliver_time_end = request.session.get('deliver_time_end', 0)
+    accept_time_begin = request.session.get('accept_time_begin', '0')
+    accept_time_end = request.session.get('accept_time_end', '0')
     keyword = request.session.get('keyword', '')
 
-    url = '/item/all?title=%s&cate1=%s&cate2=%s&cate3=%s&cate4=%s&status=%s&emergency=%s&recd_time_begin=%s&' \
-          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s&keyword=%s' % \
-          (second_title, cate1, cate2, cate3, cate4, status, emergency, recd_time_begin, recd_time_end,
-           deliver_time_begin, deliver_time_end, keyword)
+    url = '/item/all?cate=%s&status=%s&emergency=%s&accept_time_begin=%s&accept_time_end=%s&keyword=%s' % \
+          (cate, status, emergency, accept_time_begin, accept_time_end, keyword)
 
     return HttpResponseRedirect(url)
 
@@ -502,50 +526,42 @@ def accept_item(request):
 
     item_info.status_id = 3
 
-    # 保存办理部门
-    dept_id = request.session.get('dept_id', 0)
-    item_info.agency_dept_id = dept_id
-
-    # 保存受理人&受理时间
-    user = request.session.get('user')
-    item_info.receiver = user
-    item_info.receive_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-
     try:
         item_info.save()
     except Exception as e:
         print(e)
 
     # 从session中获取检索信息
-    second_title = request.session.get('second_title', '全部事项')
-    cate1 = request.session.get('cate1', 0)
-    cate2 = request.session.get('cate2', 0)
-    cate3 = request.session.get('cate3', 0)
-    cate4 = request.session.get('cate4', 0)
+    cate = request.session.get('cate', 0)
     status = request.session.get('status', 0)
     emergency = request.session.get('emergency', 0)
-    recd_time_begin = request.session.get('recd_time_begin', 0)
-    recd_time_end = request.session.get('recd_time_end', 0)
-    deliver_time_begin = request.session.get('deliver_time_begin', 0)
-    deliver_time_end = request.session.get('deliver_time_end', 0)
+    accept_time_begin = request.session.get('accept_time_begin', '0')
+    accept_time_end = request.session.get('accept_time_end', '0')
     keyword = request.session.get('keyword', '')
 
-    url = '/item/all?title=%s&cate1=%s&cate2=%s&cate3=%s&cate4=%s&status=%s&emergency=%s&recd_time_begin=%s&' \
-          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s&keyword=%s' % \
-          (second_title, cate1, cate2, cate3, cate4, status, emergency, recd_time_begin, recd_time_end,
-           deliver_time_begin, deliver_time_end, keyword)
+    url = '/item/all?cate=%s&status=%s&emergency=%s&accept_time_begin=%s&accept_time_end=%s&keyword=%s' % \
+          (cate, status, emergency, accept_time_begin, accept_time_end, keyword)
 
     return HttpResponseRedirect(url)
 
 
-# 客户端拒收转办事项
+# 客户端退单
 def reject_item(request):
     item_id = request.GET.get('item_id', '0')
+    reject_reason = request.GET.get('reject_reason', '')
+    approval_content = request.GET.get('approval_content', '')
+    approval_person = request.GET.get('approval_person', '')
 
     item_info = Item.objects.get(id=item_id)
 
-    item_info.status_id = 1
-    item_info.assign_dept_id = None
+    item_info.status_id = 9  # 回驳事项
+    # item_info.assign_dept_id = None
+    item_info.reject_user_id = request.session.get('user_id')
+    item_info.reject_reason = reject_reason
+    item_info.approval_content = approval_content
+    item_info.approval_person = approval_person
+    item_info.delay_reason = None
+    item_info.delay_time = None
 
     try:
         item_info.save()
@@ -553,23 +569,15 @@ def reject_item(request):
         print(e)
 
     # 从session中获取检索信息
-    second_title = request.session.get('second_title', '全部事项')
-    cate1 = request.session.get('cate1', 0)
-    cate2 = request.session.get('cate2', 0)
-    cate3 = request.session.get('cate3', 0)
-    cate4 = request.session.get('cate4', 0)
+    cate = request.session.get('cate', 0)
     status = request.session.get('status', 0)
     emergency = request.session.get('emergency', 0)
-    recd_time_begin = request.session.get('recd_time_begin', 0)
-    recd_time_end = request.session.get('recd_time_end', 0)
-    deliver_time_begin = request.session.get('deliver_time_begin', 0)
-    deliver_time_end = request.session.get('deliver_time_end', 0)
+    accept_time_begin = request.session.get('accept_time_begin', '0')
+    accept_time_end = request.session.get('accept_time_end', '0')
     keyword = request.session.get('keyword', '')
 
-    url = '/item/all?title=%s&cate1=%s&cate2=%s&cate3=%s&cate4=%s&status=%s&emergency=%s&recd_time_begin=%s&' \
-          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s&keyword=%s' % \
-          (second_title, cate1, cate2, cate3, cate4, status, emergency, recd_time_begin, recd_time_end,
-           deliver_time_begin, deliver_time_end, keyword)
+    url = '/item/all?cate=%s&status=%s&emergency=%s&accept_time_begin=%s&accept_time_end=%s&keyword=%s' % \
+          (cate, status, emergency, accept_time_begin, accept_time_end, keyword)
 
     return HttpResponseRedirect(url)
 
@@ -578,13 +586,16 @@ def reject_item(request):
 def complete_item(request):
     item_id = request.GET.get('item_id', '0')
     item_result = request.GET.get('item_result', '')
-    # item_answer = request.GET.get('item_answer', '')
+    approval_content = request.GET.get('approval_content', '')
+    approval_person = request.GET.get('approval_person', '')
 
     item_info = Item.objects.get(id=item_id)
 
-    item_info.status_id = 66
+    item_info.status_id = 4
     item_info.result = item_result
-    # item_Info.answer = item_answer
+    item_info.approval_content = approval_content
+    item_info.approval_person = approval_person
+    item_info.return_reason = None
 
     try:
         item_info.save()
@@ -592,23 +603,15 @@ def complete_item(request):
         print(e)
 
     # 从session中获取检索信息
-    second_title = request.session.get('second_title', '全部事项')
-    cate1 = request.session.get('cate1', 0)
-    cate2 = request.session.get('cate2', 0)
-    cate3 = request.session.get('cate3', 0)
-    cate4 = request.session.get('cate4', 0)
+    cate = request.session.get('cate', 0)
     status = request.session.get('status', 0)
     emergency = request.session.get('emergency', 0)
-    recd_time_begin = request.session.get('recd_time_begin', 0)
-    recd_time_end = request.session.get('recd_time_end', 0)
-    deliver_time_begin = request.session.get('deliver_time_begin', 0)
-    deliver_time_end = request.session.get('deliver_time_end', 0)
+    accept_time_begin = request.session.get('accept_time_begin', '0')
+    accept_time_end = request.session.get('accept_time_end', '0')
     keyword = request.session.get('keyword', '')
 
-    url = '/item/all?title=%s&cate1=%s&cate2=%s&cate3=%s&cate4=%s&status=%s&emergency=%s&recd_time_begin=%s&' \
-          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s&keyword=%s' % \
-          (second_title, cate1, cate2, cate3, cate4, status, emergency, recd_time_begin, recd_time_end,
-           deliver_time_begin, deliver_time_end, keyword)
+    url = '/item/all?cate=%s&status=%s&emergency=%s&accept_time_begin=%s&accept_time_end=%s&keyword=%s' % \
+          (cate, status, emergency, accept_time_begin, accept_time_end, keyword)
 
     return HttpResponseRedirect(url)
 
@@ -617,14 +620,17 @@ def complete_item(request):
 def delay_item(request):
     item_id = request.GET.get('item_id', '0')
     delay_reason = request.GET.get('delay_reason', '')
-    delay_to_time = request.GET.get('delay_to_time', '')
+    delay_time = request.GET.get('delay_time', '')
+    approval_content = request.GET.get('approval_content', '')
+    approval_person = request.GET.get('approval_person', '')
 
     item_info = Item.objects.get(id=item_id)
 
     item_info.status_id = 7
     item_info.delay_reason = delay_reason
-    item_info.delay_apply_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-    item_info.delay_to_time = delay_to_time
+    item_info.delay_time = delay_time
+    item_info.approval_content = approval_content
+    item_info.approval_person = approval_person
 
     try:
         item_info.save()
@@ -632,23 +638,15 @@ def delay_item(request):
         print(e)
 
     # 从session中获取检索信息
-    second_title = request.session.get('second_title', '全部事项')
-    cate1 = request.session.get('cate1', 0)
-    cate2 = request.session.get('cate2', 0)
-    cate3 = request.session.get('cate3', 0)
-    cate4 = request.session.get('cate4', 0)
+    cate = request.session.get('cate', 0)
     status = request.session.get('status', 0)
     emergency = request.session.get('emergency', 0)
-    recd_time_begin = request.session.get('recd_time_begin', 0)
-    recd_time_end = request.session.get('recd_time_end', 0)
-    deliver_time_begin = request.session.get('deliver_time_begin', 0)
-    deliver_time_end = request.session.get('deliver_time_end', 0)
+    accept_time_begin = request.session.get('accept_time_begin', '0')
+    accept_time_end = request.session.get('accept_time_end', '0')
     keyword = request.session.get('keyword', '')
 
-    url = '/item/all?title=%s&cate1=%s&cate2=%s&cate3=%s&cate4=%s&status=%s&emergency=%s&recd_time_begin=%s&' \
-          'recd_time_end=%s&deliver_time_begin=%s&deliver_time_end=%s&keyword=%s' % \
-          (second_title, cate1, cate2, cate3, cate4, status, emergency, recd_time_begin, recd_time_end,
-           deliver_time_begin, deliver_time_end, keyword)
+    url = '/item/all?cate=%s&status=%s&emergency=%s&accept_time_begin=%s&accept_time_end=%s&keyword=%s' % \
+          (cate, status, emergency, accept_time_begin, accept_time_end, keyword)
 
     return HttpResponseRedirect(url)
 
@@ -686,7 +684,7 @@ def import_excel(request):
             item_info.title = worksheet.cell_value(i, 20)           # 标题
             item_info.content = worksheet.cell_value(i, 21)         # 内容
             item_info.accept_time = worksheet.cell_value(i, 27)     # 接件时间
-            item_info.limit_time = worksheet.cell_value(i, 28)      # 承办时限
+            item_info.limit_time = worksheet.cell_value(i, 29)      # 承办时限
 
             if worksheet.cell_value(i, 5) == '' or worksheet.cell(i, 5).ctype == 0:
                 item_info.phone = worksheet.cell_value(i, 3)        # 联系电话
@@ -743,3 +741,278 @@ def import_excel(request):
                 print(e)
 
     return HttpResponseRedirect('/item/all')
+
+
+# 导出办结事项
+def export_excel(request):
+    save_time = request.GET.get('save_time', time.strftime('%Y-%m-%d', time.localtime()))
+    save_time_begin = '%s 00:00:00' % save_time
+    save_time_end = '%s 23:59:59' % save_time
+
+    item_list = Item.objects.filter(status_id=66).filter(save_time__gte=save_time_begin).filter(save_time__lte=
+                                                                                                save_time_end)
+
+    if item_list:
+
+        # 创建工作簿
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('sheet1', cell_overwrite_ok=True)
+
+        # 设置表头
+        title = ['工单编号', '办理情况', '办理单位']
+
+        # 生成表头
+        len_col = len(title)
+        for i in range(0, len_col):
+            ws.write(0, i, title[i])
+
+        # 写入办结事项数据
+        i = 1
+        for item_info in item_list:
+
+            # 生成excel内容: ['工单编号', '办理情况', '办理单位']
+            content = [item_info.id, item_info.result, item_info.assign_dept.name]
+
+            for j in range(0, len_col):
+                ws.write(i, j, content[j])
+            i += 1
+
+            # # 修改是否已导出状态
+            # item_info.is_exported = True
+            # item_info.save()
+
+        # 内存文件操作
+        buf = io.BytesIO()
+
+        # 将文件保存在内存中
+        wb.save(buf)
+        response = HttpResponse(buf.getvalue(), content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename=item_completed.xls'
+        response.write(buf.getvalue())
+        return response
+    else:
+        # 从session中获取检索信息
+        cate = request.session.get('cate', 0)
+        status = request.session.get('status', 0)
+        emergency = request.session.get('emergency', 0)
+        accept_time_begin = request.session.get('accept_time_begin', '0')
+        accept_time_end = request.session.get('accept_time_end', '0')
+        keyword = request.session.get('keyword', '')
+
+        url = '/item/all?cate=%s&status=%s&emergency=%s&accept_time_begin=%s&accept_time_end=%s&keyword=%s' % \
+              (cate, status, emergency, accept_time_begin, accept_time_end, keyword)
+
+        return HttpResponseRedirect(url)
+
+
+# 判断是否超时
+def check_dead_time():
+    item_list = Item.objects.filter(status_id__in=[3, 6, 8, 11])
+
+    current_time = time.time()
+
+    for item_info in item_list:
+
+        dead_time = time.mktime(item_info.dead_time.timetuple())
+        # print(current_time, dead_time)
+        if current_time > dead_time:
+            item_info.status_id = 10
+            item_info.save()
+
+
+# 显示各类事项总数
+def item_count(request):
+    authority = request.session.get('authority', 2)
+
+    if authority == 2:
+        # 查询各类事项数量
+        init = Item.objects.filter(status=1).count()
+        delivered = Item.objects.filter(status=2).count()
+        reject = Item.objects.filter(status=9).count()
+        handling = Item.objects.filter(status=3).count()
+        urge = Item.objects.filter(status=8).count()
+        overtime = Item.objects.filter(status=10).count()
+        complete = Item.objects.filter(status=4).count()
+        retreat = Item.objects.filter(status=6).count()
+        delay = Item.objects.filter(status=7).count()
+        refuse = Item.objects.filter(status=11).count()
+    else:
+        dept_id = request.session.get('dept_id', 0)
+
+        init = 0
+        delivered = Item.objects.filter(status=2).filter(assign_dept_id=dept_id).count()
+        reject = 0
+        handling = Item.objects.filter(status=3).filter(assign_dept_id=dept_id).count()
+        urge = Item.objects.filter(status=8).filter(assign_dept_id=dept_id).count()
+        overtime = Item.objects.filter(status=10).filter(assign_dept_id=dept_id).count()
+        complete = Item.objects.filter(status=4).filter(assign_dept_id=dept_id).count()
+        retreat = Item.objects.filter(status=6).filter(assign_dept_id=dept_id).count()
+        delay = Item.objects.filter(status=7).filter(assign_dept_id=dept_id).count()
+        refuse = Item.objects.filter(status=11).filter(assign_dept_id=dept_id).count()
+
+    data = {'init': init,
+            'delivered': delivered,
+            'reject': reject,
+            'handling': handling,
+            'urge': urge,
+            'overtime': overtime,
+            'complete': complete,
+            'retreat': retreat,
+            'delay': delay,
+            'refuse': refuse,
+            }
+
+    return JsonResponse(data)
+
+
+# 显示事项登录页面
+def cate_show(request):
+
+    level = int(request.GET.get('level', 1))
+
+    cate1_id = int(request.GET.get('cate1', 0))
+    cate2_id = int(request.GET.get('cate2', 0))
+
+    # 获得用户指定的页面
+    page_num = int(request.GET.get('page_num', 1))
+
+    # 查询事项大类
+    cate1_list = Category.objects.filter(level=2)
+
+    # 查询事项二类
+    cate1_id = cate1_id if cate1_id else cate1_list[0].id
+    cate1 = Category.objects.get(id=cate1_id)
+    cate2_list = Category.objects.filter(level=3).filter(cate_id=cate1_id)
+
+    # 查询事项三类
+    cate2 = Category.objects.get(id=cate2_id) if cate2_id else None
+    cate3_list = Category.objects.filter(level=4).filter(cate_id=cate2_id)
+
+    if level == 1:
+        cate_list = cate1_list
+    elif level == 2:
+        cate_list = cate2_list
+    elif level == 3:
+        cate_list = cate3_list
+    else:
+        cate_list = []
+
+    # 分页
+    mp = MyPaginator()
+    mp.paginate(cate_list, 10, page_num)
+
+    request.session['level'] = level
+    request.session['cate1_id'] = cate1_id
+    request.session['cate2_id'] = cate2_id
+
+    context = {
+        'level': level,
+        'cate1': cate1,
+        'cate2': cate2,
+        'cate1_id': cate1_id,
+        'cate2_id': cate2_id,
+        'cate1_list': cate1_list,
+        'cate2_list': cate2_list,
+        'cate3_list': cate3_list,
+        'mp': mp,
+    }
+
+    return render(request, 'item/cate.html', context)
+
+
+# 编辑分类
+def cate_modify(request):
+    cate_id = int(request.GET.get('cate_id', 0))
+    cate_name = request.GET.get('cate_name', 0)
+    super_id = int(request.GET.get('super_id', 0))
+
+    cate_list = Category.objects.filter(id=cate_id)
+
+    level = request.session.get('level', 1)
+    cate1_id = request.session.get('cate1_id', 0)
+    cate2_id = request.session.get('cate2_id', 0)
+
+    url = '/item/cate?level=%s&cate1=%s&cate2=%s' % (level, cate1_id, cate2_id)
+
+    if cate_list:
+        cate = cate_list[0]
+    else:
+        return HttpResponseRedirect(url)
+
+    if cate_name:
+        cate.name = cate_name
+
+    if super_id:
+        cate.cate_id = super_id
+
+    try:
+        cate.save()
+    except Exception as e:
+        print(e)
+
+    return HttpResponseRedirect(url)
+
+
+# 删除分类
+def cate_del(request):
+    cate_id = int(request.GET.get('cate_id', 0))
+
+    cate_list = Category.objects.filter(id=cate_id)
+
+    level = request.session.get('level', 1)
+    cate1_id = request.session.get('cate1_id', 0)
+    cate2_id = request.session.get('cate2_id', 0)
+
+    url = '/item/cate?level=%s&cate1=%s&cate2=%s' % (level, cate1_id, cate2_id)
+
+    if cate_list:
+        cate = cate_list[0]
+    else:
+        return HttpResponseRedirect(url)
+
+    # 查询分类是否包含子类
+
+    try:
+        cate.delete()
+    except Exception as e:
+        print(e)
+
+    return HttpResponseRedirect(url)
+
+
+# 添加分类
+def cate_add(request):
+    cate_name = request.GET.get('cate_name', '')
+    cate_level = request.GET.get('level', '')
+    super_id = request.GET.get('super_id', 0)
+
+    level = request.session.get('level', 1)
+    cate1_id = request.session.get('cate1_id', 0)
+    cate2_id = request.session.get('cate2_id', 0)
+
+    url = '/item/cate?level=%s&cate1=%s&cate2=%s' % (level, cate1_id, cate2_id)
+
+    if not cate_name:
+        return HttpResponseRedirect(url)
+
+    if '一' in cate_level:
+        cate_level = 2
+    elif '二' in cate_level:
+        cate_level = 3
+    elif '三' in cate_level:
+        cate_level = 4
+    else:
+        cate_level = 2
+    print(cate_name, cate_level)
+    cate = Category()
+    cate.name = cate_name
+    cate.level = cate_level
+    if super_id:
+        cate.cate_id = super_id
+
+    try:
+        cate.save()
+    except Exception as e:
+        print(e)
+
+    return HttpResponseRedirect(url)

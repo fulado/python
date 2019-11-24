@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from . import views, views_vehicle, views_last
+from . import views, views_vehicle, views_last, views_sys
 
 urlpatterns = [
     # url(r'^create_admin/?', views.create_admin),  # 创建管理员帐号, 不要轻易使用
@@ -25,14 +25,19 @@ urlpatterns = [
     url(r'^login_handle/?', views.login_handle),
     url(r'^logout/?', views.logout),
     url(r'^download_search/?', views.download_search),
+    url(r'^download_certification/?', views.download_certification),
     url(r'^download/?', views.download),
     url(r'^can_submit_vehicle/?', views_vehicle.can_submit_vehicle),    # 判断是否可以提交单个车辆
     url(r'^can_submit_all/?', views_vehicle.can_submit_all),            # 判断是否可以提交全部车辆
-    url(r'^export_xls/?', views.export_xls),                    # 导出待审核车辆
-    url(r'^import_xls/?', views.import_xls),                    # 导入审核后的车辆数据
-    url(r'^clear_all/?', views.clear_all),                      # 清空本单位全部车辆
-    url(r'^is_vehicle_exist/?', views.is_vehicle_exist),        # 判断该号牌车辆是否已经存在
+    url(r'^export_xls/?', views.export_xls),                            # 导出待审核车辆
+    url(r'^import_xls/?', views.import_xls),                            # 导入审核后的车辆数据
+    url(r'^clear_all/?', views.clear_all),                              # 清空本单位全部车辆
+    url(r'^is_vehicle_exist/?', views.is_vehicle_exist),                # 判断该号牌车辆是否已经存在
+    url(r'^forbid_submit/?', views_sys.forbid_submit_request),          # 禁止提交申请
+    url(r'^permit_submit/?', views_sys.permit_submit_request),          # 允许提交申请
+    url(r'^init_sys/?', views_sys.init_sys_request),                    # 重置系统
+    url(r'^make_certification/?', views.make_certification),  # 重置系统
     # url(r'^generate_pwd/?', views.generate_pwd),
-    # url(r'^my_test/?', views.my_test),                          # 测试用
+    # url(r'^my_test/?', views.my_test),                                # 测试用
     url(r'^/?', views.login),
 ]

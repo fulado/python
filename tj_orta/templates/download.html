@@ -50,7 +50,7 @@
     </form>
     {% if status == 4 %}
         <p>车辆已通过审核，点击下载通行证</p>
-        <a href="/static/certification/{{ truck.file_name }}" target="_Blank"><button type="button">下载</button></a>
+        <a href="/download_certification?file_name={{ vehicle.file_name }}&month=1" target="_Blank"><button type="button">下载</button></a>
     {% elif status == 5 %}
         <p>车辆未通过审核，原因如下:</p>
         <p>{{ truck.reason }}</p>

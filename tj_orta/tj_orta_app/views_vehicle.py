@@ -198,8 +198,10 @@ def vehicle_submit(request):
     # 审核状态根据车辆类型变化, 大型货车需要环保局审核, 其它直接到交管局审核
     if truck.vehicle_type_id == 1:
         truck.status_id = 3  # 暂时都提交到交管局,设置为3, 如果需要提交到环保局, 改为2
+        truck.submit_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
     else:
         truck.status_id = 3
+        truck.submit_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
     # 存入数据库
     try:
@@ -498,6 +500,9 @@ def vehicle_submit_all(request):
                         Vehicle.objects.filter(id=truck.id).update(status_id=3)   # 暂时都提交到交管局,设置为3, 如果需要提交到环保局, 改为2
                     else:
                         Vehicle.objects.filter(id=truck.id).update(status_id=3)
+
+                    Vehicle.objects.filter(id=truck.id).update(submit_time=time.strftime('%Y-%m-%d %H:%M:%S',
+                                                                                         time.localtime()))
 
                     # 已提交车辆数+1
                     if truck.vehicle_type_id != 15:

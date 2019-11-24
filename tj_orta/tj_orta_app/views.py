@@ -2,14 +2,14 @@ from django.shortcuts import render
 from django.shortcuts import HttpResponseRedirect
 from django.http import JsonResponse
 from django.shortcuts import HttpResponse
-from .models import User, Vehicle
+from django.http import FileResponse
+from .models import User, Vehicle, VehicleMan
 from tj_orta.utils import MyPaginator
-from .utils import generate_certification
+from .utils import verify_vehicle, verify_vehicle_pass, generate_certification
 from tj_orta import settings
 from .decorator import login_check
 import hashlib
 import time
-import calendar
 import random
 import xlrd
 import xlwt
@@ -406,51 +406,7 @@ def verify_pass(request):
     vehicle_id = int(request.GET.get('vehicle_id', 0))
 
     if vehicle_id != 0:
-        truck = Vehicle.objects.get(id=vehicle_id)
-        if truck.status_id == 2:
-            truck.hbj_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-        else:
-            truck.jgj_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-        truck.status_id += 1
-
-        if truck.status_id == 4:
-            # 生成通行证图片
-            # 生成通行证id, 201805+车牌号+三位随机数
-            # 获取当前年, 月
-            year = time.localtime().tm_year
-            month = time.localtime().tm_mon
-            # 如果是12月, 则年+1, 月变为1; 否则, 月+1
-            if month == 12:
-                year += 1
-                month = 1
-            else:
-                month += 1
-
-            if month < 10:
-                id_start = '%d0%d' % (year, month)
-            else:
-                id_start = '%d%d' % (year, month)
-
-            certification_id = '%s%s%d%d%d' % (id_start, truck.number[1:].strip(), random.randint(0, 9),
-                                               random.randint(0, 9), random.randint(0, 9))
-            truck.cert_id = certification_id
-            # 计算通行证截至日期
-            end_day = calendar.monthrange(year, month)[1]
-            limit_data = '%d年%d月%d日 — %d年%d月%d日' % (year, month, 1, year, month, end_day)
-            number = '%s' % truck.number
-            enterprise_name = truck.enterprise.enterprise_name
-            route = truck.route
-            # 图片文件名
-            file_name = r'%s/certification/%s.jpg' % (settings.FILE_DIR, certification_id)
-            truck.file_name = '%s.jpg' % certification_id
-
-            generate_certification(certification_id, limit_data, number, enterprise_name, route, file_name)
-
-        # 存入数据库
-        try:
-            truck.save()
-        except Exception as e:
-            print(e)
+        verify_vehicle(vehicle_id)
 
     # 构建返回url
     number = request.session.get('number', '')
@@ -603,44 +559,18 @@ def import_xls(request):
             # 读取未通过原因
             if worksheet.cell(i, 9).ctype != 5 and worksheet.cell_value(i, 9) != '':
                 truck.reason = worksheet.cell_value(i, 9)  # 未通过原因
+
+            # 存入数据库
+            try:
+                truck.save()
+            except Exception as e:
+                print(e)
         else:
             continue
 
         # 完全通过审核, 生成通行证图片
         if truck.status_id == 4:
-            # 生成通行证图片
-            # 生成通行证id, 201805+车牌号+三位随机数
-            # 获取当前年, 月
-            year = time.localtime().tm_year
-            month = time.localtime().tm_mon
-            # 如果是12月, 则年+1, 月变为1; 否则, 月+1
-            if month == 12:
-                year += 1
-                month = 1
-            else:
-                month += 1
-
-            if month < 10:
-                id_start = '%d0%d' % (year, month)
-            else:
-                id_start = '%d%d' % (year, month)
-
-            certification_id = '%s%s%d%d%d' % (id_start, truck.number[1:].strip(), random.randint(0, 9),
-                                               random.randint(0, 9), random.randint(0, 9))
-            truck.cert_id = certification_id
-            # 计算通行证截至日期
-            end_day = calendar.monthrange(year, month)[1]
-            limit_data = '%d年%d月%d日 — %d年%d月%d日' % (year, month, 1, year, month, end_day)
-            number = '%s' % truck.number
-            enterprise_name = truck.enterprise.enterprise_name
-            route = truck.route
-            # 图片文件名
-            file_name = r'%s/certification/%s.jpg' % (settings.FILE_DIR, certification_id)
-            truck.file_name = '%s.jpg' % certification_id
-
-            generate_certification(certification_id, limit_data, number, enterprise_name, route, file_name)
-
-        truck.save()
+            verify_vehicle_pass(truck)
 
     return HttpResponseRedirect('/verify')
 
@@ -712,26 +642,10 @@ def export_to_ep(request):
             wfdm = '13444'
 
             # 起始时间
-            jgj_time = truck.jgj_time
-            year = jgj_time.year
-            month = jgj_time.month
-
-            if month == 12:
-                year += 1
-                month = 1
-            else:
-                month += 1
-
-            qssj = '%d-%d-%d %s:%s:%s' % (year, month, 1, '00', '00', '00')
+            qssj = truck.start_time.strftime('%Y-%m-%d %H:%M:%S')
 
             # 截止时间
-            if month == 12:
-                year += 1
-                month = 1
-            else:
-                month += 1
-
-            jzsj = '%d-%d-%d %s:%s:%s' % (year, month, 1, '00', '00', '00')
+            jzsj = truck.end_time.strftime('%Y-%m-%d %H:%M:%S')
 
             # 生成excle内容: ['ID', 'HPHM', 'HPZL', 'WFDM', 'QSSJ', 'JZSJ']
             content = [truck_id, hphm, hpzl, wfdm, qssj, jzsj]
@@ -757,3 +671,43 @@ def export_to_ep(request):
         url = '/verify?number=%s&page_num=%s&status=%s' % (number, page_num, status)
 
         return HttpResponseRedirect(url)
+
+
+def download_certification(request):
+    file_name = request.GET.get('file_name')
+    month = int(request.GET.get('month', 1))
+
+    if month == 1:
+        file_path = r'%s/certification/%s' % (settings.FILE_DIR, file_name)
+    else:
+        file_path = r'%s/certification_backup/%s' % (settings.FILE_DIR, file_name)
+
+    file = open(file_path, 'rb')
+    response = FileResponse(file)
+    response['Content-Type'] = 'application/octet-stream'
+    response['Content-Disposition'] = 'attachment;filename=' + file_name
+    return response
+
+
+def make_certification(request):
+
+    id_start = '201905'
+    limit_data = '2019年5月1日 — 2019年5月31日'
+
+    vehicle_list = VehicleMan.objects.all()
+
+    for truck in vehicle_list:
+        truck.cert_id = '%s%s%d%d%d%d' % (id_start, truck.number[1:].strip(), random.randint(0, 9),
+                                           random.randint(0, 9), random.randint(0, 9), random.randint(0, 9))
+
+        truck.file_name = '%s.jpg' % truck.cert_id
+        generate_certification(truck.cert_id, limit_data, truck.number, truck.enterprise.enterprise_name, truck.route,
+                               truck.file_name)
+
+        # 存入数据库
+        try:
+            truck.save()
+        except Exception as e:
+            print(e)
+
+    return HttpResponse('Ok')

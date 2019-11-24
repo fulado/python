@@ -32,5 +32,3 @@ Scheduler.add_job(forbid_submit, 'cron', day=26, hour=0, minute=0, second=0)
 Scheduler.add_job(init_sys, 'cron', day=29, hour=18, minute=38, second=0)
 
 Scheduler.start()
-
-

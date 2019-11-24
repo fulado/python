@@ -32,32 +32,32 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'tj_orta',
-        'PORT': 3306,
-        'HOST': '127.0.0.1',
-        'USER': 'root',
-        'PASSWORD': 'xiaobai',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'tj_orta',
+#         'PORT': 3306,
+#         'HOST': '127.0.0.1',
+#         'USER': 'root',
+#         'PASSWORD': 'xiaobai',
+#     }
+# }
 
 # settings for test
 # DEBUG = False
 #
 # ALLOWED_HOSTS = ['*', ]
 #
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'tj_orta',
-#         'PORT': 3306,
-#         'HOST': '192.168.188.11',
-#         'USER': 'ethane',
-#         'PASSWORD': 'yxtc_20921',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'tj_orta',
+        'PORT': 3306,
+        'HOST': '192.168.100.248',
+        'USER': 'root',
+        'PASSWORD': 'yxtc_20921',
+    }
+}
 
 # settings for production
 # DEBUG = False
@@ -67,10 +67,10 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'tj_orta',
+#         'NAME': 'whx_pass',
 #         'PORT': 3306,
-#         'HOST': '192.168.100.248',
-#         'USER': 'root',
+#         'HOST': 'rm-2zea9z45nxl14k73v.mysql.rds.aliyuncs.com',
+#         'USER': 'whx',
 #         'PASSWORD': 'yxtc_20921',
 #     }
 # }

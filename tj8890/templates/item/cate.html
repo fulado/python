@@ -1,0 +1,372 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <style type="text/css">
+        .search p {
+            position: absolute;
+            left: 25px;
+            top: 65px;
+        }
+    </style>
+
+    <script type="text/javascript">
+        // 一级部门id全局变量, 是否有其它方法代替全局变量?
+        var supervisorId;
+
+        $(function() {
+            // 添加部门时上级单位窗口是否可用
+            $('#grade-select').change(function() {
+                if ($(this).val() == 1) {
+                    supervisorId = $('#supervisor-select').val();
+                    $('#supervisor-select').val("");
+                    $('#supervisor-select').attr("disabled","disabled");
+                } else {
+                    $('#supervisor-select').removeAttr("disabled");
+                    $('#supervisor-select').val(supervisorId);
+                }
+            });
+
+            // 点击事项分类级别
+            $('.search select').eq(0).change(function () {
+                if ($(this).val() == 1) {
+                    $('.search select').eq(1).attr("disabled","disabled");
+                    $('.search select').eq(2).attr("disabled","disabled");
+                    // $('.search select').eq(1).val('');
+                } else if ($(this).val() == 2) {
+                    $('.search select').eq(1).removeAttr("disabled");
+                    $('.search select').eq(2).attr("disabled","disabled");
+                } else {
+                    $('.search select').eq(1).removeAttr("disabled");
+                    $('.search select').eq(2).removeAttr("disabled");
+                }
+            });
+
+            // 事项一类选择后, 二类对应变化
+            $('.search select').eq(1).change(function() {
+                $.ajaxSettings.async = false;
+                setCateInfo($(this), $('.search select').eq(2), 0);
+            });
+        });
+
+        // 选择不同的上级选项, 下级选择框相应变化
+        function setCateInfo(parentObj, childObj, childId) {
+            // 设置查询下级复选框等级
+            var childId = childId || 0;
+            // 用户选择上级选项的id
+            var parent_id = parentObj.val();
+            // 通过Ajax获取二级部门
+            $.get('/item/cate_search', {'parent_id': parent_id}, function(data) {
+                // 清空二级部门选择中的全部选项
+                childObj.empty();
+                // 根据查询结果, 添加二级部门子元素
+                // var newOption = $('<option></option>').val(0).text('待定');
+                childObj.append(newOption);
+                for (i in data.cate_list) {
+                    if (childId == data.cate_list[i].id) {
+                        var newOption = $('<option selected></option>').val(data.cate_list[i].id).text(data.cate_list[i].name);
+                    } else {
+                        var newOption = $('<option></option>').val(data.cate_list[i].id).text(data.cate_list[i].name);
+                    }
+                    childObj.append(newOption);
+                }
+            });
+        }
+
+        // 修改请求
+        function modify(obj) {
+            var oForm = $(obj).parents('form');
+            oForm.prop('action', '/item/cate_modify');
+
+            oForm.submit();
+        }
+
+        // 删除请求
+        function del(obj) {
+            if (confirm('是否确认删除该分类及其子分类信息?')) {
+                var oForm = $(obj).parents('form');
+                oForm.prop('action', '/item/cate_del');
+
+                oForm.submit();
+            }
+        }
+
+        // 设置打开编辑部门窗口时显示的信息
+        function setDeptInfo(dept_id, dept_name) {
+            $('#dept_id').val(dept_id);
+            $('#dept_name').val(dept_name);
+        }
+
+        function setSupervisorInfo() {
+            var oSelect = $('.search .custom-select');
+            $('#supervisor_id').val(oSelect.val());
+            $('#supervisor_name').val(oSelect.find(":selected").text());
+        }
+    </script>
+{% endblock %}
+
+<!-- 当前位置 -->
+{% block location %}
+    <div class="location">
+        <p><span>分类管理</span></p>
+        <!-- 搜索框 -->
+        <!--<div class="input-group">-->
+            <!--<label for="search01" id="search01_label">请输入关键字</label>-->
+            <!--<input type="text" class="form-control" id="search01" />-->
+            <!--<span class="input-group-btn">-->
+                <!--<button class="btn btn-default" type="button">-->
+                    <!--<span class="glyphicon glyphicon-search"></span>-->
+                <!--</button>-->
+            <!--</span>-->
+        <!--</div>-->
+    </div>
+    <div class="bar01"></div>
+{% endblock %}
+
+<!-- 部门检索/添加 -->
+{% block search %}
+    <div class="search">
+        <form action="/item/cate" method="GET">
+            <table>
+                <tr>
+                    <td><span>分类级别</span></td>
+                    <td>
+                        <select name="level">
+                            <option value="1" {% if level == 1 %}selected{% endif %}>一类</option>
+                            <option value="2" {% if level == 2 %}selected{% endif %}>二类</option>
+                            <option value="3" {% if level == 3 %}selected{% endif %}>三类</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr class="summary">
+                    <td><span>事项大类</span></td>
+                    <td>
+                        <select name="cate1" {% if level == 1 %}disabled{% endif %}>
+                            <!--<option value="0">全部</option>-->
+                            {% for cate in cate1_list %}
+                            {% if cate1_id == cate.id %}
+                            <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                            {% else %}
+                            <option value="{{ cate.id }}">{{ cate.name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td></td>
+                    <td><span>事项二类</span></td>
+                    <td>
+                        <select name="cate2" {% if level == 1 or level == 2 %}disabled{% endif %}>
+                            <!--<option value="0">全部</option>-->
+                            {% for cate in cate2_list %}
+                            {% if cate2_id == cate.id %}
+                            <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                            {% else %}
+                            <option value="{{ cate.id }}">{{ cate.name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <!--<td></td>-->
+                    <!--<td><span>事项三类</span></td>-->
+                    <!--<td>-->
+                        <!--<select name="cate3">-->
+                            <!--{% for cate in cate3_list %}-->
+                            <!--{% if item.cate3.id == cate.id %}-->
+                            <!--<option value="{{ cate.id }}" selected>{{ cate.name }}</option>-->
+                            <!--{% else %}-->
+                            <!--<option value="{{ cate.id }}">{{ cate.name }}</option>-->
+                            <!--{% endif %}-->
+                            <!--{% endfor %}-->
+                        <!--</select>-->
+                    <!--</td>-->
+                </tr>
+            </table>
+            <div class="search-btn-group">
+                <input type="submit" class="btn btn-default" value="查询" />
+                <a href="javascript:void(0)" class="btn btn-default" data-toggle="modal" data-target="#addModal" data-backdrop="static">添加</a>
+                <!--<a href="javascript:void(0)" onclick="setSupervisorInfo()" class="btn btn-default" data-toggle="modal" data-target="#delModal" data-backdrop="static">编辑</a>-->
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+<!-- 操作窗口 -->
+<!-- 模态框（Modal） -->
+{% block operate %}
+    <!-- 添加分类窗口 -->
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                    </button>
+                    <h4 class="modal-title" id="addModalLabel">添加分类</h4>
+                </div>
+                <form action="/item/cate_add" method="GET">
+                    <div class="modal-body">
+                        <span>分类级别:&nbsp;</span>
+                        {% if level == 1 %}
+                        <input type="text" name="level" value="一类" />
+                        {% elif level == 2 %}
+                        <input type="text" name="level" value="二类" />
+                        {% elif level == 3 %}
+                        <input type="text" name="level" value="三类" />
+                        {% endif %}
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        {% if level == 2 %}
+                            <span>上级分类:&nbsp;</span>
+                            <input type="text" value="{{cate1.name}}" />
+                            <input type="hidden" name="super_id" value="{{cate1_id}}" />
+                        {% elif level == 3 %}
+                            <span>上级分类:&nbsp;</span>
+                            <input type="text" value="{{cate2.name}}" />
+                            <input type="hidden" name="super_id" value="{{cate2_id}}" />
+                        {% endif %}
+                        <br />
+                        <br />
+                        <span>分类名称:&nbsp;</span>
+                        <input type="text" name="cate_name" />
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-primary" value="添加" />
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+    <!-- 编辑部门窗口 -->
+    <div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                    </button>
+                    <h4 class="modal-title">编辑部门</h4>
+                </div>
+                <form action="" method="GET">
+                    <div class="modal-body">
+                        <input type="hidden" name="dept_id" id="supervisor_id" />
+                        <span>部门名称:&nbsp;</span>
+                        <input type="text" name="dept_name" id="supervisor_name" />
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-primary" value="修改" onclick="modify(this)" />
+                        <input type="button" class="btn btn-primary" value="删除" onclick="del(this)" />
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+{% endblock %}
+
+<!-- 检索结果 -->
+{% block result %}
+    <div class="result">
+        <div class="bar02"></div>
+        <table class="table table-striped table-hover text-center">
+            <thead>
+                <tr>
+                    <td>分类名称</td>
+                    <td>分类级别</td>
+                    <td>操作</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cate in mp.object_list %}
+                <tr>
+                    <td>{{ cate.name }}</td>
+                    <td>
+                        {% if cate.level == 2 %}
+                            一类
+                        {% elif cate.level == 3 %}
+                            二类
+                        {% else %}
+                            三类
+                        {% endif %}
+                    </td>
+                    <td><button onclick="setDeptInfo({{ cate.id }}, '{{ cate.name }}')" class="btn btn-default" data-toggle="modal" data-target="#editModal" data-backdrop="static">编辑</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- 编辑部门窗口 -->
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="editModalLabel">编辑部门</h4>
+                </div>
+                <form action="" method="GET">
+                    <div class="modal-body">
+                        <input type="hidden" id="dept_id" name="cate_id" />
+                        <span>分类名称:&nbsp;</span>
+                        <input type="text" id="dept_name" name="cate_name" />&nbsp;&nbsp;
+                        {% if level > 1 %}
+                        <span>上级分类:&nbsp;</span>
+                        <select name="super_id">
+                            {% if level == 2 %}
+                                {% for cate in cate1_list %}
+                                    {% if cate.id == cate1_id %}
+                                    <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                                    {% else %}
+                                    <option value="{{ cate.id }}">{{ cate.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            {% elif level == 3 %}
+                                {% for cate in cate2_list %}
+                                    {% if cate.id == cate2_id %}
+                                    <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                                    {% else %}
+                                    <option value="{{ cate.id }}">{{ cate.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-primary" value="修改" onclick="modify(this)" />
+                        <input type="button" class="btn btn-primary" value="删除" onclick="del(this)" />
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+{% endblock %}
+
+<!-- 分页 -->
+{% block page %}
+    <div class="divide-page">
+        <form action="/item/cate" method="GET" class="goto">
+            <span>到</span>
+                <!--<input type="hidden" name="supervisor_id" value="{{ supervisor.id }}"/>-->
+                <input type="text" name="page_num" />
+            <span>页</span>
+        </form>
+        <p class="current-total">
+            共<span>{{ mp.total_pages }}</span>页/<span>{{ mp.total_objects }}</span>条数据
+        </p>
+
+        <ul class="page">
+            <a href="/item/cate?level={{ level }}&cate1_id={{ cate1_id }}&cate2_id={{ cate2_id }}&page_num=1"><li>首页</li></a>
+            <a href="/item/cate?level={{ level }}&cate1_id={{ cate1_id }}&cate2_id={{ cate2_id }}&page_num={{ mp.current_num|add:-1 }}"><li>上一页</li></a>
+            {% for num in mp.page_range %}
+                {% if num == mp.current_num %}
+                <a href="/item/cate?level={{ level }}&cate1_id={{ cate1_id }}&cate2_id={{ cate2_id }}&page_num={{ num }}"><li class="number current-page">{{ num }}</li></a>
+                {% else %}
+                <a href="/item/cate?level={{ level }}&cate1_id={{ cate1_id }}&cate2_id={{ cate2_id }}&page_num={{ num }}"><li class="number">{{ num }}</li></a>
+                {% endif %}
+            {% endfor %}
+            <a href="/item/cate?level={{ level }}&cate1_id={{ cate1_id }}&cate2_id={{ cate2_id }}&page_num={{ mp.current_num|add:1 }}"><li>下一页</li></a>
+            <a href="/item/cate?level={{ level }}&cate1_id={{ cate1_id }}&cate2_id={{ cate2_id }}&page_num={{ mp.total_pages }}"><li>末页</li></a>
+        </ul>
+    </div>
+{% endblock %}

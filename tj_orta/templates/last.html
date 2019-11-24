@@ -77,7 +77,7 @@
                     <td title="{{ vehicle.reason|default:'' }}">{{ vehicle.reason|default:'' }}</td>
                     <td>
                         {% if vehicle.status.id == 4 %}
-                        <a href="/static/certification_backup/{{ vehicle.file_name }}" target="_Blank" class="see download" style="margin-right: 5px;">下载</a>
+                        <a href="/download_certification?file_name={{ vehicle.file_name }}&month=0" target="_Blank" class="see download" style="margin-right: 5px;">下载</a>
                         {% endif %}
                     </td>
                 </tr>

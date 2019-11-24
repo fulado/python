@@ -27,6 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# DEBUG = False
+#
+# ALLOWED_HOSTS = ['*', ]
 
 # Application definition
 
@@ -82,10 +85,11 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'tj8890',
         # 'HOST': '118.24.96.90',
-        'HOST': '127.0.0.1',
+        'HOST': '101.101.135.71',
+        # 'HOST': '127.0.0.1',
         'PORT': 3306,
         'USER': 'root',
-        'PASSWORD': 'xiaobai',
+        'PASSWORD': 'yxtc_20921',
     }
 }
 
@@ -112,4 +116,4 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cache'

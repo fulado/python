@@ -6,13 +6,66 @@
             // 日期组件初始化
             $('.datetime-picker').datetimepicker({
                 language: 'zh-CN',          //显示中文
-                format: 'yyyy-mm-dd hh:ii:ss',       //显示格式
+                format: 'yyyy-mm-dd hh:00:00',       //显示格式
                 minView: 1,                 //设置只显示到小时
                 initialDate: new Date(),    //初始化当前日期
                 autoclose: true,            //选中自动关闭
                 todayBtn: true              //显示今日按钮
             });
+
+            // 事项一类选择后, 二类对应变化
+            $('.deliver-content select').eq(0).change(function() {
+                $.ajaxSettings.async = false;
+                var val = $(this).val();
+                if (val == 0) {
+                    $('.deliver-content select').eq(1).val(0);
+                    $('.deliver-content select').eq(1).attr("disabled","disabled");
+                } else {
+                    $('.deliver-content select').eq(1).removeAttr("disabled");
+                    // var cate3 = $('.deliver-content input:hidden').eq(0).val();
+                    setCateInfo($(this), $('.deliver-content select').eq(1), 0);
+                }
+
+                $('.deliver-content select').eq(1).change();
+            });
+
+            // 事项二类选择后, 三类对应变化
+            $('.deliver-content select').eq(1).change(function() {
+                var val = $(this).val();
+                if (val == 0) {
+                    $('.deliver-content select').eq(2).val(0);
+                    $('.deliver-content select').eq(2).attr("disabled","disabled");
+                } else {
+                    $('.deliver-content select').eq(2).removeAttr("disabled");
+                    // var cate4 = $('.search input:hidden').eq(1).val();
+                    setCateInfo($(this), $('.deliver-content select').eq(2), 0);
+                }
+            });
         });
+
+        // 选择不同的上级选项, 下级选择框相应变化
+        function setCateInfo(parentObj, childObj, childId) {
+            // 设置查询下级复选框等级
+            var childId = childId || 0;
+            // 用户选择上级选项的id
+            var parent_id = parentObj.val();
+            // 通过Ajax获取二级部门
+            $.get('/item/cate_search', {'parent_id': parent_id}, function(data) {
+                // 清空二级部门选择中的全部选项
+                childObj.empty();
+                // 根据查询结果, 添加二级部门子元素
+                // var newOption = $('<option></option>').val(0).text('待定');
+                childObj.append(newOption);
+                for (i in data.cate_list) {
+                    if (childId == data.cate_list[i].id) {
+                        var newOption = $('<option selected></option>').val(data.cate_list[i].id).text(data.cate_list[i].name);
+                    } else {
+                        var newOption = $('<option></option>').val(data.cate_list[i].id).text(data.cate_list[i].name);
+                    }
+                    childObj.append(newOption);
+                }
+            });
+        }
 
         // 设置转办模态框信息
         function setDeliverInfo() {
@@ -23,39 +76,123 @@
         function submitDeliverInfo(status) {
             var oForm = $('#agency_dept');
 
-            if (status == 2) {
-                submitForm(oForm, 'GET', '/item/deliver_action');
+            if (status == 'delivery') {
+                var val = $('#agency_dept .datetime-picker').val();
+
+                if (val.length == 0) {
+                    alert('转办时间不能为空!');
+                } else {
+                    var cate1 = $('.deliver-content select').eq(0).val();
+                    var cate2 = $('.deliver-content select').eq(1).val();
+                    var cate3 = $('.deliver-content select').eq(2).val();
+
+                    $('.deliver-dept input:hidden').eq(1).val(cate1);
+                    $('.deliver-dept input:hidden').eq(2).val(cate2);
+                    $('.deliver-dept input:hidden').eq(3).val(cate3);
+
+                    submitForm(oForm, 'GET', '/item/deliver_action');
+                }
             }
-            else if (status == 1) {
+            else if (status == 'cancel') {
                 submitForm(oForm, 'GET', '/item/deliver_cancel');
             }
-            else if (status == 80) {
+            else if (status == 'remind') {
                 submitForm(oForm, 'GET', '/item/remind_item');
             }
-            else if (status == 6) {
-                submitForm(oForm, 'GET', '/item/return_item');
-            }
-            else if (status == 32) {
+            else if (status == 'accept') {
                 submitForm(oForm, 'GET', '/item/accept_item');
             }
-            else if (status == 31) {
-                submitForm(oForm, 'GET', '/item/reject_item');
+            else if (status == 'delete') {
+                submitForm(oForm, 'GET', '/item/delete_item');
             }
-            else if (status == 33) {
-                submitForm(oForm, 'GET', '/item/complete_item');
-            }
-            else if (status == 35) {
-                submitForm(oForm, 'GET', '/item/delay_item');
-            }
-            else if (status == 66) {
+            else if (status == 'save') {
                 submitForm(oForm, 'GET', '/item/save_item');
             }
-            else if (status == 71) {
+            else if (status == 'delay_approve') {
                 submitForm(oForm, 'GET', '/item/delay_approve_item');
             }
-            else if (status == 70) {
+            else if (status == 'delay_reject') {
                 submitForm(oForm, 'GET', '/item/delay_reject_item');
             }
+        }
+
+        function submitRejectInfo() {
+            var oForm = $('#reject_form');
+
+            var val_reason = $('#reject_reason').val();
+            var val_content = $('#approval-content').val();
+            var val_person = $('#approval-person').val();
+
+            if (val_reason.length == 0) {
+                alert('退回原因不能为空!');
+            }
+            else if (val_content.length == 0) {
+                alert('审批内容不能为空!');
+            }
+            else if (val_person.length == 0) {
+                alert('审批人不能为空!');
+            }
+            else {
+                $('.reject-item input').eq(1).val(val_content);
+                $('.reject-item input').eq(2).val(val_person);
+                submitForm(oForm, 'GET', '/item/reject_item');
+            }
+        }
+
+        function submitCompleteInfo() {
+            var oForm = $('#complete_form');
+
+            var val_complete = $('#complete_info').val();
+            var val_content = $('#approval-content').val();
+            var val_person = $('#approval-person').val();
+
+            if (val_complete.length == 0) {
+                alert('办理情况不能为空!');
+            }
+            else if (val_content.length == 0) {
+                alert('审批内容不能为空!');
+            }
+            else if (val_person.length == 0) {
+                alert('审批人不能为空!');
+            }
+            else {
+                $('.feedback-content input').eq(1).val(val_content);
+                $('.feedback-content input').eq(2).val(val_person);
+                submitForm(oForm, 'GET', '/item/complete_item');
+            }
+        }
+
+        function submitDelayInfo() {
+            var oForm = $('#delay_form');
+
+            var val_time = $('#delay_time').val();
+            var val_reason = $('#delay_reason').val();
+            var val_content = $('#approval-content').val();
+            var val_person = $('#approval-person').val();
+
+            if (val_time.length == 0) {
+                alert('延期时间不能为空!');
+            }
+            else if (val_reason.length == 0) {
+                alert('延期理由不能为空!');
+            }
+            else if (val_content.length == 0) {
+                alert('审批内容不能为空!');
+            }
+            else if (val_person.length == 0) {
+                alert('审批人不能为空!');
+            }
+            else {
+                $('.delay-content input').eq(2).val(val_content);
+                $('.delay-content input').eq(3).val(val_person);
+                submitForm(oForm, 'GET', '/item/delay_item');
+            }
+        }
+
+        function submitReturnInfo() {
+            var oForm = $('#return_form');
+
+            submitForm(oForm, 'GET', '/item/return_item');
         }
     </script>
 {% endblock %}
@@ -104,15 +241,53 @@
                 </tr>
                 <tr>
                     <td><span>接单时间</span></td>
-                    <td><input type="text" value="{{ item.accept_time|default:'' }}" /></td>
+                    <td><input type="text" value="{{ item.accept_time|date:'Y-m-d H:i:s'|default:'' }}" /></td>
                     <td></td>
                     <td><span>承办时限</span></td>
-                    <td><input type="text" value="{{ item.limit_time|default:'' }}" /></td>
+                    <td><input type="text" value="{{ item.limit_time|date:'Y-m-d H:i:s'|default:'' }}" /></td>
+                    <td></td>
+                    <td><span>办结时间</span></td>
+                    <td><input type="text" value="{{ item.save_time|date:'Y-m-d H:i:s'|default:'' }}" /></td>
                 </tr>
                 <tr class="summary">
-                    <td><span>事项标题</span></td>
-                    <td colspan="7">
-                        <input type="text" value="{{ item.title|default:'' }}" />
+                    <td><span>事项大类</span></td>
+                    <td>
+                        <select name="cate1">
+                            <!--<option value="0">待定</option>-->
+                            {% for cate in cate1_list %}
+                            {% if item.cate1.id == cate.id %}
+                            <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                            {% else %}
+                            <option value="{{ cate.id }}">{{ cate.name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td></td>
+                    <td><span>事项二类</span></td>
+                    <td>
+                        <select name="cate2">
+                            {% for cate in cate2_list %}
+                            {% if item.cate2.id == cate.id %}
+                            <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                            {% else %}
+                            <option value="{{ cate.id }}">{{ cate.name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td></td>
+                    <td><span>事项三类</span></td>
+                    <td>
+                        <select name="cate3">
+                            {% for cate in cate3_list %}
+                            {% if item.cate3.id == cate.id %}
+                            <option value="{{ cate.id }}" selected>{{ cate.name }}</option>
+                            {% else %}
+                            <option value="{{ cate.id }}">{{ cate.name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
                     </td>
                 </tr>
                 <tr>
@@ -125,18 +300,18 @@
         </div>
     </div>
 
-    <!-- 转办部门 -->
+    <!-- 转办单位 -->
     <div class="deliver-dept">
         <div class="bar"></div>
         <div class="title">
             <p>办理单位<p>
         </div>
         <div class="content">
-            <table>
-                <tr>
-                    <td><span>办理单位</span></td>
-                    <td>
-                        <form id="agency_dept">
+            <form id="agency_dept">
+                <table>
+                    <tr>
+                        <td><span>办理单位</span></td>
+                        <td>
                             <select name="assign_dept_id">
                                 {% for supervisor in supervisor_list %}
                                     {% if item.assign_dept_id == supervisor.id %}
@@ -147,44 +322,96 @@
                                 {% endfor %}
                             </select>
                             <input type="hidden" name="item_id" value="{{ item.id }}" />
-                        </form>
-                    </td>
-                    <td></td>
-                    <td><span>办理时限</span></td>
-                    <td>
-                        {% if request.session.authority == 3 %}
-                        <input type="text" value="{{ request.session.accept_time_begin }}">
-                        {% else %}
-                        <input type="text" class="datetime-picker" name="accept_time_begin" value="{{ request.session.accept_time_begin }}">
-                        {% endif %}
-                    </td>
-                    <td></td>
-                    <td><span>任务状态</span></td>
-                    <td><input type="text" value="{{ item.status.status_name }}" /></td>
-                </tr>
-                <tr>
-                    <td><span>回驳原因</span></td>
-                    <td colspan="7">
-                        <textarea>{{ item.reject_reason|default:'' }}</textarea>
-                    </td>
-                </tr>
-            </table>
+                        </td>
+                        <td></td>
+                        <td><span>办理时限</span></td>
+                        <td>
+                            {% if request.session.authority == 2 and item.status_id == 1 %}
+                            <input type="text" class="datetime-picker" name="dead_time" value="{{ item.dead_time|date:'Y-m-d H:i:s'|default:'' }}">
+                            {% elif request.session.authority == 2 and item.status_id == 9 %}
+                            <input type="text" class="datetime-picker" name="dead_time" value="{{ item.dead_time|date:'Y-m-d H:i:s'|default:'' }}">
+                            {% else %}
+                            <input type="text" value="{{ item.dead_time|date:'Y-m-d H:i:s'|default:'' }}">
+                            {% endif %}
+                        </td>
+                        <td></td>
+                        <td><span>任务状态</span></td>
+                        <td><input type="text" value="{{ item.status.status_name }}" /></td>
+                    </tr>
+                </table>
+                <input type="hidden" name="cate1" />
+                <input type="hidden" name="cate2" />
+                <input type="hidden" name="cate3" />
+            </form>
         </div>
     </div>
 
-    {% if item.status.id == 3 and request.session.authority == 3 or item.status.id == 4 or item.status.id == 6 %}
-    <!-- 反馈信息 -->
-    <div class="feedback-content">
+    <!-- 管理端显示退回重办信息 -->
+    {% if request.session.authority == 3 and item.status.id == 6 %}
+    <div class="return-item">
         <div class="bar"></div>
         <div class="title">
-            <p>反馈信息<p>
+            <p>退回重办<p>
+        </div>
+        <div class="content">
+            <form id="return_form">
+                <table>
+                    <tr>
+                        <td><span>重办原因</span></td>
+                        <td><textarea name="return_reason" placeholder="请填写退回重办原因">{{ item.return_reason|default:'' }}</textarea></td>
+                    </tr>
+                </table>
+                <input type="hidden" name="item_id" value="{{ item.id }}" />
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <!--管理端显示退回信息-->
+    {% if item.status.id == 9 %}
+    <div class="reject-item">
+        <div class="bar"></div>
+        <div class="title">
+            <p>退单信息<p>
         </div>
         <div class="content">
             <table>
                 <tr>
-                    <td><span>办理情况</span></td>
-                    <td><textarea name="item_result">{{ item.result|default:'' }}</textarea></td>
-                    <td></td>
+                    <td rowspan="2"><span>退单原因</span></td>
+                    <td colspan="4" rowspan="2">
+                        <textarea style="width: 430px;">{{ item.reject_reason|default:'' }}</textarea>
+                    </td>
+                    <td rowspan="2"></td>
+                    <td><span>退回单位</span></td>
+                    <td><input type="text" value="{{ item.reject_user.dept.supervisor.name }}&nbsp;{{ item.reject_user.dept.name }}" /></td>
+                <tr>
+                    <td><span>退回人员</span></td>
+                    <td><input type="text" value="{{ item.reject_user.real_name }}" /></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- 反馈信息 -->
+    {% if request.session.authority == 3 %}
+    {% if item.status.id == 3 or item.status.id == 4 or item.status.id == 8 or item.status.id == 10 or item.status.id == 6 or item.status.id == 11 %}
+    <div class="feedback-content">
+        <div class="bar"></div>
+        <div class="title">
+            <p>办理事项</p>
+        </div>
+        <div class="content">
+            <table>
+                <tr>
+                    <form id="complete_form">
+                        <td><span>办理情况</span></td>
+                        <td><textarea id="complete_info" name="item_result" placeholder="请填写详细的事项办理情况说明">{{ item.result|default:'' }}</textarea></td>
+                        <td></td>
+                        <input type="hidden" name="item_id" value="{{ item.id }}" />
+                        <input type="hidden" name="approval_content" />
+                        <input type="hidden" name="approval_person" />
+                    </form>
                     <td><span></span></td>
                     <td></td>
                 </tr>
@@ -205,41 +432,102 @@
         </div>
     </div>
     {% endif %}
-
-    {% if item.status.id == 4 or item.status.id == 6 %}
-    <!-- 回访情况 -->
-    <div class="revisit-content">
+    {% else %}
+    {% if item.status.id == 4 or item.status.id == 6 or item.status.id == 66 %}
+    <div class="feedback-content">
         <div class="bar"></div>
         <div class="title">
-            <p>回访信息<p>
+            <p>办理事项</p>
         </div>
         <div class="content">
             <table>
                 <tr>
-                    <td><span>回访人</span></td>
-                    <td><input name="revisit_person" /></td>
+                    <td><span>办理情况</span></td>
+                    <td><textarea name="item_result">{{ item.result|default:'' }}</textarea></td>
                     <td></td>
-                    <td><span>回访时间</span></td>
-                    <td><input name="revisit_time" /></td>
+                    <input type="hidden" name="item_id" value="{{ item.id }}" />
+                    <td><span></span></td>
+                    <td></td>
                 </tr>
-                <tr>
-                    <td><span>回访方式</span></td>
-                    <td><input name="revisit_type" /></td>
-                    <td></td>
-                    <td><span>回访满意度</span></td>
-                    <td><input name="revisit_satisfaction" /></td>
-                    <td></td>
-                    <td><span>退回原因</span></td>
-                    <td><input name="return_reason" /></td>
-                </tr>
+                <!--<tr>-->
+                    <!--<td><span>答复内容</span></td>-->
+                    <!--<td><input type="text" name="item_answer" value="事实属实，已处理" /></td>-->
+                    <!--<td></td>-->
+                    <!--<td><span>求助满意度</span></td>-->
+                    <!--<td>-->
+                        <!--<select>-->
+                            <!--<option>满意</option>-->
+                            <!--<option>一般</option>-->
+                            <!--<option>不满意</option>-->
+                        <!--</select>-->
+                    <!--</td>-->
+                <!--</tr>-->
             </table>
         </div>
     </div>
     {% endif %}
+    {% endif %}
 
+    <!--&lt;!&ndash; 回访情况 &ndash;&gt;-->
+    <!--<div class="revisit-content">-->
+        <!--<div class="bar"></div>-->
+        <!--<div class="title">-->
+            <!--<p>回访信息<p>-->
+        <!--</div>-->
+        <!--<div class="content">-->
+            <!--<table>-->
+                <!--<tr>-->
+                    <!--<td><span>回访人</span></td>-->
+                    <!--<td><input name="revisit_person" /></td>-->
+                    <!--<td></td>-->
+                    <!--<td><span>回访时间</span></td>-->
+                    <!--<td><input name="revisit_time" /></td>-->
+                <!--</tr>-->
+                <!--<tr>-->
+                    <!--<td><span>回访方式</span></td>-->
+                    <!--<td><input name="revisit_type" /></td>-->
+                    <!--<td></td>-->
+                    <!--<td><span>回访满意度</span></td>-->
+                    <!--<td><input name="revisit_satisfaction" /></td>-->
+                    <!--<td></td>-->
+                    <!--<td><span>退回原因</span></td>-->
+                    <!--<td><input name="return_reason" /></td>-->
+                <!--</tr>-->
+            <!--</table>-->
+        <!--</div>-->
+    <!--</div>-->
 
-    {% if item.status.id == 3 and request.session.authority == 3 or item.status.id == 7  %}
-    <!-- 延期申请 -->
+    {% if request.session.authority == 3 %}
+    {% if item.status.id == 3 or item.status.id == 8 or item.status.id == 10 or item.status.id == 6 or item.status.id == 11%}
+    <!-- 客户端延期申请 -->
+    <div class="delay-content">
+        <div class="bar"></div>
+        <div class="title">
+            <p>延期申请<p>
+        </div>
+        <div class="content">
+            <form id="delay_form">
+                <table>
+                    <tr>
+                        <td><span>延期时间</span></td>
+                        <td><input id="delay_time" type="text" class="datetime-picker" name="delay_time" value="{{ item.delay_time|date:'Y-m-d H:i:s'|default:'' }}" placeholder="请选择时间" /></td>
+                    </tr>
+                    <tr>
+                        <td><span>延期理由</span></td>
+                        <td rowspan="2"><textarea id="delay_reason" name="delay_reason" placeholder="请填写申请延期原因">{{ item.delay_reason|default:'' }}</textarea></td>
+                    </tr>
+                </table>
+                <input type="hidden" name="item_id" value="{{ item.id }}" />
+                <input type="hidden" name="approval_content" />
+                <input type="hidden" name="approval_person" />
+            </form>
+        </div>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    <!--显示申请延期事项-->
+    {% if item.status.id == 7 %}
     <div class="delay-content">
         <div class="bar"></div>
         <div class="title">
@@ -249,15 +537,87 @@
             <table>
                 <tr>
                     <td><span>延期时间</span></td>
-                    <td><input type="text" class="datetime-picker" name="delay_time" />{{ item.delay_to_time|default:'' }}</td>
+                    <td><input type="text" value="{{ item.delay_time|date:'Y-m-d H:i:s'|default:'' }}" /></td>
                 </tr>
                 <tr>
                     <td><span>延期理由</span></td>
-                    <td rowspan="2"><textarea name="delay_reason"></textarea></td>
+                    <td rowspan="2"><textarea>{{ item.delay_reason|default:'' }}</textarea></td>
                 </tr>
             </table>
         </div>
     </div>
+    {% endif %}
+
+    <!-- 客户端退回 -->
+    {% if request.session.authority == 3 %}
+    {% if item.status.id == 2 or item.status.id == 3 or item.status.id == 8 or item.status.id == 6 or item.status.id == 10 or item.status.id == 11 %}
+    <div class="reject-item">
+        <div class="bar"></div>
+        <div class="title">
+            <p>退单信息<p>
+        </div>
+        <div class="content">
+            <table>
+                <tr>
+                    <form id="reject_form">
+                        <td rowspan="2"><span>退单原因</span></td>
+                        <td colspan="4" rowspan="2">
+                            <textarea id="reject_reason" name="reject_reason" placeholder="如退回该事项，请填写退回原因"></textarea>
+                        </td>
+                        <input type="hidden" name="item_id" value="{{ item.id }}" />
+                        <input type="hidden" name="approval_content" />
+                        <input type="hidden" name="approval_person" />
+                    </form>
+                <tr>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    <!--显示领导审批-->
+    {% if item.status.id == 4 or item.status.id == 6 or item.status.id == 7 or item.status.id == 9 or item.status.id == 66 or request.session.authority == 3 %}
+    <div class="approval-item">
+        <div class="bar"></div>
+        <div class="title">
+            <p>领导审批<p>
+        </div>
+        <div class="content">
+            <table>
+                <tr>
+                    <td rowspan="2"><span>审批意见</span></td>
+                    <td colspan="4" rowspan="2">
+                        <textarea id="approval-content" style="width: 430px;" placeholder="请填写领导审批意见">{{ item.approval_content|default:'' }}</textarea>
+                    </td>
+                    <td></td>
+                    <td><span>审批人</span></td>
+                    <td><input id="approval-person" type="text" value="{{ item.approval_person|default:'' }}" placeholder="请填写审批人姓名" /></td>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- 管理端退回重办 -->
+    {% if request.session.authority == 2 %}
+    {% if item.status.id == 4 or item.status.id == 6 %}
+    <div class="return-item">
+        <div class="bar"></div>
+        <div class="title">
+            <p>退回重办<p>
+        </div>
+        <div class="content">
+            <form id="return_form">
+                <table>
+                    <tr>
+                        <td><span>重办原因</span></td>
+                        <td><textarea name="return_reason" placeholder="请填写退回重办原因">{{ item.return_reason|default:'' }}</textarea></td>
+                    </tr>
+                </table>
+                <input type="hidden" name="item_id" value="{{ item.id }}" />
+            </form>
+        </div>
+    </div>
+    {% endif %}
     {% endif %}
 
     <div class="operation">
@@ -266,12 +626,12 @@
             <a class="btn btn-default" data-toggle="modal" data-target="#deleteModal" data-backdrop="static">删除</a>
             {% endif %}
             {% if request.session.authority == 2 or request.session.authority == 1 %}
-            {% if item.status.id == 1 %}
+            {% if item.status.id == 1 or item.status.id == 9 %}
             <a onclick="setDeliverInfo()" class="btn btn-default" data-toggle="modal" data-target="#deliverModal" data-backdrop="static">转办</a>
             {% elif item.status.id == 2 %}
             <a class="btn btn-default" data-toggle="modal" data-target="#deliverCancelModal" data-backdrop="static">撤销</a>
             {% elif item.status.id == 3 %}
-            <a class="btn btn-default" data-toggle="modal" data-target="#urgeModal" data-backdrop="static">催办</a>
+            <a class="btn btn-default" data-toggle="modal" data-target="#remindModal" data-backdrop="static">催办</a>
             {% elif item.status.id == 4 %}
             <a class="btn btn-default" data-toggle="modal" data-target="#returnModal" data-backdrop="static">退回重办</a>
             <a class="btn btn-default" data-toggle="modal" data-target="#saveModal" data-backdrop="static">办结保存</a>
@@ -281,14 +641,15 @@
             <a class="btn btn-default" data-toggle="modal" data-target="#delayRejectModal" data-backdrop="static">驳回</a>
             {% endif %}
             {% endif %}
-            {% if request.session.authority == 3 or request.session.authority == 1 %}
-            {% if item.status.id == 2 %}
-            <a class="btn btn-default" data-toggle="modal" data-target="#acceptModal" data-backdrop="static">接单</a>
-            <a class="btn btn-default" data-toggle="modal" data-target="#rejectModal" data-backdrop="static">拒接</a>
-            {% else %}
-            <a class="btn btn-default" data-toggle="modal" data-target="#completeModal" data-backdrop="static">提交办结</a>
-            <a class="btn btn-default" data-toggle="modal" data-target="#delayApplyModal" data-backdrop="static">申请延期</a>
-            {% endif %}
+            {% if request.session.authority == 3 %}
+                {% if item.status.id == 2 %}
+                <a class="btn btn-default" data-toggle="modal" data-target="#acceptModal" data-backdrop="static">接单</a>
+                <a class="btn btn-default" data-toggle="modal" data-target="#rejectModal" data-backdrop="static">退单</a>
+                {% elif item.status.id == 3 or item.status.id == 8 or item.status.id == 6 or item.status.id == 10 or item.status.id == 11 %}
+                <a class="btn btn-default" data-toggle="modal" data-target="#completeModal" data-backdrop="static">提交办结</a>
+                <a class="btn btn-default" data-toggle="modal" data-target="#delayApplyModal" data-backdrop="static">申请延期</a>
+                <a class="btn btn-default" data-toggle="modal" data-target="#rejectModal" data-backdrop="static">退单</a>
+                {% endif %}
             {% endif %}
             <a href="javascript: history.back(-1);" class="btn btn-default">返回</a>
         </div>
@@ -309,7 +670,7 @@
                     <p><span>是否要指派到</span><span style="color:red"></span><span>办理?</span></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(2)">确定</button>
+                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo('delivery')">确定</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 </div>
             </div><!-- /.modal-content -->
@@ -330,7 +691,7 @@
                     <p><span>是否撤销转办该事项?</span></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(8)">确定</button>
+                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo('cancel')">确定</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 </div>
             </div><!-- /.modal-content -->
@@ -338,20 +699,20 @@
     </div>
 
     <!-- 催办 -->
-    <div class="modal fade" id="urgeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    <div class="modal fade" id="remindModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
                     </button>
-                    <h4 class="modal-title" id="urgeModalLabel">催办提醒</h4>
+                    <h4 class="modal-title" id="remindModalLabel">催办提醒</h4>
                 </div>
                 <div class="modal-body">
                     <p><span>是否催办该事项?</span></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(80)">确定</button>
+                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo('remind')">确定</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 </div>
             </div><!-- /.modal-content -->
@@ -372,7 +733,7 @@
                     <p><span>是否退回重办该事项?</span></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(6)">确定</button>
+                    <button type="submit" class="btn btn-primary" onclick="submitReturnInfo()">确定</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 </div>
             </div><!-- /.modal-content -->
@@ -393,7 +754,7 @@
                     <p><span>是否确认该事项已办结并存入办结事项?</span></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(66)">确定</button>
+                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo('save')">确定</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 </div>
             </div><!-- /.modal-content -->
@@ -414,7 +775,7 @@
                     <p><span>是否确认同意该事项延期申请?</span></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(71)">确定</button>
+                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo('delay_approve')">确定</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 </div>
             </div><!-- /.modal-content -->
@@ -435,7 +796,7 @@
                     <p><span>是否确认驳回该事项延期申请?</span></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(70)">确定</button>
+                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo('delay_reject')">确定</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 </div>
             </div><!-- /.modal-content -->
@@ -456,14 +817,14 @@
                     <p><span>是否确认接受该转办事项?</span></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(32)">确定</button>
+                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo('accept')">确定</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
     </div>
 
-    <!-- 客户端拒单 -->
+    <!-- 客户端退回 -->
     <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          aria-hidden="true">
         <div class="modal-dialog">
@@ -471,13 +832,13 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
                     </button>
-                    <h4 class="modal-title" id="rejectModalLabel">拒绝转办</h4>
+                    <h4 class="modal-title" id="rejectModalLabel">退单事项</h4>
                 </div>
                 <div class="modal-body">
-                    <p><span>是否确认拒绝该转办事项?</span></p>
+                    <p><span>是否确认退回该事项?</span></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(31)">确定</button>
+                    <button type="submit" class="btn btn-primary" onclick="submitRejectInfo()">确定</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 </div>
             </div><!-- /.modal-content -->
@@ -498,7 +859,7 @@
                     <p><span>是否确认该事项已办结?</span></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(33)">确定</button>
+                    <button type="submit" class="btn btn-primary" onclick="submitCompleteInfo()">确定</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 </div>
             </div><!-- /.modal-content -->
@@ -519,7 +880,7 @@
                     <p><span>是否确认该事项申请延期办理?</span></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" onclick="submitDeliverInfo(35)">确定</button>
+                    <button type="submit" class="btn btn-primary" onclick="submitDelayInfo()">确定</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 </div>
             </div><!-- /.modal-content -->
@@ -540,7 +901,7 @@
                     <p>是否删除该事项?</span></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">确定</button>
+                    <button type="button" class="btn btn-primary" onclick="submitDeliverInfo('delete')">确定</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 </div>
             </div><!-- /.modal-content -->
