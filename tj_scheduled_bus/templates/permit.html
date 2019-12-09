@@ -117,6 +117,8 @@
                     <td style="width: 4%">序号</td>
                     <td>号牌号码</td>
                     <td>路线</td>
+                    <td>开始日期</td>
+                    <td>截止日期</td>
                     <td>状态</td>
                     <td style="width: 200px">操作</td>
                 </tr>
@@ -127,9 +129,11 @@
                     <td style="width: 4%">{{ forloop.counter }}</td>
                     <td title="{{ permission.permission_vehicle.vehicle_number }}">{{ permission.permission_vehicle.vehicle_number }}</td>
                     <td title="{{ permission.permission_route }}">{{ permission.permission_route }}</td>
-                    <td title="{{ vehicle.engine }}">{{ vehicle.engine }}</td>
+                    <td title="{{ permission.start_date|date:'Y-m-d' }}">{{ permission.start_date|date:'Y-m-d' }}</td>
+                    <td title="{{ permission.end_date|date:'Y-m-d' }}">{{ permission.end_date|date:'Y-m-d' }}</td>
+                    <td title="{{ permission.permission_status.status_content }}">{{ permission.permission_status.status_content }}</td>
                     <td>
-                        {% if vehicle.status.id == 4 %}
+                        {% if permission.permission_status_id == 51 %}
                         <a href="/static/certification/{{ vehicle.file_name }}" target="_Blank" class="see download" style="margin-right: 5px;">下载</a>
                         {% endif %}
                     </td>
@@ -208,54 +212,6 @@
             </div>
         </form>
     </div>
-</div>
-
-<!--模态框-->
-<div class="container">
-    <div class="pop-up" style="width: 560px;height: 268px;margin: 15% auto;display: none">
-        <form>
-            <div class="ePrisename" style="height: 200px;">
-                <label for="reason" style="vertical-align: top;width: 100px">填写原因</label>
-                <textarea name="" id="reason" style="resize:none;border-radius:4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:400px;height:150px"></textarea>
-            </div>
-
-            <div class="clickbtn" style="margin: 0 auto;width: 430px">
-                <div class="btn save" id="save">提交</div>
-                <div class="btn del" id="del">关闭</div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!--上传文件模态框-->
-<div class="pop-up1" style="width: 560px;height: 268px;display: none;">
-    <form action="/excel_import" enctype="multipart/form-data" method="post">
-        {% csrf_token %}
-        <div class="selFile">
-            <label for="reason" style="">选择文件</label>
-            <input type="file" name="excel_file" style="outline: none;cursor: pointer; width:300px; margin-left: 100px;" accept="application/vnd.ms-excel"/>
-        </div>
-
-        <div class="btndiv" style="margin-top: 50px;">
-            <button type="button" class="btn save" style="line-height: 27px;" >导入</button>
-            <!--<input type="submit" class="btn" style="line-height: 27px;" value="导入" />-->
-            <div class="btn" id="close" style="line-height: 27px;">关闭</div>
-        </div>
-    </form>
-</div>
-
-<div class="pop-up2" style="width: 560px;height: 268px;display: none;">
-    <form id="xmlform" enctype="multipart/form-data">
-        <div class="selFile" style="">
-            <label for="reason" style="">选择文件</label>
-            <input type="file" name="file" style="outline: none;cursor: pointer" />
-        </div>
-
-        <div class="btndiv" style="">
-            <div class="btn" id="outxmls">提交</div>
-            <div class="btn" id="closexml">关闭</div>
-        </div>
-    </form>
 </div>
 
 <div class="mask" style="display: none"></div>

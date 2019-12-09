@@ -1,6 +1,8 @@
 import random
 import hashlib
 import io
+import time
+import calendar
 
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
@@ -10,7 +12,7 @@ from PIL import Image, ImageDraw, ImageFont
 from .models import User, Enterprise, Station, Direction, Road, Area, Route, Vehicle, Permission
 from .decorator import login_check
 from tj_scheduled_bus import settings
-from .utils import save_file, MyPaginator
+from .utils import save_file, MyPaginator, statistic_update
 
 
 # Create your views here.
@@ -442,11 +444,14 @@ def is_vehicle_exist(request):
 # 显示站点信息
 @login_check
 def station(request):
+    user_id = request.session.get('user_id', '')
     search_name = request.POST.get('search_name', '')
 
-    route_list = Route.objects.filter(route_status=2).filter(route_name__contains=search_name).values('route_name').\
-        annotate(num_station=Count('route_station'))
-    area_list = Area.objects.all().order_by('id')
+    route_list = Route.objects.filter(route_user_id=user_id).filter(route_status=2).\
+        filter(route_name__contains=search_name).values('route_name').annotate(num_station=Count('route_station'))
+
+    # area_list = Area.objects.all().order_by('id')
+    area_list = Station.objects.filter(station_status=31).values('station_area').distinct()
 
     # 模态框显示控制
     display_add_route = request.GET.get('display_add_route', 'none')
@@ -469,32 +474,41 @@ def station(request):
                }
 
     # for station in station_list:
-    #     print(station.station_name)
+    #     print(station.route_station.station_name)
     return render(request, 'station.html', context)
 
 
 # 查询站点信息
 def station_search(request):
+    obj_1_val = request.GET.get('obj_1_val', '')
+    obj_2_val = request.GET.get('obj_2_val', '')
     parent_id = request.GET.get('parent_id', '')
     item = request.GET.get('item')
-    # print(parent_id)
+
     # 查询数据
     if item == 'road' and parent_id != '':
-        cate_list = Road.objects.filter(road_area_id=parent_id)
+        # cate_list = Road.objects.filter(road_area_id=parent_id)
+        cate_list = Station.objects.filter(station_status=31).filter(station_area__contains=parent_id).\
+            values('station_road').distinct()
     elif item == 'direction' and parent_id != '':
-        cate_list = Direction.objects.filter(direction_road_id=parent_id)
+        # cate_list = Direction.objects.filter(direction_road_id=parent_id)
+        cate_list = Station.objects.filter(station_status=31).filter(station_area__contains=obj_1_val).\
+            filter(station_road=parent_id).values('station_direction').distinct()
     elif item == 'station' and parent_id != '':
-        cate_list = Station.objects.filter(station_direction_id=parent_id)
+        # cate_list = Station.objects.filter(station_direction_id=parent_id)
+        cate_list = Station.objects.filter(station_status=31).filter(station_area__contains=obj_1_val).\
+            filter(station_road=obj_2_val).filter(station_direction=parent_id)
     else:
         cate_list = []
 
     # 构建返回的Json数组格式数据
     data = []
     for cate in cate_list:
+
         if item == 'road':
-            cate_info = {'id': cate.id, 'name': cate.road_name}
+            cate_info = {'id': cate.get('station_road', ''), 'name': cate.get('station_road', '')}
         elif item == 'direction':
-            cate_info = {'id': cate.id, 'name': cate.direction_name}
+            cate_info = {'id': cate.get('station_direction', ''), 'name': cate.get('station_direction', '')}
         elif item == 'station':
             cate_info = {'id': cate.id, 'name': cate.station_name}
         else:
@@ -506,10 +520,10 @@ def station_search(request):
 
 # 是否可以添加站点
 def can_add_station(request):
-
+    user_id = request.session.get('user_id', '')
     route_name = request.GET.get('route_name', '')
 
-    station_count = Route.objects.filter(route_name=route_name).count()
+    station_count = Route.objects.filter(route_user_id=user_id).filter(route_name=route_name).count()
 
     if station_count >= 5:
         result = False
@@ -521,12 +535,14 @@ def can_add_station(request):
 
 # 添加站点
 def station_add(request):
+    user_id = request.session.get('user_id', '')
     route_name = request.POST.get('route_name', '')
     station_id = request.POST.get('station', '')
 
     route_info = Route()
     route_info.route_name = route_name
     route_info.route_station_id = station_id
+    route_info.route_user_id = user_id
 
     route_info.save()
 
@@ -583,6 +599,7 @@ def station_cancel(request):
 # 保存添加路线
 def station_save(request):
     Route.objects.filter(route_status=1).update(route_status=2)
+    Route.objects.filter(route_status=3).delete()
 
     return HttpResponseRedirect('/station')
 
@@ -611,16 +628,43 @@ def permission(request):
 
 # 申请通行证
 def permission_add(request):
+    user_id = request.session.get('user_id', '')
     vehicle_id = request.POST.get('vehicle_id', '')
     route_name = request.POST.get('route_name', '')
 
     permission_info = Permission()
     permission_info.permission_vehicle_id = vehicle_id
     permission_info.permission_route = route_name
+    permission_info.permission_user_id = user_id
+    permission_info.permission_status_id = 51
+
+    # 有效日期
+    current_time = time.localtime()
+    year = current_time.tm_year
+    month = current_time.tm_mon
+    start_day = current_time.tm_mday
+    end_day = calendar.monthrange(year, month)[1]
+
+    # permission_info.start_date = time.strptime('%s-%s-%s' % (year, month, start_day), '%Y-%m-%d')
+    # permission_info.end_date = time.strptime('%s-%s-%s' % (year, month, end_day), '%Y-%m-%d')
+
+    permission_info.start_date = '%s-%s-%s' % (year, month, start_day)
+    permission_info.end_date = '%s-%s-%s' % (year, month, end_day)
 
     permission_info.save()
 
+    # 统计企业通行证数量
+    enterprise_list = Enterprise.objects.filter(user_id=user_id).filter(enterprise_type_id=41)
+    if enterprise_list:
+        enterprise_info = enterprise_list[0]
+        statistic_update(enterprise_info.id, '%s-%s-%s' % (year, month, end_day))
+    else:
+        pass
+
     return HttpResponseRedirect('/permission')
+
+
+
 
 
 

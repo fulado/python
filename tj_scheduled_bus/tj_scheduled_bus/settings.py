@@ -27,6 +27,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# DEBUG = False
+#
+# ALLOWED_HOSTS = ['*', ]
+
 
 # Application definition
 
@@ -79,6 +83,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'tj_scheduled_bus',
         'HOST': '127.0.0.1',
+        # 'HOST': '118.24.96.90',
         'PORT': 3306,
         'USER': 'root',
         'PASSWORD': 'xiaobai',

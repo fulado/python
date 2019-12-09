@@ -111,14 +111,12 @@
 <div class="table_wrapper">
     <div class="table_head">
         <span>路线管理</span>
-{#        <span class="number_word">车辆提交上限&nbsp;:&nbsp;{{ limit_number }}</span>#}
-{#        <span class="number_word">已提交车辆数&nbsp;:&nbsp;{{ applied_number }}</span>#}
     </div>
     <div class="table_container">
         <div class="search_input">
             <label for="ss">路线名称</label>
             <form action="/station" method="POST" style="display: inline-block;">
-                <input type="text" placeholder="输入路线名称" id="ss" name="route_name" value="{{ search_name }}" />
+                <input type="text" placeholder="输入路线名称" id="ss" name="search_name" value="{{ search_name }}" />
             </form>
             <span class="find_btn">查询</span>
             <span class="add_account" id="add">新增路线</span>
@@ -199,9 +197,9 @@
                 <tr>
                     <td style="width: 4%">{{ forloop.counter }}</td>
                     <td title="{{ station.route_station.station_name }}">{{ station.route_station.station_name }}</td>
-                    <td title="{{ station.route_station.station_area.area_name }}">{{ station.route_station.station_area.area_name }}</td>
-                    <td title="{{ station.route_station.station_road.road_name }}">{{ station.route_station.station_road.road_name }}</td>
-                    <td title="{{ station.route_station.station_direction.direction_name }}">{{ station.route_station.station_direction.direction_name }}</td>
+                    <td title="{{ station.route_station.station_area }}">{{ station.route_station.station_area }}</td>
+                    <td title="{{ station.route_station.station_road }}">{{ station.route_station.station_road }}</td>
+                    <td title="{{ station.route_station.station_direction }}">{{ station.route_station.station_direction }}</td>
                     <td>
                         <button type="button" class="see modify-vehicle-info" style="margin-right: 5px;" onclick="deleteStation('{{ station.id }}')">删除</button>
                     </td>
@@ -228,7 +226,7 @@
                         <select name="area" placeholder="区域">
                             <option value="0">选择区域</option>
                             {% for area in area_list %}
-                                <option value="{{ area.id }}">{{ area.area_name }}</option>
+                                <option value="{{ area.station_area }}">{{ area.station_area }}</option>
                             {% endfor %}
                         </select>
                     </td>
@@ -258,60 +256,12 @@
             <div class="my-modal-footer" >
                 <div class="clickbtn" style="margin: 0px;width: 830px;text-align: center; ">
                     <button type="button" class="btn add">添加</button>
-                    <div class="btn del">取消</div>
+                    <div class="btn cancle">取消</div>
                     <button type="button" class="btn save">保存</button>
                 </div>
             </div>
         </form>
     </div>
-</div>
-
-<!--模态框-->
-<div class="container">
-    <div class="pop-up" style="width: 560px;height: 268px;margin: 15% auto;display: none">
-        <form>
-            <div class="ePrisename" style="height: 200px;">
-                <label for="reason" style="vertical-align: top;width: 100px">填写原因</label>
-                <textarea name="" id="reason" style="resize:none;border-radius:4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:400px;height:150px"></textarea>
-            </div>
-
-            <div class="clickbtn" style="margin: 0 auto;width: 430px">
-                <div class="btn save" id="save">提交</div>
-                <div class="btn del" id="del">关闭</div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!--上传文件模态框-->
-<div class="pop-up1" style="width: 560px;height: 268px;display: none;">
-    <form action="/excel_import" enctype="multipart/form-data" method="post">
-        {% csrf_token %}
-        <div class="selFile">
-            <label for="reason" style="">选择文件</label>
-            <input type="file" name="excel_file" style="outline: none;cursor: pointer; width:300px; margin-left: 100px;" accept="application/vnd.ms-excel"/>
-        </div>
-
-        <div class="btndiv" style="margin-top: 50px;">
-            <button type="button" class="btn save" style="line-height: 27px;" >导入</button>
-            <!--<input type="submit" class="btn" style="line-height: 27px;" value="导入" />-->
-            <div class="btn" id="close" style="line-height: 27px;">关闭</div>
-        </div>
-    </form>
-</div>
-
-<div class="pop-up2" style="width: 560px;height: 268px;display: none;">
-    <form id="xmlform" enctype="multipart/form-data">
-        <div class="selFile" style="">
-            <label for="reason" style="">选择文件</label>
-            <input type="file" name="file" style="outline: none;cursor: pointer" />
-        </div>
-
-        <div class="btndiv" style="">
-            <div class="btn" id="outxmls">提交</div>
-            <div class="btn" id="closexml">关闭</div>
-        </div>
-    </form>
 </div>
 
 <div class="mask" style="display: {{ display_mask }}"></div>
@@ -341,7 +291,7 @@
         });
 
         // 隐藏增加车辆模态框
-        $('.add-vehicle .del').click(function() {
+        $('.add-vehicle .cancle').click(function() {
             if (confirm('是否放弃编辑？')) {
                 $('.add-vehicle').hide();
                 $('.mask').hide();
@@ -356,7 +306,7 @@
         });
 
         // 隐藏编辑车辆信息模态框
-        $('.modify-vehicle .del').click(function() {
+        $('.modify-vehicle .cancle').click(function() {
             if ($('.modify-vehicle .clickbtn .save').css("display") == 'none'){
                 $('.modify-vehicle').hide();
                 $('.mask').hide();
@@ -407,47 +357,6 @@
                 $('.add-vehicle').hide();
                 $('.mask').hide();
                 window.location.href = "/station_save";
-            }
-        });
-
-        // 保存编辑车辆
-        $('.modify-vehicle .save').click(function() {
-            var number = $('.modify-vehicle input').eq(0).val().replace(/\s+/g,"");
-            var engine = $('.modify-vehicle input').eq(1).val().replace(/\s+/g,"");
-            var vehicle_model = $('.modify-vehicle input').eq(2).val().replace(/\s+/g,"");
-            var register_date = $('.modify-vehicle input').eq(3).val().replace(/\s+/g,"");
-            var route = $('.modify-vehicle textarea').val().replace(/\s+/g,"");
-            var vehicle_type = $('.modify-vehicle select').eq(0).val();
-
-            if (!(vehicle_type == '1' || vehicle_type == '2' || vehicle_type == '15')) {
-                alert('请选择正确的车辆类型');
-            }
-            else if (number.length == 0) {
-                alert('请输入正确的号牌号码');
-            }
-            else if (vehicle_type != 15 && !re_01.test(number)) {
-                alert('车辆类型或号牌号码不正确, 请修改后保存');
-            }
-            else if (vehicle_type == 15 && !re_15.test(number)) {
-                alert('车辆类型或号牌号码不正确, 请修改后保存');
-            }
-            else if (vehicle_type != 15 && engine.length == 0) {
-                alert('请输入正确的发动机型号');
-            }
-            else if (vehicle_model.length == 0) {
-                alert('请输入正确的车辆型号');
-            }
-            else if (register_date.length == 0) {
-                alert('请选择正确的车辆注册日期');
-            }
-            else if (route.length == 0) {
-                alert('请输入正确的行驶路线');
-            }
-            else if (confirm('是否保存车辆信息？')) {
-                $('.modify-vehicle form').prop('action', '/vehicle_modify');
-                $('.modify-vehicle form').submit();
-                $('.modify-vehicle').hide();
-                $('.mask').hide();
             }
         });
 
@@ -508,7 +417,7 @@
                 $('.my-modal-body select').eq(2).attr("disabled","disabled");
             } else {
                 $('.my-modal-body select').eq(2).removeAttr("disabled");
-                setCateInfo($(this), $('.my-modal-body select').eq(2), 0, 'direction');
+                setDirectionInfo($('.my-modal-body select').eq(0), $(this), $('.my-modal-body select').eq(2), 0, 'direction');
             }
 
             $('.my-modal-body select').eq(2).change();
@@ -524,105 +433,14 @@
                 $('.my-modal-body select').eq(3).attr("disabled","disabled");
             } else {
                 $('.my-modal-body select').eq(3).removeAttr("disabled");
-                setCateInfo($(this), $('.my-modal-body select').eq(3), 0, 'station');
+                setStationInfo($('.my-modal-body select').eq(0), $('.my-modal-body select').eq(1), $(this), $('.my-modal-body select').eq(3), 0, 'station');
             }
         });
 });
 
-    // 填充编辑车辆模态框信息
-    function setVehicleInfo(vehicle_type, number, engine, vehicle_model, register_date, route, id, status_id) {
-         $('.modify-vehicle select').eq(0).val(vehicle_type);       // 车辆类型
-         $('.modify-vehicle input').eq(0).val(number.replace("<br />",""));              // 号牌号码
-         $('.modify-vehicle input').eq(1).val(engine.replace("<br />",""));              // 发动机型号
-         $('.modify-vehicle input').eq(2).val(vehicle_model.replace("<br />",""));       // 车辆型号
-         $('.modify-vehicle input').eq(3).val(register_date);     // 车辆注册日期
-         $('.modify-vehicle textarea').val(route.replace("<br />",""));                  // 运输路线
-         $('.modify-vehicle input').eq(4).val(id);                  // 车辆id
-
-         if (status_id != '1' && status_id != '5' ) {
-            $('.modify-vehicle .clickbtn .save').hide();
-            $('.modify-vehicle .clickbtn .delete').hide();
-         } else {
-            $('.modify-vehicle .clickbtn .save').show();
-            $('.modify-vehicle .clickbtn .delete').show();
-         }
-    }
-
     // 跳转到指定页面
     function jump() {
         $('#pageToolbar form').submit();
-    }
-
-    // 提交车辆, 需要判断是否已经达到上限, 并判断车辆信息是否填写完整, 挂车(15)可不填写发动机型号
-    function submit_vehicle(user_id, vehicle_id, vehicle_type, number, engine, vehicle_model, register_date, route) {
-        // 判断是否已经到达提交上限
-        $.get('/can_submit_vehicle', {'user_id': user_id}, function(data) {
-            if (!data.allow_submit) {
-                alert('每月提交申请最后期限为25日, 无法提交申请');
-            }
-            else if (!(vehicle_type == '1' || vehicle_type == '2' || vehicle_type == '15')) {
-                alert('车辆类型不正确, 请修改后提交');
-            }
-            else if (!data.result && vehicle_type == '1') {
-                alert('已经到达通行证申请上限，大型车辆不能提交申请');
-            }
-            else if (number.replace(/\s+/g,"").length == 0) {
-                alert('号牌号码不正确, 请修改后提交');
-            }
-            else if (vehicle_type != 15 && !re_01.test(number.replace(/\s+/g,""))) {
-                alert('车辆类型或号牌号码不正确, 请修改后提交');
-            }
-            else if (vehicle_type == 15 && !re_15.test(number.replace(/\s+/g,""))) {
-                alert('车辆类型或号牌号码不正确, 请修改后提交');
-            }
-            else if (vehicle_type != 15 && engine.replace(/\s+/g,"").length == 0) {
-                alert('发动机型号不正确, 请修改后提交');
-            }
-            else if (vehicle_model.replace(/\s+/g,"").length == 0) {
-                alert('车辆型号不正确, 请修改后提交');
-            }
-            else if (register_date.replace(/\s+/g,"").length == 0) {
-                alert('车辆注册日期不正确, 请修改后提交');
-            }
-            else if (route.replace(/\s+/g,"").length == 0) {
-                alert('行驶路线不正确, 请修改后提交');
-            }
-            else {
-                window.location.href = "/vehicle_submit?vehicle_id=" + vehicle_id;
-            }
-        });;
-    }
-
-    // 提交全部车辆, 判断是否到达上限, 如到达上限, 则仅提交部分车辆, 并给出提示
-    function submit_all(user_id) {
-        // 判断是否可以提交全部车辆
-        $.get('/can_submit_all', {'user_id': user_id}, function(data) {
-            could_submit = true;
-            if (data.result) {
-                if (data.error_num > 0) {
-                     alert('本次提交车辆'+ data.vehicle_num +'辆，因信息不正确无法提交车辆'+ data.error_num +'辆');
-                }
-                else {
-                    alert('已提交全部车辆');
-                }
-            }
-            else {
-                if (data.vehicle_num == -1) {
-                    alert('每月提交申请最后期限为25日, 无法提交申请');
-                    could_submit = false;
-                }
-                else if (data.error_num > 0) {
-                    alert('大型车辆超出允许提交的上限，本次共提交车辆'+ data.vehicle_num +'辆，因超限未提交大型车辆'+ data.ignore_num +'辆，因信息不正确无法提交车辆' + data.error_num +'辆');
-                }
-                else {
-                    alert('大型车辆超出允许提交的上限，本次共提交车辆'+ data.vehicle_num +'辆，因超限未提交大型车辆'+ data.ignore_num +'辆');
-                }
-            }
-
-            if (could_submit) {
-                window.location.href = "/vehicle_submit_all";
-            }
-        });
     }
 
     // 删除本单位全部车辆
@@ -641,6 +459,62 @@
 
         // 通过Ajax获取二级部门
         $.get('/station_search', {'parent_id': parent_id, 'item': item}, function(data) {
+            // 清空二级部门选择中的全部选项
+            childObj.empty();
+            // 根据查询结果, 添加二级部门子元素
+            // var newOption = $('<option></option>').val(0).text('待定');
+            childObj.append(newOption);
+            for (i in data.cate_list) {
+                if (childId == data.cate_list[i].id) {
+                    var newOption = $('<option selected></option>').val(data.cate_list[i].id).text(data.cate_list[i].name);
+                } else {
+                    var newOption = $('<option></option>').val(data.cate_list[i].id).text(data.cate_list[i].name);
+                }
+                childObj.append(newOption);
+            }
+        });
+    }
+
+    // 选择道路，方向变化
+    function setDirectionInfo(obj_1, parentObj, childObj, childId, item) {
+        // 设置查询下级复选框等级
+        var childId = childId || 0;
+        // 用户选择上级选项的id
+        var parent_id = parentObj.val();
+        // 区域值
+        let obj_1_val = obj_1.val();
+
+        // 通过Ajax获取二级部门
+        $.get('/station_search', {'parent_id': parent_id, 'item': item, 'obj1_val': obj_1_val}, function(data) {
+            // 清空二级部门选择中的全部选项
+            childObj.empty();
+            // 根据查询结果, 添加二级部门子元素
+            // var newOption = $('<option></option>').val(0).text('待定');
+            childObj.append(newOption);
+            for (i in data.cate_list) {
+                if (childId == data.cate_list[i].id) {
+                    var newOption = $('<option selected></option>').val(data.cate_list[i].id).text(data.cate_list[i].name);
+                } else {
+                    var newOption = $('<option></option>').val(data.cate_list[i].id).text(data.cate_list[i].name);
+                }
+                childObj.append(newOption);
+            }
+        });
+    }
+
+    // 选择方向，站点变化
+    function setStationInfo(obj_1, obj_2, parentObj, childObj, childId, item) {
+        // 设置查询下级复选框等级
+        var childId = childId || 0;
+        // 用户选择上级选项的id
+        var parent_id = parentObj.val();
+        // 区域值
+        let obj_1_val = obj_1.val();
+        // 道路
+        let obj_2_val = obj_2.val();
+
+        // 通过Ajax获取二级部门
+        $.get('/station_search', {'parent_id': parent_id, 'item': item, 'obj_1_val': obj_1_val, 'obj_2_val': obj_2_val}, function(data) {
             // 清空二级部门选择中的全部选项
             childObj.empty();
             // 根据查询结果, 添加二级部门子元素

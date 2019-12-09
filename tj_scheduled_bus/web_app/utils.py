@@ -5,6 +5,8 @@ from tj_scheduled_bus import settings
 
 from django.core.paginator import Paginator
 
+from .models import Statistic
+
 
 # 分页工具类
 class MyPaginator(object):
@@ -72,3 +74,38 @@ def save_file(file_obj, file_name):
         f.write(chunk)
 
     f.close()
+
+
+# 通行证统计+1
+def statistic_update(enterprise_id, end_date):
+    sta_list = Statistic.objects.filter(sta_enterprise_id=enterprise_id).filter(sta_date=end_date)
+
+    if sta_list:
+        sta_info = sta_list[0]
+    else:
+        sta_info = Statistic()
+        sta_info.sta_enterprise_id = enterprise_id
+        sta_info.sta_date = end_date
+
+    sta_info.permission_count += 1
+    sta_info.save()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
