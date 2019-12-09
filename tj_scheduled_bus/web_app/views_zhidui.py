@@ -4,7 +4,7 @@
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 
 
-from .models import User, Enterprise, Station, Direction, Road, Area, Route, Vehicle, Permission
+from .models import User, Enterprise, Station, Direction, Road, Area, Route, Vehicle, Permission, Statistic
 from .decorator import login_check
 from .utils import save_file, MyPaginator
 
@@ -99,20 +99,17 @@ def vehicle_refuse(request):
 def permission(request):
     enterprise_name = request.POST.get('enterprise_name', '')
 
-    enterprise_list = Enterprise.objects.filter(enterprise_type_id=41).filter(enterprise_name__contains=enterprise_name)
-
-    permission_list = Permission.objects.filter(permission_user_id=user_id)
+    statistic_list = Statistic.objects.filter(sta_enterprise__enterprise_name__contains=enterprise_name)
 
     # 分页
     mp = MyPaginator()
-    mp.paginate(permission_list, 10, 1)
+    mp.paginate(statistic_list, 10, 1)
 
-    context = {'enterprise_list': enterprise_list,
-               'route_list': route_list,
+    context = {'enterprise_name': enterprise_name,
                'mp': mp
                }
 
-    return render(request, 'permit.html', context)
+    return render(request, 'zhidui/permit.html', context)
 
 
 

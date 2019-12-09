@@ -105,7 +105,7 @@
         <div class="search_input">
             <label for="ss">企业搜索</label>
             <form action="/zhidui/permission" method="POST" style="display: inline-block;">
-                <input type="text" placeholder="输入企业名称" id="ss" name="number" value="{{ enterprise_name }}" />
+                <input type="text" placeholder="输入企业名称" id="ss" name="enterprise_name" value="{{ enterprise_name }}" />
             </form>
             <span class="find_btn">查询</span>
             <span class="add_account" id="add">申请</span>
@@ -115,24 +115,24 @@
             <thead>
                 <tr>
                     <td style="width: 4%">序号</td>
-                    <td>号牌号码</td>
-                    <td>路线</td>
-                    <td>状态</td>
-                    <td style="width: 200px">操作</td>
+                    <td>企业名称</td>
+                    <td>通行证数量</td>
+                    <td>下载数量</td>
+{#                    <td style="width: 200px">操作</td>#}
                 </tr>
             </thead>
             <tbody>
-                {% for permission in mp.object_list %}
+                {% for statistic in mp.object_list %}
                 <tr>
                     <td style="width: 4%">{{ forloop.counter }}</td>
-                    <td title="{{ permission.permission_vehicle.vehicle_number }}">{{ permission.permission_vehicle.vehicle_number }}</td>
-                    <td title="{{ permission.permission_route }}">{{ permission.permission_route }}</td>
-                    <td title="{{ vehicle.engine }}">{{ vehicle.engine }}</td>
-                    <td>
-                        {% if vehicle.status.id == 4 %}
-                        <a href="/static/certification/{{ vehicle.file_name }}" target="_Blank" class="see download" style="margin-right: 5px;">下载</a>
-                        {% endif %}
-                    </td>
+                    <td title="{{ statistic.sta_enterprise.enterprise_name }}">{{ statistic.sta_enterprise.enterprise_name }}</td>
+                    <td title="{{ statistic.permission_count }}">{{ statistic.permission_count }}</td>
+                    <td title="{{ statistic.download_count }}">{{ statistic.download_count }}</td>
+{#                    <td>#}
+{#                        {% if vehicle.status.id == 4 %}#}
+{#                        <a href="/static/certification/{{ vehicle.file_name }}" target="_Blank" class="see download" style="margin-right: 5px;">下载</a>#}
+{#                        {% endif %}#}
+{#                    </td>#}
                 </tr>
                 {% endfor %}
             </tbody>
