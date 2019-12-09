@@ -3,18 +3,23 @@ import hashlib
 import io
 
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
+from django.http import JsonResponse
+from django.db.models import Count
 from PIL import Image, ImageDraw, ImageFont
 
-from .models import User
+from .models import User, Enterprise, Station, Direction, Road, Area, Route, Vehicle, Permission
 from .decorator import login_check
 from tj_scheduled_bus import settings
+from .utils import save_file, MyPaginator
+
+
 # Create your views here.
 
 
 # 验证码
 def check_code(request):
     # 定义变量，用于画面的背景色、宽、高
-    bgcolor = (random.randrange(20, 100), random.randrange(20, 100), 255)
+    bgcolor = (255, 255, 255)
     width = 100
     height = 25
     # 创建画面对象
@@ -24,7 +29,7 @@ def check_code(request):
     # 调用画笔的point()函数绘制噪点
     for i in range(0, 100):
         xy = (random.randrange(0, width), random.randrange(0, height))
-        fill = (random.randrange(0, 255), 255, random.randrange(0, 255))
+        fill = (random.randrange(0, 255), 0, random.randrange(0, 255))
         draw.point(xy, fill=fill)
     # 定义验证码的备选值
     str1 = 'ABCD23EFGHJK456LMNPQRS789TUVWXYZ'
@@ -35,7 +40,7 @@ def check_code(request):
     # 设置字体
     font = ImageFont.truetype(r"%s/simsun.ttf" % settings.FONTS_DIR, 23)
     # 字体颜色
-    fontcolor = (255, 243, 67)
+    fontcolor = (0, 0, 0)
     # 绘制4个字
     draw.text((5, 2), rand_str[0], font=font, fill=fontcolor)
     draw.text((25, 2), rand_str[1], font=font, fill=fontcolor)
@@ -90,16 +95,10 @@ def login_handle(request):
         msg = '用户名或密码错误'
         return HttpResponseRedirect('/?msg=%s' % msg)
 
-    # 根据user.id获取用户权限, 2-环保局, 3-交管局
-    if user.id != 0:
-        authority = User.objects.get(id=user.id).authority.id
-    else:
-        authority = 0
-
     # 把user.id保存到session中
     request.session.set_expiry(0)  # 浏览器关闭后清除session
     request.session['user_id'] = user.id
-    request.session['authority_id'] = authority
+    request.session['authority'] = user.authority
 
     return HttpResponseRedirect('/main')
 
@@ -112,23 +111,11 @@ def logout(request):
     return HttpResponseRedirect('/')
 
 
-# 显示主页面
-# @login_check
-def main(request):
-    user_id = request.session.get('user_id', '')
-
-    user = User.objects.filter(id=user_id)[0] if user_id else None
-
-    context = {'user': user}
-
-    return render(request, 'main.html', context)
-
-
 # 显示注册页面
 def register(request):
     user_id = request.session.get('user_id', '')
     if user_id != '':
-        return HttpResponseRedirect('/main')
+        return HttpResponseRedirect('/login')
 
     msg = request.GET.get('msg', '')
 
@@ -137,30 +124,528 @@ def register(request):
     return render(request, 'register.html', context)
 
 
+# 注册
+def register_handle(request):
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    re_password = request.POST.get('re_password')
+
+    code = request.POST.get('check_code').upper()
+
+    session_code = request.session.get('check_code')
+
+    if code != session_code:
+        msg = '验证码错误'
+        return HttpResponseRedirect('/register?msg=%s' % msg)
+
+    if password != re_password:
+        msg = '两次输入密码不一致'
+        return HttpResponseRedirect('/register?msg=%s' % msg)
+
+    is_user_exist = User.objects.filter(username=username).exists()
+    if is_user_exist:
+        msg = '账号已存在'
+        return HttpResponseRedirect('/register?msg=%s' % msg)
+
+    user_info = User()
+    user_info.username = username
+    user_info.password = hashlib.sha1(password.encode('utf8')).hexdigest()
+    user_info.authority = 1
+
+    user_info.save()
+
+    msg = '注册成功，请登录'
+    return HttpResponseRedirect('/login?msg=%s' % msg)
+
+
+# 显示主页面
+@login_check
+def main(request):
+    user_id = request.session.get('user_id', '')
+    authority = int(request.session.get('authority', 1))
+
+    user = User.objects.filter(id=user_id)[0] if user_id else None
+
+    context = {'user': user}
+
+    if authority == 2:
+        return render(request, 'zhidui/main.html', context)
+    elif authority == 3:
+        return render(request, 'jiaoguanju/main.html', context)
+    else:
+        return render(request, 'main.html', context)
+
+
 # 显示企业管理页面
+@login_check
 def enterprise(request):
-    context = {}
+    user_id = request.session.get('user_id', '')
+    search_name = request.POST.get('search_name', '')
+
+    enterprise_list = Enterprise.objects.filter(user_id=user_id).filter(enterprise_name__contains=search_name)
+
+    # 分页
+    mp = MyPaginator()
+    mp.paginate(enterprise_list, 10, 1)
+
+    context = {'mp': mp,
+               'search_name': search_name
+               }
 
     return render(request, 'enterprise.html', context)
 
 
-# 显示企业信息页面
-def enterprise_info(request):
-    context = {}
+# 新增企业
+def enterprise_add(request):
+    user_id = request.session.get('user_id', '')
 
-    return render(request, 'enterprise_info.html', context)
+    enterprise_type = request.POST.get('enterprise_type', 0)
+    enterprise_name = request.POST.get('enterprise_name', '')
+    enterprise_owner = request.POST.get('enterprise_owner', '')
+    enterprise_code = request.POST.get('enterprise_code', '')
+    contact_person = request.POST.get('contact_person', '')
+    phone = request.POST.get('phone', '')
+
+    enterprise_info = Enterprise()
+    enterprise_info.enterprise_type_id = enterprise_type
+    enterprise_info.enterprise_name = enterprise_name
+    enterprise_info.enterprise_owner = enterprise_owner
+    enterprise_info.enterprise_code = enterprise_code
+    enterprise_info.contact_person = contact_person
+    enterprise_info.phone = phone
+    enterprise_info.user_id = user_id
+    enterprise_info.enterprise_status_id = 1
+
+    # 营业执照照片
+    business_license = request.FILES.get('business_license', '')
+    if business_license:
+        file_name = '营业执照_' + enterprise_name
+        save_file(business_license, file_name)
+        enterprise_info.business_license = file_name
+
+    # 法人身份证正面
+    id_card_front = request.FILES.get('id_card_front', '')
+    if id_card_front:
+        file_name = '身份证正面_' + enterprise_name
+        save_file(id_card_front, file_name)
+        enterprise_info.id_card_front = file_name
+
+    # 法人身份证反面
+    id_card_back = request.FILES.get('id_card_back', '')
+    if id_card_back:
+        file_name = '身份证反面_' + enterprise_name
+        save_file(id_card_back, file_name)
+        enterprise_info.id_card_back = file_name
+
+    # 法人身份证反面
+    rent_contract = request.FILES.get('rent_contract', '')
+    if rent_contract:
+        file_name = '租赁合同_' + enterprise_name
+        save_file(rent_contract, file_name)
+        enterprise_info.rent_contract = file_name
+
+    try:
+        enterprise_info.save()
+    except Exception as e:
+        print(e)
+
+    return HttpResponseRedirect('/enterprise')
+
+
+# 编辑企业
+def enterprise_modify(request):
+    enterprise_id = request.POST.get('enterprise_id', '')
+
+    enterprise_type = request.POST.get('enterprise_type', 0)
+    enterprise_name = request.POST.get('enterprise_name', '')
+    enterprise_owner = request.POST.get('enterprise_owner', '')
+    enterprise_code = request.POST.get('enterprise_code', '')
+    contact_person = request.POST.get('contact_person', '')
+    phone = request.POST.get('phone', '')
+
+    enterprise_info = Enterprise.objects.get(id=enterprise_id)
+    enterprise_info.enterprise_type_id = enterprise_type
+    enterprise_info.enterprise_name = enterprise_name
+    enterprise_info.enterprise_owner = enterprise_owner
+    enterprise_info.enterprise_code = enterprise_code
+    enterprise_info.contact_person = contact_person
+    enterprise_info.phone = phone
+
+    # 营业执照照片
+    business_license = request.FILES.get('business_license', '')
+    if business_license:
+        file_name = '营业执照_' + enterprise_name
+        save_file(business_license, file_name)
+        enterprise_info.business_license = file_name
+
+    # 法人身份证正面
+    id_card_front = request.FILES.get('id_card_front', '')
+    if id_card_front:
+        file_name = '身份证正面_' + enterprise_name
+        save_file(id_card_front, file_name)
+        enterprise_info.id_card_front = file_name
+
+    # 法人身份证反面
+    id_card_back = request.FILES.get('id_card_back', '')
+    if id_card_back:
+        file_name = '身份证反面_' + enterprise_name
+        save_file(id_card_back, file_name)
+        enterprise_info.id_card_back = file_name
+
+    # 法人身份证反面
+    rent_contract = request.FILES.get('rent_contract', '')
+    if rent_contract:
+        file_name = '租赁合同_' + enterprise_name
+        save_file(rent_contract, file_name)
+        enterprise_info.rent_contract = file_name
+
+    try:
+        enterprise_info.save()
+    except Exception as e:
+        print(e)
+
+    return HttpResponseRedirect('/enterprise')
+
+
+# 删除企业
+def enterprise_delete(request):
+    enterprise_id = request.POST.get('enterprise_id', '')
+
+    enterprise_info = Enterprise.objects.get(id=enterprise_id)
+
+    enterprise_info.delete()
+
+    return HttpResponseRedirect('/enterprise')
+
+
+# 提交企业
+def enterprise_submit(request):
+    enterprise_id = request.GET.get('enterprise_id', '')
+
+    Enterprise.objects.filter(id=enterprise_id).update(enterprise_status_id=2)
+
+    return HttpResponseRedirect('/enterprise')
+
+
+# 判断企业是否存在
+def is_enterprise_exist(request):
+    enterprise_name = request.GET.get('enterprise_name')
+    enterprise_code = request.GET.get('enterprise_code')
+
+    is_exist = Enterprise.objects.filter(enterprise_name=enterprise_name).exists() or \
+               Enterprise.objects.filter(enterprise_code=enterprise_code).exists()
+
+    return JsonResponse({'is_exist': is_exist})
 
 
 # 显示车辆信息
+@login_check
 def vehicle(request):
-    context = {}
+    user_id = request.session.get('user_id', '')
+    vehicle_number = request.POST.get('vehicle_number', '')
+    vehicle_status = int(request.POST.get('vehicle_status', 0))
+
+    vehicle_list = Vehicle.objects.filter(vehicle_user_id=user_id).filter(vehicle_number__contains=vehicle_number)
+    if vehicle_status != 0:
+        vehicle_list = vehicle_list.filter(vehicle_status_id=vehicle_status)
+    else:
+        pass
+
+    # 分页
+    mp = MyPaginator()
+    mp.paginate(vehicle_list, 10, 1)
+
+    context = {'mp': mp,
+               'vehicle_number': vehicle_number,
+               'vehicle_status': vehicle_status
+               }
 
     return render(request, 'vehicle.html', context)
 
 
-# 显示站点信息
-def station(request):
-    context = {}
+# 添加车辆
+def vehicle_add(request):
+    user_id = request.session.get('user_id', '')
 
+    vehicle_number = request.POST.get('vehicle_number', '')
+    vehicle_type = request.POST.get('vehicle_type', '1')
+    engine_code = request.POST.get('engine_code', '')
+    vehicle_owner = request.POST.get('vehicle_owner', '')
+    register_date = request.POST.get('register_date', '')
+    vehicle_belong = request.POST.get('vehicle_belong', '1')
+
+    vehicle_info = Vehicle()
+    vehicle_info.vehicle_number = vehicle_number
+    vehicle_info.vehicle_type_id = int(vehicle_type)
+    vehicle_info.engine_code = engine_code
+    vehicle_info.vehicle_owner = vehicle_owner
+    vehicle_info.register_date = register_date
+    vehicle_info.vehicle_belong_id = int(vehicle_belong)
+    vehicle_info.vehicle_user_id = user_id
+    vehicle_info.vehicle_status_id = 1
+
+    vehicle_info.save()
+
+    return HttpResponseRedirect('/vehicle')
+
+
+# 编辑车辆
+def vehicle_modify(request):
+    vehicle_id = request.POST.get('vehicle_id', '')
+    vehicle_type = request.POST.get('vehicle_type', '1')
+    engine_code = request.POST.get('engine_code', '')
+    vehicle_owner = request.POST.get('vehicle_owner', '')
+    register_date = request.POST.get('register_date', '')
+    vehicle_belong = request.POST.get('vehicle_belong', '1')
+
+    vehicle_info = Vehicle.objects.get(id=vehicle_id)
+
+    vehicle_info.vehicle_type_id = int(vehicle_type)
+    vehicle_info.engine_code = engine_code
+    vehicle_info.vehicle_owner = vehicle_owner
+    vehicle_info.register_date = register_date
+    vehicle_info.vehicle_belong_id = int(vehicle_belong)
+
+    vehicle_info.save()
+
+    return HttpResponseRedirect('/vehicle')
+
+
+# 提交车辆审核
+def vehicle_submit(request):
+    vehicle_id = request.GET.get('vehicle_id', '')
+
+    Vehicle.objects.filter(id=vehicle_id).update(vehicle_status_id=2)
+
+    return HttpResponseRedirect('/vehicle_id')
+
+
+# 删除车辆
+def vehicle_delete(request):
+    vehicle_id = request.POST.get('vehicle_id', '')
+
+    vehicle_info = Vehicle.objects.get(id=vehicle_id)
+    vehicle_info.delete()
+
+    return HttpResponseRedirect('/vehicle')
+
+
+# 车辆是否已经存在
+def is_vehicle_exist(request):
+    vehicle_number = request.GET.get('number', '')
+
+    result = Vehicle.objects.filter(vehicle_number=vehicle_number).exists()
+
+    return JsonResponse({'result': result})
+
+
+# 显示站点信息
+@login_check
+def station(request):
+    search_name = request.POST.get('search_name', '')
+
+    route_list = Route.objects.filter(route_status=2).filter(route_name__contains=search_name).values('route_name').\
+        annotate(num_station=Count('route_station'))
+    area_list = Area.objects.all().order_by('id')
+
+    # 模态框显示控制
+    display_add_route = request.GET.get('display_add_route', 'none')
+    display_mask = request.GET.get('display_mask', 'none')
+    route_name = request.GET.get('route_name', '')
+
+    station_list = Route.objects.filter(route_name=route_name).filter(route_status__in=('1', '2'))
+
+    # 分页
+    mp = MyPaginator()
+    mp.paginate(route_list, 10, 1)
+
+    context = {'area_list': area_list,
+               'display_add_route': display_add_route,
+               'display_mask': display_mask,
+               'route_name': route_name,
+               'station_list': station_list,
+               'mp': mp,
+               'search_name': search_name
+               }
+
+    # for station in station_list:
+    #     print(station.station_name)
     return render(request, 'station.html', context)
+
+
+# 查询站点信息
+def station_search(request):
+    parent_id = request.GET.get('parent_id', '')
+    item = request.GET.get('item')
+    # print(parent_id)
+    # 查询数据
+    if item == 'road' and parent_id != '':
+        cate_list = Road.objects.filter(road_area_id=parent_id)
+    elif item == 'direction' and parent_id != '':
+        cate_list = Direction.objects.filter(direction_road_id=parent_id)
+    elif item == 'station' and parent_id != '':
+        cate_list = Station.objects.filter(station_direction_id=parent_id)
+    else:
+        cate_list = []
+
+    # 构建返回的Json数组格式数据
+    data = []
+    for cate in cate_list:
+        if item == 'road':
+            cate_info = {'id': cate.id, 'name': cate.road_name}
+        elif item == 'direction':
+            cate_info = {'id': cate.id, 'name': cate.direction_name}
+        elif item == 'station':
+            cate_info = {'id': cate.id, 'name': cate.station_name}
+        else:
+            cate_info = {}
+        data.append(cate_info)
+    # print(data)
+    return JsonResponse({'cate_list': data})
+
+
+# 是否可以添加站点
+def can_add_station(request):
+
+    route_name = request.GET.get('route_name', '')
+
+    station_count = Route.objects.filter(route_name=route_name).count()
+
+    if station_count >= 5:
+        result = False
+    else:
+        result = True
+
+    return JsonResponse({'result': result})
+
+
+# 添加站点
+def station_add(request):
+    route_name = request.POST.get('route_name', '')
+    station_id = request.POST.get('station', '')
+
+    route_info = Route()
+    route_info.route_name = route_name
+    route_info.route_station_id = station_id
+
+    route_info.save()
+
+    display_add_route = 'block'
+    display_mask = 'block'
+
+    url = '/station?display_add_route=%s&display_mask=%s&route_name=%s' % (display_add_route, display_mask, route_name)
+
+    return HttpResponseRedirect(url)
+
+
+# 删除站点
+def station_delete(request):
+    route_id = request.GET.get('route_id', '')
+    route_name = ''
+
+    try:
+        route_info = Route.objects.get(id=route_id)
+        route_name = route_info.route_name
+
+        if route_info.route_status == 1:
+            route_info.delete()
+        elif route_info.route_status == 2:
+            route_info.route_status = 3
+            route_info.save()
+        else:
+            pass
+    except Exception as e:
+        print(e)
+
+    display_add_route = 'block'
+    display_mask = 'block'
+
+    url = '/station?display_add_route=%s&display_mask=%s&route_name=%s' % (display_add_route, display_mask, route_name)
+
+    return HttpResponseRedirect(url)
+
+
+# 取消添加路线
+def station_cancel(request):
+    try:
+        # 删除status是1的
+        route_list = Route.objects.filter(route_status=1)
+        route_list.delete()
+
+        # status是3的更新为2
+        Route.objects.filter(route_status=3).update(route_status=2)
+    except Exception as e:
+        print(e)
+
+    return HttpResponseRedirect('/station')
+
+
+# 保存添加路线
+def station_save(request):
+    Route.objects.filter(route_status=1).update(route_status=2)
+
+    return HttpResponseRedirect('/station')
+
+
+# 显示通行证信息
+@login_check
+def permission(request):
+    user_id = request.session.get('user_id', '')
+
+    vehicle_list = Vehicle.objects.filter(vehicle_user_id=user_id).filter(vehicle_status_id=3)
+    route_list = Route.objects.filter(route_user_id=user_id).values('route_name').distinct()
+
+    permission_list = Permission.objects.filter(permission_user_id=user_id)
+
+    # 分页
+    mp = MyPaginator()
+    mp.paginate(permission_list, 10, 1)
+
+    context = {'vehicle_list': vehicle_list,
+               'route_list': route_list,
+               'mp': mp
+               }
+
+    return render(request, 'permit.html', context)
+
+
+# 申请通行证
+def permission_add(request):
+    vehicle_id = request.POST.get('vehicle_id', '')
+    route_name = request.POST.get('route_name', '')
+
+    permission_info = Permission()
+    permission_info.permission_vehicle_id = vehicle_id
+    permission_info.permission_route = route_name
+
+    permission_info.save()
+
+    return HttpResponseRedirect('/permission')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

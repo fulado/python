@@ -40,31 +40,24 @@
 </div>
 <div class="nav_bar">
     <ul class="first">
-        {% if user.authority.id == 3 or user.authority.id == 99 %}
         <li class="main">企业管理</li>
         <li class="down_menu" data-url="/enterprise">企业信息</li>
-        {% endif %}
-        {% if user.authority.id != 1%}
-        <li class="main">审核管理</li>
-        <li class="down_menu" data-url="/verify">车辆审核</li>
-        {% endif %}
-        {% if user.authority.id == 1 or user.authority.id == 99 %}
+
         <li class="main">车辆管理</li>
-        <li class="down_menu" data-url="/vehicle">车辆列表</li>
-        {% endif %}
-        {% if user.authority.id == 1 or user.authority.id == 99 %}
-        <li class="main">通行证下载</li>
-        <li class="down_menu" data-url="/last">本月通行证</li>
-        {% endif %}
+        <li class="down_menu" data-url="/vehicle">车辆管理</li>
+
+        <li class="main">路线管理</li>
+        <li class="down_menu" data-url="/station">路线管理</li>
+
+        <li class="main">通行证管理</li>
+        <li class="down_menu" data-url="/permission">通行证管理</li>
+
+{#        <li class="main">系统管理</li>#}
+{#        <li class="down_menu" data-url="/enterprise">系统管理</li>#}
     </ul>
 </div>
 <div class="content">
-    {% if user.authority.id == 1 or user.authority.id == 99 %}
-    <iframe src="/vehicle" frameborder="0" width="100%" height="100%"  id="content_iframe"></iframe>
-    {% endif %}
-    {% if user.authority.id == 3 or user.authority.id == 2 %}
-    <iframe src="/verify" frameborder="0" width="100%" height="100%"  id="content_iframe"></iframe>
-    {% endif %}
+    <iframe src="/enterprise" frameborder="0" width="100%" height="100%"  id="content_iframe"></iframe>
 </div>
 
 <!--模态框-->

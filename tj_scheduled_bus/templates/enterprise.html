@@ -41,6 +41,17 @@
         .my-modal-footer .btn{
             margin-left: 0px;
         }
+
+        .my-modal-footer .save {
+            background-color: #ffffff;
+            border: solid 1px #189694;
+            color: #25B4B2;
+        }
+
+        .my-modal-footer .save:hover{
+            background: #139b99;
+            color: #fff;
+        }
     </style>
     <title></title>
 </head>
@@ -52,8 +63,8 @@
     <div class="table_container">
         <div class="search_input">
             <label for="ss">企业搜索</label>
-            <form action="/enterprise" method="GET" style="display: inline-block;">
-                <input type="text" placeholder="输入企业名称" id="ss" name="search_name">
+            <form action="/enterprise" method="POST" style="display: inline-block;">
+                <input type="text" placeholder="输入企业名称" id="ss" name="search_name" value="{{ search_name }}">
             </form>
             <span class="find_btn" id="find_btn">查询</span>
             <span class="add_company" id="add">新增企业</span>
@@ -67,6 +78,8 @@
                     <td>组织机构代码</td>
                     <td>联系人</td>
                     <td>联系方式</td>
+                    <td>状态</td>
+                    <td>原因</td>
                     <td>操作</td>
                 </tr>
             </thead>
@@ -75,16 +88,20 @@
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     <td title="{{ enterprise.enterprise_name }}">{{ enterprise.enterprise_name }}</td>
-                    <td title="{{ enterprise.organization_code }}">{{ enterprise.organization_code }}</td>
-                    <td title="{{ enterprise.contact }}">{{ enterprise.contact }}</td>
-                    <td title="{{ enterprise.contact_phone }}">{{ enterprise.contact_phone }}</td>
+                    <td title="{{ enterprise.enterprise_code }}">{{ enterprise.enterprise_code }}</td>
+                    <td title="{{ enterprise.contact_person }}">{{ enterprise.contact_person }}</td>
+                    <td title="{{ enterprise.phone }}">{{ enterprise.phone }}</td>
+                    <td title="{{ enterprise.enterprise_status.status_content }}">{{ enterprise.enterprise_status.status_content }}</td>
+                    <td title="{{ enterprise.enterprise_reason|default:'' }}">{{ enterprise.enterprise_reason|default:'' }}</td>
                     <td>
                         <button type="button" class="see" style="margin-right: 5px;" onclick="setUserInfo(
-                        '{{ enterprise.username }}', '{{ enterprise.authority.id }}',
-                        '{{ enterprise.enterprise_name }}', '{{ enterprise.enterprise_phone }}',
-                        '{{ enterprise.legal_person }}', '{{ enterprise.organization_code }}',
-                        '{{ enterprise.contact }}', '{{ enterprise.contact_phone }}', '{{ enterprise.id }}',
-                        '{{ enterprise.limit_number }}')">查看</button>
+                        '{{ enterprise.enterprise_name }}', '{{ enterprise.enterprise_owner }}',
+                        '{{ enterprise.enterprise_code }}', '{{ enterprise.enterprise_type_id }}',
+                        '{{ enterprise.contact_person }}', '{{ enterprise.phone }}',
+                        '{{ enterprise.id }}', '{{ enterprise.enterprise_status_id }}')">查看</button>
+                        {% if enterprise.enterprise_status_id != 3 and enterprise.enterprise_status_id != 2 %}
+                            <a class="see" style="margin-right: 5px;" href="/enterprise_submit?enterprise_id={{ enterprise.id }}">提交</a>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
@@ -126,62 +143,61 @@
         <p>新增企业</p>
     </div>
     <div class="my-modal-body" style="margin-top: 20px;">
-        <form id="form_1" action="/enterprise_add" method="POST">
+        <form id="form_1" action="/enterprise_add" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <p style="margin: auto;font-size: 16px;text-align: center;margin-bottom: 10px;">企业信息</p>
-            <div class="ePrisename">
-                <label for="ePrisename">企业名称</label>
-                <input type="text" placeholder="输入企业名称" id="ePrisename" name="companyName" data-inputid="77">
-            </div>
-            <div class="contact">
-                <label for="contact">联系方式(企业)</label>
-                <input type="text" placeholder="输入企业联系方式" id="contact" name="tel">
-            </div>
-            <div class="corporation">
-                <label for="corporation">法人</label>
-                <input type="text" placeholder="输入法人姓名" id="corporation" name="corName" data-nameid="109">
-            </div>
-            <div class="organization">
-                <label for="organization">组织机构的代码</label>
-                <input type="text" placeholder="输入组织机构代码" id="organization" name="orgCode">
-            </div>
-            <p style="margin: auto;font-size: 16px;text-align: center;margin-bottom: 10px;">联系人信息</p>
-            <div class="contacts">
-                <label for="contacts">联系人</label>
-                <input type="text" placeholder="输入联系人姓名" id="contacts" name="contect">
-            </div>
-            <div class="contactway">
-                <label for="contactway">联系方式(联系人)</label>
-                <input type="text" placeholder="输入联系人的联系方式" id="contactway" name="conMobile">
-            </div>
-            <p style="margin: auto;font-size: 16px;text-align: center;margin-bottom: 10px;">帐号信息</p>
-            <div class="user">
-                <label for="user">账号</label>
-                <input type="text" placeholder="输入账号" id="user" name="username">
-            </div>
-            <div class="pwd">
-                <label for="pwd">密码</label>
-                <input type="password" placeholder="输入密码" id="pwd" name="password">
-            </div>
-            <div class="pwd">
-                <label for="pwd">帐号权限</label>
-                <select name="author">
-                    <option value="1">企业权限</option>
-                    <option value="2">环保局权限</option>
-                    <option value="3">交管局权限</option>
+            <div class="enterprise_type">
+                <label for="ePrisename">企业类型</label>
+                <select name="enterprise_type" placeholder="请选择企业类型" onchange="showRentInfo(this.value)">
+                    <option value="41">自有车辆企业</option>
+                    <option value="42">租赁公司</option>
                 </select>
             </div>
-            <div>
-                <label>通行证申请上限</label>
-                <input type="text" placeholder="输入可申请通行证上限" name="limit_number" />
+            <div class="enterprise_name">
+                <label for="ePrisename">企业名称</label>
+                <input type="text" placeholder="输入企业名称" id="ePrisename" name="enterprise_name" data-inputid="77">
+            </div>
+            <div class="enterprise_owner">
+                <label for="corporation">法人</label>
+                <input type="text" placeholder="输入法人姓名" id="corporation" name="enterprise_owner" data-nameid="109">
+            </div>
+            <div class="enterprise_code">
+                <label for="organization">统一社会信用代码</label>
+                <input type="text" placeholder="输入组织机构代码" id="organization" name="enterprise_code">
+            </div>
+            <p style="font-size: 16px; text-align: center; margin: auto auto 10px;">联系人信息</p>
+            <div class="contact_person">
+                <label for="contacts">联系人</label>
+                <input type="text" placeholder="输入联系人姓名" id="contacts" name="contact_person">
+            </div>
+            <div class="phone">
+                <label for="phone">联系方式(联系人)</label>
+                <input type="text" placeholder="输入联系人的联系方式" id="phone" name="phone">
+            </div>
+            <p style="margin: auto;font-size: 16px;text-align: center;margin-bottom: 10px;">上传图片</p>
+            <div class="business_license">
+                <label for="user">营业执照</label>
+                <input type="file" name="business_license" id="business_license" onchange="getPhotoSize(this)" />
+            </div>
+            <div class="id_card_front">
+                <label for="user">法人身份证正面</label>
+                <input type="file" name="id_card_front" id="id_card_front" onchange="getPhotoSize(this)" />
+            </div>
+            <div class="id_card_back">
+                <label for="user">法人身份证反面</label>
+                <input type="file" name="id_card_back" id="id_card_back" onchange="getPhotoSize(this)" />
+            </div>
+            <div class="rent_contract" hidden>
+                <label for="user">租赁合同</label>
+                <input type="file" name="rent_contract" id="rent_contract" onchange="getPhotoSize(this)" />
             </div>
         </form>
     </div>
     <div class="my-modal-footer">
         <div class="clickbtn" style="margin: 5px;width: 410px;text-align: center;margin-left: 25px;">
             <button type="button" class="btn save">保存</button>
-            <button type="button" class="btn reset" style="display: none;">重置</button>
-            <button type="button" class="btn del" style="margin: 0px;">取消</button>
+{#            <button type="button" class="btn reset" style="display: none;">重置</button>#}
+            <button type="button" class="btn cancle" style="margin: 0px;">取消</button>
         </div>
     </div>
 </div>
@@ -195,60 +211,59 @@
         <form action="#" method="POST">
             {%csrf_token%}
             <p style="margin: auto;font-size: 16px;text-align: center;margin-bottom: 10px;">企业信息</p>
-            <div class="ePrisename">
-                <label for="ePrisename">企业名称</label>
-                <input type="text" placeholder="输入企业名称" id="ePrisename" name="companyName" value="中铁四局集团有限公司"/>
-            </div>
-            <div class="contact">
-                <label for="contact">联系方式(企业)</label>
-                <input type="text" placeholder="输入企业联系方式" id="contact" name="tel" value="24413299"/>
-            </div>
-            <div class="corporation">
-                <label for="corporation">法人</label>
-                <input type="text" placeholder="输入法人姓名" id="corporation" name="corName" value="张河川"/>
-            </div>
-            <div class="organization">
-                <label for="organization">组织机构的代码</label>
-                <input type="text" placeholder="输入组织机构代码" id="organization" name="orgCode" value="913400001491855256"/>
-            </div>
-            <p style="margin: auto;font-size: 16px;text-align: center;margin-bottom: 10px;">联系人信息</p>
-            <div class="contacts">
-                <label for="contacts">联系人</label>
-                <input type="text" placeholder="输入联系人姓名" id="contacts" name="contect" value="王海兵"/>
-            </div>
-            <div class="contactway">
-                <label for="contactway">联系方式(联系人)</label>
-                <input type="text" placeholder="输入联系人的联系方式" id="contactway" name="conMobile" value="18622313664"/>
-            </div>
-            <p style="margin: auto;font-size: 16px;text-align: center;margin-bottom: 10px;">帐号信息</p>
-            <div class="user">
-                <label for="user">账号</label>
-                <input type="text" placeholder="输入账号" id="user" name="username" />
-            </div>
-            <div class="pwd">
-                <label for="pwd">密码</label>
-                <input type="password" placeholder="输入密码" id="pwd" name="password"/>
-            </div>
-            <div class="pwd">
-                <label for="pwd">帐号权限</label>
-                <select name="author">
-                    <option value="1">企业权限</option>
-                    <option value="2">环保局权限</option>
-                    <option value="3">交管局权限</option>
+            <div class="enterprise_type">
+                <label for="ePrisename">企业类型</label>
+                <select name="enterprise_type" placeholder="请选择企业类型" onchange="showRentInfo(this.value)">
+                    <option value="41">自有车辆企业</option>
+                    <option value="42">租赁公司</option>
                 </select>
             </div>
-            <div class="limit">
-                <label>通行证申请上限</label>
-                <input type="text" placeholder="输入可申请通行证上限" name="limit_number" />
+            <div class="enterprise_name">
+                <label for="ePrisename">企业名称</label>
+                <input type="text" placeholder="输入企业名称" id="ePrisename" name="enterprise_name" data-inputid="77">
             </div>
-            <input type="hidden" name="id" />
+            <div class="enterprise_owner">
+                <label for="corporation">法人</label>
+                <input type="text" placeholder="输入法人姓名" id="corporation" name="enterprise_owner" data-nameid="109">
+            </div>
+            <div class="enterprise_code">
+                <label for="organization">统一社会信用代码</label>
+                <input type="text" placeholder="输入组织机构代码" id="organization" name="enterprise_code">
+            </div>
+            <p style="font-size: 16px; text-align: center; margin: auto auto 10px;">联系人信息</p>
+            <div class="contact_person">
+                <label for="contacts">联系人</label>
+                <input type="text" placeholder="输入联系人姓名" id="contacts" name="contact_person">
+            </div>
+            <div class="phone">
+                <label for="phone">联系方式(联系人)</label>
+                <input type="text" placeholder="输入联系人的联系方式" id="phone" name="phone">
+            </div>
+            <p style="margin: auto;font-size: 16px;text-align: center;margin-bottom: 10px;">上传图片</p>
+            <div class="business_license">
+                <label for="user">营业执照</label>
+                <input type="file" name="business_license" id="business_license" onchange="getPhotoSize(this)" />
+            </div>
+            <div class="id_card_front">
+                <label for="user">法人身份证正面</label>
+                <input type="file" name="id_card_front" id="id_card_front" onchange="getPhotoSize(this)" />
+            </div>
+            <div class="id_card_back">
+                <label for="user">法人身份证反面</label>
+                <input type="file" name="id_card_back" id="id_card_back" onchange="getPhotoSize(this)" />
+            </div>
+            <div class="rent_contract" hidden>
+                <label for="user">租赁合同</label>
+                <input type="file" name="rent_contract" id="rent_contract" onchange="getPhotoSize(this)" />
+            </div>
+            <input type="hidden" name="enterprise_id" />
         </form>
     </div>
     <div class="my-modal-footer">
         <div class="clickbtn" style="margin: 5px;width: 460px;text-align: center;">
             <button type="button" class="btn save">保存</button>
-            <button type="button" class="btn delete">删除</button>
-            <button type="button" class="btn del" style="margin: 0px;">取消</button>
+            <button type="button" class="btn del">删除</button>
+            <button type="button" class="btn cancle" style="margin: 0px;">取消</button>
         </div>
     </div>
 </div>
@@ -277,7 +292,7 @@
         });
 
         // 隐藏新增企业模态框
-        $('.add-enterprise .del').click(function() {
+        $('.add-enterprise .cancle').click(function() {
             if (confirm('是否取消新增？')) {
                 $('.add-enterprise').hide();
                 $('.mask').hide();
@@ -286,37 +301,53 @@
 
         // 保存新增企业
         $('.add-enterprise .save').click(function() {
-            var username = $('.add-enterprise .user input').val();
-            var password = $('.add-enterprise .pwd input').val();
-            if (username == '') {
-                alert('用户名不能为空');
-            }
-            else if (password == '') {
-                alert('密码不能为空');
-            }
-            else {
-                // 判断用户名是否已经存在
-                $.get('/is_user_exist', {'username': username}, function(data) {
-                    if (data.is_exist) {
-                        alert('账号名称已经存在，请使用其它账号名称');
-                    }
-                    else if (confirm('是否保存新增企业信息？')) {
-                        $('.add-enterprise form').submit();
-                        $('.add-enterprise').hide();
-                        $('.mask').hide();
-                    }
-                });
-            }
-        });
+            let enterprise_type = $('.add-enterprise .enterprise_type select').val();
+            let enterprise_name = $('.add-enterprise .enterprise_name input').val();
+            let enterprise_owner = $('.add-enterprise .enterprise_owner input').val();
+            let enterprise_code = $('.add-enterprise .enterprise_code input').val();
+            let contact_person = $('.add-enterprise .contact_person input').val();
+            let phone = $('.add-enterprise .phone input').val();
+            let business_license = $('.add-enterprise .business_license input').val().length;
+            let id_card_front = $('.add-enterprise .id_card_front input').val().length;
+            let id_card_back = $('.add-enterprise .id_card_back input').val().length;
+            let rent_contract = $('.add-enterprise .rent_contract input').val().length;
 
-        // 显示编辑企业模态框
-        $('.table_box .see').click(function(){
-            $('.modify-enterprise').show();
-            $('.mask').show();
+            if (enterprise_name == '') {
+                alert('请填写企业名称');
+            }
+            else if (enterprise_owner == '') {
+                alert('请填写企业所有人');
+            }
+            else if (enterprise_code == '' && enterprise_type == 1) {
+                alert('请填写统一社会信用代码');
+            }
+            else if (contact_person == '') {
+                alert('请填写联系人');
+            }
+            else if (phone == '') {
+                alert('请填写联系方式');
+            }
+            else if (business_license <= 0) {
+                alert('请上传营业执照照片');
+            }
+            else if (id_card_front <= 0 && enterprise_type == 1) {
+                alert('请上传法人身份证正面照片');
+            }
+            else if (id_card_back <= 0 && enterprise_type == 1) {
+                alert('请上传法人身份证反面照片');
+            }
+            else if (rent_contract <= 0 && enterprise_type == 2) {
+                alert('请上传租赁合同照片');
+            }
+            else if (confirm('是否保存企业信息？')) {
+                $('.add-enterprise form').submit();
+                $('.add-enterprise').hide();
+                $('.mask').hide();
+            }
         });
 
         // 隐藏编辑企业模态框
-        $('.modify-enterprise .del').click(function() {
+        $('.modify-enterprise .cancle').click(function() {
             if (confirm('是否取消编辑？')) {
                 $('.modify-enterprise').hide();
                 $('.mask').hide();
@@ -325,34 +356,38 @@
 
         // 保存编辑企业信息
         $('.modify-enterprise .save').click(function() {
-            var username = $('.modify-enterprise .user input').val();
-            var password = $('.modify-enterprise .pwd input').val();
-            var id = $('.modify-enterprise input').last().val();
+            let enterprise_type = $('.modify-enterprise .enterprise_type select').val();
+            let enterprise_name = $('.modify-enterprise .enterprise_name input').val();
+            let enterprise_owner = $('.modify-enterprise .enterprise_owner input').val();
+            let enterprise_code = $('.modify-enterprise .enterprise_code input').val();
+            let contact_person = $('.modify-enterprise .contact_person input').val();
+            let phone = $('.modify-enterprise .phone input').val();
 
-            if (username == '') {
-                alert('用户名不能为空');
+            if (enterprise_name == '') {
+                alert('请填写企业名称');
             }
-            else if (password == '') {
-                alert('密码不能为空');
+            else if (enterprise_owner == '') {
+                alert('请填写企业所有人');
             }
-            else {
-                // 判断用户名是否已经存在
-                $.get('/is_user_exist', {'username': username, 'id': id}, function(data) {
-                    if (data.is_exist) {
-                        alert('账号名称已经存在，请使用其它账号名称');
-                    }
-                    else if (confirm('是否保存企业信息？')) {
-                        $('.modify-enterprise form').prop('action', '/enterprise_modify');
-                        $('.modify-enterprise form').submit();
-                        $('.modify-enterprise').hide();
-                        $('.mask').hide();
-                    }
-                });
+            else if (enterprise_code == '' && enterprise_type == 1) {
+                alert('请填写统一社会信用代码');
+            }
+            else if (contact_person == '') {
+                alert('请填写联系人');
+            }
+            else if (phone == '') {
+                alert('请填写联系方式');
+            }
+            else if (confirm('是否保存企业信息？')) {
+                $('.modify-enterprise form').prop('action', '/enterprise_modify');
+                $('.modify-enterprise form').submit();
+                $('.modify-enterprise').hide();
+                $('.mask').hide();
             }
         });
 
         // 编辑企业信息表单提交: 删除
-        $('.modify-enterprise .delete').click(function() {
+        $('.modify-enterprise .del').click(function() {
             if (confirm('是否删除该企业？')) {
                 $('.modify-enterprise form').prop('action', '/enterprise_delete');
                 $('.modify-enterprise form').submit();
@@ -369,20 +404,25 @@
     });
 
     // 填充编辑企业模态框信息
-    function setUserInfo(username, authority, enterprise_name, enterprise_phone, legal_person,
-                    organization_code, contact, contact_phone, id, limit_number) {
-        $('.modify-enterprise .ePrisename input').val(enterprise_name);     // 企业名称
-        $('.modify-enterprise .contact input').val(enterprise_phone);       // 企业联系方式
-        $('.modify-enterprise .corporation input').val(legal_person);       // 法人
-        $('.modify-enterprise .organization input').val(organization_code); // 组织机构代码
-        $('.modify-enterprise .contacts input').val(contact);               // 联系人
-        $('.modify-enterprise .contactway input').val(contact_phone);       // 联系方式
-        $('.modify-enterprise .user input').val(username);                  // 帐号
-        $('.modify-enterprise select').val(authority);                      // 权限
-        $('.modify-enterprise input').last().val(id);                       // id
-        $('.modify-enterprise .limit input').val(limit_number);             // 车辆数量
+    function setUserInfo(enterprise_name, enterprise_owner, enterprise_code, enterprise_type, contact_person,
+                    phone, id, enterprise_status) {
+        $('.modify-enterprise').show();
+        $('.mask').show();
 
-        $('.modify-enterprise .pwd input').val('########');                 // 密码
+        showRentInfo(enterprise_type);
+
+        $('.modify-enterprise .enterprise_name input').val(enterprise_name);     // 企业名称
+        $('.modify-enterprise .enterprise_owner input').val(enterprise_owner);       // 法人
+        $('.modify-enterprise .enterprise_code input').val(enterprise_code);       // 组织结构代码
+        $('.modify-enterprise .contact_person input').val(contact_person);               // 联系人
+        $('.modify-enterprise .phone input').val(phone);       // 联系方式
+
+        $('.modify-enterprise select').val(enterprise_type);                      // 权限
+        $('.modify-enterprise input').last().val(id);                       // id
+
+        if (enterprise_status == 3) {
+            $('.modify-enterprise .my-modal-footer .save').hide();
+        }
     }
 
 
@@ -390,6 +430,52 @@
     // 跳转到指定页面
     function jump() {
         $('#pageToolbar form').submit();
+    }
+
+    // 显示/隐藏租赁信息
+    function showRentInfo(isRent) {
+        if (isRent == 42) {
+            $('.rent_contract').show();
+            $('.enterprise_code').hide();
+            $('.id_card_front').hide();
+            $('.id_card_back').hide();
+        } else {
+            $('.rent_contract').hide();
+
+            $('.enterprise_code').show();
+            $('.id_card_front').show();
+            $('.id_card_back').show();
+        }
+    }
+
+    //判断照片大小
+    function getPhotoSize(obj){
+        //文件type
+        let photoExt = obj.value.substr(obj.value.lastIndexOf(".")).toLowerCase();
+        if(!(photoExt=='.jpg'||photoExt=='.png'||photoExt=='.jpeg')){
+            alert("文件格式不符合要求！");
+            obj.value='';
+            return false;
+        }
+        let fileSize = 0;
+        let isIE = /msie/i.test(navigator.userAgent) && !window.opera;
+        if (isIE && !obj.files) {
+            let filePath = obj.value;
+            let fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+            let file = fileSystem.GetFile (filePath);
+            fileSize = file.Size;
+        }
+        else{
+            fileSize = obj.files[0].size;
+        }
+        //文件大小
+        fileSize=Math.round(fileSize/1024*100)/100;
+        if(fileSize>=2048){
+            alert("图片过大，超过2M,请选择较小的图片");
+            obj.value='';
+            return false;
+        }
+        {#imgChange();#}
     }
 </script>
 

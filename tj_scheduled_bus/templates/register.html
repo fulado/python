@@ -70,19 +70,12 @@
         <span class="text_icon_1">天津交管局</span>
         <span class="text_icon_2">班车通行证管理系统</span>
     </div>
-    <div class="tooltip_text">
-        <!--<span class="number_word">企业数量: &nbsp;</span>-->
-        <!--<span class="number"></span>-->
-        <!--<span class="number_word">提交审核车辆数: &nbsp;</span>-->
-        <!--<span class="number"></span>-->
-        <!--<span class="tooltip_btn" id='user_setting'>个人设置</span>-->
-{#        <a href="/download"><span class="tooltip_btn" style="width: 150px;">通行证查询下载</span></a>#}
-    </div>
 </div>
 <div class="form_wrapper" style="height: 600px;">
-    <form action="/login_handle" method="post" id="form_box">
+    <form action="/register_handle" method="post" id="form_box">
         {% csrf_token %}
-        <div class="login_btn">用户注册</div>
+        <div class="login_btn"><a href="/login">用户登录</a></div>
+        <div class="login_btn" style="left: 183px;"><a href="/register" style="color: white;">用户注册</a></div>
         <div class="form_group">
             <span class="word">账号</span>
             <input type="text" placeholder="输入账号" id="username" name="username" class=""/>
@@ -93,7 +86,7 @@
         </div>
         <div class="form_group">
             <span class="word">确认密码</span>
-            <input type="password" placeholder="输入密码" id="psw" class="yz" name="password"/>
+            <input type="password" placeholder="输入密码" id="psw" name="re_password"/>
         </div>
         <div class="form_group">
             <span class="word">验证码</span>
@@ -109,15 +102,6 @@
     <p style="font-size: 20px; text-align: center; margin-top: 10px;">{{ msg }}</p>
 </div>
 
-<!--模态框-公告-->
-<div class="announce" style="display: none">
-    <h1>重&nbsp;要&nbsp;通&nbsp;知</h1>
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;外环线各申请单位及企业请注意：请于5月30日零点之前完成所有6月份外环线通行证车辆申请的提交，请于5月31日进行通行证的查询下载。</p>
-    <div>
-        <button class="btn" disabled>确认</button>
-        <p class="time">（<span>5</span>）</p>
-    </div>
-</div>
 
 </body>
 <script src="/static/js/jquery-1.8.3.min.js"></script>

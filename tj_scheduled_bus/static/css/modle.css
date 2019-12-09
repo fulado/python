@@ -53,13 +53,14 @@
 
 }
 .my-modal-footer .save {
-    background-color: #25B4B2;
+    background-color: #ffffff;
     border: solid 1px #189694;
-    color: #fff;
+    color: #25B4B2;
     margin-left: 107px;
 }
  .save:hover{
      background: #139b99;
+     color: #fff;
  }
  .reset {
     background-color: #f2f2f2;

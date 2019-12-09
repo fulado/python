@@ -70,19 +70,12 @@
         <span class="text_icon_1">天津交管局</span>
         <span class="text_icon_2">班车通行证管理系统</span>
     </div>
-    <div class="tooltip_text">
-        <!--<span class="number_word">企业数量: &nbsp;</span>-->
-        <!--<span class="number"></span>-->
-        <!--<span class="number_word">提交审核车辆数: &nbsp;</span>-->
-        <!--<span class="number"></span>-->
-        <!--<span class="tooltip_btn" id='user_setting'>个人设置</span>-->
-        <a href="/download"><span class="tooltip_btn" style="width: 150px;">通行证查询下载</span></a>
-    </div>
 </div>
-<div class="form_wrapper">
+<div class="form_wrapper" style="height: 500px;">
     <form action="/login_handle" method="post" id="form_box">
         {% csrf_token %}
-        <div class="login_btn">用户登录</div>
+        <div class="login_btn"><a href="/login" style="color: white;">用户登录</a></div>
+        <div class="login_btn" style="left: 183px;"><a href="/register">用户注册</a></div>
         <div class="form_group">
             <span class="word">账号</span>
             <input type="text" placeholder="输入账号" id="username" name="username" class=""/>
@@ -92,15 +85,13 @@
             <input type="password" placeholder="输入密码" id="psw" name="password"/>
         </div>
         <div class="form_group">
-            <span class="word" style="margin-left: 15px;">验证码</span>
-            <input type="text" placeholder="输入验证码" id="yz" class="yz" name="check_code"/>
+            <span class="word">验证码</span>
+            <input type="text" placeholder="输入验证码" id="yz" class="yz" name="check_code" style="width: 136px!important;"/>
             <div class="YZ_img">
                 <img src="/check_code" alt="" width="100%" height="100%"/>
             </div>
         </div>
         <div class="login_button" id="login_button">登录</div>
-        <!--<div class="login_button link_button" id="link_button">直接查询</div>-->
-        <!-- <div class="login_button operation" id="operation">申请流程下载</div> -->
     </form>
     <p style="font-size: 20px; text-align: center; margin-top: 10px;">{{ msg }}</p>
 </div>

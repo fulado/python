@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<!-- saved from url=(0056)http://yjhctxz.ethane.com.cn:10245/traffic/company/index -->
+<html><head lang="en"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <!-- 目前仅限360急速浏览 webkit:急速  ie-comp:ie兼容模式   ie-stand: ie标准模式 -->
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/initial.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/account_number.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/modle.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/paging.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/darktooltip.css"/>
+
+    <style type="text/css">
+        .pop-up form div input{
+            display: inline-block;
+            width: 260px;
+        }
+
+        .my-modal-footer .save {
+            background-color: #ffffff;
+            border: solid 1px #189694;
+            color: #25B4B2;
+            margin-left: 107px;
+        }
+
+        .my-modal-footer .save:hover{
+            background: #139b99;
+            color: #fff;
+        }
+
+        /* 模态框 */
+        .my-modal-body select,input{
+            width: 200px;
+            height: 30px;
+            padding-left: 5px;
+            border-radius: 4px;
+        }
+
+        .my-modal-body p{
+            text-align: center;
+        }
+
+        .my-modal-body table span{
+            text-align: justify;
+            text-align-last:justify;
+            display: inline-block;
+            width:100px;
+        }
+
+        .my-modal-body table,
+        .my-modal-body tr,
+        .my-modal-body td{
+            margin: auto;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .my-modal-title{
+            text-align: center;
+            font-size: 20px;
+        }
+        .pop-up form div select{
+            width: 360px;
+            height: 32px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            border: solid 1px #eeeeee;
+            text-indent: 0.5em;
+            outline: none;
+            width: 260px;
+        }
+
+        .my-modal-footer .btn{
+            margin-left: 0px;
+        }
+    </style>
+    <title></title>
+</head>
+<body>
+<div class="table_wrapper">
+    <div class="table_head">
+        <span>企业账号</span>
+    </div>
+    <div class="table_container">
+        <div class="search_input">
+            <label for="ss">企业搜索</label>
+            <form action="/zhidui/enterprise" method="GET" style="display: inline-block;">
+                <input type="text" placeholder="输入企业名称" id="ss" name="search_name">
+            </form>
+            <span class="find_btn" id="find_btn">查询</span>
+        </div>
+        <!--显示查询结果-->
+        <table class="table_box" id="table_box">
+            <thead>
+                <tr>
+                    <td style="width: 200px">序号</td>
+                    <td>企业名称</td>
+                    <td>组织机构代码</td>
+                    <td>联系人</td>
+                    <td>联系方式</td>
+                    <td>状态</td>
+                    <td>原因</td>
+                    <td>操作</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for enterprise in mp.object_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td title="{{ enterprise.enterprise_name }}">{{ enterprise.enterprise_name }}</td>
+                    <td title="{{ enterprise.enterprise_code }}">{{ enterprise.enterprise_code }}</td>
+                    <td title="{{ enterprise.contact_person }}">{{ enterprise.contact_person }}</td>
+                    <td title="{{ enterprise.phone }}">{{ enterprise.phone }}</td>
+                    <td title="{{ enterprise.enterprise_status.status_content }}">{{ enterprise.enterprise_status.status_content }}</td>
+                    <td title="{{ enterprise.enterprise_reason|default:'' }}">{{ enterprise.enterprise_reason|default:'' }}</td>
+                    <td>
+                        <button type="button" class="see" style="margin-right: 5px;" onclick="setUserInfo(
+                        '{{ enterprise.enterprise_name }}', '{{ enterprise.enterprise_owner }}',
+                        '{{ enterprise.enterprise_code }}', '{{ enterprise.enterprise_type_id }}',
+                        '{{ enterprise.contact_person }}', '{{ enterprise.phone }}', '{{ enterprise.business_license }}',
+                        '{{ enterprise.id_card_front }}', '{{ enterprise.id_card_back }}',
+                        '{{ enterprise.rent_contract }}', '{{ enterprise.id }}',
+                        '{{ enterprise.enterprise_status_id }}')">查看</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!--分页-->
+    <div id="pageToolbar">
+        <div id="Paging_009071537570730115" class="ui-paging-container">
+            <ul>
+                <a href="/enterprise?page_num=1&search_name={{ search_name }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
+                <a href="/enterprise?page_num={{ mp.current_num|add:-1 }}&search_name={{ search_name }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
+                {% for num in mp.page_range %}
+                    {% if num == mp.current_num %}
+                    <a href="/enterprise?page_num={{ num }}&search_name={{ search_name }}"><li class="ui-pager focus">{{ num }}</li></a>
+                    {% else %}
+                    <a href="/enterprise?page_num={{ num }}&search_name={{ search_name }}"><li class="ui-pager">{{ num }}</li></a>
+                    {% endif %}
+                {% endfor %}
+                <a href="/enterprise?page_num={{ mp.current_num|add:1 }}&search_name={{ search_name }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
+                <a href="/enterprise?page_num={{ mp.total_pages }}&search_name={{ search_name }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
+                <li class="ui-paging-toolbar">
+                    <form action="/enterprise" method="GET">
+                        <input type="text" class="ui-paging-count" style="font-size: 12px;" name="page_num" value="{{ mp.current_num }}" />
+                        <input type="hidden" name="search_name" value="{{ search_name }}" />
+                        <span>/&nbsp;{{ mp.total_pages }}</span>
+                        <a href="javascript:jump()">跳转</a>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!--模态框-->
+
+<!-- 审核企业信息 -->
+<div class="pop-up modify-enterprise" style="display: none;height: 760px;">
+    <div class="my-modal-title">
+        <p>编辑企业</p>
+    </div>
+    <div class="my-modal-body" style="margin-top: 20px;">
+        <form action="#" method="POST">
+            {%csrf_token%}
+            <p style="margin: auto;font-size: 16px;text-align: center;margin-bottom: 10px;">企业信息</p>
+            <div class="enterprise_type">
+                <label for="ePrisename">企业类型</label>
+                <select name="enterprise_type" placeholder="请选择企业类型" onchange="showRentInfo(this.value)">
+                    <option value="41">自有车辆企业</option>
+                    <option value="42">租赁公司</option>
+                </select>
+            </div>
+            <div class="enterprise_name">
+                <label for="ePrisename">企业名称</label>
+                <input type="text" placeholder="输入企业名称" id="ePrisename" name="enterprise_name" data-inputid="77">
+            </div>
+            <div class="enterprise_owner">
+                <label for="corporation">法人</label>
+                <input type="text" placeholder="输入法人姓名" id="corporation" name="enterprise_owner" data-nameid="109">
+            </div>
+            <div class="enterprise_code">
+                <label for="organization">统一社会信用代码</label>
+                <input type="text" placeholder="输入组织机构代码" id="organization" name="enterprise_code">
+            </div>
+            <p style="font-size: 16px; text-align: center; margin: auto auto 10px;">联系人信息</p>
+            <div class="contact_person">
+                <label for="contacts">联系人</label>
+                <input type="text" placeholder="输入联系人姓名" id="contacts" name="contact_person">
+            </div>
+            <div class="phone">
+                <label for="phone">联系方式(联系人)</label>
+                <input type="text" placeholder="输入联系人的联系方式" id="phone" name="phone">
+            </div>
+            <p style="margin: auto;font-size: 16px;text-align: center;margin-bottom: 10px;">上传图片</p>
+            <div class="business_license">
+                <label for="user">营业执照</label>
+                <a href="#" target="_blank">点击查看</a>
+            </div>
+            <div class="id_card_front">
+                <label for="user">法人身份证正面</label>
+                <a href="#" target="_blank">点击查看</a>
+            </div>
+            <div class="id_card_back">
+                <label for="user">法人身份证反面</label>
+                <a href="#" target="_blank">点击查看</a>
+            </div>
+            <div class="rent_contract" hidden>
+                <label for="user">租赁合同</label>
+                <a href="#" target="_blank">点击查看</a>
+            </div>
+            <input type="hidden" name="refuse_reason" class="refuse_reason" />
+            <input type="hidden" name="enterprise_id" />
+        </form>
+    </div>
+    <div class="my-modal-footer">
+        <div class="clickbtn" style="margin: 5px;width: 460px;text-align: center;">
+            <button type="button" class="btn save">通过</button>
+            <button type="button" class="btn del">驳回</button>
+            <button type="button" class="btn save">解冻</button>
+            <button type="button" class="btn del">冻结</button>
+            <button type="button" class="btn cancle" style="margin: 0px;">取消</button>
+        </div>
+    </div>
+</div>
+
+<!-- 未通过原因 -->
+<div class="pop-up refuse-content" style="display: none;">
+    <div class="my-modal-title">
+        <p>原因</p>
+    </div>
+    <div class="my-modal-body">
+        <table>
+            <tr>
+                <td><p style="padding: 20px;">填写原因</p></td>
+            </tr>
+            <tr>
+                <td>
+                    <textarea name="" style="resize:none; border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:300px;height:100px"></textarea>
+                </td>
+            </tr>
+        </table>
+        <div class="my-modal-footer" >
+            <div class="clickbtn" style="width: 440px; text-align: center;">
+                <button type="button" class="btn save">确定</button>
+                <button type="button" class="btn del" style="margin: 0px;">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mask" style="display: none;"></div>
+<input type="hidden" id="pageNum" value="1">
+
+<script type="text/javascript" src="/static/js/jquery-3.1.0.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="/static/js/through.js"></script>
+<script type="text/javascript" src="/static/js/query.js"></script>
+<script type="text/javascript" src="/static/js/paging.js"></script>
+<script type="text/javascript" src="/static/js/md5.js"></script>
+<script type="text/javascript" src="/static/js/jquery.darktooltip.js"></script>
+
+<script type="text/javascript">
+
+    $(function() {
+
+        // 显示编辑企业模态框
+        $('.table_box .see').click(function(){
+            $('.modify-enterprise').show();
+            $('.mask').show();
+        });
+
+        // 隐藏编辑企业模态框
+        $('.modify-enterprise .cancle').click(function() {
+            $('.modify-enterprise').hide();
+            $('.mask').hide();
+        });
+
+        // 审核车辆信息表单提交: 通过
+        $('.modify-enterprise .my-modal-footer button').eq(0).click(function() {
+            if (confirm('是否审核通过?')) {
+                $('.modify-enterprise form').prop('action', '/zhidui/enterprise_pass');
+                $('.modify-enterprise form').submit();
+                $('.modify-enterprise').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 审核车辆信息表单提交: 解冻
+        $('.modify-enterprise .my-modal-footer button').eq(2).click(function() {
+            if (confirm('是否解冻?')) {
+                $('.modify-enterprise form').prop('action', '/zhidui/enterprise_pass');
+                $('.modify-enterprise form').submit();
+                $('.modify-enterprise').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 审核车辆: 不通过/冻结
+        $('.modify-enterprise .del').click(function() {
+            $('.refuse-content').show();
+            $('.modify-enterprise').hide();
+        });
+
+        // 未通过原因: 取消
+        $('.refuse-content .del').click(function() {
+            $('.refuse-content').hide();
+            $('.modify-enterprise').show();
+        });
+
+        // 未通过原因: 确定
+        $('.refuse-content .save').click(function() {
+            if (confirm('是否驳回/冻结该企业？')) {
+                $('.modify-enterprise .refuse_reason').val($('.refuse-content textarea').val());
+                $('.modify-enterprise form').prop('action', '/zhidui/enterprise_refuse');
+                $('.modify-enterprise form').submit();
+                $('.refuse-content').hide();
+                $('.modify-enterprise').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 提交企业查询表单
+        $('#find_btn').click(function() {
+            $('.search_input form').submit();
+        });
+    });
+
+    // 填充编辑企业模态框信息
+    function setUserInfo(enterprise_name, enterprise_owner, enterprise_code, enterprise_type, contact_person,
+                    phone, business_license, id_card_front, id_card_back, rent_contract, id, enterprise_status) {
+        showRentInfo(enterprise_type);
+
+        $('.modify-enterprise .enterprise_name input').val(enterprise_name);     // 企业名称
+        $('.modify-enterprise .enterprise_owner input').val(enterprise_owner);       // 法人
+        $('.modify-enterprise .enterprise_code input').val(enterprise_code);       // 组织结构代码
+        $('.modify-enterprise .contact_person input').val(contact_person);               // 联系人
+        $('.modify-enterprise .phone input').val(phone);       // 联系方式
+
+        $('.modify-enterprise select').val(enterprise_type);                      // 权限
+        $('.modify-enterprise input').last().val(id);                       // id
+
+        $('.modify-enterprise .business_license a').attr('href', '/static/file/' + business_license + '.png');
+        $('.modify-enterprise .id_card_front a').attr('href', '/static/file/' + id_card_front + '.png');
+        $('.modify-enterprise .id_card_back a').attr('href', '/static/file/' + id_card_back + '.png');
+        $('.modify-enterprise .rent_contract a').attr('href', '/static/file/' + rent_contract + '.png');
+
+        $('.modify-enterprise .my-modal-footer button').hide();
+        $('.modify-enterprise .my-modal-footer button').eq(4).show();
+
+        if (enterprise_status == '2') {
+            $('.modify-enterprise .my-modal-footer button').eq(0).show();
+            $('.modify-enterprise .my-modal-footer button').eq(1).show();
+        } else if (enterprise_status == '3') {
+            $('.modify-enterprise .my-modal-footer button').eq(3).show();
+        } else if (enterprise_status == '5') {
+            $('.modify-enterprise .my-modal-footer button').eq(2).show();
+        }
+    }
+
+    // 跳转到指定页面
+    function jump() {
+        $('#pageToolbar form').submit();
+    }
+
+    // 显示/隐藏租赁信息
+    function showRentInfo(isRent) {
+        if (isRent == 42) {
+            $('.rent_contract').show();
+            $('.enterprise_code').hide();
+            $('.id_card_front').hide();
+            $('.id_card_back').hide();
+        } else {
+            $('.rent_contract').hide();
+
+            $('.enterprise_code').show();
+            $('.id_card_front').show();
+            $('.id_card_back').show();
+        }
+    }
+
+    //判断照片大小
+    function getPhotoSize(obj){
+        //文件type
+        let photoExt = obj.value.substr(obj.value.lastIndexOf(".")).toLowerCase();
+        if(!(photoExt=='.jpg'||photoExt=='.png'||photoExt=='.jpeg')){
+            alert("文件格式不符合要求！");
+            obj.value='';
+            return false;
+        }
+        let fileSize = 0;
+        let isIE = /msie/i.test(navigator.userAgent) && !window.opera;
+        if (isIE && !obj.files) {
+            let filePath = obj.value;
+            let fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+            let file = fileSystem.GetFile (filePath);
+            fileSize = file.Size;
+        }
+        else{
+            fileSize = obj.files[0].size;
+        }
+        //文件大小
+        fileSize=Math.round(fileSize/1024*100)/100;
+        if(fileSize>=2048){
+            alert("图片过大，超过2M,请选择较小的图片");
+            obj.value='';
+            return false;
+        }
+        {#imgChange();#}
+    }
+</script>
+
+</body></html>

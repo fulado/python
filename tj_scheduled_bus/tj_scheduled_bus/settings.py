@@ -125,3 +125,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+FILE_DIR = os.path.join(BASE_DIR, 'static')
+FONTS_DIR = os.path.join(BASE_DIR, 'static/fonts')

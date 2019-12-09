@@ -93,6 +93,16 @@
         margin-right: 20px;
         }
 
+        .my-modal-footer .save {
+            background-color: #ffffff;
+            border: solid 1px #189694;
+            color: #25B4B2;
+        }
+
+        .my-modal-footer .save:hover{
+            background: #139b99;
+            color: #fff;
+        }
     </style>
     <title></title>
 </head>
@@ -106,25 +116,21 @@
     <div class="table_container">
         <div class="search_input">
             <label for="ss">车辆搜索</label>
-            <form action="/vehicle" method="GET" style="display: inline-block;">
-                <input type="text" placeholder="输入车牌号码" id="ss" name="number" value="{{ number }}" />
-                <select name="status">
-                    <option value="0" {% if status == 0 %}selected{% endif %}>全部车辆</option>
-                    <option value="1" {% if status == 1 %}selected{% endif %}>未提交车辆</option>
-                    <option value="2" {% if status == 2 %}selected{% endif %}>待审核车辆</option>
-                    <option value="4" {% if status == 4 %}selected{% endif %}>已通过车辆</option>
-                    <option value="5" {% if status == 5 %}selected{% endif %}>未通过车辆</option>
+            <form action="/vehicle" method="POST" style="display: inline-block;">
+                <input type="text" placeholder="输入车牌号码" id="ss" name="vehicle_number" value="{{ vehicle_number }}" />
+                <select name="vehicle_status">
+                    <option value="0" {% if vehicle_status == 0 %}selected{% endif %}>全部车辆</option>
+                    <option value="1" {% if vehicle_status == 1 %}selected{% endif %}>未提交车辆</option>
+                    <option value="2" {% if vehicle_status == 2 %}selected{% endif %}>待审核车辆</option>
+                    <option value="3" {% if vehicle_status == 3 %}selected{% endif %}>已通过车辆</option>
+                    <option value="4" {% if vehicle_status == 4 %}selected{% endif %}>未通过车辆</option>
+                    <option value="5" {% if vehicle_status == 5 %}selected{% endif %}>被冻结车辆</option>
                 </select>
             </form>
             <span class="find_btn">查询</span>
             <span class="add_account" id="add">新增车辆</span>
-            <a href="javascript:clear_all('{{ user_id }}');"><span class="out">删除全部车辆</span></a>
-            <a href="/static/excel/vehicle.xls"><span class="out outexcel">模版下载</span></a>
-            <span class="out import-excel">导入车辆</span>
-            {% if allow_submit %}
-            <a href="javascript:submit_all('{{ user_id }}');"><span class="out">全部提交</span></a>
-            {% endif %}
-
+{#            <a href="/static/excel/vehicle.xls"><span class="out outexcel">模版下载</span></a>#}
+{#            <span class="out import-excel">导入车辆</span>#}
         </div>
         <!--检索结果-->
         <table class="table_box" id="table_box">
@@ -135,7 +141,8 @@
                     <td>车辆类型</td>
                     <td>发动机型号</td>
                     <td>所有人</td>
-                    <td>审核状态</td>
+                    <td>车辆所属</td>
+                    <td>状态</td>
                     <td>原因</td>
                     <td style="width: 200px">操作</td>
                 </tr>
@@ -144,23 +151,20 @@
                 {% for vehicle in mp.object_list %}
                 <tr>
                     <td style="width: 4%">{{ forloop.counter }}</td>
-                    <td title="{{ vehicle.number }}">{{ vehicle.number }}</td>
-                    <td title="{{ vehicle.vehicle_type.name }}">{{ vehicle.vehicle_type.name }}</td>
-                    <td title="{{ vehicle.engine }}">{{ vehicle.engine }}</td>
-                    <td title="{{ vehicle.status.name }}">{{ vehicle.status.name }}</td>
-                    <td title="{{ vehicle.reason|default:'' }}">{{ vehicle.reason|default:'' }}</td>
+                    <td title="{{ vehicle.vehicle_number }}">{{ vehicle.vehicle_number }}</td>
+                    <td title="{{ vehicle.vehicle_type.status_content }}">{{ vehicle.vehicle_type.status_content }}</td>
+                    <td title="{{ vehicle.engine_code }}">{{ vehicle.engine_code }}</td>
+                    <td title="{{ vehicle.vehicle_owner }}">{{ vehicle.vehicle_owner }}</td>
+                    <td title="{{ vehicle.vehicle_belong.status_content }}">{{ vehicle.vehicle_belong.status_content }}</td>
+                    <td title="{{ vehicle.vehicle_status.status_content }}">{{ vehicle.vehicle_status.status_content }}</td>
+                    <td title="{{ vehicle.vehicle_reason|default:'' }}">{{ vehicle.vehicle_reason|default:'' }}</td>
                     <td>
                         <button type="button" class="see modify-vehicle-info" style="margin-right: 5px;" onclick="setVehicleInfo(
-                        '{{ vehicle.vehicle_type.id }}', '{{ vehicle.number|linebreaksbr }}', '{{ vehicle.engine|linebreaksbr }}',
-                        '{{ vehicle.vehicle_model|linebreaksbr }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
-                        '{{ vehicle.route|linebreaksbr }}', '{{ vehicle.id }}', '{{ vehicle.status.id }}')">{% if vehicle.status.id == 1 or vehicle.status.id == 5 %}编辑{% else %}查看{% endif %}</button>
-                        {% if allow_submit and vehicle.status.id == 1 %}
-                        <a href="javascript:submit_vehicle('{{ user_id }}', '{{ vehicle.id }}',  '{{ vehicle.vehicle_type.id }}',
-                        '{{ vehicle.number }}', '{{ vehicle.engine }}', '{{ vehicle.vehicle_model }}',
-                        '{{ vehicle.register_date|date:'Y-m-d' }}', '{{ vehicle.route|linebreaksbr }}');" class="see" style="margin-right: 5px;">提交</a>
-                        {% endif %}
-                        {% if vehicle.status.id == 4 %}
-                        <a href="/static/certification/{{ vehicle.file_name }}" target="_Blank" class="see download" style="margin-right: 5px;">下载</a>
+                        '{{ vehicle.vehicle_type_id }}', '{{ vehicle.vehicle_number|linebreaksbr }}', '{{ vehicle.engine_code|linebreaksbr }}',
+                        '{{ vehicle.vehicle_owner|linebreaksbr }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
+                        '{{ vehicle.vehicle_belong_id|linebreaksbr }}', '{{ vehicle.id }}', '{{ vehicle.vehicle_status_id }}')">查看</button>
+                        {% if vehicle.vehicle_status_id != 3 and vehicle.vehicle_status_id != 2 %}
+                            <a class="see" style="margin-right: 5px;" href="/vehicle_submit?vehicle_id={{ vehicle.id }}">提交</a>
                         {% endif %}
                     </td>
                 </tr>
@@ -204,43 +208,44 @@
         <p>新增车辆</p>
     </div>
     <div class="my-modal-body">
-        <form action="/vehicle_add" method="GET">
+        <form action="/vehicle_add" method="POST">
             <table>
                 <tr>
                     <td colspan="2"><p style="padding: 20px;">车辆信息</p></td>
                 </tr>
                 <tr>
-                    <td><span>车辆类型</span></td>
+                    <td><span>号牌号码</span></td>
                     <td>
-                        <select name="vehicle_type" placeholder="请选择车辆类型">
-                            <option value="1">大型货车</option>
-                            <option value="2">小型货车</option>
-                            <option value="15">挂式货车</option>
+                        <input type="text" placeholder="请输入号牌号码" name="vehicle_number">
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>号牌颜色</span></td>
+                    <td>
+                        <select name="plate_color" placeholder="请选择号牌颜色">
+                            <option value="1">黄色</option>
                         </select>
                     </td>
                 </tr>
                 <tr>
-                    <td><span>号牌号码</span></td>
+                    <td><span>车辆类型</span></td>
                     <td>
-                        <!--<select name="location" style="width: 43px;">-->
-                            <!--{% for location in location_list %}-->
-                            <!--<option value={{ location.id }}>{{ location.name }}</option>-->
-                            <!--{% endfor %}-->
-                        <!--</select>-->
-                        <input type="text" placeholder="请输入号牌号码" name="number">
-                        <p>（挂车不需要输入“挂”字）<p>
+                        <select name="vehicle_type" placeholder="请选择车辆类型">
+                            <option value="21">中型车</option>
+                            <option value="22">大型车</option>
+                        </select>
                     </td>
                 </tr>
                 <tr>
-                    <td><span>发动机型号</span></td>
+                    <td><span>发动机号</span></td>
                     <td>
-                        <input type="text" placeholder="请输入发动机型号" name="engine">
+                        <input type="text" placeholder="请输入发动机号" name="engine_code">
                     </td>
                 </tr>
                 <tr>
-                    <td><span>车辆型号</span></td>
+                    <td><span>所有人</span></td>
                     <td>
-                        <input type="text" placeholder="请输入车辆型号" name="vehicle_model">
+                        <input type="text" placeholder="请输入所有人" name="vehicle_owner">
                     </td>
                 </tr>
                 <tr>
@@ -250,20 +255,19 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2"><p style="padding: 20px;">路线信息</p></td>
-                </tr>
-                <tr>
-                    <td><span>运输路线</span></td>
+                    <td><span>车辆所属</span></td>
                     <td>
-                        <textarea name="route" id="reason" style="resize:none; border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:200px;height:100px"></textarea>
-                        <p>（道路之间用“，”隔开）<p>
+                        <select name="vehicle_belong" placeholder="请选择车辆类型">
+                            <option value="11">自有车辆</option>
+                            <option value="12">租赁车辆</option>
+                        </select>
                     </td>
                 </tr>
             </table>
             <div class="my-modal-footer" >
                 <div class="clickbtn" style="margin: 0px;width: 430px;text-align: center;">
                     <button type="button" class="btn save">保存</button>
-                    <div class="btn del">取消</div>
+                    <div class="btn cancle">取消</div>
                 </div>
             </div>
         </form>
@@ -276,43 +280,44 @@
         <p>编辑车辆信息</p>
     </div>
     <div class="my-modal-body">
-        <form action="#" method="GET">
+        <form action="#" method="POST">
             <table>
                 <tr>
                     <td colspan="2"><p style="padding: 20px;">车辆信息</p></td>
                 </tr>
                 <tr>
-                    <td><span>车辆类型</span></td>
+                    <td><span>号牌号码</span></td>
                     <td>
-                        <select name="vehicle_type" placeholder="请选择车辆类型">
-                            <option value="1">大型货车</option>
-                            <option value="2">小型货车</option>
-                            <option value="15">挂式货车</option>
+                        <input type="text" placeholder="请输入号牌号码" name="vehicle_number" disabled>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>号牌颜色</span></td>
+                    <td>
+                        <select name="plate_color" placeholder="请选择号牌颜色">
+                            <option value="1">黄色</option>
                         </select>
                     </td>
                 </tr>
                 <tr>
-                    <td><span>号牌号码</span></td>
+                    <td><span>车辆类型</span></td>
                     <td>
-                        <!--<select name="location" style="width: 43px;">-->
-                            <!--{% for location in location_list %}-->
-                            <!--<option value={{ location.id }}>{{ location.name }}</option>-->
-                            <!--{% endfor %}-->
-                        <!--</select>-->
-                        <input type="text" placeholder="请输入号牌号码" name="number">
-                        <p>（挂车不需要输入“挂”字）<p>
+                        <select name="vehicle_type" placeholder="请选择车辆类型">
+                            <option value="21">中型车</option>
+                            <option value="22">大型车</option>
+                        </select>
                     </td>
                 </tr>
                 <tr>
-                    <td><span>发动机型号</span></td>
+                    <td><span>发动机号</span></td>
                     <td>
-                        <input type="text" placeholder="请输入发动机型号，挂车不填" name="engine">
+                        <input type="text" placeholder="请输入发动机号" name="engine_code">
                     </td>
                 </tr>
                 <tr>
-                    <td><span>车辆型号</span></td>
+                    <td><span>所有人</span></td>
                     <td>
-                        <input type="text" placeholder="请输入车辆型号" name="vehicle_model">
+                        <input type="text" placeholder="请输入所有人" name="vehicle_owner">
                     </td>
                 </tr>
                 <tr>
@@ -322,13 +327,12 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2"><p style="padding: 20px;">路线信息</p></td>
-                </tr>
-                <tr>
-                    <td><span>运输路线</span></td>
+                    <td><span>车辆所属</span></td>
                     <td>
-                        <textarea name="route" id="reason" style="resize:none; border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:200px;height:100px"></textarea>
-                        <p>（道路之间用“，”隔开）<p>
+                        <select name="vehicle_belong" placeholder="请选择车辆类型">
+                            <option value="11">自有车辆</option>
+                            <option value="12">租赁车辆</option>
+                        </select>
                     </td>
                 </tr>
             </table>
@@ -336,8 +340,8 @@
             <div class="my-modal-footer" >
                 <div class="clickbtn" style="text-align: center;width: 440px;">
                     <button type="button" class="btn save">保存</button>
-                    <button type="button" class="btn delete">删除</button>
-                    <button type="button" class="btn del">取消</button>
+                    <button type="button" class="btn del">删除</button>
+                    <button type="button" class="btn cancle">取消</button>
                 </div>
             </div>
         </form>
@@ -419,7 +423,7 @@
         });
 
         // 隐藏增加车辆模态框
-        $('.add-vehicle .del').click(function() {
+        $('.add-vehicle .cancle').click(function() {
             if (confirm('是否取消新增？')) {
                 $('.add-vehicle').hide();
                 $('.mask').hide();
@@ -433,7 +437,7 @@
         });
 
         // 隐藏编辑车辆信息模态框
-        $('.modify-vehicle .del').click(function() {
+        $('.modify-vehicle .cancle').click(function() {
             if ($('.modify-vehicle .clickbtn .save').css("display") == 'none'){
                 $('.modify-vehicle').hide();
                 $('.mask').hide();
@@ -458,34 +462,20 @@
         $('.add-vehicle .save').click(function() {
             var number = $('.add-vehicle input').eq(0).val().replace(/\s+/g,"");
             var engine = $('.add-vehicle input').eq(1).val().replace(/\s+/g,"");
-            var vehicle_model = $('.add-vehicle input').eq(2).val().replace(/\s+/g,"");
+            var owner = $('.add-vehicle input').eq(2).val().replace(/\s+/g,"");
             var register_date = $('.add-vehicle input').eq(3).val().replace(/\s+/g,"");
-            var route = $('.add-vehicle textarea').val().replace(/\s+/g,"");
-            var vehicle_type = $('.add-vehicle select').eq(0).val();
 
-            if (!(vehicle_type == '1' || vehicle_type == '2' || vehicle_type == '15')) {
-                alert('请选择正确的车辆类型');
-            }
-            else if (number.length == 0) {
+            if (number.length == 0) {
                 alert('请输入正确的号牌号码');
             }
-            else if (vehicle_type != 15 && !re_01.test(number)) {
-                alert('车辆类型或号牌号码不正确, 请修改后保存');
+            else if (engine.length == 0) {
+                alert('请输入正确的发动机号');
             }
-            else if (vehicle_type == 15 && !re_15.test(number)) {
-                alert('车辆类型或号牌号码不正确, 请修改后保存');
-            }
-            else if (vehicle_type != 15 && engine.length == 0) {
-                alert('请输入正确的发动机型号');
-            }
-            else if (vehicle_model.length == 0) {
-                alert('请输入正确的车辆型号');
+            else if (owner.length == 0) {
+                alert('请输入正确的车辆所有人');
             }
             else if (register_date.length == 0) {
                 alert('请选择正确的车辆注册日期');
-            }
-            else if (route.length == 0) {
-                alert('请输入正确的行驶路线');
             }
             else {
                 $.get('/is_vehicle_exist', {'number': number}, function(data) {
@@ -505,34 +495,20 @@
         $('.modify-vehicle .save').click(function() {
             var number = $('.modify-vehicle input').eq(0).val().replace(/\s+/g,"");
             var engine = $('.modify-vehicle input').eq(1).val().replace(/\s+/g,"");
-            var vehicle_model = $('.modify-vehicle input').eq(2).val().replace(/\s+/g,"");
+            var owner = $('.modify-vehicle input').eq(2).val().replace(/\s+/g,"");
             var register_date = $('.modify-vehicle input').eq(3).val().replace(/\s+/g,"");
-            var route = $('.modify-vehicle textarea').val().replace(/\s+/g,"");
-            var vehicle_type = $('.modify-vehicle select').eq(0).val();
 
-            if (!(vehicle_type == '1' || vehicle_type == '2' || vehicle_type == '15')) {
-                alert('请选择正确的车辆类型');
-            }
-            else if (number.length == 0) {
+            if (number.length == 0) {
                 alert('请输入正确的号牌号码');
             }
-            else if (vehicle_type != 15 && !re_01.test(number)) {
-                alert('车辆类型或号牌号码不正确, 请修改后保存');
+            else if (engine.length == 0) {
+                alert('请输入正确的发动机号');
             }
-            else if (vehicle_type == 15 && !re_15.test(number)) {
-                alert('车辆类型或号牌号码不正确, 请修改后保存');
-            }
-            else if (vehicle_type != 15 && engine.length == 0) {
-                alert('请输入正确的发动机型号');
-            }
-            else if (vehicle_model.length == 0) {
-                alert('请输入正确的车辆型号');
+            else if (owner.length == 0) {
+                alert('请输入正确的车辆所有人');
             }
             else if (register_date.length == 0) {
                 alert('请选择正确的车辆注册日期');
-            }
-            else if (route.length == 0) {
-                alert('请输入正确的行驶路线');
             }
             else if (confirm('是否保存车辆信息？')) {
                 $('.modify-vehicle form').prop('action', '/vehicle_modify');
@@ -543,7 +519,7 @@
         });
 
         // 编辑车辆信息表单提交: 删除
-        $('.modify-vehicle .delete').click(function() {
+        $('.modify-vehicle .del').click(function() {
             if (confirm('是否删除该车辆信息？')) {
                 $('.modify-vehicle form').prop('action', '/vehicle_delete');
                 $('.modify-vehicle form').submit();
@@ -575,22 +551,22 @@
     });
 
     // 填充编辑车辆模态框信息
-    function setVehicleInfo(vehicle_type, number, engine, vehicle_model, register_date, route, id, status_id) {
-         $('.modify-vehicle select').eq(0).val(vehicle_type);       // 车辆类型
-         $('.modify-vehicle input').eq(0).val(number.replace("<br />",""));              // 号牌号码
-         $('.modify-vehicle input').eq(1).val(engine.replace("<br />",""));              // 发动机型号
-         $('.modify-vehicle input').eq(2).val(vehicle_model.replace("<br />",""));       // 车辆型号
-         $('.modify-vehicle input').eq(3).val(register_date);     // 车辆注册日期
-         $('.modify-vehicle textarea').val(route.replace("<br />",""));                  // 运输路线
-         $('.modify-vehicle input').eq(4).val(id);                  // 车辆id
+    function setVehicleInfo(vehicle_type, number, engine, owner, register_date, belong, vehicle_id, vehicle_status) {
 
-         if (status_id != '1' && status_id != '5' ) {
-            $('.modify-vehicle .clickbtn .save').hide();
-            $('.modify-vehicle .clickbtn .delete').hide();
-         } else {
-            $('.modify-vehicle .clickbtn .save').show();
-            $('.modify-vehicle .clickbtn .delete').show();
-         }
+        $('.modify-vehicle select').eq(1).val(vehicle_type);       // 车辆类型
+        $('.modify-vehicle select').eq(2).val(belong);       // 车辆类型
+        $('.modify-vehicle input').eq(0).val(number.replace("<br />",""));              // 号牌号码
+        $('.modify-vehicle input').eq(1).val(engine.replace("<br />",""));              // 发动机型号
+        $('.modify-vehicle input').eq(2).val(owner.replace("<br />",""));       // 车辆型号
+        $('.modify-vehicle input').eq(3).val(register_date);     // 车辆注册日期
+        $('.modify-vehicle input').eq(4).val(vehicle_id);     // 车辆注册日期
+
+
+        if (vehicle_status == 3) {
+            $('.modify-vehicle .my-modal-footer .save').hide();
+        } else {
+            $('.modify-vehicle .my-modal-footer .save').show();
+        }
     }
 
     // 跳转到指定页面
