@@ -120,8 +120,8 @@ class Permission(models.Model):
     permission_route = models.CharField(max_length=200, null=True, blank=True)  # 路线名称
     permission_status = models.ForeignKey(Status, null=True, blank=True, on_delete=models.SET_NULL)  # 通行证状态，51-可用，52-不可用
     permission_user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)  # 通行证用户
-    start_date = models.DateTimeField(null=True, blank=True)  # 期限
-    end_date = models.DateTimeField(null=True, blank=True)   # 期限
+    start_date = models.DateTimeField(null=True, blank=True)  # 开始时间
+    end_date = models.DateTimeField(null=True, blank=True)   # 结束时间
 
 
 # 通行证统计

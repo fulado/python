@@ -1,12 +1,12 @@
 """
 支队功能
 """
-from django.shortcuts import render, HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect
 
 
-from .models import User, Enterprise, Station, Direction, Road, Area, Route, Vehicle, Permission, Statistic
+from .models import Enterprise, Vehicle, Statistic
 from .decorator import login_check
-from .utils import save_file, MyPaginator
+from .utils import MyPaginator
 
 
 # 显示企业审核页面

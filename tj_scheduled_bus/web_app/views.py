@@ -173,7 +173,7 @@ def main(request):
     if authority == 2:
         return render(request, 'zhidui/main.html', context)
     elif authority == 3:
-        return render(request, 'jiaoguanju/main.html', context)
+        return render(request, 'zongdui/main.html', context)
     else:
         return render(request, 'main.html', context)
 

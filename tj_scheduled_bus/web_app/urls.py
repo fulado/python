@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from . import views
 from . import views_zhidui
+from . import views_zongdui
 
 
 urlpatterns = [
@@ -12,6 +13,12 @@ urlpatterns = [
     url(r'^zhidui/vehicle_pass/?', views_zhidui.vehicle_pass),
     url(r'^zhidui/vehicle/?', views_zhidui.vehicle),
     url(r'^zhidui/permission/?', views_zhidui.permission),
+
+    # 总队
+    url(r'^zongdui/enterprise/?', views_zongdui.enterprise),
+    url(r'^zongdui/vehicle/?', views_zongdui.vehicle),
+    url(r'^zongdui/station_add/?', views_zongdui.station_add),
+    url(r'^zongdui/station/?', views_zongdui.station),
 
     # 企业端，企业管理
     url(r'^enterprise_add/?', views.enterprise_add),
