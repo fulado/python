@@ -79,8 +79,44 @@ def station_add(request):
     return HttpResponseRedirect('/zongdui/station')
 
 
+# 编辑站点
+def station_modify(request):
+    station_id = request.POST.get('station_id', None)
+
+    if station_id:
+        station_area = request.POST.get('station_area', '')
+        station_road = request.POST.get('station_road', '')
+        station_direction = request.POST.get('station_direction', '')
+        station_name = request.POST.get('station_name', '')
+        station_position = request.POST.get('station_position', '')
+        station_status = int(request.POST.get('station_status', 31))
+
+        station_info = Station.objects.get(id=station_id)
+
+        station_info.station_area = station_area
+        station_info.station_road = station_road
+        station_info.station_direction = station_direction
+        station_info.station_name = station_name
+        station_info.station_position = station_position
+        station_info.station_status_id = station_status
+
+        station_info.save()
+    else:
+        pass
+
+    return HttpResponseRedirect('/zongdui/station')
 
 
+# 删除站点
+def station_delete(request):
+    station_id = request.POST.get('station_id', None)
+
+    if station_id:
+        Station.objects.filter(id=station_id).delete()
+    else:
+        pass
+
+    return HttpResponseRedirect('/zongdui/station')
 
 
 

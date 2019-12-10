@@ -18,6 +18,8 @@ urlpatterns = [
     url(r'^zongdui/enterprise/?', views_zongdui.enterprise),
     url(r'^zongdui/vehicle/?', views_zongdui.vehicle),
     url(r'^zongdui/station_add/?', views_zongdui.station_add),
+    url(r'^zongdui/station_modify/?', views_zongdui.station_modify),
+    url(r'^zongdui/station_delete/?', views_zongdui.station_delete),
     url(r'^zongdui/station/?', views_zongdui.station),
 
     # 企业端，企业管理

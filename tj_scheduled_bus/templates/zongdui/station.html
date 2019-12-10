@@ -146,7 +146,10 @@
                     <td title="{{ station.station_position }}">{{ station.station_position }}</td>
                     <td title="{{ station.station_status.status_content }}">{{ station.station_status.status_content }}</td>
                     <td>
-                        <button type="button" class="see modify-vehicle-info" style="margin-right: 5px;" onclick="routeModify('{{ route.route_name }}')">查看</button>
+                        <button type="button" class="see modify-vehicle-info" style="margin-right: 5px;" onclick="setVehicleInfo(
+                        '{{ station.station_area|linebreaksbr }}', '{{ station.station_road|linebreaksbr }}', '{{ station.station_direction|linebreaksbr }}',
+                        '{{ station.station_name }}', '{{ station.station_position|linebreaksbr }}', '{{ station.station_status_id }}',
+                        '{{ station.id }}')">查看</button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -246,6 +249,71 @@
     </div>
 </div>
 
+<!-- 编辑站点 -->
+<div class="pop-up modify-vehicle my-modal-dialog">
+    <div class="my-modal-title">
+        <p>编辑站点</p>
+    </div>
+    <div class="my-modal-body">
+        <form action="/zongdui/station_modify" method="POST">
+            <table>
+                <tr>
+                    <td colspan="2"><p style="padding: 20px;">站点信息</p></td>
+                </tr>
+                <tr>
+                    <td><span>区域</span></td>
+                    <td>
+                        <input type="text" placeholder="请输入区域名称" name="station_area">
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>道路</span></td>
+                    <td>
+                        <input type="text" placeholder="请输入道路名称" name="station_road">
+                    </td>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>方向</span></td>
+                    <td>
+                        <input type="text" placeholder="请输入方向名称" name="station_direction">
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>站点</span></td>
+                    <td>
+                        <input type="text" placeholder="请输入站点名称" name="station_name">
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>位置</span></td>
+                    <td>
+                        <input type="text" placeholder="请输入详细位置" name="station_position">
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>状态</span></td>
+                    <td>
+                        <select name="station_status" placeholder="请选择站点状态">
+                            <option value="31" selected>运行</option>
+                            <option value="32">停运</option>
+                            <option value="33">未启动</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <input type="hidden" name="station_id">
+            <div class="my-modal-footer" >
+                <div class="clickbtn" style="margin: 0px;width: 430px;text-align: center;">
+                    <button type="button" class="btn save">保存</button>
+                    <button type="button" class="btn del">删除</button>
+                    <div class="btn cancle">取消</div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="mask" style="display: none"></div>
 </body>
 <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
@@ -282,6 +350,7 @@
 
         // 显示编辑车辆信息模态框
         $('.table_box .modify-vehicle-info').click(function() {
+
             $('.modify-vehicle').show();
             $('.mask').show();
         });
@@ -338,10 +407,40 @@
             }
         });
 
+        // 新增站点
+        $('.modify-vehicle .save').click(function() {
+            let station_area = $('.modify-vehicle input').eq(0).val().replace(/\s+/g,"");
+            let station_road = $('.modify-vehicle input').eq(1).val().replace(/\s+/g,"");
+            let station_direction = $('.modify-vehicle input').eq(2).val().replace(/\s+/g,"");
+            let station_name = $('.modify-vehicle input').eq(3).val().replace(/\s+/g,"");
+            let station_postion = $('.modify-vehicle input').eq(4).val().replace(/\s+/g,"");
+
+            if (station_area.length == 0) {
+                alert('请填写区域名称');
+            }
+            else if (station_road.length == 0) {
+                alert('请填写道路名称');
+            }
+            else if (station_direction.length == 0) {
+                alert('请填写方向名称');
+            }
+            else if (station_name.length == 0) {
+                alert('请填写站点名称');
+            }
+            else if (station_postion.length == 0) {
+                alert('请填写位置信息');
+            }
+            else {
+                if (confirm('是否保存站点信息？')) {
+                    $('.modify-vehicle form').submit();
+                }
+            }
+        });
+
         // 编辑车辆信息表单提交: 删除
-        $('.modify-vehicle .delete').click(function() {
-            if (confirm('是否删除该车辆信息？')) {
-                $('.modify-vehicle form').prop('action', '/vehicle_delete');
+        $('.modify-vehicle .del').click(function() {
+            if (confirm('是否删除该站点？')) {
+                $('.modify-vehicle form').prop('action', '/zongdui/station_delete');
                 $('.modify-vehicle form').submit();
                 $('.modify-vehicle').hide();
                 $('.mask').hide();
@@ -368,52 +467,6 @@
                 alert('请选择需要导入的文件');
             }
         });
-
-        // 区域选择后, 道路对应变化
-        $('.my-modal-body select').eq(0).change(function() {
-            $.ajaxSettings.async = false;
-            let val = $(this).val();
-
-            if (val == 0) {
-                $('.my-modal-body select').eq(1).val(0);
-                $('.my-modal-body select').eq(1).attr("disabled","disabled");
-            } else {
-                $('.my-modal-body select').eq(1).removeAttr("disabled");
-                setCateInfo($(this), $('.my-modal-body select').eq(1), 0, 'road');
-            }
-
-            $('.my-modal-body select').eq(1).change();
-        });
-
-        // 道路选择后, 方向变化
-        $('.my-modal-body select').eq(1).change(function() {
-            $.ajaxSettings.async = false;
-            let val = $(this).val();
-
-            if (val == 0) {
-                $('.my-modal-body select').eq(2).val(0);
-                $('.my-modal-body select').eq(2).attr("disabled","disabled");
-            } else {
-                $('.my-modal-body select').eq(2).removeAttr("disabled");
-                setDirectionInfo($('.my-modal-body select').eq(0), $(this), $('.my-modal-body select').eq(2), 0, 'direction');
-            }
-
-            $('.my-modal-body select').eq(2).change();
-        });
-
-        // 方向选择后, 站点变化
-        $('.my-modal-body select').eq(2).change(function() {
-            $.ajaxSettings.async = false;
-            let val = $(this).val();
-
-            if (val == 0) {
-                $('.my-modal-body select').eq(3).val(0);
-                $('.my-modal-body select').eq(3).attr("disabled","disabled");
-            } else {
-                $('.my-modal-body select').eq(3).removeAttr("disabled");
-                setStationInfo($('.my-modal-body select').eq(0), $('.my-modal-body select').eq(1), $(this), $('.my-modal-body select').eq(3), 0, 'station');
-            }
-        });
 });
 
     // 跳转到指定页面
@@ -421,102 +474,17 @@
         $('#pageToolbar form').submit();
     }
 
-    // 删除本单位全部车辆
-    function clear_all(user_id) {
-        if (confirm('是否删除全部车辆信息？')) {
-            window.location.href = "/clear_all?user_id=" + user_id;
-        }
-    }
+    // 填充编辑车辆模态框信息
+    function setVehicleInfo(station_area, station_road, station_direction, station_name, station_position, station_status, station_id) {
 
-    // 选择不同的上级选项, 下级选择框相应变化
-    function setCateInfo(parentObj, childObj, childId, item) {
-        // 设置查询下级复选框等级
-        var childId = childId || 0;
-        // 用户选择上级选项的id
-        var parent_id = parentObj.val();
+        $('.modify-vehicle select').eq(0).val(station_status);
 
-        // 通过Ajax获取二级部门
-        $.get('/station_search', {'parent_id': parent_id, 'item': item}, function(data) {
-            // 清空二级部门选择中的全部选项
-            childObj.empty();
-            // 根据查询结果, 添加二级部门子元素
-            // var newOption = $('<option></option>').val(0).text('待定');
-            childObj.append(newOption);
-            for (i in data.cate_list) {
-                if (childId == data.cate_list[i].id) {
-                    var newOption = $('<option selected></option>').val(data.cate_list[i].id).text(data.cate_list[i].name);
-                } else {
-                    var newOption = $('<option></option>').val(data.cate_list[i].id).text(data.cate_list[i].name);
-                }
-                childObj.append(newOption);
-            }
-        });
-    }
-
-    // 选择道路，方向变化
-    function setDirectionInfo(obj_1, parentObj, childObj, childId, item) {
-        // 设置查询下级复选框等级
-        var childId = childId || 0;
-        // 用户选择上级选项的id
-        var parent_id = parentObj.val();
-        // 区域值
-        let obj_1_val = obj_1.val();
-
-        // 通过Ajax获取二级部门
-        $.get('/station_search', {'parent_id': parent_id, 'item': item, 'obj_1_val': obj_1_val}, function(data) {
-            // 清空二级部门选择中的全部选项
-            childObj.empty();
-            // 根据查询结果, 添加二级部门子元素
-            // var newOption = $('<option></option>').val(0).text('待定');
-            childObj.append(newOption);
-            for (i in data.cate_list) {
-                if (childId == data.cate_list[i].id) {
-                    var newOption = $('<option selected></option>').val(data.cate_list[i].id).text(data.cate_list[i].name);
-                } else {
-                    var newOption = $('<option></option>').val(data.cate_list[i].id).text(data.cate_list[i].name);
-                }
-                childObj.append(newOption);
-            }
-        });
-    }
-
-    // 选择方向，站点变化
-    function setStationInfo(obj_1, obj_2, parentObj, childObj, childId, item) {
-        // 设置查询下级复选框等级
-        var childId = childId || 0;
-        // 用户选择上级选项的id
-        var parent_id = parentObj.val();
-        // 区域值
-        let obj_1_val = obj_1.val();
-        // 道路
-        let obj_2_val = obj_2.val();
-
-        // 通过Ajax获取二级部门
-        $.get('/station_search', {'parent_id': parent_id, 'item': item, 'obj_1_val': obj_1_val, 'obj_2_val': obj_2_val}, function(data) {
-            // 清空二级部门选择中的全部选项
-            childObj.empty();
-            // 根据查询结果, 添加二级部门子元素
-            // var newOption = $('<option></option>').val(0).text('待定');
-            childObj.append(newOption);
-            for (i in data.cate_list) {
-                if (childId == data.cate_list[i].id) {
-                    var newOption = $('<option selected></option>').val(data.cate_list[i].id).text(data.cate_list[i].name);
-                } else {
-                    var newOption = $('<option></option>').val(data.cate_list[i].id).text(data.cate_list[i].name);
-                }
-                childObj.append(newOption);
-            }
-        });
-    }
-
-    // 删除站点
-    function deleteStation(route_id) {
-        window.location.href = "/station_delete?route_id=" + route_id;
-    }
-
-    // 显示编辑站点窗口
-    function routeModify(route_name) {
-        window.location.href = "/station?display_add_route=block&display_mask=block&route_name=" + route_name;
+        $('.modify-vehicle input').eq(0).val(station_area.replace("<br />",""));
+        $('.modify-vehicle input').eq(1).val(station_road.replace("<br />",""));
+        $('.modify-vehicle input').eq(2).val(station_direction.replace("<br />",""));
+        $('.modify-vehicle input').eq(3).val(station_name.replace("<br />",""));
+        $('.modify-vehicle input').eq(4).val(station_position.replace("<br />",""));
+        $('.modify-vehicle input').eq(5).val(station_id);
     }
 </script>
 </html>
