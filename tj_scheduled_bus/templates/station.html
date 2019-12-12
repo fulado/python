@@ -330,18 +330,19 @@
         // 新增站点
         $('.add-vehicle .add').click(function() {
             let route_name = $('.add-vehicle input').eq(0).val().replace(/\s+/g,"");
-            let station_name = $('.add-vehicle select').eq(0).val();
+            let station_id = $('.add-vehicle select').eq(3).val();
 
             if (route_name.length == 0) {
                 alert('请填写路线名称');
             }
-            else if (station_name == '0') {
+            else if (station_id == '0') {
                 alert('请选择站点');
             }
             else {
                 $.get('/can_add_station', {'route_name': route_name}, function(data) {
                     if (data.result) {
-                        $('.add-vehicle form').submit();
+                        // $('.add-vehicle form').submit();
+                        addStation(station_id, route_name);
                     }
                     else {
                         alert('最多可添加5个站点');
@@ -436,7 +437,7 @@
                 setStationInfo($('.my-modal-body select').eq(0), $('.my-modal-body select').eq(1), $(this), $('.my-modal-body select').eq(3), 0, 'station');
             }
         });
-});
+    });
 
     // 跳转到指定页面
     function jump() {
@@ -529,6 +530,19 @@
                 childObj.append(newOption);
             }
         });
+    }
+    
+    // 在路线中添加站点
+    function addStation(station_id, route_name) {
+        // 添加站点
+        alert(station_id + route_name);
+        $.get('/station_add', {'station_id': station_id, 'route_name': route_name}, function (data) {
+            if (data.result) {
+                alert('站点已经存在与路线中');
+            } else {
+                alert(data.result.station_name);
+            }
+        })
     }
 
     // 删除站点

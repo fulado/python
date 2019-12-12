@@ -534,24 +534,55 @@ def can_add_station(request):
 
 
 # 添加站点
+# def station_add(request):
+#     user_id = request.session.get('user_id', '')
+#     route_name = request.POST.get('route_name', '')
+#     station_id = request.POST.get('station', '')
+#
+#     route_info = Route()
+#     route_info.route_name = route_name
+#     route_info.route_station_id = station_id
+#     route_info.route_user_id = user_id
+#
+#     route_info.save()
+#
+#     display_add_route = 'block'
+#     display_mask = 'block'
+#
+#     url = '/station?display_add_route=%s&display_mask=%s&route_name=%s' % (display_add_route, display_mask, route_name)
+#
+#     return HttpResponseRedirect(url)
+
+
+# 添加站点
 def station_add(request):
     user_id = request.session.get('user_id', '')
-    route_name = request.POST.get('route_name', '')
-    station_id = request.POST.get('station', '')
+    route_name = request.GET.get('route_name', '')
+    station_id = int(request.GET.get('station_id', ''))
+    print(user_id, route_name, station_id)
+    is_station_exists = Route.objects.filter(route_name=route_name, route_user_id=user_id, route_station_id=station_id)\
+        .exists()
 
-    route_info = Route()
-    route_info.route_name = route_name
-    route_info.route_station_id = station_id
-    route_info.route_user_id = user_id
+    if not is_station_exists:
+        route_info = Route()
+        route_info.route_name = route_name
+        route_info.route_station_id = station_id
+        route_info.route_user_id = user_id
 
-    route_info.save()
+        route_info.save()
 
-    display_add_route = 'block'
-    display_mask = 'block'
+        station_info = Station.objects.get(id=station_id)
 
-    url = '/station?display_add_route=%s&display_mask=%s&route_name=%s' % (display_add_route, display_mask, route_name)
+        result = {'result': True,
+                  'station_area': station_info.station_area,
+                  'station_road': station_info.station_road,
+                  'station_direction': station_info.station_direction,
+                  'station_name': station_info.station_name,
+                  }
+    else:
+        result = {'result': False}
 
-    return HttpResponseRedirect(url)
+    return JsonResponse(result)
 
 
 # 删除站点
