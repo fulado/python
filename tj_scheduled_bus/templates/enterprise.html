@@ -138,7 +138,7 @@
 
 <!--模态框-->
 <!-- 新增企业 -->
-<div class="pop-up add-enterprise" style="display: none;height: 760px;">
+<div class="pop-up add-enterprise" style="display: none;height: 810px;">
     <div class="my-modal-title">
         <p>新增企业</p>
     </div>
@@ -190,6 +190,16 @@
             <div class="rent_contract" hidden>
                 <label for="user">租赁合同</label>
                 <input type="file" name="rent_contract" id="rent_contract" onchange="getPhotoSize(this)" />
+            </div>
+             <p style="margin: auto;font-size: 16px;text-align: center;margin-bottom: 10px;">面签支队</p>
+            <div class="dept_id">
+                <label for="ePrisename">面签支队</label>
+                <select name="dept_id" placeholder="请选择面签支队">
+                    <option value="0">请选择面签支队</option>
+                    {% for dept in dept_list %}
+                        <option value="{{ dept.id }}">{{ dept.dept_name }}</option>
+                    {% endfor %}
+                </select>
             </div>
         </form>
     </div>
@@ -311,6 +321,7 @@
             let id_card_front = $('.add-enterprise .id_card_front input').val().length;
             let id_card_back = $('.add-enterprise .id_card_back input').val().length;
             let rent_contract = $('.add-enterprise .rent_contract input').val().length;
+            let dept_id = $('.add-enterprise .dept_id select').val();
 
             if (enterprise_name == '') {
                 alert('请填写企业名称');
@@ -339,10 +350,20 @@
             else if (rent_contract <= 0 && enterprise_type == 2) {
                 alert('请上传租赁合同照片');
             }
-            else if (confirm('是否保存企业信息？')) {
-                $('.add-enterprise form').submit();
-                $('.add-enterprise').hide();
-                $('.mask').hide();
+            else if (dept_id == '0') {
+                alert('请选择面签支队');
+            }
+            else {
+                $.get('/is_enterprise_exist', {'enterprise_type': enterprise_type}, function(data) {
+                    if (data.result) {
+                        alert('只能添加一个自有车辆企业');
+                    }
+                    else if (confirm('是否保存企业信息？')) {
+                        $('.add-enterprise form').submit();
+                        $('.add-enterprise').hide();
+                        $('.mask').hide();
+                    }
+                });
             }
         });
 

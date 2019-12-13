@@ -181,7 +181,7 @@
         <p>编辑路线</p>
     </div>
     <div class="table_wrapper table_container" style="height: 230px;">
-        <table class="table_box" id="table_box">
+        <table class="table_box add-station" id="table_box">
             <thead>
                 <tr>
                     <td style="width: 4%">序号</td>
@@ -535,12 +535,22 @@
     // 在路线中添加站点
     function addStation(station_id, route_name) {
         // 添加站点
-        alert(station_id + route_name);
         $.get('/station_add', {'station_id': station_id, 'route_name': route_name}, function (data) {
             if (data.result) {
-                alert('站点已经存在与路线中');
+                alert(data.station_name);
+                let newRow = "<tr style=\"height: 40px;\">\n" +
+                                "<td style=\"width: 4%\">" + data.number + "</td>\n" +
+                                "<td title=" + data.station_name + ">" + data.station_name + "</td>\n" +
+                                "<td title=" + data.station_area + ">" + data.station_area + "</td>\n" +
+                                "<td title=" + data.station_road + ">" + data.station_road + "</td>\n" +
+                                "<td title=" + data.station_direction + ">" + data.station_direction + "</td>\n" +
+                                "<td>\n" +
+                                "<button type=\"button\" class=\"see modify-vehicle-info\" style=\"margin-right: 5px;\" onclick=\"deleteStation(" + data.station_id + ")\">删除</button>\n" +
+                                "</td>\n" +
+                            "</tr>"
+                $('.add-station tr:last').after(newRow);
             } else {
-                alert(data.result.station_name);
+                alert('站点已经存在与路线中');
             }
         })
     }

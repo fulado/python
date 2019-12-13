@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from django.db.models import Count
 from PIL import Image, ImageDraw, ImageFont
 
-from .models import User, Enterprise, Station, Direction, Road, Area, Route, Vehicle, Permission
+from .models import User, Enterprise, Station, Department, Route, Vehicle, Permission
 from .decorator import login_check
 from tj_scheduled_bus import settings
 from .utils import save_file, MyPaginator, statistic_update
@@ -185,13 +185,15 @@ def enterprise(request):
     search_name = request.POST.get('search_name', '')
 
     enterprise_list = Enterprise.objects.filter(user_id=user_id).filter(enterprise_name__contains=search_name)
+    dept_list = Department.objects.all()
 
     # 分页
     mp = MyPaginator()
     mp.paginate(enterprise_list, 10, 1)
 
     context = {'mp': mp,
-               'search_name': search_name
+               'search_name': search_name,
+               'dept_list': dept_list
                }
 
     return render(request, 'enterprise.html', context)
@@ -207,6 +209,7 @@ def enterprise_add(request):
     enterprise_code = request.POST.get('enterprise_code', '')
     contact_person = request.POST.get('contact_person', '')
     phone = request.POST.get('phone', '')
+    dept_id = request.POST.get('dept_id', 0)
 
     enterprise_info = Enterprise()
     enterprise_info.enterprise_type_id = enterprise_type
@@ -217,6 +220,7 @@ def enterprise_add(request):
     enterprise_info.phone = phone
     enterprise_info.user_id = user_id
     enterprise_info.enterprise_status_id = 1
+    enterprise_info.dept_id = dept_id
 
     # 营业执照照片
     business_license = request.FILES.get('business_license', '')
@@ -559,9 +563,11 @@ def station_add(request):
     user_id = request.session.get('user_id', '')
     route_name = request.GET.get('route_name', '')
     station_id = int(request.GET.get('station_id', ''))
-    print(user_id, route_name, station_id)
+
     is_station_exists = Route.objects.filter(route_name=route_name, route_user_id=user_id, route_station_id=station_id)\
         .exists()
+
+    station_count = Route.objects.filter(route_name=route_name, route_user_id=user_id).count()
 
     if not is_station_exists:
         route_info = Route()
@@ -578,6 +584,8 @@ def station_add(request):
                   'station_road': station_info.station_road,
                   'station_direction': station_info.station_direction,
                   'station_name': station_info.station_name,
+                  'station_id': station_info.id,
+                  'number': station_count + 1,
                   }
     else:
         result = {'result': False}
