@@ -89,7 +89,8 @@ class Route(models.Model):
     route_name = models.CharField(max_length=200, null=True, blank=True)                     # 路线名称
     route_station = models.ForeignKey(Station, null=True, blank=True, on_delete=models.SET_NULL)   # 路线关联站点
     route_user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)     # 路线所属用户
-    route_status = models.IntegerField(default=1, null=True, blank=True)      # 站点状态，1-临时，2-正式
+    route_status = models.IntegerField(default=1, null=True, blank=True)      # 站点状态，1-临时添加，2-临时删除，3-正式生效
+    is_temp = models.BooleanField(default=True)      # 是否临时添加
 
 
 # 路线站点

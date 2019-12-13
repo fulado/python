@@ -537,27 +537,41 @@
         // 添加站点
         $.get('/station_add', {'station_id': station_id, 'route_name': route_name}, function (data) {
             if (data.result) {
-                alert(data.station_name);
                 let newRow = "<tr style=\"height: 40px;\">\n" +
-                                "<td style=\"width: 4%\">" + data.number + "</td>\n" +
+                                "<td style=\"width: 4%\">" + "</td>\n" +
                                 "<td title=" + data.station_name + ">" + data.station_name + "</td>\n" +
                                 "<td title=" + data.station_area + ">" + data.station_area + "</td>\n" +
                                 "<td title=" + data.station_road + ">" + data.station_road + "</td>\n" +
                                 "<td title=" + data.station_direction + ">" + data.station_direction + "</td>\n" +
                                 "<td>\n" +
-                                "<button type=\"button\" class=\"see modify-vehicle-info\" style=\"margin-right: 5px;\" onclick=\"deleteStation(" + data.station_id + ")\">删除</button>\n" +
+                                "<button type=\"button\" class=\"see modify-vehicle-info\" style=\"margin-right: 5px;\" route_id=\"" + data.route_id + "\">删除</button>\n" +
                                 "</td>\n" +
                             "</tr>"
                 $('.add-station tr:last').after(newRow);
+                refreshRowNumber();
             } else {
                 alert('站点已经存在与路线中');
             }
         })
     }
 
+    // 更新表格中的行号
+    function refreshRowNumber() {
+        let len = $('.add-station tr').length;
+        for (let i = 1; i < len; i++) {
+            $('.add-station tr').eq(i).children().eq(0).text(i);
+            let route_id = $('.add-station tr').eq(i).children().eq(5).children().eq(0).attr('route_id');
+            $('.add-station tr').eq(i).children().eq(5).children().eq(0).attr('onclick', 'deleteStation(' + route_id + ', ' + i + ')')
+        }
+    }
+
     // 删除站点
-    function deleteStation(route_id) {
-        window.location.href = "/station_delete?route_id=" + route_id;
+    function deleteStation(route_id, row_number) {
+        // window.location.href = "/station_delete?route_id=" + route_id;
+        $('.add-station tr').eq(row_number).remove();
+        $.get('station_delete', {'route_id': route_id}, function () {
+
+        });
     }
 
     // 显示编辑站点窗口

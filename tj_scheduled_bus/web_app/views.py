@@ -527,7 +527,8 @@ def can_add_station(request):
     user_id = request.session.get('user_id', '')
     route_name = request.GET.get('route_name', '')
 
-    station_count = Route.objects.filter(route_user_id=user_id).filter(route_name=route_name).count()
+    station_count = Route.objects.filter(route_user_id=user_id).filter(route_name=route_name).\
+        filter(route_status__in=(1, 3)).count()
 
     if station_count >= 5:
         result = False
@@ -584,7 +585,7 @@ def station_add(request):
                   'station_road': station_info.station_road,
                   'station_direction': station_info.station_direction,
                   'station_name': station_info.station_name,
-                  'station_id': station_info.id,
+                  'route_id': route_info.id,
                   'number': station_count + 1,
                   }
     else:
@@ -604,8 +605,8 @@ def station_delete(request):
 
         if route_info.route_status == 1:
             route_info.delete()
-        elif route_info.route_status == 2:
-            route_info.route_status = 3
+        elif route_info.route_status == 3:
+            route_info.route_status = 2
             route_info.save()
         else:
             pass
