@@ -57,6 +57,8 @@ urlpatterns = [
     url(r'^login_handle/?', views.login_handle),
     url(r'^login/?', views.login),
     url(r'^logout/?', views.logout),
+    url(r'^change_password/?', views.change_password),
+    url(r'^sms_check_code/?', views.sms_check_code),
     url(r'^check_code/?', views.check_code),
     url(r'^/?', views.login),
 ]

@@ -115,7 +115,7 @@
         <div class="search_input">
             <label for="ss">车辆搜索</label>
             <form action="/vehicle" method="POST" style="display: inline-block;">
-                <input type="text" placeholder="输入车牌号码" id="ss" name="vehicle_number" value="{{ vehicle_number }}" />
+                <input type="text" placeholder="输入车牌号码" id="ss" name="vehicle_number" value="{{ number }}" />
                 <select name="vehicle_status">
                     <option value="0" {% if vehicle_status == 0 %}selected{% endif %}>全部车辆</option>
                     <option value="1" {% if vehicle_status == 1 %}selected{% endif %}>未提交车辆</option>

@@ -150,22 +150,21 @@
     <div id="pageToolbar">
         <div id="Paging_009071537570730115" class="ui-paging-container">
             <ul>
-                <a href="/vehicle?page_num=1&number={{ number }}&status={{ status }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
-                <a href="/vehicle?page_num={{ mp.current_num|add:-1 }}&number={{ number }}&status={{ status }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
+                <a href="/station?page_num=1&search_name={{ search_name }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
+                <a href="/station?page_num={{ mp.current_num|add:-1 }}&search_name={{ search_name }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
                 {% for num in mp.page_range %}
                     {% if num == mp.current_num %}
-                    <a href="/vehicle?page_num={{ num }}&search_name={{ number }}&status={{ status }}"><li class="ui-pager focus">{{ num }}</li></a>
+                    <a href="/station?page_num={{ num }}&search_name={{ search_name }}"><li class="ui-pager focus">{{ num }}</li></a>
                     {% else %}
-                    <a href="/vehicle?page_num={{ num }}&search_name={{ number }}&status={{ status }}"><li class="ui-pager">{{ num }}</li></a>
+                    <a href="/station?page_num={{ num }}&search_name={{ search_name }}"><li class="ui-pager">{{ num }}</li></a>
                     {% endif %}
                 {% endfor %}
-                <a href="/vehicle?page_num={{ mp.current_num|add:1 }}&number={{ number }}&status={{ status }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
-                <a href="/vehicle?page_num={{ mp.total_pages }}&number={{ number }}&status={{ status }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
+                <a href="/station?page_num={{ mp.current_num|add:1 }}&search_name={{ search_name }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
+                <a href="/station?page_num={{ mp.total_pages }}&search_name={{ search_name }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
                 <li class="ui-paging-toolbar">
-                    <form action="/vehicle" method="GET">
+                    <form action="/station" method="GET">
                         <input type="text" class="ui-paging-count" style="font-size: 12px;" name="page_num" value="{{ mp.current_num }}" />
-                        <input type="hidden" name="number" value="{{ number }}" />
-                        <input type="hidden" name="status" value="{{ status }}" />
+                        <input type="hidden" name="search_name" value="{{ search_name }}" />
                         <span>/&nbsp;{{ mp.total_pages }}</span>
                         <a href="javascript:jump()">跳转</a>
                     </form>
@@ -201,7 +200,7 @@
                     <td title="{{ station.route_station.station_road }}">{{ station.route_station.station_road }}</td>
                     <td title="{{ station.route_station.station_direction }}">{{ station.route_station.station_direction }}</td>
                     <td>
-                        <button type="button" class="see modify-vehicle-info" style="margin-right: 5px;" onclick="deleteStation('{{ station.id }}')">删除</button>
+                        <button type="button" class="see modify-vehicle-info" style="margin-right: 5px;" onclick="deleteStation('{{ station.id }}', '{{ forloop.counter }}')">删除</button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -297,34 +296,6 @@
                 $('.mask').hide();
                 window.location.href = "/station_cancel";
             }
-        });
-
-        // 显示编辑车辆信息模态框
-        $('.table_box .modify-vehicle-info').click(function() {
-            $('.modify-vehicle').show();
-            $('.mask').show();
-        });
-
-        // 隐藏编辑车辆信息模态框
-        $('.modify-vehicle .cancle').click(function() {
-            if ($('.modify-vehicle .clickbtn .save').css("display") == 'none'){
-                $('.modify-vehicle').hide();
-                $('.mask').hide();
-            }
-            else if (confirm('是否放弃修改？')) {
-                $('.modify-vehicle').hide();
-                $('.mask').hide();
-            }
-        });
-
-        // 日期组件初始化
-        $('.datetime-picker').datetimepicker({
-            language: 'zh-CN',          //显示中文
-            format: 'yyyy-mm-dd',       //显示格式
-            minView: "month",           //设置只显示到月份
-            initialDate: new Date(),    //初始化当前日期
-            autoclose: true,            //选中自动关闭
-            todayBtn: true              //显示今日按钮
         });
 
         // 新增站点
@@ -567,10 +538,11 @@
 
     // 删除站点
     function deleteStation(route_id, row_number) {
-        // window.location.href = "/station_delete?route_id=" + route_id;
-        $('.add-station tr').eq(row_number).remove();
-        $.get('station_delete', {'route_id': route_id}, function () {
-
+        $.get('station_delete', {'route_id': route_id}, function (data) {
+            if (data.result) {
+                $('.add-station tr').eq(row_number).remove();
+                refreshRowNumber();
+            }
         });
     }
 

@@ -2,10 +2,11 @@
 工具函数
 """
 from tj_scheduled_bus import settings
-
 from django.core.paginator import Paginator
-
 from .models import Statistic
+
+import requests
+import json
 
 
 # 分页工具类
@@ -66,6 +67,7 @@ class MyPaginator(object):
         self.object_list = p.page(user_num)
 
 
+# 保存文件
 def save_file(file_obj, file_name):
     full_name = r'%s/file/%s.png' % (settings.FILE_DIR, file_name)
     f = open(full_name, 'wb')
@@ -91,12 +93,79 @@ def statistic_update(enterprise_id, end_date):
     sta_info.save()
 
 
+# 发送短信验证码
+def send_sms(phone_number, sms_code):
+    url = 'http://111.160.75.93:20700/llt-rpc/rest/sms'
+
+    msg = '您的验证码是：%s。请不要把验证码泄露给其他人。' % sms_code
+
+    # 请求头
+    headers = {'app-name': 'bcz',
+               'content-type': 'application/x-www-form-urlencoded',
+               'is-test': 'true',
+               }
+
+    # 请求体
+    data = {
+        "mobile": phone_number,
+        "msg": msg,
+    }
+
+    response_data = requests.post(url, headers=headers, data=data)
+    result = (json.loads(response_data.content.decode())).get('result', -1)
+
+    if result == 0:
+        return True
+    else:
+        return False
 
 
+# 查询车辆信息
+def get_vehicle_info(vehicle_number, vehicle_type='01'):
+    url = 'http://111.160.75.93:20700/llt-rpc/rest/car?'
+
+    # 请求头
+    headers = {'app-name': 'bcz',
+               'is-test': 'true',
+               }
+
+    # 请求体
+    data = {
+        "hphm": vehicle_number,
+        "hpzl": vehicle_type,
+    }
+
+    response_data = requests.get(url, headers=headers, data=data)
+
+    return json.loads(response_data.content.decode())
 
 
+# 校验车辆信息
+def check_vehicle(vehicle_number, engine_code, vehicle_owner):
+    vehicle_info = get_vehicle_info(vehicle_number)
 
+    # 信息不全不通过
+    if len(vehicle_number) * len(engine_code) * len(vehicle_owner) == 0:
+        return False
 
+    # 非津牌车辆直接通过
+    elif vehicle_number[0] != '津':
+        return True
+
+    # 查询结果为空不通过
+    elif not vehicle_info:
+        return False
+
+    # 发动机号不一致不通过
+    elif engine_code != vehicle_info.get('fdjh', ''):
+        return False
+
+    # 所有人不一致不通过
+    elif vehicle_owner != vehicle_info.get('syr', ''):
+        return False
+
+    else:
+        return True
 
 
 

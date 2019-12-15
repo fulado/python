@@ -26,6 +26,7 @@ class User(models.Model):
     username = models.CharField(max_length=50, unique=True)                     # 帐号
     password = models.CharField(max_length=50)                                  # 密码
     authority = models.IntegerField(default=1, null=True, blank=True)           # 权限，1-企业，2-支队，3-交管局
+    phone = models.CharField(max_length=20, null=True, blank=True)  # 手机号码
     is_delete = models.BooleanField(default=False)                              # 是否删除
 
 
@@ -90,7 +91,7 @@ class Route(models.Model):
     route_station = models.ForeignKey(Station, null=True, blank=True, on_delete=models.SET_NULL)   # 路线关联站点
     route_user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)     # 路线所属用户
     route_status = models.IntegerField(default=1, null=True, blank=True)      # 站点状态，1-临时添加，2-临时删除，3-正式生效
-    is_temp = models.BooleanField(default=True)      # 是否临时添加
+    # is_temp = models.BooleanField(default=True)      # 是否临时添加
 
 
 # 路线站点

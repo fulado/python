@@ -12,7 +12,7 @@ from PIL import Image, ImageDraw, ImageFont
 from .models import User, Enterprise, Station, Department, Route, Vehicle, Permission
 from .decorator import login_check
 from tj_scheduled_bus import settings
-from .utils import save_file, MyPaginator, statistic_update
+from .utils import save_file, MyPaginator, statistic_update, send_sms
 
 
 # Create your views here.
@@ -59,6 +59,25 @@ def check_code(request):
     im.save(buf, 'png')
     # 将内存中的图片数据返回给客户端，MIME类型为图片png
     return HttpResponse(buf.getvalue(), 'image/png')
+
+
+# 短信验证码
+def sms_check_code(request):
+    phone_number = request.POST.get('phone', '')
+
+    if not phone_number:
+        data = {'result': False}
+    else:
+        sms_code = '%d%d%d%d' % (random.randint(0, 9), random.randint(0, 9), random.randint(0, 9), random.randint(0, 9))
+        # if send_sms(sms_code):
+        if True:
+            print(sms_code)
+            request.session['sms_code'] = sms_code
+            data = {'result': True}
+        else:
+            data = {'result': False}
+
+    return JsonResponse(data)
 
 
 # 显示登录页
@@ -115,13 +134,16 @@ def logout(request):
 
 # 显示注册页面
 def register(request):
-    user_id = request.session.get('user_id', '')
-    if user_id != '':
-        return HttpResponseRedirect('/login')
+    # user_id = request.session.get('user_id', '')
+    # if user_id != '':
+    #     return HttpResponseRedirect('/login')
 
     msg = request.GET.get('msg', '')
+    cp = request.GET.get('cp', '')
 
-    context = {'msg': msg}
+    context = {'msg': msg,
+               'cp': cp,
+               }
 
     return render(request, 'register.html', context)
 
@@ -131,12 +153,16 @@ def register_handle(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
     re_password = request.POST.get('re_password')
+    phone_number = request.POST.get('phone')
 
-    code = request.POST.get('check_code').upper()
+    if User.objects.filter(phone=phone_number).exists():
+        msg = '手机号已经被注册'
+        return HttpResponseRedirect('/register?msg=%s' % msg)
 
-    session_code = request.session.get('check_code')
+    sms_code = request.POST.get('sms_code')
+    session_code = request.session.get('sms_code')
 
-    if code != session_code:
+    if sms_code != session_code:
         msg = '验证码错误'
         return HttpResponseRedirect('/register?msg=%s' % msg)
 
@@ -153,10 +179,47 @@ def register_handle(request):
     user_info.username = username
     user_info.password = hashlib.sha1(password.encode('utf8')).hexdigest()
     user_info.authority = 1
+    user_info.phone = phone_number
 
     user_info.save()
 
     msg = '注册成功，请登录'
+    return HttpResponseRedirect('/login?msg=%s' % msg)
+
+
+def change_password(request):
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    re_password = request.POST.get('re_password')
+    phone_number = request.POST.get('phone')
+
+    if not User.objects.filter(phone=phone_number).exists():
+        msg = '手机号不存在'
+        return HttpResponseRedirect('/register?msg=%s' % msg)
+
+    sms_code = request.POST.get('sms_code')
+    session_code = request.session.get('sms_code')
+
+    if sms_code != session_code:
+        msg = '验证码错误'
+        return HttpResponseRedirect('/register?msg=%s' % msg)
+
+    if password != re_password:
+        msg = '两次输入密码不一致'
+        return HttpResponseRedirect('/register?msg=%s' % msg)
+
+    user_list = User.objects.filter(username=username)
+
+    if not user_list:
+        msg = '账号不存在'
+        return HttpResponseRedirect('/register?msg=%s' % msg)
+
+    user_info = user_list[0]
+    user_info.password = hashlib.sha1(password.encode('utf8')).hexdigest()
+
+    user_info.save()
+
+    msg = '密码修改成功，请登录'
     return HttpResponseRedirect('/login?msg=%s' % msg)
 
 
@@ -183,13 +246,14 @@ def main(request):
 def enterprise(request):
     user_id = request.session.get('user_id', '')
     search_name = request.POST.get('search_name', '')
+    page_num = request.GET.get('page_num', 1)
 
     enterprise_list = Enterprise.objects.filter(user_id=user_id).filter(enterprise_name__contains=search_name)
     dept_list = Department.objects.all()
 
     # 分页
     mp = MyPaginator()
-    mp.paginate(enterprise_list, 10, 1)
+    mp.paginate(enterprise_list, 10, page_num)
 
     context = {'mp': mp,
                'search_name': search_name,
@@ -348,10 +412,11 @@ def is_enterprise_exist(request):
 @login_check
 def vehicle(request):
     user_id = request.session.get('user_id', '')
-    vehicle_number = request.POST.get('vehicle_number', '')
+    number = request.POST.get('vehicle_number', '')
     vehicle_status = int(request.POST.get('vehicle_status', 0))
+    page_num = request.GET.get('page_num', 1)
 
-    vehicle_list = Vehicle.objects.filter(vehicle_user_id=user_id).filter(vehicle_number__contains=vehicle_number)
+    vehicle_list = Vehicle.objects.filter(vehicle_user_id=user_id).filter(vehicle_number__contains=number)
     if vehicle_status != 0:
         vehicle_list = vehicle_list.filter(vehicle_status_id=vehicle_status)
     else:
@@ -359,11 +424,11 @@ def vehicle(request):
 
     # 分页
     mp = MyPaginator()
-    mp.paginate(vehicle_list, 10, 1)
+    mp.paginate(vehicle_list, 10, page_num)
 
     context = {'mp': mp,
-               'vehicle_number': vehicle_number,
-               'vehicle_status': vehicle_status
+               'number': number,
+               'vehicle_status': vehicle_status,
                }
 
     return render(request, 'vehicle.html', context)
@@ -450,11 +515,11 @@ def is_vehicle_exist(request):
 def station(request):
     user_id = request.session.get('user_id', '')
     search_name = request.POST.get('search_name', '')
+    page_num = request.GET.get('page_num', 1)
 
-    route_list = Route.objects.filter(route_user_id=user_id).filter(route_status=2).\
+    route_list = Route.objects.filter(route_user_id=user_id).filter(route_status=3).\
         filter(route_name__contains=search_name).values('route_name').annotate(num_station=Count('route_station'))
 
-    # area_list = Area.objects.all().order_by('id')
     area_list = Station.objects.filter(station_status=31).values('station_area').distinct()
 
     # 模态框显示控制
@@ -462,11 +527,11 @@ def station(request):
     display_mask = request.GET.get('display_mask', 'none')
     route_name = request.GET.get('route_name', '')
 
-    station_list = Route.objects.filter(route_name=route_name).filter(route_status__in=('1', '2'))
+    station_list = Route.objects.filter(route_name=route_name).filter(route_status=3).filter(route_user_id=user_id)
 
     # 分页
     mp = MyPaginator()
-    mp.paginate(route_list, 10, 1)
+    mp.paginate(route_list, 10, page_num)
 
     context = {'area_list': area_list,
                'display_add_route': display_add_route,
@@ -566,7 +631,7 @@ def station_add(request):
     station_id = int(request.GET.get('station_id', ''))
 
     is_station_exists = Route.objects.filter(route_name=route_name, route_user_id=user_id, route_station_id=station_id)\
-        .exists()
+        .filter(route_status__in=(1, 3)).exists()
 
     station_count = Route.objects.filter(route_name=route_name, route_user_id=user_id).count()
 
@@ -586,7 +651,6 @@ def station_add(request):
                   'station_direction': station_info.station_direction,
                   'station_name': station_info.station_name,
                   'route_id': route_info.id,
-                  'number': station_count + 1,
                   }
     else:
         result = {'result': False}
@@ -597,11 +661,9 @@ def station_add(request):
 # 删除站点
 def station_delete(request):
     route_id = request.GET.get('route_id', '')
-    route_name = ''
 
     try:
         route_info = Route.objects.get(id=route_id)
-        route_name = route_info.route_name
 
         if route_info.route_status == 1:
             route_info.delete()
@@ -610,26 +672,25 @@ def station_delete(request):
             route_info.save()
         else:
             pass
+
+        result = True
     except Exception as e:
         print(e)
-
-    display_add_route = 'block'
-    display_mask = 'block'
-
-    url = '/station?display_add_route=%s&display_mask=%s&route_name=%s' % (display_add_route, display_mask, route_name)
-
-    return HttpResponseRedirect(url)
+        result = False
+    finally:
+        return JsonResponse({'result': result})
 
 
 # 取消添加路线
 def station_cancel(request):
-    try:
-        # 删除status是1的
-        route_list = Route.objects.filter(route_status=1)
-        route_list.delete()
+    user_id = request.session.get('user_id', '')
 
-        # status是3的更新为2
-        Route.objects.filter(route_status=3).update(route_status=2)
+    try:
+        # status是2的更新为3
+        Route.objects.filter(route_status=2).filter(route_user_id=user_id).update(route_status=3)
+
+        # 删除status是1的
+        Route.objects.filter(route_status=1).filter(route_user_id=user_id).delete()
     except Exception as e:
         print(e)
 
@@ -638,8 +699,8 @@ def station_cancel(request):
 
 # 保存添加路线
 def station_save(request):
-    Route.objects.filter(route_status=1).update(route_status=2)
-    Route.objects.filter(route_status=3).delete()
+    Route.objects.filter(route_status=1).update(route_status=3)
+    Route.objects.filter(route_status=2).delete()
 
     return HttpResponseRedirect('/station')
 
