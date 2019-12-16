@@ -122,27 +122,29 @@ def send_sms(phone_number, sms_code):
 
 # 查询车辆信息
 def get_vehicle_info(vehicle_number, vehicle_type='01'):
-    url = 'http://111.160.75.93:20700/llt-rpc/rest/car?'
+    url = 'http://111.160.75.93:20700/llt-rpc/rest/car'
 
     # 请求头
     headers = {'app-name': 'bcz',
                'is-test': 'true',
                }
 
-    # 请求体
-    data = {
+    # 附加参数
+    params = {
         "hphm": vehicle_number,
         "hpzl": vehicle_type,
     }
 
-    response_data = requests.get(url, headers=headers, data=data)
+    response_data = requests.get(url, params=params, headers=headers)
 
-    return json.loads(response_data.content.decode())
+    if len(response_data.content):
+        return json.loads(response_data.content.decode())
+    else:
+        return None
 
 
 # 校验车辆信息
 def check_vehicle(vehicle_number, engine_code, vehicle_owner):
-    vehicle_info = get_vehicle_info(vehicle_number)
 
     # 信息不全不通过
     if len(vehicle_number) * len(engine_code) * len(vehicle_owner) == 0:
@@ -152,8 +154,10 @@ def check_vehicle(vehicle_number, engine_code, vehicle_owner):
     elif vehicle_number[0] != '津':
         return True
 
+    vehicle_info = get_vehicle_info(vehicle_number)
+
     # 查询结果为空不通过
-    elif not vehicle_info:
+    if not vehicle_info:
         return False
 
     # 发动机号不一致不通过
@@ -168,6 +172,19 @@ def check_vehicle(vehicle_number, engine_code, vehicle_owner):
         return True
 
 
+# 测试
+def my_test():
+    vehicle_number = '津A12345'
+    engine_code = 'UJC1120951'
+    vehicle_owner = '李锡明'
+
+    result = check_vehicle(vehicle_number, engine_code, vehicle_owner)
+
+    print(result)
+
+
+if __name__ == '__main__':
+    my_test()
 
 
 

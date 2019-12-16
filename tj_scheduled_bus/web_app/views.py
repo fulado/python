@@ -12,7 +12,7 @@ from PIL import Image, ImageDraw, ImageFont
 from .models import User, Enterprise, Station, Department, Route, Vehicle, Permission
 from .decorator import login_check
 from tj_scheduled_bus import settings
-from .utils import save_file, MyPaginator, statistic_update, send_sms
+from .utils import save_file, MyPaginator, statistic_update, send_sms, check_vehicle
 
 
 # Create your views here.
@@ -69,8 +69,8 @@ def sms_check_code(request):
         data = {'result': False}
     else:
         sms_code = '%d%d%d%d' % (random.randint(0, 9), random.randint(0, 9), random.randint(0, 9), random.randint(0, 9))
-        # if send_sms(sms_code):
-        if True:
+        if send_sms(sms_code):
+        # if True:
             print(sms_code)
             request.session['sms_code'] = sms_code
             data = {'result': True}
@@ -502,10 +502,18 @@ def vehicle_delete(request):
 
 
 # 车辆是否已经存在
-def is_vehicle_exist(request):
+def can_add_vehicle(request):
     vehicle_number = request.GET.get('number', '')
+    engine_code = request.GET.get('engine', '')
+    vehicle_owner = request.GET.get('owner', '')
+    user_id = request.session.get('user_id', '')
 
-    result = Vehicle.objects.filter(vehicle_number=vehicle_number).exists()
+    if Vehicle.objects.filter(vehicle_number=vehicle_number,vehicle_user_id=user_id).exists():
+        result = '1'    # 车辆已经存在
+    elif not check_vehicle(vehicle_number, engine_code, vehicle_owner):
+        result = '2'
+    else:
+        result = '0'
 
     return JsonResponse({'result': result})
 

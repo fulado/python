@@ -476,9 +476,12 @@
                 alert('请选择正确的车辆注册日期');
             }
             else {
-                $.get('/is_vehicle_exist', {'number': number}, function(data) {
-                    if (data.result) {
+                $.get('/can_add_vehicle', {'number': number, 'engine': engine, 'owner': owner}, function(data) {
+                    if (data.result == '1') {
                         alert('当前号牌车辆已录入');
+                    }
+                    else if (data.result == '2') {
+                        alert('车辆信息不正确');
                     }
                     else if (confirm('是否保存新增车辆信息？')) {
                         $('.add-vehicle form').submit();

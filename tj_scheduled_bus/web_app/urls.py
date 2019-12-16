@@ -34,7 +34,7 @@ urlpatterns = [
     url(r'^vehicle_modify/?', views.vehicle_modify),
     url(r'^vehicle_delete/?', views.vehicle_delete),
     url(r'^vehicle_submit/?', views.vehicle_submit),
-    url(r'^is_vehicle_exist/?', views.is_vehicle_exist),
+    url(r'^can_add_vehicle/?', views.can_add_vehicle),
     url(r'^vehicle/?', views.vehicle),
 
     # 企业通行证管理
