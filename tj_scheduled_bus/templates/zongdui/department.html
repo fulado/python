@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<!-- saved from url=(0056)http://yjhctxz.ethane.com.cn:10245/traffic/company/index -->
+<html><head lang="en"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <!-- 目前仅限360急速浏览 webkit:急速  ie-comp:ie兼容模式   ie-stand: ie标准模式 -->
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/initial.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/account_number.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/modle.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/paging.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/darktooltip.css"/>
+
+    <style type="text/css">
+        .pop-up form div input{
+            display: inline-block;
+            width: 260px;
+        }
+        .my-modal-footer .save {
+            background-color: #25B4B2;
+        }
+        .my-modal-title{
+            text-align: center;
+            font-size: 20px;
+        }
+        .pop-up form div select{
+            width: 360px;
+            height: 32px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            border: solid 1px #eeeeee;
+            text-indent: 0.5em;
+            outline: none;
+            width: 260px;
+        }
+
+        .my-modal-footer .btn{
+            margin-left: 0px;
+        }
+
+        .my-modal-footer .save {
+            background-color: #ffffff;
+            border: solid 1px #189694;
+            color: #25B4B2;
+        }
+
+        .my-modal-footer .save:hover{
+            background: #139b99;
+            color: #fff;
+        }
+    </style>
+    <title></title>
+</head>
+<body>
+<div class="table_wrapper">
+    <div class="table_head">
+        <span>支队信息</span>
+    </div>
+    <div class="table_container">
+        <div class="search_input">
+            <label for="ss">支队搜索</label>
+            <form action="/enterprise" method="POST" style="display: inline-block;">
+                <input type="text" placeholder="输入支队名称" id="ss" name="search_name" value="{{ search_name }}">
+            </form>
+            <span class="find_btn" id="find_btn">查询</span>
+{#            <span class="add_company" id="add">新增企业</span>#}
+        </div>
+        <!--显示查询结果-->
+        <table class="table_box" id="table_box">
+            <thead>
+                <tr>
+                    <td style="width: 200px">序号</td>
+                    <td>支队名称</td>
+                    <td>地址</td>
+                    <td>联系方式</td>
+                    <td>操作</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dept in mp.object_list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td title="{{ dept.dept_name }}">{{ dept.dept_name }}</td>
+                    <td title="{{ dept.dept_address }}">{{ dept.dept_address }}</td>
+                    <td title="{{ dept.dept_phone }}">{{ dept.dept_phone }}</td>
+                    <td>
+                        <button type="button" class="see" style="margin-right: 5px;" onclick="setUserInfo(
+                        '{{ dept.dept_name }}', '{{ dept.dept_address }}',
+                        '{{ dept.dept_phone }}', '{{ enterprise.id }}', )">编辑</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!--分页-->
+    <div id="pageToolbar">
+        <div id="Paging_009071537570730115" class="ui-paging-container">
+            <ul>
+                <a href="/enterprise?page_num=1&search_name={{ search_name }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
+                <a href="/enterprise?page_num={{ mp.current_num|add:-1 }}&search_name={{ search_name }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
+                {% for num in mp.page_range %}
+                    {% if num == mp.current_num %}
+                    <a href="/enterprise?page_num={{ num }}&search_name={{ search_name }}"><li class="ui-pager focus">{{ num }}</li></a>
+                    {% else %}
+                    <a href="/enterprise?page_num={{ num }}&search_name={{ search_name }}"><li class="ui-pager">{{ num }}</li></a>
+                    {% endif %}
+                {% endfor %}
+                <a href="/enterprise?page_num={{ mp.current_num|add:1 }}&search_name={{ search_name }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
+                <a href="/enterprise?page_num={{ mp.total_pages }}&search_name={{ search_name }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
+                <li class="ui-paging-toolbar">
+                    <form action="/enterprise" method="GET">
+                        <input type="text" class="ui-paging-count" style="font-size: 12px;" name="page_num" value="{{ mp.current_num }}" />
+                        <input type="hidden" name="search_name" value="{{ search_name }}" />
+                        <span>/&nbsp;{{ mp.total_pages }}</span>
+                        <a href="javascript:jump()">跳转</a>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!--模态框-->
+
+<!-- 编辑支队信息 -->
+<div class="pop-up modify-enterprise" style="display: none;height: 760px;">
+    <div class="my-modal-title">
+        <p>编辑支队</p>
+    </div>
+    <div class="my-modal-body" style="margin-top: 20px;">
+        <form action="#" method="POST">
+            {%csrf_token%}
+            <p style="margin: auto;font-size: 16px;text-align: center;margin-bottom: 10px;">支队信息</p>
+            <div class="dept-name">
+                <label for="corporation">支队名称</label>
+                <input type="text" placeholder="输入支队名称" id="corporation" name="dept_name" data-nameid="109">
+            </div>
+            <div class="dept-address">
+                <label for="ePrisename">支队地址</label>
+                <input type="text" placeholder="支队地址" id="corporation" name="dept_address" data-nameid="109">
+            </div>
+            <div class="dept-phone">
+                <label for="ePrisename">联系方式</label>
+                <input type="text" placeholder="输入联系方式" id="ePrisename" name="dept_phone" data-inputid="77">
+            </div>
+            <input type="hidden" name="enterprise_id" />
+        </form>
+    </div>
+    <div class="my-modal-footer">
+        <div class="clickbtn" style="margin: 5px;width: 460px;text-align: center;">
+            <button type="button" class="btn save">保存</button>
+            <button type="button" class="btn del">删除</button>
+            <button type="button" class="btn cancle" style="margin: 0px;">取消</button>
+        </div>
+    </div>
+</div>
+<div class="mask" style="display: none;"></div>
+<input type="hidden" id="pageNum" value="1">
+
+<script type="text/javascript" src="/static/js/jquery-3.1.0.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="/static/js/through.js"></script>
+<script type="text/javascript" src="/static/js/query.js"></script>
+<script type="text/javascript" src="/static/js/paging.js"></script>
+<script type="text/javascript" src="/static/js/md5.js"></script>
+<script type="text/javascript" src="/static/js/jquery.darktooltip.js"></script>
+
+<script type="text/javascript">
+
+    $(function() {
+
+        // 显示新增企业模态框
+        $('.search_input .add_company').click(function(){
+            $('.add-enterprise').show();
+            $('.mask').show();
+        });
+
+        // 隐藏新增企业模态框
+        $('.add-enterprise .cancle').click(function() {
+            if (confirm('是否取消新增？')) {
+                $('.add-enterprise').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 保存新增企业
+        $('.add-enterprise .save').click(function() {
+            let enterprise_type = $('.add-enterprise .enterprise_type select').val();
+            let enterprise_name = $('.add-enterprise .enterprise_name input').val();
+            let enterprise_owner = $('.add-enterprise .enterprise_owner input').val();
+            let enterprise_code = $('.add-enterprise .enterprise_code input').val();
+            let contact_person = $('.add-enterprise .contact_person input').val();
+            let phone = $('.add-enterprise .phone input').val();
+            let business_license = $('.add-enterprise .business_license input').val().length;
+            let id_card_front = $('.add-enterprise .id_card_front input').val().length;
+            let id_card_back = $('.add-enterprise .id_card_back input').val().length;
+            let rent_contract = $('.add-enterprise .rent_contract input').val().length;
+            let dept_id = $('.add-enterprise .dept_id select').val();
+
+            if (enterprise_name == '') {
+                alert('请填写企业名称');
+            }
+            else if (enterprise_owner == '') {
+                alert('请填写企业所有人');
+            }
+            else if (enterprise_code == '' && enterprise_type == 1) {
+                alert('请填写统一社会信用代码');
+            }
+            else if (contact_person == '') {
+                alert('请填写联系人');
+            }
+            else if (phone == '') {
+                alert('请填写联系方式');
+            }
+            else if (business_license <= 0) {
+                alert('请上传营业执照照片');
+            }
+            else if (id_card_front <= 0 && enterprise_type == 1) {
+                alert('请上传法人身份证正面照片');
+            }
+            else if (id_card_back <= 0 && enterprise_type == 1) {
+                alert('请上传法人身份证反面照片');
+            }
+            else if (rent_contract <= 0 && enterprise_type == 2) {
+                alert('请上传租赁合同照片');
+            }
+            else if (dept_id == '0') {
+                alert('请选择面签支队');
+            }
+            else {
+                $.get('/is_enterprise_exist', {'enterprise_type': enterprise_type}, function(data) {
+                    if (data.result) {
+                        alert('只能添加一个自有车辆企业');
+                    }
+                    else if (confirm('是否保存企业信息？')) {
+                        $('.add-enterprise form').submit();
+                        $('.add-enterprise').hide();
+                        $('.mask').hide();
+                    }
+                });
+            }
+        });
+
+        // 隐藏编辑企业模态框
+        $('.modify-enterprise .cancle').click(function() {
+            if (confirm('是否取消编辑？')) {
+                $('.modify-enterprise').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 保存编辑企业信息
+        $('.modify-enterprise .save').click(function() {
+            let enterprise_type = $('.modify-enterprise .enterprise_type select').val();
+            let enterprise_name = $('.modify-enterprise .enterprise_name input').val();
+            let enterprise_owner = $('.modify-enterprise .enterprise_owner input').val();
+            let enterprise_code = $('.modify-enterprise .enterprise_code input').val();
+            let contact_person = $('.modify-enterprise .contact_person input').val();
+            let phone = $('.modify-enterprise .phone input').val();
+
+            if (enterprise_name == '') {
+                alert('请填写企业名称');
+            }
+            else if (enterprise_owner == '') {
+                alert('请填写企业所有人');
+            }
+            else if (enterprise_code == '' && enterprise_type == 1) {
+                alert('请填写统一社会信用代码');
+            }
+            else if (contact_person == '') {
+                alert('请填写联系人');
+            }
+            else if (phone == '') {
+                alert('请填写联系方式');
+            }
+            else if (confirm('是否保存企业信息？')) {
+                $('.modify-enterprise form').prop('action', '/enterprise_modify');
+                $('.modify-enterprise form').submit();
+                $('.modify-enterprise').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 编辑企业信息表单提交: 删除
+        $('.modify-enterprise .del').click(function() {
+            if (confirm('是否删除该企业？')) {
+                $('.modify-enterprise form').prop('action', '/enterprise_delete');
+                $('.modify-enterprise form').submit();
+                $('.modify-enterprise').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 提交企业查询表单
+        $('#find_btn').click(function() {
+            $('.search_input form').submit();
+        });
+
+    });
+
+    // 填充编辑企业模态框信息
+    function setUserInfo(enterprise_name, enterprise_owner, enterprise_code, enterprise_type, contact_person,
+                    phone, id, enterprise_status) {
+        $('.modify-enterprise').show();
+        $('.mask').show();
+
+        showRentInfo(enterprise_type);
+
+        $('.modify-enterprise .enterprise_name input').val(enterprise_name);     // 企业名称
+        $('.modify-enterprise .enterprise_owner input').val(enterprise_owner);       // 法人
+        $('.modify-enterprise .enterprise_code input').val(enterprise_code);       // 组织结构代码
+        $('.modify-enterprise .contact_person input').val(contact_person);               // 联系人
+        $('.modify-enterprise .phone input').val(phone);       // 联系方式
+
+        $('.modify-enterprise select').val(enterprise_type);                      // 权限
+        $('.modify-enterprise input').last().val(id);                       // id
+
+        if (enterprise_status == 3) {
+            $('.modify-enterprise .my-modal-footer .save').hide();
+        }
+    }
+
+
+
+    // 跳转到指定页面
+    function jump() {
+        $('#pageToolbar form').submit();
+    }
+
+    // 显示/隐藏租赁信息
+    function showRentInfo(isRent) {
+        if (isRent == 42) {
+            $('.rent_contract').show();
+            $('.enterprise_code').hide();
+            $('.id_card_front').hide();
+            $('.id_card_back').hide();
+        } else {
+            $('.rent_contract').hide();
+
+            $('.enterprise_code').show();
+            $('.id_card_front').show();
+            $('.id_card_back').show();
+        }
+    }
+
+    //判断照片大小
+    function getPhotoSize(obj){
+        //文件type
+        let photoExt = obj.value.substr(obj.value.lastIndexOf(".")).toLowerCase();
+        if(!(photoExt=='.jpg'||photoExt=='.png'||photoExt=='.jpeg')){
+            alert("文件格式不符合要求！");
+            obj.value='';
+            return false;
+        }
+        let fileSize = 0;
+        let isIE = /msie/i.test(navigator.userAgent) && !window.opera;
+        if (isIE && !obj.files) {
+            let filePath = obj.value;
+            let fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+            let file = fileSystem.GetFile (filePath);
+            fileSize = file.Size;
+        }
+        else{
+            fileSize = obj.files[0].size;
+        }
+        //文件大小
+        fileSize=Math.round(fileSize/1024*100)/100;
+        if(fileSize>=2048){
+            alert("图片过大，超过2M,请选择较小的图片");
+            obj.value='';
+            return false;
+        }
+        {#imgChange();#}
+    }
+</script>
+
+</body></html>

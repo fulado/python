@@ -399,11 +399,12 @@ def enterprise_submit(request):
 
 # 判断企业是否存在
 def is_enterprise_exist(request):
+    user_id = request.session.get('user_id', '')
     enterprise_name = request.GET.get('enterprise_name')
     enterprise_code = request.GET.get('enterprise_code')
 
-    is_exist = Enterprise.objects.filter(enterprise_name=enterprise_name).exists() or \
-               Enterprise.objects.filter(enterprise_code=enterprise_code).exists()
+    is_exist = Enterprise.objects.filter(enterprise_name=enterprise_name, user_id=user_id).exists() or \
+               Enterprise.objects.filter(enterprise_code=enterprise_code, user_id=user_id).exists()
 
     return JsonResponse({'is_exist': is_exist})
 
@@ -501,7 +502,7 @@ def vehicle_delete(request):
     return HttpResponseRedirect('/vehicle')
 
 
-# 车辆是否已经存在
+# 车辆是否可以添加
 def can_add_vehicle(request):
     vehicle_number = request.GET.get('number', '')
     engine_code = request.GET.get('engine', '')
