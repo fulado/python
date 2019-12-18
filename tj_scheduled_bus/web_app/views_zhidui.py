@@ -4,7 +4,7 @@
 from django.shortcuts import render, HttpResponseRedirect
 
 
-from .models import Enterprise, Vehicle, Statistic
+from .models import Enterprise, Vehicle, Statistic, Department
 from .decorator import login_check
 from .utils import MyPaginator
 
@@ -111,6 +111,38 @@ def permission(request):
 
     return render(request, 'zhidui/permit.html', context)
 
+
+# 显示支队信息
+@login_check
+def department(request):
+    user_id = request.session.get('user_id', '')
+
+    dept_list = Department.objects.filter(user_id=user_id)
+
+    # 分页
+    mp = MyPaginator()
+    mp.paginate(dept_list, 10, 1)
+
+    context = {'mp': mp,
+               }
+
+    return render(request, 'zhidui/department.html', context)
+
+
+# 保存支队信息
+def department_save(request):
+    user_id = request.session.get('user_id', '')
+
+    dept_list = Department.objects.filter(user_id=user_id)
+
+    # 分页
+    mp = MyPaginator()
+    mp.paginate(dept_list, 10, 1)
+
+    context = {'mp': mp,
+               }
+
+    return render(request, 'zhidui/department.html', context)
 
 
 

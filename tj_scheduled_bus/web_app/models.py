@@ -14,13 +14,6 @@ class Status(models.Model):
     status_content = models.CharField(max_length=50, null=True, blank=True)     # 状态描述
 
 
-# 支队表
-class Department(models.Model):
-    dept_name = models.CharField(max_length=50, null=True, blank=True)     # 支队名称
-    dept_address = models.CharField(max_length=200, null=True, blank=True)  # 支队名称
-    dept_phone = models.CharField(max_length=50, null=True, blank=True)  # 支队名称
-
-
 # 用户表
 class User(models.Model):
     username = models.CharField(max_length=50, unique=True)                     # 帐号
@@ -28,6 +21,14 @@ class User(models.Model):
     authority = models.IntegerField(default=1, null=True, blank=True)           # 权限，1-企业，2-支队，3-交管局
     phone = models.CharField(max_length=20, null=True, blank=True)  # 手机号码
     is_delete = models.BooleanField(default=False)                              # 是否删除
+
+
+# 支队表
+class Department(models.Model):
+    dept_name = models.CharField(max_length=50, null=True, blank=True)     # 支队名称
+    dept_address = models.CharField(max_length=200, null=True, blank=True)  # 支队名称
+    dept_phone = models.CharField(max_length=50, null=True, blank=True)  # 支队名称
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)  # 支队所属用户
 
 
 # 企业信息
