@@ -113,20 +113,20 @@
 <body>
 <div class="table_wrapper">
     <div class="table_head">
-        <span>车辆列表</span>
+        <span>车辆标记</span>
     </div>
     <div class="table_container">
         <div class="search_input">
             <label for="ss">车辆搜索</label>
             <form action="/zhidui/vehicle" method="GET" style="display: inline-block;">
                 <input type="text" placeholder="输入车牌号码" id="ss" name="number" value="{{ number }}" />
-                <select name="status">
-                    <option value="0" {% if status == 0 %}selected{% endif %}>全部车辆</option>
-                    <option value="1" {% if status == 1 %}selected{% endif %}>未提交车辆</option>
-                    <option value="2" {% if status == 2 %}selected{% endif %}>待审核车辆</option>
-                    <option value="4" {% if status == 4 %}selected{% endif %}>已通过车辆</option>
-                    <option value="5" {% if status == 5 %}selected{% endif %}>未通过车辆</option>
-                </select>
+{#                <select name="status">#}
+{#                    <option value="0" {% if status == 0 %}selected{% endif %}>全部车辆</option>#}
+{#                    <option value="1" {% if status == 1 %}selected{% endif %}>未提交车辆</option>#}
+{#                    <option value="2" {% if status == 2 %}selected{% endif %}>待审核车辆</option>#}
+{#                    <option value="4" {% if status == 4 %}selected{% endif %}>已通过车辆</option>#}
+{#                    <option value="5" {% if status == 5 %}selected{% endif %}>未通过车辆</option>#}
+{#                </select>#}
             </form>
             <span class="find_btn">查询</span>
         </div>
@@ -161,10 +161,6 @@
                         '{{ vehicle.vehicle_type_id }}', '{{ vehicle.vehicle_number|linebreaksbr }}', '{{ vehicle.engine_code|linebreaksbr }}',
                         '{{ vehicle.vehicle_owner|linebreaksbr }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
                         '{{ vehicle.vehicle_belong_id }}', '{{ vehicle.id }}' , '{{ vehicle.vehicle_status_id }}')">查看</button>
-                        {% if vehicle.vehicle_status_id == 3 or vehicle.vehicle_status_id == 5 or vehicle.vehicle_status_id == 6 %}
-                        <button type="button" class="see mark-vehicle-info" style="margin-right: 5px;" onclick="setMarkInfo(
-                        '{{ vehicle.vehicle_number|linebreaksbr }}', '{{ vehicle.id }}')">标记</button>
-                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
@@ -278,62 +274,78 @@
     </div>
 </div>
 
-<!-- 标记车辆 -->
-<div class="pop-up mark-vehicle my-modal-dialog" style="height: 550px;">
+<!-- 未通过原因 -->
+<div class="pop-up refuse-content" style="display: none;">
     <div class="my-modal-title">
-        <p>标记车辆</p>
+        <p>原因</p>
     </div>
     <div class="my-modal-body">
-        <form action="/zhidui/vehicle_mark" method="POST">
-            <table>
-                <tr>
-                    <td colspan="2"><p style="padding: 20px;">车辆信息</p></td>
-                </tr>
-                <tr>
-                    <td><span>号牌号码</span></td>
-                    <td>
-                        <input type="text" placeholder="请输入号牌号码" name="vehicle_number" disabled>
-                    </td>
-                </tr>
-                <tr>
-                    <td><span>标记原因</span></td>
-                    <td>
-                        <select name="mark_reason" placeholder="请选择标记原因" onchange="showIllegalInfo(this.value)">
-                            <option value="61">违规标记</option>
-                            <option value="62">其它原因</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><span>违规时间</span></td>
-                    <td>
-                        <input type="text" class="datetime-picker" placeholder="请选择违规时间" name="mark_time">
-                    </td>
-                </tr>
-                <tr>
-                    <td><span>违规地点</span></td>
-                    <td>
-                        <input type="text" placeholder="请输入违规地点" name="mark_position">
-                    </td>
-                </tr>
-                <tr>
-                    <td><span>违规情况</span></td>
-                    <td>
-                        <textarea name="mark_content" style="resize:none; border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:200px;height:100px"></textarea>
-                    </td>
-                </tr>
-            </table>
-            <input type="hidden" name="vehicle_id">
-            <div class="my-modal-footer" >
-                <div class="clickbtn" style="margin: 5px;width: 460px;text-align: center; margin-top: 20px;">
-                    <button type="submit" class="btn save">保存</button>
-                    <button type="button" class="btn cancle" style="margin: 0px;">取消</button>
-                </div>
+        <table>
+            <tr>
+                <td><p style="padding: 20px;">填写原因</p></td>
+            </tr>
+            <tr>
+                <td>
+                    <textarea name="" style="resize:none; border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:300px;height:100px"></textarea>
+                </td>
+            </tr>
+        </table>
+        <div class="my-modal-footer" >
+            <div class="clickbtn" style="width: 440px; text-align: center;">
+                <button type="button" class="btn save">确定</button>
+                <button type="button" class="btn del" style="margin: 0px;">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--模态框-->
+<div class="container">
+    <div class="pop-up" style="width: 560px;height: 268px;margin: 15% auto;display: none">
+        <form>
+            <div class="ePrisename" style="height: 200px;">
+                <label for="reason" style="vertical-align: top;width: 100px">填写原因</label>
+                <textarea name="" id="reason" style="resize:none;border-radius:4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:400px;height:150px"></textarea>
+            </div>
+
+            <div class="clickbtn" style="margin: 0 auto;width: 430px">
+                <div class="btn save" id="save">提交</div>
+                <div class="btn del" id="del">关闭</div>
             </div>
         </form>
     </div>
 </div>
 
+<!--上传文件模态框-->
+<div class="pop-up1" style="width: 560px;height: 268px;display: none;">
+    <form action="/excel_import" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <div class="selFile">
+            <label for="reason" style="">选择文件</label>
+            <input type="file" name="excel_file" style="outline: none;cursor: pointer; width:300px; margin-left: 100px;" accept="application/vnd.ms-excel"/>
+        </div>
+
+        <div class="btndiv" style="margin-top: 50px;">
+            <button type="button" class="btn save" style="line-height: 27px;" >导入</button>
+            <!--<input type="submit" class="btn" style="line-height: 27px;" value="导入" />-->
+            <div class="btn" id="close" style="line-height: 27px;">关闭</div>
+        </div>
+    </form>
+</div>
+
+<div class="pop-up2" style="width: 560px;height: 268px;display: none;">
+    <form id="xmlform" enctype="multipart/form-data">
+        <div class="selFile" style="">
+            <label for="reason" style="">选择文件</label>
+            <input type="file" name="file" style="outline: none;cursor: pointer" />
+        </div>
+
+        <div class="btndiv" style="">
+            <div class="btn" id="outxmls">提交</div>
+            <div class="btn" id="closexml">关闭</div>
+        </div>
+    </form>
+</div>
 
 <div class="mask" style="display: none"></div>
 </body>
@@ -355,18 +367,6 @@
     var re_15 = /^[\W][A-Z][A-Z0-9]{4}$/
 
     $(function() {
-        // 隐藏标记车辆模态框
-        $('.mark-vehicle .cancle').click(function() {
-            $('.mark-vehicle').hide();
-            $('.mask').hide();
-        });
-
-        // 显示标记车辆信息模态框
-        $('.table_box .mark-vehicle-info').click(function() {
-            $('.mark-vehicle').show();
-            $('.mask').show();
-        });
-
         // 隐藏审核车辆模态框
         $('.modify-vehicle .cancle').click(function() {
             $('.modify-vehicle').hide();
@@ -479,29 +479,88 @@
         }
     }
 
-    // 填充编辑车辆模态框信息
-    function setMarkInfo(vehicle_number, vehicle_id) {
-        $('.mark-vehicle input').eq(0).val(vehicle_number.replace("<br />",""));              // 号牌号码
-        $('.mark-vehicle input').last().val(vehicle_id);     // 车辆id
-
-        $('.my-modal-footer button').show();
-    }
-
     // 跳转到指定页面
     function jump() {
         $('#pageToolbar form').submit();
     }
 
-    // 显示/隐藏违规时间地点信息
-    function showIllegalInfo(isIllegal) {
-        if (isIllegal == 61) {
-            $('.mark-vehicle tr').eq(3).show();
-            $('.mark-vehicle tr').eq(4).show();
-        } else {
-            $('.mark-vehicle tr').eq(4).hide();
-            $('.mark-vehicle tr').eq(3).hide();
-        }
+    // 提交车辆, 需要判断是否已经达到上限, 并判断车辆信息是否填写完整, 挂车(15)可不填写发动机型号
+    function submit_vehicle(user_id, vehicle_id, vehicle_type, number, engine, vehicle_model, register_date, route) {
+        // 判断是否已经到达提交上限
+        $.get('/can_submit_vehicle', {'user_id': user_id}, function(data) {
+            if (!data.allow_submit) {
+                alert('每月提交申请最后期限为25日, 无法提交申请');
+            }
+            else if (!(vehicle_type == '1' || vehicle_type == '2' || vehicle_type == '15')) {
+                alert('车辆类型不正确, 请修改后提交');
+            }
+            else if (!data.result && vehicle_type == '1') {
+                alert('已经到达通行证申请上限，大型车辆不能提交申请');
+            }
+            else if (number.replace(/\s+/g,"").length == 0) {
+                alert('号牌号码不正确, 请修改后提交');
+            }
+            else if (vehicle_type != 15 && !re_01.test(number.replace(/\s+/g,""))) {
+                alert('车辆类型或号牌号码不正确, 请修改后提交');
+            }
+            else if (vehicle_type == 15 && !re_15.test(number.replace(/\s+/g,""))) {
+                alert('车辆类型或号牌号码不正确, 请修改后提交');
+            }
+            else if (vehicle_type != 15 && engine.replace(/\s+/g,"").length == 0) {
+                alert('发动机型号不正确, 请修改后提交');
+            }
+            else if (vehicle_model.replace(/\s+/g,"").length == 0) {
+                alert('车辆型号不正确, 请修改后提交');
+            }
+            else if (register_date.replace(/\s+/g,"").length == 0) {
+                alert('车辆注册日期不正确, 请修改后提交');
+            }
+            else if (route.replace(/\s+/g,"").length == 0) {
+                alert('行驶路线不正确, 请修改后提交');
+            }
+            else {
+                window.location.href = "/vehicle_submit?vehicle_id=" + vehicle_id;
+            }
+        });;
     }
 
+    // 提交全部车辆, 判断是否到达上限, 如到达上限, 则仅提交部分车辆, 并给出提示
+    function submit_all(user_id) {
+        // 判断是否可以提交全部车辆
+        $.get('/can_submit_all', {'user_id': user_id}, function(data) {
+            could_submit = true;
+            if (data.result) {
+                if (data.error_num > 0) {
+                     alert('本次提交车辆'+ data.vehicle_num +'辆，因信息不正确无法提交车辆'+ data.error_num +'辆');
+                }
+                else {
+                    alert('已提交全部车辆');
+                }
+            }
+            else {
+                if (data.vehicle_num == -1) {
+                    alert('每月提交申请最后期限为25日, 无法提交申请');
+                    could_submit = false;
+                }
+                else if (data.error_num > 0) {
+                    alert('大型车辆超出允许提交的上限，本次共提交车辆'+ data.vehicle_num +'辆，因超限未提交大型车辆'+ data.ignore_num +'辆，因信息不正确无法提交车辆' + data.error_num +'辆');
+                }
+                else {
+                    alert('大型车辆超出允许提交的上限，本次共提交车辆'+ data.vehicle_num +'辆，因超限未提交大型车辆'+ data.ignore_num +'辆');
+                }
+            }
+
+            if (could_submit) {
+                window.location.href = "/vehicle_submit_all";
+            }
+        });
+    }
+
+    // 删除本单位全部车辆
+    function clear_all(user_id) {
+        if (confirm('是否删除全部车辆信息？')) {
+            window.location.href = "/clear_all?user_id=" + user_id;
+        }
+    }
 </script>
 </html>

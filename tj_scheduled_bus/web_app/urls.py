@@ -11,8 +11,10 @@ urlpatterns = [
     url(r'^zhidui/enterprise/?', views_zhidui.enterprise),
     url(r'^zhidui/vehicle_refuse/?', views_zhidui.vehicle_refuse),
     url(r'^zhidui/vehicle_pass/?', views_zhidui.vehicle_pass),
+    url(r'^zhidui/vehicle_mark/?', views_zhidui.vehicle_mark),
     url(r'^zhidui/vehicle/?', views_zhidui.vehicle),
     url(r'^zhidui/permission/?', views_zhidui.permission),
+    url(r'^zhidui/department_modify/?', views_zhidui.department_modify),
     url(r'^zhidui/department/?', views_zhidui.department),
 
     # 总队

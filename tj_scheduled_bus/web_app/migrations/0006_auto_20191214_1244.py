@@ -22,5 +22,21 @@ class Migration(migrations.Migration):
             name='phone',
             field=models.CharField(blank=True, max_length=20, null=True),
         ),
-
+        migrations.CreateModel(
+            name='Department',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('dept_name', models.CharField(blank=True, max_length=50, null=True)),
+                ('dept_address', models.CharField(blank=True, max_length=200, null=True)),
+                ('dept_phone', models.CharField(blank=True, max_length=50, null=True)),
+                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                           to='web_app.User')),
+            ],
+        ),
+        migrations.AddField(
+            model_name='enterprise',
+            name='dept',
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                    to='web_app.Department'),
+        ),
     ]

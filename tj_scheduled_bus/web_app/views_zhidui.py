@@ -4,7 +4,7 @@
 from django.shortcuts import render, HttpResponseRedirect
 
 
-from .models import Enterprise, Vehicle, Statistic, Department
+from .models import Enterprise, Vehicle, Statistic, Department, Mark
 from .decorator import login_check
 from .utils import MyPaginator
 
@@ -94,6 +94,41 @@ def vehicle_refuse(request):
     return HttpResponseRedirect('/zhidui/vehicle/')
 
 
+# 车辆标记
+def vehicle_mark(request):
+    user_id = request.session.get('user_id', '')
+    dept_id = Department.objects.get(user_id=user_id).id
+
+    vehicle_id = request.POST.get('vehicle_id', '')
+    mark_time = request.POST.get('mark_time', '')
+    mark_position = request.POST.get('mark_position', '')
+    mark_reason = int(request.POST.get('mark_reason', 61))
+    mark_content = request.POST.get('mark_content', '')
+
+    mark_info = Mark()
+
+    mark_info.mark_reason_id = mark_reason
+    mark_info.mark_content = mark_content
+    mark_info.vehicle_id = vehicle_id
+    mark_info.dept_id = dept_id
+
+    if mark_reason == 61:
+        mark_info.mark_time = mark_time
+        mark_info.mark_position = mark_position
+    else:
+        pass
+
+    mark_info.save()
+
+    vehicle_info = Vehicle.objects.get(id=vehicle_id)
+    vehicle_info.mark_cnt += 1
+    vehicle_info.vehicle_status_id = 6 if vehicle_info.mark_cnt < 3 else 5
+
+    vehicle_info.save()
+
+    return HttpResponseRedirect('/zhidui/vehicle/')
+
+
 # 显示通行证信息
 @login_check
 def permission(request):
@@ -130,19 +165,17 @@ def department(request):
 
 
 # 保存支队信息
-def department_save(request):
-    user_id = request.session.get('user_id', '')
+def department_modify(request):
+    dept_name = request.POST.get('dept_name', '')
+    dept_address = request.POST.get('dept_address', '')
+    dept_phone = request.POST.get('dept_phone', '')
+    dept_id = request.POST.get('dept_id', '')
 
-    dept_list = Department.objects.filter(user_id=user_id)
+    print(dept_name, dept_address, dept_phone, dept_id)
 
-    # 分页
-    mp = MyPaginator()
-    mp.paginate(dept_list, 10, 1)
+    Department.objects.filter(id=dept_id).update(dept_name=dept_name, dept_address=dept_address, dept_phone=dept_phone)
 
-    context = {'mp': mp,
-               }
-
-    return render(request, 'zhidui/department.html', context)
+    return HttpResponseRedirect('/zhidui/department')
 
 
 

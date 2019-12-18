@@ -115,6 +115,7 @@ class Vehicle(models.Model):
                                        on_delete=models.SET_NULL)  # 车辆状态，1-未审核，2-待审核，3-审核通过，4-未通过，5-冻结
     vehicle_reason = models.CharField(max_length=200, null=True, blank=True)  # 审核不通过/冻结原因
     vehicle_user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)  # 车辆所属用户
+    mark_cnt = models.IntegerField(default=0, null=True, blank=True)      # 被标记数量
 
 
 # 通行证信息
@@ -133,6 +134,17 @@ class Statistic(models.Model):
     sta_date = models.DateTimeField(null=True, blank=True)  # 统计日期
     permission_count = models.IntegerField(default=0)     # 通行证数量
     download_count = models.IntegerField(default=0)     # 下载次数
+
+
+# 车辆标记
+class Mark(models.Model):
+    mark_time = models.DateTimeField(null=True, blank=True)   # 标记时间
+    mark_position = models.CharField(max_length=200, null=True, blank=True)  # 标记地点
+    mark_reason = models.ForeignKey(Status, null=True, blank=True, on_delete=models.SET_NULL)  # 标记原因，61-违规，62-其它
+    mark_content = models.CharField(max_length=200, null=True, blank=True)  # 标记内容
+    vehicle = models.ForeignKey(Vehicle, null=True, blank=True, on_delete=models.SET_NULL)  # 标记车辆
+    dept = models.ForeignKey(Department, null=True, blank=True, on_delete=models.SET_NULL)  # 标记支队
+
 
 
 
