@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from django.db.models import Count
 from PIL import Image, ImageDraw, ImageFont
 
-from .models import User, Enterprise, Station, Department, Route, Vehicle, Permission
+from .models import User, Enterprise, Station, Department, Route, Vehicle, Permission, Mark
 from .decorator import login_check
 from tj_scheduled_bus import settings
 from .utils import save_file, MyPaginator, statistic_update, send_sms, check_vehicle
@@ -774,6 +774,30 @@ def permission_add(request):
     return HttpResponseRedirect('/permission')
 
 
+# 显示车辆标记信息
+@login_check
+def mark(request):
+    user_id = request.session.get('user_id', '')
+    vehicle_list = Vehicle.objects.filter(vehicle_user_id=user_id)
+
+    vehicle_id_list = []
+    for vehicle_info in vehicle_list:
+        vehicle_id_list.append(vehicle_info.id)
+
+    mark_list = Mark.objects.filter(vehicle_id__in=vehicle_id_list)
+
+    # 分页
+    mp = MyPaginator()
+    mp.paginate(mark_list, 10, 1)
+
+    # 所属支队
+    dept_info = Department.objects.get(user_id=user_id)
+    # print(dept_info.dept_name)
+    context = {'mp': mp,
+               'dept_info': dept_info,
+               }
+
+    return render(request, 'mark.html', context)
 
 
 

@@ -178,6 +178,44 @@ def department_modify(request):
     return HttpResponseRedirect('/zhidui/department')
 
 
+# 显示车辆标记信息
+@login_check
+def mark(request):
+    user_id = request.session.get('user_id', '')
+    dept_id = Department.objects.get(user_id=user_id).id
+
+    mark_list = Mark.objects.filter(dept_id=dept_id)
+
+    # 分页
+    mp = MyPaginator()
+    mp.paginate(mark_list, 10, 1)
+
+    context = {'mp': mp,
+               }
+
+    return render(request, 'zhidui/mark.html', context)
+
+
+# 解除标记
+def mark_delete(request):
+    mark_id = request.POST.get('mark_id', '')
+
+    mark_info = Mark.objects.get(id=mark_id)
+
+    vehicle_info = Vehicle.objects.get(id=mark_info.vehicle_id)
+    vehicle_info.mark_cnt -= 1
+
+    if vehicle_info.mark_cnt <= 0:
+        vehicle_info.vehicle_status_id = 3
+    elif vehicle_info.mark_cnt < 3:
+        vehicle_info.vehicle_status_id = 6
+    else:
+        vehicle_info.vehicle_status_id = 5
+
+    vehicle_info.save()
+    mark_info.delete()
+
+    return HttpResponseRedirect('/zhidui/mark')
 
 
 

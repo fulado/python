@@ -201,13 +201,13 @@
 <!-- 标记车辆 -->
 <div class="pop-up mark-vehicle my-modal-dialog" style="height: 620px;">
     <div class="my-modal-title">
-        <p>标记车辆</p>
+        <p>标记信息</p>
     </div>
     <div class="my-modal-body">
-        <form action="/zhidui/mark_delete" method="POST">
+        <form action="#" method="POST">
             <table>
                 <tr>
-                    <td colspan="2"><p style="padding: 20px;">车辆信息</p></td>
+                    <td colspan="2"><p style="padding: 20px;">请到所属{{ dept_info.dept_name }}处理标记</p></td>
                 </tr>
                 <tr>
                     <td><span>号牌号码</span></td>
@@ -258,7 +258,6 @@
             <input type="hidden" name="mark_id">
             <div class="my-modal-footer" >
                 <div class="clickbtn" style="margin: 5px;width: 460px;text-align: center; margin-top: 20px;">
-                    <button type="submit" class="btn save">解除</button>
                     <button type="button" class="btn cancle" style="margin: 0px;">取消</button>
                 </div>
             </div>

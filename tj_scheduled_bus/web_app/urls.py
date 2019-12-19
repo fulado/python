@@ -16,6 +16,8 @@ urlpatterns = [
     url(r'^zhidui/permission/?', views_zhidui.permission),
     url(r'^zhidui/department_modify/?', views_zhidui.department_modify),
     url(r'^zhidui/department/?', views_zhidui.department),
+    url(r'^zhidui/mark_delete/?', views_zhidui.mark_delete),
+    url(r'^zhidui/mark/?', views_zhidui.mark),
 
     # 总队
     url(r'^zongdui/enterprise/?', views_zongdui.enterprise),
@@ -39,6 +41,7 @@ urlpatterns = [
     url(r'^vehicle_submit/?', views.vehicle_submit),
     url(r'^can_add_vehicle/?', views.can_add_vehicle),
     url(r'^vehicle/?', views.vehicle),
+    url(r'^mark/?', views.mark),
 
     # 企业通行证管理
     url(r'^permission_add/?', views.permission_add),
