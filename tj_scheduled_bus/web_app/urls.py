@@ -65,6 +65,8 @@ urlpatterns = [
     url(r'^login/?', views.login),
     url(r'^logout/?', views.logout),
     url(r'^change_password/?', views.change_password),
+    url(r'^password_modify/?', views.password_modify),
+    url(r'^password/?', views.password),
     url(r'^sms_check_code/?', views.sms_check_code),
     url(r'^check_code/?', views.check_code),
     url(r'^/?', views.login),

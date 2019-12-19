@@ -11,6 +11,7 @@ import requests
 import json
 import time
 import random
+import calendar
 
 
 # 分页工具类
@@ -208,11 +209,20 @@ def check_vehicle_expired(vehicle_number):
 
 # 申请通行证
 def create_permission(permission_info):
-    start_date = time.strptime(permission_info.start_date, '%Y-%m-%d')
-    end_date = time.strptime(permission_info.end_date, '%Y-%m-%d')
+    # 有效日期
+    current_time = time.localtime()
+    year = current_time.tm_year
+    month = current_time.tm_mon
+    start_day = current_time.tm_mday
+    end_day = calendar.monthrange(year, month)[1]
 
-    certification_id = '%d%d%s%d%d%d%d' % (start_date.tm_year,
-                                           start_date.tm_mon,
+    start_date = '%s-%s-%s' % (year, month, start_day)
+    end_date = '%s-%s-%s' % (year, month, end_day)
+
+    permission_info.start_date = start_date
+    permission_info.end_date = end_date
+
+    certification_id = '%d%d%s%d%d%d%d' % (year, month,
                                            permission_info.permission_vehicle.vehicle_number[1:].strip(),
                                            random.randint(0, 9),
                                            random.randint(0, 9),
@@ -220,13 +230,10 @@ def create_permission(permission_info):
                                            random.randint(0, 9),
                                            )
 
-    limit_data = '%d年%d月%d日 — %d年%d月%d日' % (start_date.tm_year,
-                                            start_date.tm_mon,
-                                            start_date.tm_mday,
-                                            end_date.tm_year,
-                                            end_date.tm_mon,
-                                            end_date.tm_mday,
-                                            )
+    permission_info.permission_id = certification_id
+    permission_info.save()
+
+    limit_data = '%d年%d月%d日 — %d年%d月%d日' % (year, month, start_day, year, month, end_day)
 
     vehicle_number = permission_info.permission_vehicle.vehicle_number
     user_id = permission_info.permission_user_id

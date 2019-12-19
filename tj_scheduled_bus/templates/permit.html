@@ -134,7 +134,7 @@
                     <td title="{{ permission.permission_status.status_content }}">{{ permission.permission_status.status_content }}</td>
                     <td>
                         {% if permission.permission_status_id == 51 %}
-                        <a href="/static/certification/{{ vehicle.file_name }}" target="_Blank" class="see download" style="margin-right: 5px;">下载</a>
+                        <a href="/static/certification/{{ permission.permission_id }}.jpg" target="_Blank" class="see download" style="margin-right: 5px;">下载</a>
                         {% endif %}
                     </td>
                 </tr>

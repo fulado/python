@@ -98,7 +98,7 @@ def login(request):
 # 登陆服务
 def login_handle(request):
     username = request.POST.get('username')
-    password = request.POST.get('password')
+    user_password = request.POST.get('password')
     code = request.POST.get('check_code').upper()
 
     session_code = request.session.get('check_code')
@@ -113,7 +113,7 @@ def login_handle(request):
         return HttpResponseRedirect('/?msg=%s' % msg)
 
     user = user_list[0]
-    if hashlib.sha1(password.encode('utf8')).hexdigest() != user.password:
+    if hashlib.sha1(user_password.encode('utf8')).hexdigest() != user.password:
         msg = '用户名或密码错误'
         return HttpResponseRedirect('/?msg=%s' % msg)
 
@@ -152,7 +152,7 @@ def register(request):
 # 注册
 def register_handle(request):
     username = request.POST.get('username')
-    password = request.POST.get('password')
+    user_password = request.POST.get('password')
     re_password = request.POST.get('re_password')
     phone_number = request.POST.get('phone')
 
@@ -178,7 +178,7 @@ def register_handle(request):
 
     user_info = User()
     user_info.username = username
-    user_info.password = hashlib.sha1(password.encode('utf8')).hexdigest()
+    user_info.password = hashlib.sha1(user_password.encode('utf8')).hexdigest()
     user_info.authority = 1
     user_info.phone = phone_number
 
@@ -190,7 +190,7 @@ def register_handle(request):
 
 def change_password(request):
     username = request.POST.get('username')
-    password = request.POST.get('password')
+    user_password = request.POST.get('password')
     re_password = request.POST.get('re_password')
     phone_number = request.POST.get('phone')
 
@@ -205,7 +205,7 @@ def change_password(request):
         msg = '验证码错误'
         return HttpResponseRedirect('/register?msg=%s' % msg)
 
-    if password != re_password:
+    if user_password != re_password:
         msg = '两次输入密码不一致'
         return HttpResponseRedirect('/register?msg=%s' % msg)
 
@@ -216,7 +216,7 @@ def change_password(request):
         return HttpResponseRedirect('/register?msg=%s' % msg)
 
     user_info = user_list[0]
-    user_info.password = hashlib.sha1(password.encode('utf8')).hexdigest()
+    user_info.password = hashlib.sha1(user_password.encode('utf8')).hexdigest()
 
     user_info.save()
 
@@ -726,13 +726,14 @@ def permission(request):
     vehicle_list = Vehicle.objects.filter(vehicle_user_id=user_id).filter(vehicle_status_id=3)
     route_list = Route.objects.filter(route_user_id=user_id).values('route_name').distinct()
 
-    vehicle_id_list = Vehicle.objects.filter(vehicle_number__contains=vehicle_number)
-    if vehicle_id_list:
-        vehicle_id = vehicle_id_list[0].id
-    else:
-        vehicle_id = 0
+    permission_vehicle_list = Vehicle.objects.filter(vehicle_number__contains=vehicle_number, vehicle_user=user_id)
 
-    permission_list = Permission.objects.filter(permission_user_id=user_id).filter(permission_vehicle_id=vehicle_id)
+    vehicle_id_list = []
+    for vehicle_info in permission_vehicle_list:
+        vehicle_id_list.append(vehicle_info.id)
+
+    permission_list = Permission.objects.filter(permission_user_id=user_id).\
+        filter(permission_vehicle_id__in=vehicle_id_list)
 
     # 分页
     mp = MyPaginator()
@@ -761,21 +762,6 @@ def permission_add(request):
     permission_info.permission_user_id = user_id
     permission_info.permission_status_id = 51
 
-    # 有效日期
-    current_time = time.localtime()
-    year = current_time.tm_year
-    month = current_time.tm_mon
-    start_day = current_time.tm_mday
-    end_day = calendar.monthrange(year, month)[1]
-
-    # permission_info.start_date = time.strptime('%s-%s-%s' % (year, month, start_day), '%Y-%m-%d')
-    # permission_info.end_date = time.strptime('%s-%s-%s' % (year, month, end_day), '%Y-%m-%d')
-
-    permission_info.start_date = '%s-%s-%s' % (year, month, start_day)
-    permission_info.end_date = '%s-%s-%s' % (year, month, end_day)
-
-    permission_info.save()
-
     # 生成通行证
     create_permission(permission_info)
 
@@ -783,7 +769,7 @@ def permission_add(request):
     enterprise_list = Enterprise.objects.filter(user_id=user_id).filter(enterprise_type_id=41)
     if enterprise_list:
         enterprise_info = enterprise_list[0]
-        statistic_update(enterprise_info.id, '%s-%s-%s' % (year, month, end_day))
+        statistic_update(enterprise_info.id, permission_info.end_date)
     else:
         pass
 
@@ -830,7 +816,30 @@ def mark(request):
     return render(request, 'mark.html', context)
 
 
+# 显示修改密码
+@login_check
+def password(request):
 
+    return render(request, 'password.html')
+
+
+# 修改密码
+def password_modify(request):
+    user_id = request.session.get('user_id', '')
+
+    old_password = request.POST.get('password', '')
+    new_password = request.POST.get('new_password', '')
+
+    user_info = User.objects.get(id=user_id)
+
+    if user_info.password != hashlib.sha1(old_password.encode('utf8')).hexdigest():
+        result = False  # 旧密码错误
+    else:
+        user_info.password = hashlib.sha1(new_password.encode('utf8')).hexdigest()
+        user_info.save()
+        result = True
+
+    return JsonResponse({'result': result})
 
 
 
