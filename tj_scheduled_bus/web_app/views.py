@@ -12,7 +12,8 @@ from PIL import Image, ImageDraw, ImageFont
 from .models import User, Enterprise, Station, Department, Route, Vehicle, Permission, Mark
 from .decorator import login_check
 from tj_scheduled_bus import settings
-from .utils import save_file, MyPaginator, statistic_update, send_sms, check_vehicle
+from .utils import save_file, MyPaginator, statistic_update, send_sms, check_vehicle, check_vehicle_expired,\
+    create_permission
 
 
 # Create your views here.
@@ -719,19 +720,31 @@ def station_save(request):
 def permission(request):
     user_id = request.session.get('user_id', '')
 
+    vehicle_number = request.GET.get('vehicle_number', '')
+    page_num = int(request.GET.get('page_num', 1))
+
     vehicle_list = Vehicle.objects.filter(vehicle_user_id=user_id).filter(vehicle_status_id=3)
     route_list = Route.objects.filter(route_user_id=user_id).values('route_name').distinct()
 
-    permission_list = Permission.objects.filter(permission_user_id=user_id)
+    vehicle_id_list = Vehicle.objects.filter(vehicle_number__contains=vehicle_number)
+    if vehicle_id_list:
+        vehicle_id = vehicle_id_list[0].id
+    else:
+        vehicle_id = 0
+
+    permission_list = Permission.objects.filter(permission_user_id=user_id).filter(permission_vehicle_id=vehicle_id)
 
     # 分页
     mp = MyPaginator()
-    mp.paginate(permission_list, 10, 1)
+    mp.paginate(permission_list, 10, page_num)
 
     context = {'vehicle_list': vehicle_list,
                'route_list': route_list,
-               'mp': mp
+               'mp': mp,
                }
+
+    # 保存分页页码
+    request.session['page_num'] = page_num
 
     return render(request, 'permit.html', context)
 
@@ -763,6 +776,9 @@ def permission_add(request):
 
     permission_info.save()
 
+    # 生成通行证
+    create_permission(permission_info)
+
     # 统计企业通行证数量
     enterprise_list = Enterprise.objects.filter(user_id=user_id).filter(enterprise_type_id=41)
     if enterprise_list:
@@ -771,7 +787,21 @@ def permission_add(request):
     else:
         pass
 
-    return HttpResponseRedirect('/permission')
+    # 取得分页页码
+    page_num = request.session.get('page_num', 1)
+    url = '/permission?page_num=%d' % page_num
+
+    return HttpResponseRedirect(url)
+
+
+# 车辆是否过期
+def is_vehicle_expired(request):
+    vehicle_id = request.GET.get('vehicle_id', '')
+    vehicle_info = Vehicle.objects.get(id=vehicle_id)
+
+    result = not check_vehicle_expired(vehicle_info.vehicle_number)
+
+    return JsonResponse({'result': result})
 
 
 # 显示车辆标记信息

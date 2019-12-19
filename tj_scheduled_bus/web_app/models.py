@@ -126,6 +126,7 @@ class Permission(models.Model):
     permission_user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)  # 通行证用户
     start_date = models.DateTimeField(null=True, blank=True)  # 开始时间
     end_date = models.DateTimeField(null=True, blank=True)   # 结束时间
+    permission_id = models.CharField(max_length=50, null=True, blank=True)  # 通行证编号
 
 
 # 通行证统计

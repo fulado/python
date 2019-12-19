@@ -104,8 +104,8 @@
     <div class="table_container">
         <div class="search_input">
             <label for="ss">车辆搜索</label>
-            <form action="/vehicle" method="GET" style="display: inline-block;">
-                <input type="text" placeholder="输入车牌号码" id="ss" name="number" value="{{ number }}" />
+            <form action="/permission" method="GET" style="display: inline-block;">
+                <input type="text" placeholder="输入车牌号码" id="ss" name="vehicle_number" value="{{ vehicle_number }}" />
             </form>
             <span class="find_btn">查询</span>
             <span class="add_account" id="add">申请</span>
@@ -147,21 +147,21 @@
     <div id="pageToolbar">
         <div id="Paging_009071537570730115" class="ui-paging-container">
             <ul>
-                <a href="/vehicle?page_num=1&number={{ number }}&status={{ status }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
-                <a href="/vehicle?page_num={{ mp.current_num|add:-1 }}&number={{ number }}&status={{ status }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
+                <a href="/permission?page_num=1&vehicle_number={{ vehicle_number }}&status={{ status }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
+                <a href="/permission?page_num={{ mp.current_num|add:-1 }}&vehicle_number={{ vehicle_number }}&status={{ status }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
                 {% for num in mp.page_range %}
                     {% if num == mp.current_num %}
-                    <a href="/vehicle?page_num={{ num }}&search_name={{ number }}&status={{ status }}"><li class="ui-pager focus">{{ num }}</li></a>
+                    <a href="/permission?page_num={{ num }}&vehicle_number={{ vehicle_number }}&status={{ status }}"><li class="ui-pager focus">{{ num }}</li></a>
                     {% else %}
-                    <a href="/vehicle?page_num={{ num }}&search_name={{ number }}&status={{ status }}"><li class="ui-pager">{{ num }}</li></a>
+                    <a href="/permission?page_num={{ num }}&vehicle_number={{ vehicle_number }}&status={{ status }}"><li class="ui-pager">{{ num }}</li></a>
                     {% endif %}
                 {% endfor %}
-                <a href="/vehicle?page_num={{ mp.current_num|add:1 }}&number={{ number }}&status={{ status }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
-                <a href="/vehicle?page_num={{ mp.total_pages }}&number={{ number }}&status={{ status }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
+                <a href="/permission?page_num={{ mp.current_num|add:1 }}&vehicle_number={{ vehicle_number }}&status={{ status }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
+                <a href="/permission?page_num={{ mp.total_pages }}&vehicle_number={{ vehicle_number }}&status={{ status }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
                 <li class="ui-paging-toolbar">
-                    <form action="/vehicle" method="GET">
+                    <form action="/permission" method="GET">
                         <input type="text" class="ui-paging-count" style="font-size: 12px;" name="page_num" value="{{ mp.current_num }}" />
-                        <input type="hidden" name="number" value="{{ number }}" />
+                        <input type="hidden" name="vehicle_number" value="{{ vehicle_number }}" />
                         <input type="hidden" name="status" value="{{ status }}" />
                         <span>/&nbsp;{{ mp.total_pages }}</span>
                         <a href="javascript:jump()">跳转</a>
@@ -253,9 +253,16 @@
                 alert('请选择路线');
             }
             else if (confirm('是否申请通行证？')) {
-                $('.add-vehicle form').submit();
-                $('.add-vehicle').hide();
-                $('.mask').hide();
+                $.get('is_vehicle_expired', {'vehicle_id': vehicle_id}, function (data) {
+                    if (data.result) {
+                        alert('车辆逾期未检验，不能申请通行证');
+                    }
+                    else {
+                        $('.add-vehicle form').submit();
+                        $('.add-vehicle').hide();
+                        $('.mask').hide();
+                    }
+                });
             }
         });
 
@@ -270,39 +277,6 @@
     // 跳转到指定页面
     function jump() {
         $('#pageToolbar form').submit();
-    }
-
-
-    // 提交全部车辆, 判断是否到达上限, 如到达上限, 则仅提交部分车辆, 并给出提示
-    function submit_all(user_id) {
-        // 判断是否可以提交全部车辆
-        $.get('/can_submit_all', {'user_id': user_id}, function(data) {
-            could_submit = true;
-            if (data.result) {
-                if (data.error_num > 0) {
-                     alert('本次提交车辆'+ data.vehicle_num +'辆，因信息不正确无法提交车辆'+ data.error_num +'辆');
-                }
-                else {
-                    alert('已提交全部车辆');
-                }
-            }
-            else {
-                if (data.vehicle_num == -1) {
-                    alert('每月提交申请最后期限为25日, 无法提交申请');
-                    could_submit = false;
-                }
-                else if (data.error_num > 0) {
-                    alert('大型车辆超出允许提交的上限，本次共提交车辆'+ data.vehicle_num +'辆，因超限未提交大型车辆'+ data.ignore_num +'辆，因信息不正确无法提交车辆' + data.error_num +'辆');
-                }
-                else {
-                    alert('大型车辆超出允许提交的上限，本次共提交车辆'+ data.vehicle_num +'辆，因超限未提交大型车辆'+ data.ignore_num +'辆');
-                }
-            }
-
-            if (could_submit) {
-                window.location.href = "/vehicle_submit_all";
-            }
-        });
     }
 
 </script>
