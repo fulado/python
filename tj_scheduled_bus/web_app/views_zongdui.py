@@ -4,7 +4,7 @@
 from django.shortcuts import render, HttpResponseRedirect
 
 
-from .models import Enterprise, Vehicle, Statistic, Station
+from .models import Enterprise, Vehicle, User, Station
 from .decorator import login_check
 from .utils import MyPaginator
 
@@ -119,8 +119,24 @@ def station_delete(request):
     return HttpResponseRedirect('/zongdui/station')
 
 
+# 显示支队行号管理
+@login_check
+def account(request):
+    page_num = request.GET.get('page_num', 1)
+    search_name = request.POST.get('search_name', '')
 
+    user_list = User.objects.filter(username__contains=search_name)
 
+    # 分页
+    mp = MyPaginator()
+    mp.paginate(user_list, 10, page_num)
+
+    context = {'mp': mp,
+               'page_num': page_num,
+               'search_name': search_name,
+               }
+
+    return render(request, 'zongdui/account.html', context)
 
 
 

@@ -115,7 +115,7 @@
         <div class="search_input">
             <label for="ss">用户名</label>
             <form action="/vehicle" method="POST" style="display: inline-block;">
-                <input type="text" placeholder="输入用户名" id="ss" name="username" value="{{ username }}" />
+                <input type="text" placeholder="输入用户名" id="ss" name="search_name" value="{{ search_name }}" />
 {#                <select name="vehicle_status">#}
 {#                    <option value="0" {% if vehicle_status == 0 %}selected{% endif %}>全部车辆</option>#}
 {#                    <option value="1" {% if vehicle_status == 1 %}selected{% endif %}>未提交车辆</option>#}
@@ -143,16 +143,16 @@
                 </tr>
             </thead>
             <tbody>
-                {% for vehicle in mp.object_list %}
+                {% for user in mp.object_list %}
                 <tr>
                     <td style="width: 4%">{{ forloop.counter }}</td>
-                    <td title="{{ vehicle.vehicle_number }}">{{ vehicle.vehicle_number }}</td>
-                    <td title="{{ vehicle.vehicle_type.status_content }}">{{ vehicle.vehicle_type.status_content }}</td>
-                    <td title="{{ vehicle.engine_code }}">{{ vehicle.engine_code }}</td>
-                    <td title="{{ vehicle.vehicle_owner }}">{{ vehicle.vehicle_owner }}</td>
-                    <td title="{{ vehicle.vehicle_belong.status_content }}">{{ vehicle.vehicle_belong.status_content }}</td>
-                    <td title="{{ vehicle.vehicle_status.status_content }}">{{ vehicle.vehicle_status.status_content }}</td>
-                    <td title="{{ vehicle.vehicle_reason|default:'' }}">{{ vehicle.vehicle_reason|default:'' }}</td>
+                    <td title="{{ user.username }}">{{ user.username }}</td>
+                    <td title="{{ user.dept.dept_name }}">{{ user.dept.dept_name }}</td>
+                    <td title="{{ user.person_name|default:'' }}">{{ user.person_name|default:'' }}</td>
+                    <td title="{{ user.person_id|default:'' }}">{{ user.person_id|default:'' }}</td>
+                    <td title="{{ user.phone|default:'' }}">{{ user.phone|default:'' }}</td>
+                    <td title="{{ user.status.status_content }}">{{ user.status.status_content }}</td>
+                    <td title="{{ user.reason|default:'' }}">{{ user.reason|default:'' }}</td>
                     <td>
                         <button type="button" class="see modify-vehicle-info" style="margin-right: 5px;" onclick="setVehicleInfo(
                         '{{ vehicle.vehicle_type_id }}', '{{ vehicle.vehicle_number|linebreaksbr }}', '{{ vehicle.engine_code|linebreaksbr }}',

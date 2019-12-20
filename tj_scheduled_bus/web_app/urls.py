@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^zongdui/station_modify/?', views_zongdui.station_modify),
     url(r'^zongdui/station_delete/?', views_zongdui.station_delete),
     url(r'^zongdui/station/?', views_zongdui.station),
+    url(r'^zongdui/account/?', views_zongdui.account),
 
     # 企业端，企业管理
     url(r'^enterprise_add/?', views.enterprise_add),
