@@ -164,6 +164,11 @@
                         {% if vehicle.vehicle_status_id == 3 or vehicle.vehicle_status_id == 5 or vehicle.vehicle_status_id == 6 %}
                         <button type="button" class="see mark-vehicle-info" style="margin-right: 5px;" onclick="setMarkInfo(
                         '{{ vehicle.vehicle_number|linebreaksbr }}', '{{ vehicle.id }}')">标记</button>
+                        {% elif vehicle.vehicle_status_id == 7 %}
+                        <button type="button" class="see unlock-vehicle-info" style="margin-right: 5px;" onclick="setUnlockInfo(
+                        '{{ vehicle.vehicle_number|linebreaksbr }}', '{{ vehicle.vehicle_reason|linebreaksbr }}',
+                        '{{ vehicle.unlock_content|linebreaksbr }}', '{{ vehicle.unlock_file }}',
+                        '{{ vehicle.id }}')">解冻</button>
                         {% endif %}
                     </td>
                 </tr>
@@ -334,6 +339,52 @@
     </div>
 </div>
 
+<!-- 解冻车辆 -->
+<div class="pop-up unlock-vehicle my-modal-dialog" style="height: 550px;">
+    <div class="my-modal-title">
+        <p>标记车辆</p>
+    </div>
+    <div class="my-modal-body">
+        <form action="/zhidui/vehicle_unlock" method="POST" enctype="multipart/form-data">
+            <table>
+                <tr>
+                    <td colspan="2"><p style="padding: 20px;">车辆信息</p></td>
+                </tr>
+                <tr>
+                    <td><span>号牌号码</span></td>
+                    <td>
+                        <input type="text" placeholder="号牌号码" name="vehicle_number" disabled>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>冻结原因</span></td>
+                    <td>
+                        <input type="text" placeholder="冻结原因" name="vehicle_reason">
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>解冻说明</span></td>
+                    <td>
+                        <textarea name="unlock_content" style="resize:none; border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:200px;height:100px"></textarea>
+                    </td>
+                </tr>
+                <tr class="unlock-file">
+                    <td><span>解冻材料</span></td>
+                    <td>
+                        <a href="#" target="_blank">点击查看</a>
+                    </td>
+                </tr>
+            </table>
+            <input type="hidden" name="vehicle_id">
+            <div class="my-modal-footer" >
+                <div class="clickbtn" style="margin: 5px;width: 460px;text-align: center; margin-top: 20px;">
+                    <button type="button" class="btn save">解冻</button>
+                    <button type="button" class="btn cancle" style="margin: 0px;">取消</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 <div class="mask" style="display: none"></div>
 </body>
@@ -348,11 +399,6 @@
 <script type="text/javascript" src="/static/js/jquery.darktooltip.js"></script>
 
 <script type="text/javascript">
-    // 定义车牌号正则规则
-    // 大型货车&小型货车
-    var re_01 = /^[\W][A-Z][A-Z0-9]{5}$/
-    // 挂车
-    var re_15 = /^[\W][A-Z][A-Z0-9]{4}$/
 
     $(function() {
         // 隐藏标记车辆模态框
@@ -454,6 +500,29 @@
                 alert('请选择需要导入的文件');
             }
         });
+
+        // 显示解冻车辆信息模态框
+        $('.table_box .unlock-vehicle-info').click(function() {
+            $('.unlock-vehicle').show();
+            $('.mask').show();
+        });
+
+        // 隐藏解冻车辆模态框
+        $('.unlock-vehicle .cancle').click(function() {
+            if (confirm('是否取消解冻？')) {
+                $('.unlock-vehicle').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 提交解冻车辆解冻申请
+        $('.unlock-vehicle .save').click(function() {
+            if (confirm('是否解冻改车辆？')) {
+                $('.unlock-vehicle').hide();
+                $('.mask').hide();
+                $('.unlock-vehicle form').submit();
+            }
+        });
     });
 
     // 填充编辑车辆模态框信息
@@ -501,6 +570,19 @@
             $('.mark-vehicle tr').eq(4).hide();
             $('.mark-vehicle tr').eq(3).hide();
         }
+    }
+
+    // 填充编辑车辆模态框信息
+    function setUnlockInfo(vehicle_number, vehicle_reason, unlock_content, unlock_file, vehicle_id) {
+
+        $('.unlock-vehicle input').eq(0).val(vehicle_number);
+        $('.unlock-vehicle input').eq(1).val(vehicle_reason);
+        $('.unlock-vehicle input').last().val(vehicle_id);
+
+        $('.unlock-vehicle textarea').eq(0).val(unlock_content);
+        $('.unlock-vehicle .unlock-file a').attr('href', '/static/file/' + unlock_file);
+
+        $('.unlock-vehicle button').show();
     }
 
 </script>

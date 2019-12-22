@@ -83,6 +83,17 @@ def save_file(file_obj, file_name):
     f.close()
 
 
+# 保存解冻文件
+def save_unlock_file(file_obj, file_name):
+    full_name = r'%s/file/%s' % (settings.FILE_DIR, file_name)
+    f = open(full_name, 'wb')
+
+    for chunk in file_obj.chunks():
+        f.write(chunk)
+
+    f.close()
+
+
 # 通行证统计+1
 def statistic_update(enterprise_id, end_date):
     sta_list = Statistic.objects.filter(sta_enterprise_id=enterprise_id).filter(sta_date=end_date)

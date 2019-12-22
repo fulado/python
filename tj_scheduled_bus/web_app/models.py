@@ -119,6 +119,8 @@ class Vehicle(models.Model):
     vehicle_reason = models.CharField(max_length=200, null=True, blank=True)  # 审核不通过/冻结原因
     vehicle_user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)  # 车辆所属用户
     mark_cnt = models.IntegerField(default=0, null=True, blank=True)      # 被标记数量
+    unlock_content = models.CharField(max_length=200, null=True, blank=True)  # 解冻说明
+    unlock_file = models.CharField(max_length=200, null=True, blank=True)  # 解冻说明文件
 
 
 # 通行证信息

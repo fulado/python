@@ -29,11 +29,11 @@
         }
         /* 模态框 */
         .my-modal-dialog{
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            margin: auto;
-            width: 460px;
-            height: 698px;
+            {#position: absolute;#}
+            {#top: 0; left: 0; bottom: 0; right: 0;#}
+            {#margin: auto;#}
+            {#width: 460px;#}
+            height: 598px;
             display: none;
         }
 
@@ -68,13 +68,6 @@
             text-align: center;
         }
 
-        .my-modal-footer{
-            margin-top: 20px;
-        }
-        .my-modal-footer .btn{
-            margin-left: 0px;
-        }
-
         a,a:active,a:visited,a:focus{
             text-decoration: none;
         }
@@ -93,15 +86,26 @@
         margin-right: 20px;
         }
 
+        .pop-up form div input{
+            display: inline-block;
+            width: 260px;
+        }
+
         .my-modal-footer .save {
             background-color: #ffffff;
             border: solid 1px #189694;
             color: #25B4B2;
+            margin-left: 107px;
         }
 
         .my-modal-footer .save:hover{
             background: #139b99;
             color: #fff;
+        }
+
+        .my-modal-footer .btn{
+            margin-left: 0px;
+            display: none;
         }
     </style>
     <title></title>
@@ -114,21 +118,17 @@
     <div class="table_container">
         <div class="search_input">
             <label for="ss">车辆搜索</label>
-            <form action="/vehicle" method="POST" style="display: inline-block;">
-                <input type="text" placeholder="输入车牌号码" id="ss" name="vehicle_number" value="{{ number }}" />
-                <select name="vehicle_status">
-                    <option value="0" {% if vehicle_status == 0 %}selected{% endif %}>全部车辆</option>
-                    <option value="1" {% if vehicle_status == 1 %}selected{% endif %}>未提交车辆</option>
-                    <option value="2" {% if vehicle_status == 2 %}selected{% endif %}>待审核车辆</option>
-                    <option value="3" {% if vehicle_status == 3 %}selected{% endif %}>已通过车辆</option>
-                    <option value="4" {% if vehicle_status == 4 %}selected{% endif %}>未通过车辆</option>
-                    <option value="5" {% if vehicle_status == 5 %}selected{% endif %}>被冻结车辆</option>
+            <form action="/zhidui/vehicle" method="GET" style="display: inline-block;">
+                <input type="text" placeholder="输入车牌号码" id="ss" name="number" value="{{ number }}" />
+                <select name="status">
+                    <option value="0" {% if status == 0 %}selected{% endif %}>全部车辆</option>
+                    <option value="1" {% if status == 1 %}selected{% endif %}>未提交车辆</option>
+                    <option value="2" {% if status == 2 %}selected{% endif %}>待审核车辆</option>
+                    <option value="4" {% if status == 4 %}selected{% endif %}>已通过车辆</option>
+                    <option value="5" {% if status == 5 %}selected{% endif %}>未通过车辆</option>
                 </select>
             </form>
             <span class="find_btn">查询</span>
-            <span class="add_account" id="add">新增车辆</span>
-{#            <a href="/static/excel/vehicle.xls"><span class="out outexcel">模版下载</span></a>#}
-{#            <span class="out import-excel">导入车辆</span>#}
         </div>
         <!--检索结果-->
         <table class="table_box" id="table_box">
@@ -160,13 +160,10 @@
                         <button type="button" class="see modify-vehicle-info" style="margin-right: 5px;" onclick="setVehicleInfo(
                         '{{ vehicle.vehicle_type_id }}', '{{ vehicle.vehicle_number|linebreaksbr }}', '{{ vehicle.engine_code|linebreaksbr }}',
                         '{{ vehicle.vehicle_owner|linebreaksbr }}', '{{ vehicle.register_date|date:'Y-m-d' }}',
-                        '{{ vehicle.vehicle_belong_id|linebreaksbr }}', '{{ vehicle.id }}', '{{ vehicle.vehicle_status_id }}')">查看</button>
-                        {% if vehicle.vehicle_status_id == 1 or vehicle.vehicle_status_id == 4 %}
-                        <a class="see" style="margin-right: 5px;" href="/vehicle_submit?vehicle_id={{ vehicle.id }}">提交</a>
-                        {% elif vehicle.vehicle_status_id == 5 %}
-                        <button type="button" class="see unlock-vehicle-info" style="margin-right: 5px;" onclick="setUnlockInfo(
-                        '{{ vehicle.vehicle_number|linebreaksbr }}', '{{ vehicle.vehicle_reason|linebreaksbr }}',
-                        '{{ vehicle.id }}')">解冻</button>
+                        '{{ vehicle.vehicle_belong_id }}', '{{ vehicle.id }}' , '{{ vehicle.vehicle_status_id }}')">查看</button>
+                        {% if vehicle.vehicle_status_id != 1 and vehicle.vehicle_status_id != 2 and vehicle.vehicle_status_id != 4 %}
+                        <button type="button" class="see mark-vehicle-info" style="margin-right: 5px;" onclick="setMarkInfo(
+                        '{{ vehicle.vehicle_number|linebreaksbr }}', '{{ vehicle.id }}')">标记</button>
                         {% endif %}
                     </td>
                 </tr>
@@ -204,82 +201,10 @@
     </div>
 </div>
 <!--模态框-->
-<!-- 新增车辆 -->
-<div class="pop-up add-vehicle my-modal-dialog">
-    <div class="my-modal-title">
-        <p>新增车辆</p>
-    </div>
-    <div class="my-modal-body">
-        <form action="/vehicle_add" method="POST">
-            <table>
-                <tr>
-                    <td colspan="2"><p style="padding: 20px;">车辆信息</p></td>
-                </tr>
-                <tr>
-                    <td><span>号牌号码</span></td>
-                    <td>
-                        <input type="text" placeholder="请输入号牌号码" name="vehicle_number">
-                    </td>
-                </tr>
-                <tr>
-                    <td><span>号牌颜色</span></td>
-                    <td>
-                        <select name="plate_color" placeholder="请选择号牌颜色">
-                            <option value="1">黄色</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><span>车辆类型</span></td>
-                    <td>
-                        <select name="vehicle_type" placeholder="请选择车辆类型">
-                            <option value="21">中型车</option>
-                            <option value="22">大型车</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><span>发动机号</span></td>
-                    <td>
-                        <input type="text" placeholder="请输入发动机号" name="engine_code">
-                    </td>
-                </tr>
-                <tr>
-                    <td><span>所有人</span></td>
-                    <td>
-                        <input type="text" placeholder="请输入所有人" name="vehicle_owner">
-                    </td>
-                </tr>
-                <tr>
-                    <td><span>车辆注册日期</span></td>
-                    <td>
-                        <input type="text" class="datetime-picker" placeholder="请选择车辆注册日期" name="register_date">
-                    </td>
-                </tr>
-                <tr>
-                    <td><span>车辆所属</span></td>
-                    <td>
-                        <select name="vehicle_belong" placeholder="请选择车辆类型">
-                            <option value="11">自有车辆</option>
-                            <option value="12">租赁车辆</option>
-                        </select>
-                    </td>
-                </tr>
-            </table>
-            <div class="my-modal-footer" >
-                <div class="clickbtn" style="margin: 0px;width: 430px;text-align: center;">
-                    <button type="button" class="btn save">保存</button>
-                    <div class="btn cancle">取消</div>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
 <!-- 编辑车辆 -->
 <div class="pop-up modify-vehicle my-modal-dialog">
     <div class="my-modal-title">
-        <p>编辑车辆信息</p>
+        <p>审核车辆</p>
     </div>
     <div class="my-modal-body">
         <form action="#" method="POST">
@@ -338,26 +263,84 @@
                     </td>
                 </tr>
             </table>
+            <input type="hidden" name="refuse_reason" class="refuse_reason" />
             <input type="hidden" name="vehicle_id">
             <div class="my-modal-footer" >
-                <div class="clickbtn" style="text-align: center;width: 440px;">
-                    <button type="button" class="btn save">保存</button>
-                    <button type="button" class="btn del">删除</button>
-                    <button type="button" class="btn cancle">取消</button>
+                <div class="clickbtn" style="margin: 5px;width: 460px;text-align: center; margin-top: 20px;">
+                    <button type="button" class="btn save">通过</button>
+                    <button type="button" class="btn del">驳回</button>
+                    <button type="button" class="btn save">解冻</button>
+                    <button type="button" class="btn del">冻结</button>
+                    <button type="button" class="btn cancle" style="margin: 0px;">取消</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
 
+<!-- 标记车辆 -->
+<div class="pop-up mark-vehicle my-modal-dialog" style="height: 550px;">
+    <div class="my-modal-title">
+        <p>标记车辆</p>
+    </div>
+    <div class="my-modal-body">
+        <form action="/zhidui/vehicle_mark" method="POST">
+            <table>
+                <tr>
+                    <td colspan="2"><p style="padding: 20px;">车辆信息</p></td>
+                </tr>
+                <tr>
+                    <td><span>号牌号码</span></td>
+                    <td>
+                        <input type="text" placeholder="请输入号牌号码" name="vehicle_number" disabled>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>标记原因</span></td>
+                    <td>
+                        <select name="mark_reason" placeholder="请选择标记原因" onchange="showIllegalInfo(this.value)">
+                            <option value="61">违规标记</option>
+                            <option value="62">其它原因</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>违规时间</span></td>
+                    <td>
+                        <input type="text" class="datetime-picker" placeholder="请选择违规时间" name="mark_time">
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>违规地点</span></td>
+                    <td>
+                        <input type="text" placeholder="请输入违规地点" name="mark_position">
+                    </td>
+                </tr>
+                <tr>
+                    <td><span>违规情况</span></td>
+                    <td>
+                        <textarea name="mark_content" style="resize:none; border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:200px;height:100px"></textarea>
+                    </td>
+                </tr>
+            </table>
+            <input type="hidden" name="vehicle_id">
+            <div class="my-modal-footer" >
+                <div class="clickbtn" style="margin: 5px;width: 460px;text-align: center; margin-top: 20px;">
+                    <button type="submit" class="btn save">保存</button>
+                    <button type="button" class="btn cancle" style="margin: 0px;">取消</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
-<!-- 申请解冻车辆 -->
+<!-- 解冻车辆 -->
 <div class="pop-up unlock-vehicle my-modal-dialog" style="height: 550px;">
     <div class="my-modal-title">
         <p>标记车辆</p>
     </div>
     <div class="my-modal-body">
-        <form action="/vehicle_unlock" method="POST" enctype="multipart/form-data">
+        <form action="/zhidui/vehicle_unlock" method="POST" enctype="multipart/form-data">
             <table>
                 <tr>
                     <td colspan="2"><p style="padding: 20px;">车辆信息</p></td>
@@ -380,71 +363,22 @@
                         <textarea name="unlock_content" style="resize:none; border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:200px;height:100px"></textarea>
                     </td>
                 </tr>
-                <tr>
+                <tr class="unlock-file">
                     <td><span>解冻材料</span></td>
                     <td>
-                        <input type="file" placeholder="解冻材料" name="unlock_file">
+                        <a href="#" target="_blank">点击查看</a>
                     </td>
                 </tr>
             </table>
             <input type="hidden" name="vehicle_id">
             <div class="my-modal-footer" >
                 <div class="clickbtn" style="margin: 5px;width: 460px;text-align: center; margin-top: 20px;">
-                    <button type="button" class="btn save">保存</button>
+                    <button type="button" class="btn save">解冻</button>
                     <button type="button" class="btn cancle" style="margin: 0px;">取消</button>
                 </div>
             </div>
         </form>
     </div>
-</div>
-
-
-<!--模态框-->
-<div class="container">
-    <div class="pop-up" style="width: 560px;height: 268px;margin: 15% auto;display: none">
-        <form>
-            <div class="ePrisename" style="height: 200px;">
-                <label for="reason" style="vertical-align: top;width: 100px">填写原因</label>
-                <textarea name="" id="reason" style="resize:none;border-radius:4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:400px;height:150px"></textarea>
-            </div>
-
-            <div class="clickbtn" style="margin: 0 auto;width: 430px">
-                <div class="btn save" id="save">提交</div>
-                <div class="btn del" id="del">关闭</div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!--上传文件模态框-->
-<div class="pop-up1" style="width: 560px;height: 268px;display: none;">
-    <form action="/excel_import" enctype="multipart/form-data" method="post">
-        {% csrf_token %}
-        <div class="selFile">
-            <label for="reason" style="">选择文件</label>
-            <input type="file" name="excel_file" style="outline: none;cursor: pointer; width:300px; margin-left: 100px;" accept="application/vnd.ms-excel"/>
-        </div>
-
-        <div class="btndiv" style="margin-top: 50px;">
-            <button type="button" class="btn save" style="line-height: 27px;" >导入</button>
-            <!--<input type="submit" class="btn" style="line-height: 27px;" value="导入" />-->
-            <div class="btn" id="close" style="line-height: 27px;">关闭</div>
-        </div>
-    </form>
-</div>
-
-<div class="pop-up2" style="width: 560px;height: 268px;display: none;">
-    <form id="xmlform" enctype="multipart/form-data">
-        <div class="selFile" style="">
-            <label for="reason" style="">选择文件</label>
-            <input type="file" name="file" style="outline: none;cursor: pointer" />
-        </div>
-
-        <div class="btndiv" style="">
-            <div class="btn" id="outxmls">提交</div>
-            <div class="btn" id="closexml">关闭</div>
-        </div>
-    </form>
 </div>
 
 <div class="mask" style="display: none"></div>
@@ -462,59 +396,35 @@
 <script type="text/javascript">
 
     $(function() {
-        // 显示增加车辆模态框
-        $('#add').click(function() {
-            $('.add-vehicle').show();
+        // 隐藏标记车辆模态框
+        $('.mark-vehicle .cancle').click(function() {
+            $('.mark-vehicle').hide();
+            $('.mask').hide();
+        });
+
+        // 显示标记车辆信息模态框
+        $('.table_box .mark-vehicle-info').click(function() {
+            $('.mark-vehicle').show();
             $('.mask').show();
         });
 
-        // 隐藏增加车辆模态框
-        $('.add-vehicle .cancle').click(function() {
-            if (confirm('是否取消新增？')) {
-                $('.add-vehicle').hide();
-                $('.mask').hide();
-            }
+        // 隐藏审核车辆模态框
+        $('.modify-vehicle .cancle').click(function() {
+            $('.modify-vehicle').hide();
+            $('.mask').hide();
         });
 
-        // 显示编辑车辆信息模态框
+        // 显示审核车辆信息模态框
         $('.table_box .modify-vehicle-info').click(function() {
             $('.modify-vehicle').show();
             $('.mask').show();
         });
 
-        // 隐藏编辑车辆信息模态框
-        $('.modify-vehicle .cancle').click(function() {
-            if ($('.modify-vehicle .clickbtn .save').css("display") == 'none'){
-                $('.modify-vehicle').hide();
-                $('.mask').hide();
-            }
-            else if (confirm('是否放弃修改？')) {
-                $('.modify-vehicle').hide();
-                $('.mask').hide();
-            }
-        });
-
-        // 显示解冻车辆信息模态框
-        $('.table_box .unlock-vehicle-info').click(function() {
-            $('.unlock-vehicle').show();
-            $('.mask').show();
-        });
-
-        // 隐藏解冻车辆模态框
-        $('.unlock-vehicle .cancle').click(function() {
-            if (confirm('是否取消解冻？')) {
-                $('.unlock-vehicle').hide();
-                $('.mask').hide();
-            }
-        });
-
-        // 提交解冻车辆解冻申请
-        $('.unlock-vehicle .save').click(function() {
-            if (confirm('是否提交解冻申请？')) {
-                $('.unlock-vehicle').hide();
-                $('.mask').hide();
-                $('.unlock-vehicle form').submit();
-            }
+        // 审核不通过、冻结，隐藏编辑车辆信息模态框
+        $('.modify-vehicle .del').click(function() {
+            $('.refuse-content').show();
+            $('.modify-vehicle').hide();
+            $('.refuse-content button').show();
         });
 
         // 日期组件初始化
@@ -527,74 +437,39 @@
             todayBtn: true              //显示今日按钮
         });
 
-        // 保存新增车辆
-        $('.add-vehicle .save').click(function() {
-            var number = $('.add-vehicle input').eq(0).val().replace(/\s+/g,"");
-            var engine = $('.add-vehicle input').eq(1).val().replace(/\s+/g,"");
-            var owner = $('.add-vehicle input').eq(2).val().replace(/\s+/g,"");
-            var register_date = $('.add-vehicle input').eq(3).val().replace(/\s+/g,"");
-
-            if (number.length == 0) {
-                alert('请输入正确的号牌号码');
-            }
-            else if (engine.length == 0) {
-                alert('请输入正确的发动机号');
-            }
-            else if (owner.length == 0) {
-                alert('请输入正确的车辆所有人');
-            }
-            else if (register_date.length == 0) {
-                alert('请选择正确的车辆注册日期');
-            }
-            else {
-                $.get('/can_add_vehicle', {'number': number, 'engine': engine, 'owner': owner}, function(data) {
-                    if (data.result == '1') {
-                        alert('当前号牌车辆已录入');
-                    }
-                    else if (data.result == '2') {
-                        alert('车辆信息不正确');
-                    }
-                    else if (confirm('是否保存新增车辆信息？')) {
-                        $('.add-vehicle form').submit();
-                        $('.add-vehicle').hide();
-                        $('.mask').hide();
-                    }
-                });
-            }
-        });
-
-        // 保存编辑车辆
-        $('.modify-vehicle .save').click(function() {
-            var number = $('.modify-vehicle input').eq(0).val().replace(/\s+/g,"");
-            var engine = $('.modify-vehicle input').eq(1).val().replace(/\s+/g,"");
-            var owner = $('.modify-vehicle input').eq(2).val().replace(/\s+/g,"");
-            var register_date = $('.modify-vehicle input').eq(3).val().replace(/\s+/g,"");
-
-            if (number.length == 0) {
-                alert('请输入正确的号牌号码');
-            }
-            else if (engine.length == 0) {
-                alert('请输入正确的发动机号');
-            }
-            else if (owner.length == 0) {
-                alert('请输入正确的车辆所有人');
-            }
-            else if (register_date.length == 0) {
-                alert('请选择正确的车辆注册日期');
-            }
-            else if (confirm('是否保存车辆信息？')) {
-                $('.modify-vehicle form').prop('action', '/vehicle_modify');
+        // 审核车辆信息表单提交: 通过
+        $('.modify-vehicle .my-modal-footer button').eq(0).click(function() {
+            if (confirm('是否审核通过?')) {
+                $('.modify-vehicle form').prop('action', '/zhidui/vehicle_pass');
                 $('.modify-vehicle form').submit();
                 $('.modify-vehicle').hide();
                 $('.mask').hide();
             }
         });
 
-        // 编辑车辆信息表单提交: 删除
-        $('.modify-vehicle .del').click(function() {
-            if (confirm('是否删除该车辆信息？')) {
-                $('.modify-vehicle form').prop('action', '/vehicle_delete');
+        // 审核车辆信息表单提交: 解冻
+        $('.modify-vehicle .my-modal-footer button').eq(2).click(function() {
+            if (confirm('是否解冻?')) {
+                $('.modify-vehicle form').prop('action', '/zhidui/vehicle_pass');
                 $('.modify-vehicle form').submit();
+                $('.modify-vehicle').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 未通过原因: 取消
+        $('.refuse-content .del').click(function() {
+            $('.refuse-content').hide();
+            $('.modify-vehicle').show();
+        });
+
+        // 未通过原因: 确定
+        $('.refuse-content .save').click(function() {
+            if (confirm('是否驳回/冻结该车辆？')) {
+                $('.modify-vehicle .refuse_reason').val($('.refuse-content textarea').val());
+                $('.modify-vehicle form').prop('action', '/zhidui/vehicle_refuse');
+                $('.modify-vehicle form').submit();
+                $('.refuse-content').hide();
                 $('.modify-vehicle').hide();
                 $('.mask').hide();
             }
@@ -620,25 +495,60 @@
                 alert('请选择需要导入的文件');
             }
         });
+
+        // 显示解冻车辆信息模态框
+        $('.table_box .unlock-vehicle-info').click(function() {
+            $('.unlock-vehicle').show();
+            $('.mask').show();
+        });
+
+        // 隐藏解冻车辆模态框
+        $('.unlock-vehicle .cancle').click(function() {
+            if (confirm('是否取消解冻？')) {
+                $('.unlock-vehicle').hide();
+                $('.mask').hide();
+            }
+        });
+
+        // 提交解冻车辆解冻申请
+        $('.unlock-vehicle .save').click(function() {
+            if (confirm('是否解冻改车辆？')) {
+                $('.unlock-vehicle').hide();
+                $('.mask').hide();
+                $('.unlock-vehicle form').submit();
+            }
+        });
     });
 
     // 填充编辑车辆模态框信息
     function setVehicleInfo(vehicle_type, number, engine, owner, register_date, belong, vehicle_id, vehicle_status) {
-
         $('.modify-vehicle select').eq(1).val(vehicle_type);       // 车辆类型
         $('.modify-vehicle select').eq(2).val(belong);       // 车辆类型
         $('.modify-vehicle input').eq(0).val(number.replace("<br />",""));              // 号牌号码
         $('.modify-vehicle input').eq(1).val(engine.replace("<br />",""));              // 发动机型号
         $('.modify-vehicle input').eq(2).val(owner.replace("<br />",""));       // 车辆型号
         $('.modify-vehicle input').eq(3).val(register_date);     // 车辆注册日期
-        $('.modify-vehicle input').eq(4).val(vehicle_id);     // 车辆注册日期
+        $('.modify-vehicle input').last().val(vehicle_id);     // 车辆注册日期
 
+        $('.my-modal-footer button').hide();
+        $('.my-modal-footer button').eq(4).show();
 
-        if (vehicle_status == 3) {
-            $('.modify-vehicle .my-modal-footer .save').hide();
-        } else {
-            $('.modify-vehicle .my-modal-footer .save').show();
+        if (vehicle_status == '2') {
+            $('.my-modal-footer button').eq(0).show();
+            $('.my-modal-footer button').eq(1).show();
+        } else if (vehicle_status == '3') {
+            $('.my-modal-footer button').eq(3).show();
+        } else if (vehicle_status == '5') {
+            $('.my-modal-footer button').eq(2).show();
         }
+    }
+
+    // 填充编辑车辆模态框信息
+    function setMarkInfo(vehicle_number, vehicle_id) {
+        $('.mark-vehicle input').eq(0).val(vehicle_number.replace("<br />",""));              // 号牌号码
+        $('.mark-vehicle input').last().val(vehicle_id);     // 车辆id
+
+        $('.my-modal-footer button').show();
     }
 
     // 跳转到指定页面
@@ -646,19 +556,29 @@
         $('#pageToolbar form').submit();
     }
 
+    // 显示/隐藏违规时间地点信息
+    function showIllegalInfo(isIllegal) {
+        if (isIllegal == 61) {
+            $('.mark-vehicle tr').eq(3).show();
+            $('.mark-vehicle tr').eq(4).show();
+        } else {
+            $('.mark-vehicle tr').eq(4).hide();
+            $('.mark-vehicle tr').eq(3).hide();
+        }
+    }
+
     // 填充编辑车辆模态框信息
-    function setUnlockInfo(vehicle_number, vehicle_reason, vehicle_id) {
+    function setUnlockInfo(vehicle_number, vehicle_reason, unlock_content, unlock_file, vehicle_id) {
 
         $('.unlock-vehicle input').eq(0).val(vehicle_number);
         $('.unlock-vehicle input').eq(1).val(vehicle_reason);
         $('.unlock-vehicle input').last().val(vehicle_id);
+
+        $('.unlock-vehicle textarea').eq(0).val(unlock_content);
+        $('.unlock-vehicle .unlock-file a').attr('href', '/static/file/' + unlock_file);
+
+        $('.unlock-vehicle button').show();
     }
 
-    // 删除本单位全部车辆
-    function clear_all(user_id) {
-        if (confirm('是否删除全部车辆信息？')) {
-            window.location.href = "/clear_all?user_id=" + user_id;
-        }
-    }
 </script>
 </html>

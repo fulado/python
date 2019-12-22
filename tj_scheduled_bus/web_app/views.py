@@ -1,8 +1,6 @@
 import random
 import hashlib
 import io
-import time
-import calendar
 
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
@@ -13,7 +11,7 @@ from .models import User, Enterprise, Station, Department, Route, Vehicle, Permi
 from .decorator import login_check
 from tj_scheduled_bus import settings
 from .utils import save_file, MyPaginator, statistic_update, send_sms, check_vehicle, check_vehicle_expired,\
-    create_permission
+    create_permission, save_unlock_file
 
 
 # Create your views here.
@@ -807,10 +805,10 @@ def mark(request):
     mp.paginate(mark_list, 10, 1)
 
     # 所属支队
-    dept_info = Department.objects.get(user_id=user_id)
-    # print(dept_info.dept_name)
+    # dept_info = Department.objects.get(user_id=user_id)
+
     context = {'mp': mp,
-               'dept_info': dept_info,
+               # 'dept_info': dept_info,
                }
 
     return render(request, 'mark.html', context)
@@ -842,10 +840,26 @@ def password_modify(request):
     return JsonResponse({'result': result})
 
 
+# 申请解冻车辆
+def vehicle_unlock(request):
+    vehicle_id = request.POST.get('vehicle_id', '')
+    unlock_content = request.POST.get('unlock_content', '')
 
+    vehicle_info = Vehicle.objects.get(id=vehicle_id)
+    vehicle_info.unlock_content = unlock_content
 
+    # 解冻文件
+    unlock_file = request.FILES.get('unlock_file', '')
 
+    if unlock_file:
+        file_name = '解冻文件_' + vehicle_id + '.' + (unlock_file.name.split('.'))[-1]
+        save_unlock_file(unlock_file, file_name)
+        vehicle_info.unlock_file = file_name
 
+    vehicle_info.vehicle_status_id = 7
+    vehicle_info.save()
+
+    return HttpResponseRedirect('/vehicle')
 
 
 

@@ -2,9 +2,10 @@
 交管局功能
 """
 from django.shortcuts import render, HttpResponseRedirect
+from django.http import JsonResponse
 
 
-from .models import Enterprise, Vehicle, User, Station
+from .models import Enterprise, Vehicle, User, Station, Department
 from .decorator import login_check
 from .utils import MyPaginator
 
@@ -126,6 +127,7 @@ def account(request):
     search_name = request.POST.get('search_name', '')
 
     user_list = User.objects.filter(username__contains=search_name)
+    dept_list = Department.objects.all()
 
     # 分页
     mp = MyPaginator()
@@ -134,17 +136,113 @@ def account(request):
     context = {'mp': mp,
                'page_num': page_num,
                'search_name': search_name,
+               'dept_list': dept_list
                }
 
     return render(request, 'zongdui/account.html', context)
 
 
+# 是否可以添加账号
+def can_add_account(request):
+    username = request.GET.get('username', '')
+
+    if User.objects.filter(username=username).exists():
+        result = False
+    else:
+        result = True
+
+    return JsonResponse({'result': result})
 
 
+# 添加账号
+def account_add(request):
+    username = request.POST.get('username', '')
+    password = request.POST.get('password', '')
+    dept_id = request.POST.get('dept_id', '')
+    person_name = request.POST.get('person_name', '')
+    person_id = request.POST.get('person_id', '')
+    phone = request.POST.get('phone', '')
+
+    user_info = User()
+
+    user_info.username = username
+    user_info.password = password
+    user_info.dept_id = dept_id
+    user_info.person_name = person_name
+    user_info.person_id = person_id
+    user_info.phone = phone
+
+    if dept_id == 1:
+        user_info.authority = 3
+    else:
+        user_info.authority = 2
+
+    user_info.save()
+
+    return HttpResponseRedirect('/zongdui/account')
 
 
+# 修改账号
+def account_modify(request):
+    password = request.POST.get('password', '')
+    dept_id = request.POST.get('dept_id', '')
+    person_name = request.POST.get('person_name', '')
+    person_id = request.POST.get('person_id', '')
+    phone = request.POST.get('phone', '')
+    user_id = request.POST.get('user_id', '')
+
+    user_info = User.objects.get(id=user_id)
+
+    if password != '!!!!!!!!!!':
+        user_info.password = password
+    else:
+        pass
+
+    user_info.dept_id = dept_id
+    user_info.person_name = person_name
+    user_info.person_id = person_id
+    user_info.phone = phone
+
+    user_info.save()
+
+    return HttpResponseRedirect('/zongdui/account')
 
 
+# 删除账号
+def account_delete(request):
+    user_id = request.POST.get('user_id', None)
+
+    if user_id:
+        User.objects.filter(id=user_id).delete()
+    else:
+        pass
+
+    return HttpResponseRedirect('/zongdui/account')
+
+
+# 冻结账号
+def account_lock(request):
+    user_id = request.POST.get('user_id', None)
+    reason = request.POST.get('reason', '')
+
+    if user_id:
+        User.objects.filter(id=user_id).update(reason=reason, status=72)
+    else:
+        pass
+
+    return HttpResponseRedirect('/zongdui/account')
+
+
+# 解冻账号
+def account_unlock(request):
+    user_id = request.GET.get('user_id', None)
+
+    if user_id:
+        User.objects.filter(id=user_id).update(reason='', status=71)
+    else:
+        pass
+
+    return HttpResponseRedirect('/zongdui/account')
 
 
 
