@@ -88,7 +88,7 @@
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     <td title="{{ enterprise.enterprise_name }}">{{ enterprise.enterprise_name }}</td>
-                    <td title="{{ enterprise.enterprise_code }}">{{ enterprise.enterprise_code }}</td>
+                    <td title="{{ enterprise.enterprise_code|default:'' }}">{{ enterprise.enterprise_code|default:'' }}</td>
                     <td title="{{ enterprise.contact_person }}">{{ enterprise.contact_person }}</td>
                     <td title="{{ enterprise.phone }}">{{ enterprise.phone }}</td>
                     <td title="{{ enterprise.enterprise_status.status_content }}">{{ enterprise.enterprise_status.status_content }}</td>
@@ -333,7 +333,7 @@
                 alert('请填写企业所有人');
                 return;
             }
-            else if (enterprise_code == '' && enterprise_type == 1) {
+            else if (enterprise_code == '' && enterprise_type == 41) {
                 alert('请填写统一社会信用代码');
                 return;
             }
@@ -349,15 +349,15 @@
                 alert('请上传营业执照照片');
                 return;
             }
-            else if (id_card_front <= 0 && enterprise_type == 1) {
+            else if (id_card_front <= 0 && enterprise_type == 41) {
                 alert('请上传法人身份证正面照片');
                 return;
             }
-            else if (id_card_back <= 0 && enterprise_type == 1) {
+            else if (id_card_back <= 0 && enterprise_type == 41) {
                 alert('请上传法人身份证反面照片');
                 return;
             }
-            else if (rent_contract <= 0 && enterprise_type == 2) {
+            else if (rent_contract <= 0 && enterprise_type == 42) {
                 alert('请上传租赁合同照片');
                 return;
             }
@@ -365,16 +365,7 @@
                 alert('请选择面签支队');
                 return;
             }
-            else {
-                $.get('/is_enterprise_exist', {'enterprise_name': enterprise_name, 'enterprise_code': enterprise_code}, function(data) {
-                    if (data.is_exist) {
-                        alert('该企业信息已经存在');
-                        return;
-                    }
-                });
-            }
-
-            if (enterprise_type == 41) {
+            else if (enterprise_type == 41) {
                 $.get('/is_own_enterprise_exist', {'enterprise_type': enterprise_type}, function(data) {
                     if (data.is_exist) {
                          alert('只能添加一个自有车辆企业');
@@ -387,11 +378,19 @@
                 });
             }
             else {
-                if (confirm('是否保存企业信息？')) {
-                    $('.add-enterprise form').submit();
-                    $('.add-enterprise').hide();
-                    $('.mask').hide();
-                }
+                $.get('/is_enterprise_exist', {'enterprise_name': enterprise_name, 'enterprise_code': enterprise_code, 'enterprise_type': enterprise_type}, function(data) {
+                    if (data.is_exist) {
+                        alert('该企业信息已经存在');
+                        return;
+                    }
+                    else {
+                        if (confirm('是否保存企业信息？')) {
+                            $('.add-enterprise form').submit();
+                            $('.add-enterprise').hide();
+                            $('.mask').hide();
+                        }
+                    }
+                });
             }
         });
 

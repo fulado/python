@@ -270,7 +270,7 @@ def enterprise(request):
 def enterprise_add(request):
     user_id = request.session.get('user_id', '')
 
-    enterprise_type = request.POST.get('enterprise_type', 0)
+    enterprise_type = int(request.POST.get('enterprise_type', 0))
     enterprise_name = request.POST.get('enterprise_name', '')
     enterprise_owner = request.POST.get('enterprise_owner', '')
     enterprise_code = request.POST.get('enterprise_code', '')
@@ -282,7 +282,7 @@ def enterprise_add(request):
     enterprise_info.enterprise_type_id = enterprise_type
     enterprise_info.enterprise_name = enterprise_name
     enterprise_info.enterprise_owner = enterprise_owner
-    enterprise_info.enterprise_code = enterprise_code
+
     enterprise_info.contact_person = contact_person
     enterprise_info.phone = phone
     enterprise_info.user_id = user_id
@@ -296,33 +296,42 @@ def enterprise_add(request):
         save_file(business_license, file_name)
         enterprise_info.business_license = file_name
 
-    # 法人身份证正面
-    id_card_front = request.FILES.get('id_card_front', '')
-    if id_card_front:
-        file_name = '身份证正面_' + enterprise_name
-        save_file(id_card_front, file_name)
-        enterprise_info.id_card_front = file_name
+    if enterprise_type == 41:
+        enterprise_info.enterprise_code = enterprise_code
 
-    # 法人身份证反面
-    id_card_back = request.FILES.get('id_card_back', '')
-    if id_card_back:
-        file_name = '身份证反面_' + enterprise_name
-        save_file(id_card_back, file_name)
-        enterprise_info.id_card_back = file_name
+        # 法人身份证正面
+        id_card_front = request.FILES.get('id_card_front', '')
+        if id_card_front:
+            file_name = '身份证正面_' + enterprise_name
+            save_file(id_card_front, file_name)
+            enterprise_info.id_card_front = file_name
 
-    # 法人身份证反面
-    rent_contract = request.FILES.get('rent_contract', '')
-    if rent_contract:
-        file_name = '租赁合同_' + enterprise_name
-        save_file(rent_contract, file_name)
-        enterprise_info.rent_contract = file_name
+        # 法人身份证反面
+        id_card_back = request.FILES.get('id_card_back', '')
+        if id_card_back:
+            file_name = '身份证反面_' + enterprise_name
+            save_file(id_card_back, file_name)
+            enterprise_info.id_card_back = file_name
+
+    else:
+        # 租赁合同
+        rent_contract = request.FILES.get('rent_contract', '')
+        if rent_contract:
+            file_name = '租赁合同_' + enterprise_name
+            save_file(rent_contract, file_name)
+            enterprise_info.rent_contract = file_name
 
     try:
         enterprise_info.save()
     except Exception as e:
         print(e)
 
-    return HttpResponseRedirect('/enterprise')
+    page_number = request.session.get('page_number', 1)
+    search_name = request.session.get('search_name', '')
+
+    url = '/enterprise?page_number=%d&search_name=%s' % (page_number, search_name)
+
+    return HttpResponseRedirect(url)
 
 
 # 编辑企业
@@ -405,9 +414,13 @@ def is_enterprise_exist(request):
     user_id = request.session.get('user_id', '')
     enterprise_name = request.GET.get('enterprise_name')
     enterprise_code = request.GET.get('enterprise_code')
+    enterprise_type = request.GET.get('enterprise_type')
 
-    is_exist = Enterprise.objects.filter(enterprise_name=enterprise_name, user_id=user_id).exists() or \
-               Enterprise.objects.filter(enterprise_code=enterprise_code, user_id=user_id).exists()
+    if enterprise_type == '41':
+        is_exist = Enterprise.objects.filter(enterprise_name=enterprise_name, user_id=user_id).exists() or \
+                   Enterprise.objects.filter(enterprise_code=enterprise_code, user_id=user_id).exists()
+    else:
+        is_exist = Enterprise.objects.filter(enterprise_name=enterprise_name, user_id=user_id).exists()
 
     return JsonResponse({'is_exist': is_exist})
 
