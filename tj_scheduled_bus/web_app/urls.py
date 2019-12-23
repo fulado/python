@@ -41,6 +41,8 @@ urlpatterns = [
     url(r'^enterprise_modify/?', views.enterprise_modify),
     url(r'^enterprise_delete/?', views.enterprise_delete),
     url(r'^enterprise_submit/?', views.enterprise_submit),
+    url(r'^is_enterprise_exist/?', views.is_enterprise_exist),
+    url(r'^is_own_enterprise_exist/?', views.is_own_enterprise_exist),
     url(r'^enterprise/?', views.enterprise),
 
     # 企业车辆管理

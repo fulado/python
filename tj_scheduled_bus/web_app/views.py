@@ -258,6 +258,10 @@ def enterprise(request):
                'search_name': search_name,
                'dept_list': dept_list
                }
+    
+    # 保存页码和搜索信息
+    request.session['page_num'] = page_num
+    request.session['search_name'] = search_name
 
     return render(request, 'enterprise.html', context)
 
@@ -404,6 +408,15 @@ def is_enterprise_exist(request):
 
     is_exist = Enterprise.objects.filter(enterprise_name=enterprise_name, user_id=user_id).exists() or \
                Enterprise.objects.filter(enterprise_code=enterprise_code, user_id=user_id).exists()
+
+    return JsonResponse({'is_exist': is_exist})
+
+
+# 是否可以添加自有车辆企业，每个账号只能添加一个自有车辆企业
+def is_own_enterprise_exist(request):
+    user_id = request.session.get('user_id', '')
+
+    is_exist = Enterprise.objects.filter(enterprise_type=41, user_id=user_id).exists()
 
     return JsonResponse({'is_exist': is_exist})
 

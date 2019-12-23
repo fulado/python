@@ -299,6 +299,8 @@
         $('.search_input .add_company').click(function(){
             $('.add-enterprise').show();
             $('.mask').show();
+
+            showRentInfo(41);
         });
 
         // 隐藏新增企业模态框
@@ -325,38 +327,57 @@
 
             if (enterprise_name == '') {
                 alert('请填写企业名称');
+                return;
             }
             else if (enterprise_owner == '') {
                 alert('请填写企业所有人');
+                return;
             }
             else if (enterprise_code == '' && enterprise_type == 1) {
                 alert('请填写统一社会信用代码');
+                return;
             }
             else if (contact_person == '') {
                 alert('请填写联系人');
+                return;
             }
             else if (phone == '') {
                 alert('请填写联系方式');
+                return;
             }
             else if (business_license <= 0) {
                 alert('请上传营业执照照片');
+                return;
             }
             else if (id_card_front <= 0 && enterprise_type == 1) {
                 alert('请上传法人身份证正面照片');
+                return;
             }
             else if (id_card_back <= 0 && enterprise_type == 1) {
                 alert('请上传法人身份证反面照片');
+                return;
             }
             else if (rent_contract <= 0 && enterprise_type == 2) {
                 alert('请上传租赁合同照片');
+                return;
             }
             else if (dept_id == '0') {
                 alert('请选择面签支队');
+                return;
             }
             else {
-                $.get('/is_enterprise_exist', {'enterprise_type': enterprise_type}, function(data) {
-                    if (data.result) {
-                        alert('只能添加一个自有车辆企业');
+                $.get('/is_enterprise_exist', {'enterprise_name': enterprise_name, 'enterprise_code': enterprise_code}, function(data) {
+                    if (data.is_exist) {
+                        alert('该企业信息已经存在');
+                        return;
+                    }
+                });
+            }
+
+            if (enterprise_type == 41) {
+                $.get('/is_own_enterprise_exist', {'enterprise_type': enterprise_type}, function(data) {
+                    if (data.is_exist) {
+                         alert('只能添加一个自有车辆企业');
                     }
                     else if (confirm('是否保存企业信息？')) {
                         $('.add-enterprise form').submit();
@@ -364,6 +385,13 @@
                         $('.mask').hide();
                     }
                 });
+            }
+            else {
+                if (confirm('是否保存企业信息？')) {
+                    $('.add-enterprise form').submit();
+                    $('.add-enterprise').hide();
+                    $('.mask').hide();
+                }
             }
         });
 
