@@ -10,6 +10,9 @@ from .decorator import login_check
 from .utils import MyPaginator
 
 
+import hashlib
+
+
 # 显示企业审核页面
 @login_check
 def enterprise(request):
@@ -166,7 +169,7 @@ def account_add(request):
     user_info = User()
 
     user_info.username = username
-    user_info.password = password
+    user_info.password = hashlib.sha1(password.encode('utf8')).hexdigest()
     user_info.dept_id = dept_id
     user_info.person_name = person_name
     user_info.person_id = person_id

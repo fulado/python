@@ -68,13 +68,17 @@ def sms_check_code(request):
         data = {'result': False}
     else:
         sms_code = '%d%d%d%d' % (random.randint(0, 9), random.randint(0, 9), random.randint(0, 9), random.randint(0, 9))
-        if send_sms(sms_code):
-        # if True:
-            print(sms_code)
+        if send_sms(phone_number, sms_code):
             request.session['sms_code'] = sms_code
             data = {'result': True}
         else:
             data = {'result': False}
+
+    ########################################################
+    # 测试用，正式环境删除
+    data = {'result': True}
+    request.session['sms_code'] = '1234'
+    ########################################################
 
     return JsonResponse(data)
 
@@ -138,7 +142,7 @@ def register(request):
     #     return HttpResponseRedirect('/login')
 
     msg = request.GET.get('msg', '')
-    cp = request.GET.get('cp', '')
+    cp = request.GET.get('cp', 0)
 
     context = {'msg': msg,
                'cp': cp,
@@ -156,23 +160,23 @@ def register_handle(request):
 
     if User.objects.filter(phone=phone_number).exists():
         msg = '手机号已经被注册'
-        return HttpResponseRedirect('/register?msg=%s' % msg)
+        return HttpResponseRedirect('/register?msg=%s&cp=0' % msg)
 
     sms_code = request.POST.get('sms_code')
     session_code = request.session.get('sms_code')
 
     if sms_code != session_code:
         msg = '验证码错误'
-        return HttpResponseRedirect('/register?msg=%s' % msg)
+        return HttpResponseRedirect('/register?msg=%s&cp=0' % msg)
 
-    if password != re_password:
+    if user_password != re_password:
         msg = '两次输入密码不一致'
-        return HttpResponseRedirect('/register?msg=%s' % msg)
+        return HttpResponseRedirect('/register?msg=%s&cp=0' % msg)
 
     is_user_exist = User.objects.filter(username=username).exists()
     if is_user_exist:
         msg = '账号已存在'
-        return HttpResponseRedirect('/register?msg=%s' % msg)
+        return HttpResponseRedirect('/register?msg=%s&cp=0' % msg)
 
     user_info = User()
     user_info.username = username
@@ -326,7 +330,7 @@ def enterprise_add(request):
     except Exception as e:
         print(e)
 
-    page_num = request.session.get('page_num', 1)
+    page_num = int(request.session.get('page_num', 1))
     search_name = request.session.get('search_name', '')
 
     url = '/enterprise?page_num=%d&search_name=%s' % (page_num, search_name)
@@ -386,7 +390,7 @@ def enterprise_modify(request):
     except Exception as e:
         print(e)
 
-    page_num = request.session.get('page_num', 1)
+    page_num = int(request.session.get('page_num', 1))
     search_name = request.session.get('search_name', '')
 
     url = '/enterprise?page_num=%d&search_name=%s' % (page_num, search_name)
@@ -402,7 +406,7 @@ def enterprise_delete(request):
 
     enterprise_info.delete()
 
-    page_num = request.session.get('page_num', 1)
+    page_num = int(request.session.get('page_num', 1))
     search_name = request.session.get('search_name', '')
 
     url = '/enterprise?page_num=%d&search_name=%s' % (page_num, search_name)
@@ -416,7 +420,7 @@ def enterprise_submit(request):
 
     Enterprise.objects.filter(id=enterprise_id).update(enterprise_status_id=2)
 
-    page_num = request.session.get('page_num', 1)
+    page_num = int(request.session.get('page_num', 1))
     search_name = request.session.get('search_name', '')
 
     url = '/enterprise?page_num=%d&search_name=%s' % (page_num, search_name)
@@ -504,7 +508,7 @@ def vehicle_add(request):
     vehicle_info.save()
 
     # 保存页码和搜索信息
-    page_num = request.session.get('page_num', 1)
+    page_num = int(request.session.get('page_num', 1))
     number = request.session.get('number', '')
     vehicle_status = request.session.get('vehicle_status', 0)
 
@@ -533,7 +537,7 @@ def vehicle_modify(request):
     vehicle_info.save()
 
     # 保存页码和搜索信息
-    page_num = request.session.get('page_num', 1)
+    page_num = int(request.session.get('page_num', 1))
     number = request.session.get('number', '')
     vehicle_status = request.session.get('vehicle_status', 0)
 
@@ -549,7 +553,7 @@ def vehicle_submit(request):
     Vehicle.objects.filter(id=vehicle_id).update(vehicle_status_id=2)
 
     # 保存页码和搜索信息
-    page_num = request.session.get('page_num', 1)
+    page_num = int(request.session.get('page_num', 1))
     number = request.session.get('number', '')
     vehicle_status = request.session.get('vehicle_status', 0)
 
@@ -566,7 +570,7 @@ def vehicle_delete(request):
     vehicle_info.delete()
 
     # 保存页码和搜索信息
-    page_num = request.session.get('page_num', 1)
+    page_num = int(request.session.get('page_num', 1))
     number = request.session.get('number', '')
     vehicle_status = request.session.get('vehicle_status', 0)
 
@@ -778,7 +782,7 @@ def station_cancel(request):
     except Exception as e:
         print(e)
 
-    page_num = request.session.get('page_num', 1)
+    page_num = int(request.session.get('page_num', 1))
     search_name = request.session.get('search_name', '')
 
     url = '/station?page_num=%d&search_name=%s' % (page_num, search_name)
@@ -791,7 +795,7 @@ def station_save(request):
     Route.objects.filter(route_status=1).update(route_status=3)
     Route.objects.filter(route_status=2).delete()
 
-    page_num = request.session.get('page_num', 1)
+    page_num = int(request.session.get('page_num', 1))
     search_name = request.session.get('search_name', '')
 
     url = '/station?page_num=%d&search_name=%s' % (page_num, search_name)
@@ -807,7 +811,7 @@ def permission(request):
     vehicle_number = request.GET.get('vehicle_number', '')
     page_num = int(request.GET.get('page_num', 1))
 
-    vehicle_list = Vehicle.objects.filter(vehicle_user_id=user_id).filter(vehicle_status_id=3)
+    vehicle_list = Vehicle.objects.filter(vehicle_user_id=user_id).filter(vehicle_status_id__in=(3, 6))
     route_list = Route.objects.filter(route_user_id=user_id).values('route_name').distinct()
 
     permission_vehicle_list = Vehicle.objects.filter(vehicle_number__contains=vehicle_number, vehicle_user=user_id)
@@ -860,7 +864,7 @@ def permission_add(request):
         pass
 
     # 取得分页页码
-    page_num = request.session.get('page_num', 1)
+    page_num = int(request.session.get('page_num', 1))
     vehicle_number = request.session.get('vehicle_number', '')
 
     url = '/permission?page_num=%d&vehicle_number=%s' % (page_num, vehicle_number)

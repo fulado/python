@@ -62,16 +62,22 @@ def enterprise_refuse(request):
 @login_check
 def vehicle(request):
     user_id = request.session.get('user_id', '')
-    user_info = User.objects.get(id=user_id)
-    user_list = User.objects.filter(dept_id=user_info.dept_id)
     page_num = request.GET.get('page_num', 1)
     number = request.GET.get('number', '')
+    status = int(request.GET.get('status', 0))
+
+    user_info = User.objects.get(id=user_id)
+    enterprise_list = Enterprise.objects.filter(dept_id=user_info.dept_id)
 
     user_id_list = []
-    for user_info in user_list:
-        user_id_list.append(user_info.id)
+    for enterprise_info in enterprise_list:
+        user_id_list.append(enterprise_info.user_id)
 
-    vehicle_list = Vehicle.objects.filter(vehicle_user_id__in=user_id_list)
+    if status == 0:
+        vehicle_list = Vehicle.objects.filter(vehicle_user_id__in=user_id_list, vehicle_number__contains=number)
+    else:
+        vehicle_list = Vehicle.objects.filter(vehicle_user_id__in=user_id_list, vehicle_status_id=status,
+                                              vehicle_number__contains=number)
 
     # 分页
     mp = MyPaginator()
@@ -79,7 +85,13 @@ def vehicle(request):
 
     context = {'mp': mp,
                'number': number,
+               'status': status,
                }
+
+    # 保存页码和搜索信息
+    request.session['page_num'] = page_num
+    request.session['number'] = number
+    request.session['status'] = status
 
     return render(request, 'zhidui/vehicle.html', context)
 
@@ -91,7 +103,14 @@ def vehicle_pass(request):
     Vehicle.objects.filter(id=vehicle_id).update(vehicle_status=3)
     Vehicle.objects.filter(id=vehicle_id).update(vehicle_reason='')
 
-    return HttpResponseRedirect('/zhidui/vehicle/')
+    # 获取页码和搜索信息
+    page_num = int(request.session.get('page_num', 1))
+    number = request.session.get('number', '')
+    status = request.session.get('status', 0)
+
+    url = '/zhidui/vehicle/?page_num=%d&number=%s&status=%s' % (page_num, number, status)
+
+    return HttpResponseRedirect(url)
 
 
 # 车辆审核不通过
@@ -110,13 +129,20 @@ def vehicle_refuse(request):
 
     vehicle_info.save()
 
-    return HttpResponseRedirect('/zhidui/vehicle/')
+    # 获取页码和搜索信息
+    page_num = int(request.session.get('page_num', 1))
+    number = request.session.get('number', '')
+    status = request.session.get('status', 0)
+
+    url = '/zhidui/vehicle/?page_num=%d&number=%s&status=%s' % (page_num, number, status)
+
+    return HttpResponseRedirect(url)
 
 
 # 车辆标记
 def vehicle_mark(request):
     user_id = request.session.get('user_id', '')
-    dept_id = (User.objects.get(id=user_id)).id
+    dept_id = (User.objects.get(id=user_id)).dept_id
 
     vehicle_id = request.POST.get('vehicle_id', '')
     mark_time = request.POST.get('mark_time', '')
@@ -145,15 +171,25 @@ def vehicle_mark(request):
 
     vehicle_info.save()
 
-    return HttpResponseRedirect('/zhidui/vehicle/')
+    # 获取页码和搜索信息
+    page_num = int(request.session.get('page_num', 1))
+    number = request.session.get('number', '')
+
+    url = '/zhidui/vehicle_mark_show/?page_num=%d&number=%s' % (page_num, number)
+
+    return HttpResponseRedirect(url)
 
 
 # 显示通行证信息
 @login_check
 def permission(request):
+    user_id = request.session.get('user_id', '')
+    dept_id = (User.objects.get(id=user_id)).dept_id
+
     enterprise_name = request.POST.get('enterprise_name', '')
 
-    statistic_list = Statistic.objects.filter(sta_enterprise__enterprise_name__contains=enterprise_name)
+    statistic_list = Statistic.objects.filter(sta_enterprise__dept_id=dept_id).\
+        filter(sta_enterprise__enterprise_name__contains=enterprise_name)
 
     # 分页
     mp = MyPaginator()
@@ -214,23 +250,38 @@ def vehicle_mark_show(request):
                'number': number,
                }
 
+    # 保存页码和搜索信息
+    request.session['page_num'] = page_num
+    request.session['number'] = number
+
     return render(request, 'zhidui/vehicle_mark.html', context)
 
 
-# 显示车辆标记信息
+# 显示解除标记
 @login_check
 def mark(request):
+    page_num = request.GET.get('page_num', 1)
+    number = request.GET.get('number', '')
+
     user_id = request.session.get('user_id', '')
     user_info = User.objects.get(id=user_id)
 
-    mark_list = Mark.objects.filter(dept_id=user_info.dept_id)
+    if number == '' or number is None:
+        mark_list = Mark.objects.filter(dept_id=user_info.dept_id)
+    else:
+        mark_list = Mark.objects.filter(dept_id=user_info.dept_id).filter(vehicle__vehicle_number__contains=number)
 
     # 分页
     mp = MyPaginator()
-    mp.paginate(mark_list, 10, 1)
+    mp.paginate(mark_list, 10, page_num)
 
     context = {'mp': mp,
+               'number': number
                }
+
+    # 保存页码和搜索信息
+    request.session['page_num'] = page_num
+    request.session['number'] = number
 
     return render(request, 'zhidui/mark.html', context)
 
@@ -254,7 +305,13 @@ def mark_delete(request):
     vehicle_info.save()
     mark_info.delete()
 
-    return HttpResponseRedirect('/zhidui/mark')
+    # 获取页码和搜索信息
+    page_num = int(request.session.get('page_num', 1))
+    number = request.session.get('number', '')
+
+    url = '/zhidui/mark/?page_num=%d&number=%s' % (page_num, number)
+
+    return HttpResponseRedirect(url)
 
 
 # 解冻车辆
@@ -272,7 +329,14 @@ def vehicle_unlock(request):
 
     vehicle_info.save()
 
-    return HttpResponseRedirect('/zhidui/vehicle')
+    # 获取页码和搜索信息
+    page_num = int(request.session.get('page_num', 1))
+    number = request.session.get('number', '')
+    status = request.session.get('status', 0)
+
+    url = '/zhidui/vehicle/?page_num=%d&number=%s&status=%s' % (page_num, number, status)
+
+    return HttpResponseRedirect(url)
 
 
 
