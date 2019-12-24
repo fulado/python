@@ -244,7 +244,7 @@ def main(request):
 @login_check
 def enterprise(request):
     user_id = request.session.get('user_id', '')
-    search_name = request.POST.get('search_name', '')
+    search_name = request.GET.get('search_name', '')
     page_num = request.GET.get('page_num', 1)
 
     enterprise_list = Enterprise.objects.filter(user_id=user_id).filter(enterprise_name__contains=search_name)
@@ -386,7 +386,12 @@ def enterprise_modify(request):
     except Exception as e:
         print(e)
 
-    return HttpResponseRedirect('/enterprise')
+    page_number = request.session.get('page_number', 1)
+    search_name = request.session.get('search_name', '')
+
+    url = '/enterprise?page_number=%d&search_name=%s' % (page_number, search_name)
+
+    return HttpResponseRedirect(url)
 
 
 # 删除企业
@@ -397,7 +402,12 @@ def enterprise_delete(request):
 
     enterprise_info.delete()
 
-    return HttpResponseRedirect('/enterprise')
+    page_number = request.session.get('page_number', 1)
+    search_name = request.session.get('search_name', '')
+
+    url = '/enterprise?page_number=%d&search_name=%s' % (page_number, search_name)
+
+    return HttpResponseRedirect(url)
 
 
 # 提交企业
@@ -406,7 +416,12 @@ def enterprise_submit(request):
 
     Enterprise.objects.filter(id=enterprise_id).update(enterprise_status_id=2)
 
-    return HttpResponseRedirect('/enterprise')
+    page_number = request.session.get('page_number', 1)
+    search_name = request.session.get('search_name', '')
+
+    url = '/enterprise?page_number=%d&search_name=%s' % (page_number, search_name)
+
+    return HttpResponseRedirect(url)
 
 
 # 判断企业是否存在
@@ -438,8 +453,8 @@ def is_own_enterprise_exist(request):
 @login_check
 def vehicle(request):
     user_id = request.session.get('user_id', '')
-    number = request.POST.get('vehicle_number', '')
-    vehicle_status = int(request.POST.get('vehicle_status', 0))
+    number = request.GET.get('number', '')
+    vehicle_status = int(request.GET.get('status', 0))
     page_num = request.GET.get('page_num', 1)
 
     vehicle_list = Vehicle.objects.filter(vehicle_user_id=user_id).filter(vehicle_number__contains=number)
@@ -454,8 +469,13 @@ def vehicle(request):
 
     context = {'mp': mp,
                'number': number,
-               'vehicle_status': vehicle_status,
+               'status': vehicle_status,
                }
+
+    # 保存页码和搜索信息
+    request.session['page_num'] = page_num
+    request.session['number'] = number
+    request.session['vehicle_status'] = vehicle_status
 
     return render(request, 'vehicle.html', context)
 
