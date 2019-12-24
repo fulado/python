@@ -116,7 +116,7 @@ def vehicle_refuse(request):
 # 车辆标记
 def vehicle_mark(request):
     user_id = request.session.get('user_id', '')
-    dept_id = Department.objects.get(user_id=user_id).id
+    dept_id = (User.objects.get(id=user_id)).id
 
     vehicle_id = request.POST.get('vehicle_id', '')
     mark_time = request.POST.get('mark_time', '')

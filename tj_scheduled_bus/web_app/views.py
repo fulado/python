@@ -326,10 +326,10 @@ def enterprise_add(request):
     except Exception as e:
         print(e)
 
-    page_number = request.session.get('page_number', 1)
+    page_num = request.session.get('page_num', 1)
     search_name = request.session.get('search_name', '')
 
-    url = '/enterprise?page_number=%d&search_name=%s' % (page_number, search_name)
+    url = '/enterprise?page_num=%d&search_name=%s' % (page_num, search_name)
 
     return HttpResponseRedirect(url)
 
@@ -386,10 +386,10 @@ def enterprise_modify(request):
     except Exception as e:
         print(e)
 
-    page_number = request.session.get('page_number', 1)
+    page_num = request.session.get('page_num', 1)
     search_name = request.session.get('search_name', '')
 
-    url = '/enterprise?page_number=%d&search_name=%s' % (page_number, search_name)
+    url = '/enterprise?page_num=%d&search_name=%s' % (page_num, search_name)
 
     return HttpResponseRedirect(url)
 
@@ -402,10 +402,10 @@ def enterprise_delete(request):
 
     enterprise_info.delete()
 
-    page_number = request.session.get('page_number', 1)
+    page_num = request.session.get('page_num', 1)
     search_name = request.session.get('search_name', '')
 
-    url = '/enterprise?page_number=%d&search_name=%s' % (page_number, search_name)
+    url = '/enterprise?page_num=%d&search_name=%s' % (page_num, search_name)
 
     return HttpResponseRedirect(url)
 
@@ -416,10 +416,10 @@ def enterprise_submit(request):
 
     Enterprise.objects.filter(id=enterprise_id).update(enterprise_status_id=2)
 
-    page_number = request.session.get('page_number', 1)
+    page_num = request.session.get('page_num', 1)
     search_name = request.session.get('search_name', '')
 
-    url = '/enterprise?page_number=%d&search_name=%s' % (page_number, search_name)
+    url = '/enterprise?page_num=%d&search_name=%s' % (page_num, search_name)
 
     return HttpResponseRedirect(url)
 
@@ -503,7 +503,14 @@ def vehicle_add(request):
 
     vehicle_info.save()
 
-    return HttpResponseRedirect('/vehicle')
+    # 保存页码和搜索信息
+    page_num = request.session.get('page_num', 1)
+    number = request.session.get('number', '')
+    vehicle_status = request.session.get('vehicle_status', 0)
+
+    url = '/vehicle?page_num=%d&number=%s&vehicle_status=%s' % (page_num, number, vehicle_status)
+
+    return HttpResponseRedirect(url)
 
 
 # 编辑车辆
@@ -525,7 +532,14 @@ def vehicle_modify(request):
 
     vehicle_info.save()
 
-    return HttpResponseRedirect('/vehicle')
+    # 保存页码和搜索信息
+    page_num = request.session.get('page_num', 1)
+    number = request.session.get('number', '')
+    vehicle_status = request.session.get('vehicle_status', 0)
+
+    url = '/vehicle?page_num=%d&number=%s&vehicle_status=%s' % (page_num, number, vehicle_status)
+
+    return HttpResponseRedirect(url)
 
 
 # 提交车辆审核
@@ -534,7 +548,14 @@ def vehicle_submit(request):
 
     Vehicle.objects.filter(id=vehicle_id).update(vehicle_status_id=2)
 
-    return HttpResponseRedirect('/vehicle_id')
+    # 保存页码和搜索信息
+    page_num = request.session.get('page_num', 1)
+    number = request.session.get('number', '')
+    vehicle_status = request.session.get('vehicle_status', 0)
+
+    url = '/vehicle?page_num=%d&number=%s&vehicle_status=%s' % (page_num, number, vehicle_status)
+
+    return HttpResponseRedirect(url)
 
 
 # 删除车辆
@@ -544,7 +565,14 @@ def vehicle_delete(request):
     vehicle_info = Vehicle.objects.get(id=vehicle_id)
     vehicle_info.delete()
 
-    return HttpResponseRedirect('/vehicle')
+    # 保存页码和搜索信息
+    page_num = request.session.get('page_num', 1)
+    number = request.session.get('number', '')
+    vehicle_status = request.session.get('vehicle_status', 0)
+
+    url = '/vehicle?page_num=%d&number=%s&vehicle_status=%s' % (page_num, number, vehicle_status)
+
+    return HttpResponseRedirect(url)
 
 
 # 车辆是否可以添加
@@ -557,9 +585,9 @@ def can_add_vehicle(request):
     if Vehicle.objects.filter(vehicle_number=vehicle_number,vehicle_user_id=user_id).exists():
         result = '1'    # 车辆已经存在
     elif not check_vehicle(vehicle_number, engine_code, vehicle_owner):
-        result = '2'
+        result = '2'    # 车辆信息不正确
     else:
-        result = '0'
+        result = '0'    # 可以添加
 
     return JsonResponse({'result': result})
 
@@ -568,7 +596,7 @@ def can_add_vehicle(request):
 @login_check
 def station(request):
     user_id = request.session.get('user_id', '')
-    search_name = request.POST.get('search_name', '')
+    search_name = request.GET.get('search_name', '')
     page_num = request.GET.get('page_num', 1)
 
     route_list = Route.objects.filter(route_user_id=user_id).filter(route_status=3).\
@@ -596,8 +624,10 @@ def station(request):
                'search_name': search_name
                }
 
-    # for station in station_list:
-    #     print(station.route_station.station_name)
+    # 保存页码和搜索信息
+    request.session['page_num'] = page_num
+    request.session['search_name'] = search_name
+
     return render(request, 'station.html', context)
 
 
@@ -687,7 +717,7 @@ def station_add(request):
     is_station_exists = Route.objects.filter(route_name=route_name, route_user_id=user_id, route_station_id=station_id)\
         .filter(route_status__in=(1, 3)).exists()
 
-    station_count = Route.objects.filter(route_name=route_name, route_user_id=user_id).count()
+    # station_count = Route.objects.filter(route_name=route_name, route_user_id=user_id).count()
 
     if not is_station_exists:
         route_info = Route()
@@ -748,7 +778,12 @@ def station_cancel(request):
     except Exception as e:
         print(e)
 
-    return HttpResponseRedirect('/station')
+    page_num = request.session.get('page_num', 1)
+    search_name = request.session.get('search_name', '')
+
+    url = '/station?page_num=%d&search_name=%s' % (page_num, search_name)
+
+    return HttpResponseRedirect(url)
 
 
 # 保存添加路线
@@ -756,7 +791,12 @@ def station_save(request):
     Route.objects.filter(route_status=1).update(route_status=3)
     Route.objects.filter(route_status=2).delete()
 
-    return HttpResponseRedirect('/station')
+    page_num = request.session.get('page_num', 1)
+    search_name = request.session.get('search_name', '')
+
+    url = '/station?page_num=%d&search_name=%s' % (page_num, search_name)
+
+    return HttpResponseRedirect(url)
 
 
 # 显示通行证信息
@@ -786,10 +826,12 @@ def permission(request):
     context = {'vehicle_list': vehicle_list,
                'route_list': route_list,
                'mp': mp,
+               'vehicle_number': vehicle_number,
                }
 
-    # 保存分页页码
+    # 保存页码和搜索信息
     request.session['page_num'] = page_num
+    request.session['vehicle_number'] = vehicle_number
 
     return render(request, 'permit.html', context)
 
@@ -819,7 +861,9 @@ def permission_add(request):
 
     # 取得分页页码
     page_num = request.session.get('page_num', 1)
-    url = '/permission?page_num=%d' % page_num
+    vehicle_number = request.session.get('vehicle_number', '')
+
+    url = '/permission?page_num=%d&vehicle_number=%s' % (page_num, vehicle_number)
 
     return HttpResponseRedirect(url)
 
@@ -838,7 +882,10 @@ def is_vehicle_expired(request):
 @login_check
 def mark(request):
     user_id = request.session.get('user_id', '')
-    vehicle_list = Vehicle.objects.filter(vehicle_user_id=user_id)
+    number = request.GET.get('number', '')
+    page_num = request.GET.get('page_num', 1)
+
+    vehicle_list = Vehicle.objects.filter(vehicle_user_id=user_id, vehicle_number__contains=number)
 
     vehicle_id_list = []
     for vehicle_info in vehicle_list:
@@ -848,14 +895,19 @@ def mark(request):
 
     # 分页
     mp = MyPaginator()
-    mp.paginate(mark_list, 10, 1)
+    mp.paginate(mark_list, 10, page_num)
 
     # 所属支队
     # dept_info = Department.objects.get(user_id=user_id)
 
     context = {'mp': mp,
                # 'dept_info': dept_info,
+               'number': number,
                }
+
+    # 保存页码和搜索信息
+    request.session['page_num'] = page_num
+    request.session['number'] = number
 
     return render(request, 'mark.html', context)
 
