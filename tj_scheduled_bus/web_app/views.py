@@ -252,7 +252,7 @@ def enterprise(request):
     page_num = request.GET.get('page_num', 1)
 
     enterprise_list = Enterprise.objects.filter(user_id=user_id).filter(enterprise_name__contains=search_name)
-    dept_list = Department.objects.all()
+    dept_list = Department.objects.exclude(id=1)
 
     # 分页
     mp = MyPaginator()

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <!-- saved from url=(0056)http://yjhctxz.ethane.com.cn:10245/traffic/company/index -->
-<html><head lang="en"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html>
+<head lang="en"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -89,8 +90,8 @@
     <div class="table_container">
         <div class="search_input">
             <label for="ss">企业搜索</label>
-            <form action="/zhidui/enterprise" method="GET" style="display: inline-block;">
-                <input type="text" placeholder="输入企业名称" id="ss" name="search_name">
+            <form action="/zongdui/enterprise" method="GET" style="display: inline-block;">
+                <input type="text" placeholder="输入企业名称" id="ss" name="search_name" value="{{ search_name }}">
             </form>
             <span class="find_btn" id="find_btn">查询</span>
         </div>
@@ -113,7 +114,7 @@
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     <td title="{{ enterprise.enterprise_name }}">{{ enterprise.enterprise_name }}</td>
-                    <td title="{{ enterprise.enterprise_code }}">{{ enterprise.enterprise_code }}</td>
+                    <td title="{{ enterprise.enterprise_code|default:'' }}">{{ enterprise.enterprise_code|default:'' }}</td>
                     <td title="{{ enterprise.contact_person }}">{{ enterprise.contact_person }}</td>
                     <td title="{{ enterprise.phone }}">{{ enterprise.phone }}</td>
                     <td title="{{ enterprise.enterprise_status.status_content }}">{{ enterprise.enterprise_status.status_content }}</td>
@@ -136,19 +137,19 @@
     <div id="pageToolbar">
         <div id="Paging_009071537570730115" class="ui-paging-container">
             <ul>
-                <a href="/enterprise?page_num=1&search_name={{ search_name }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
-                <a href="/enterprise?page_num={{ mp.current_num|add:-1 }}&search_name={{ search_name }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
+                <a href="/zongdui/enterprise?page_num=1&search_name={{ search_name }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
+                <a href="/zongdui/enterprise?page_num={{ mp.current_num|add:-1 }}&search_name={{ search_name }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
                 {% for num in mp.page_range %}
                     {% if num == mp.current_num %}
-                    <a href="/enterprise?page_num={{ num }}&search_name={{ search_name }}"><li class="ui-pager focus">{{ num }}</li></a>
+                    <a href="/zongdui/enterprise?page_num={{ num }}&search_name={{ search_name }}"><li class="ui-pager focus">{{ num }}</li></a>
                     {% else %}
-                    <a href="/enterprise?page_num={{ num }}&search_name={{ search_name }}"><li class="ui-pager">{{ num }}</li></a>
+                    <a href="/zongdui/enterprise?page_num={{ num }}&search_name={{ search_name }}"><li class="ui-pager">{{ num }}</li></a>
                     {% endif %}
                 {% endfor %}
-                <a href="/enterprise?page_num={{ mp.current_num|add:1 }}&search_name={{ search_name }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
-                <a href="/enterprise?page_num={{ mp.total_pages }}&search_name={{ search_name }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
+                <a href="/zongdui/enterprise?page_num={{ mp.current_num|add:1 }}&search_name={{ search_name }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
+                <a href="/zongdui/enterprise?page_num={{ mp.total_pages }}&search_name={{ search_name }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
                 <li class="ui-paging-toolbar">
-                    <form action="/enterprise" method="GET">
+                    <form action="/zongdui/enterprise" method="GET">
                         <input type="text" class="ui-paging-count" style="font-size: 12px;" name="page_num" value="{{ mp.current_num }}" />
                         <input type="hidden" name="search_name" value="{{ search_name }}" />
                         <span>/&nbsp;{{ mp.total_pages }}</span>
@@ -227,30 +228,6 @@
     </div>
 </div>
 
-<!-- 未通过原因 -->
-<div class="pop-up refuse-content" style="display: none;">
-    <div class="my-modal-title">
-        <p>原因</p>
-    </div>
-    <div class="my-modal-body">
-        <table>
-            <tr>
-                <td><p style="padding: 20px;">填写原因</p></td>
-            </tr>
-            <tr>
-                <td>
-                    <textarea name="" style="resize:none; border-radius: 4px; background-color: #f9f9f9;border: solid 1px #eeeeee;outline: none;padding: 10px;width:300px;height:100px"></textarea>
-                </td>
-            </tr>
-        </table>
-        <div class="my-modal-footer" >
-            <div class="clickbtn" style="width: 440px; text-align: center;">
-                <button type="button" class="btn save">确定</button>
-                <button type="button" class="btn del" style="margin: 0px;">取消</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="mask" style="display: none;"></div>
 <input type="hidden" id="pageNum" value="1">
@@ -280,50 +257,6 @@
         $('.modify-enterprise .cancle').click(function() {
             $('.modify-enterprise').hide();
             $('.mask').hide();
-        });
-
-        // 审核车辆信息表单提交: 通过
-        $('.modify-enterprise .my-modal-footer button').eq(0).click(function() {
-            if (confirm('是否审核通过?')) {
-                $('.modify-enterprise form').prop('action', '/zhidui/enterprise_pass');
-                $('.modify-enterprise form').submit();
-                $('.modify-enterprise').hide();
-                $('.mask').hide();
-            }
-        });
-
-        // 审核车辆信息表单提交: 解冻
-        $('.modify-enterprise .my-modal-footer button').eq(2).click(function() {
-            if (confirm('是否解冻?')) {
-                $('.modify-enterprise form').prop('action', '/zhidui/enterprise_pass');
-                $('.modify-enterprise form').submit();
-                $('.modify-enterprise').hide();
-                $('.mask').hide();
-            }
-        });
-
-        // 审核车辆: 不通过/冻结
-        $('.modify-enterprise .del').click(function() {
-            $('.refuse-content').show();
-            $('.modify-enterprise').hide();
-        });
-
-        // 未通过原因: 取消
-        $('.refuse-content .del').click(function() {
-            $('.refuse-content').hide();
-            $('.modify-enterprise').show();
-        });
-
-        // 未通过原因: 确定
-        $('.refuse-content .save').click(function() {
-            if (confirm('是否驳回/冻结该企业？')) {
-                $('.modify-enterprise .refuse_reason').val($('.refuse-content textarea').val());
-                $('.modify-enterprise form').prop('action', '/zhidui/enterprise_refuse');
-                $('.modify-enterprise form').submit();
-                $('.refuse-content').hide();
-                $('.modify-enterprise').hide();
-                $('.mask').hide();
-            }
         });
 
         // 提交企业查询表单

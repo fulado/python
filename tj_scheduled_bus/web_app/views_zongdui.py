@@ -16,13 +16,22 @@ import hashlib
 # 显示企业审核页面
 @login_check
 def enterprise(request):
-    enterprise_list = Enterprise.objects.all()
+    search_name = request.GET.get('search_name', '')
+    page_num = request.GET.get('page_num', 1)
+
+    enterprise_list = Enterprise.objects.filter(enterprise_name__contains=search_name)
 
     # 分页
     mp = MyPaginator()
-    mp.paginate(enterprise_list, 10, 1)
+    mp.paginate(enterprise_list, 10, page_num)
 
-    context = {'mp': mp}
+    context = {'mp': mp,
+               'search_name': search_name,
+               }
+
+    # 保存页码和搜索信息
+    # request.session['page_num'] = page_num
+    # request.session['search_name'] = search_name
 
     return render(request, 'zongdui/enterprise.html', context)
 
@@ -30,13 +39,28 @@ def enterprise(request):
 # 显示车辆审核页面
 @login_check
 def vehicle(request):
-    vehicle_list = Vehicle.objects.all()
+    number = request.GET.get('number', '')
+    vehicle_status = int(request.GET.get('status', 0))
+    page_num = request.GET.get('page_num', 1)
+
+    if vehicle_status != 0:
+        vehicle_list = Vehicle.objects.filter(vehicle_status_id=vehicle_status).filter(vehicle_number__contains=number)
+    else:
+        vehicle_list = Vehicle.objects.filter(vehicle_number__contains=number)
 
     # 分页
     mp = MyPaginator()
-    mp.paginate(vehicle_list, 10, 1)
+    mp.paginate(vehicle_list, 10, page_num)
 
-    context = {'mp': mp}
+    context = {'mp': mp,
+               'number': number,
+               'status': vehicle_status,
+               }
+
+    # 保存页码和搜索信息
+    # request.session['page_num'] = page_num
+    # request.session['number'] = number
+    # request.session['vehicle_status'] = vehicle_status
 
     return render(request, 'zongdui/vehicle.html', context)
 
@@ -45,7 +69,7 @@ def vehicle(request):
 @login_check
 def station(request):
     page_num = request.GET.get('page_num', 1)
-    search_name = request.POST.get('search_name', '')
+    search_name = request.GET.get('search_name', '')
 
     station_list = Station.objects.filter(station_name__contains=search_name)
 
@@ -54,8 +78,13 @@ def station(request):
     mp.paginate(station_list, 10, page_num)
 
     context = {'mp': mp,
-               'page_num': page_num
+               'page_num': page_num,
+               'search_name': search_name,
                }
+
+    # 保存页码和搜索信息
+    request.session['page_num'] = page_num
+    request.session['search_name'] = search_name
 
     return render(request, 'zongdui/station.html', context)
 
@@ -80,7 +109,12 @@ def station_add(request):
 
     station_info.save()
 
-    return HttpResponseRedirect('/zongdui/station')
+    page_num = int(request.session.get('page_num', 1))
+    search_name = request.session.get('search_name', '')
+
+    url = '/zongdui/station?page_num=%d&search_name=%s' % (page_num, search_name)
+
+    return HttpResponseRedirect(url)
 
 
 # 编辑站点
@@ -108,7 +142,12 @@ def station_modify(request):
     else:
         pass
 
-    return HttpResponseRedirect('/zongdui/station')
+    page_num = int(request.session.get('page_num', 1))
+    search_name = request.session.get('search_name', '')
+
+    url = '/zongdui/station?page_num=%d&search_name=%s' % (page_num, search_name)
+
+    return HttpResponseRedirect(url)
 
 
 # 删除站点
@@ -120,7 +159,12 @@ def station_delete(request):
     else:
         pass
 
-    return HttpResponseRedirect('/zongdui/station')
+    page_num = int(request.session.get('page_num', 1))
+    search_name = request.session.get('search_name', '')
+
+    url = '/zongdui/station?page_num=%d&search_name=%s' % (page_num, search_name)
+
+    return HttpResponseRedirect(url)
 
 
 # 显示支队行号管理

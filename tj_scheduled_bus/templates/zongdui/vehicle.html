@@ -117,7 +117,7 @@
     <div class="table_container">
         <div class="search_input">
             <label for="ss">车辆搜索</label>
-            <form action="/zhidui/vehicle" method="GET" style="display: inline-block;">
+            <form action="/zongdui/vehicle" method="GET" style="display: inline-block;">
                 <input type="text" placeholder="输入车牌号码" id="ss" name="number" value="{{ number }}" />
                 <select name="status">
                     <option value="0" {% if status == 0 %}selected{% endif %}>全部车辆</option>
@@ -171,19 +171,19 @@
     <div id="pageToolbar">
         <div id="Paging_009071537570730115" class="ui-paging-container">
             <ul>
-                <a href="/vehicle?page_num=1&number={{ number }}&status={{ status }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
-                <a href="/vehicle?page_num={{ mp.current_num|add:-1 }}&number={{ number }}&status={{ status }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
+                <a href="/zongdui/vehicle?page_num=1&number={{ number }}&status={{ status }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
+                <a href="/zongdui/vehicle?page_num={{ mp.current_num|add:-1 }}&number={{ number }}&status={{ status }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
                 {% for num in mp.page_range %}
                     {% if num == mp.current_num %}
-                    <a href="/vehicle?page_num={{ num }}&search_name={{ number }}&status={{ status }}"><li class="ui-pager focus">{{ num }}</li></a>
+                    <a href="/zongdui/vehicle?page_num={{ num }}&number={{ number }}&status={{ status }}"><li class="ui-pager focus">{{ num }}</li></a>
                     {% else %}
-                    <a href="/vehicle?page_num={{ num }}&search_name={{ number }}&status={{ status }}"><li class="ui-pager">{{ num }}</li></a>
+                    <a href="/zongdui/vehicle?page_num={{ num }}&number={{ number }}&status={{ status }}"><li class="ui-pager">{{ num }}</li></a>
                     {% endif %}
                 {% endfor %}
-                <a href="/vehicle?page_num={{ mp.current_num|add:1 }}&number={{ number }}&status={{ status }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
-                <a href="/vehicle?page_num={{ mp.total_pages }}&number={{ number }}&status={{ status }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
+                <a href="/zongdui/vehicle?page_num={{ mp.current_num|add:1 }}&number={{ number }}&status={{ status }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
+                <a href="/zongdui/vehicle?page_num={{ mp.total_pages }}&number={{ number }}&status={{ status }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
                 <li class="ui-paging-toolbar">
-                    <form action="/vehicle" method="GET">
+                    <form action="/zongdui/vehicle" method="GET">
                         <input type="text" class="ui-paging-count" style="font-size: 12px;" name="page_num" value="{{ mp.current_num }}" />
                         <input type="hidden" name="number" value="{{ number }}" />
                         <input type="hidden" name="status" value="{{ status }}" />
@@ -372,61 +372,6 @@
         $('.table_box .modify-vehicle-info').click(function() {
             $('.modify-vehicle').show();
             $('.mask').show();
-        });
-
-        // 审核不通过、冻结，隐藏编辑车辆信息模态框
-        $('.modify-vehicle .del').click(function() {
-            $('.refuse-content').show();
-            $('.modify-vehicle').hide();
-            $('.refuse-content button').show();
-        });
-
-        // 日期组件初始化
-        $('.datetime-picker').datetimepicker({
-            language: 'zh-CN',          //显示中文
-            format: 'yyyy-mm-dd',       //显示格式
-            minView: "month",           //设置只显示到月份
-            initialDate: new Date(),    //初始化当前日期
-            autoclose: true,            //选中自动关闭
-            todayBtn: true              //显示今日按钮
-        });
-
-        // 审核车辆信息表单提交: 通过
-        $('.modify-vehicle .my-modal-footer button').eq(0).click(function() {
-            if (confirm('是否审核通过?')) {
-                $('.modify-vehicle form').prop('action', '/zhidui/vehicle_pass');
-                $('.modify-vehicle form').submit();
-                $('.modify-vehicle').hide();
-                $('.mask').hide();
-            }
-        });
-
-        // 审核车辆信息表单提交: 解冻
-        $('.modify-vehicle .my-modal-footer button').eq(2).click(function() {
-            if (confirm('是否解冻?')) {
-                $('.modify-vehicle form').prop('action', '/zhidui/vehicle_pass');
-                $('.modify-vehicle form').submit();
-                $('.modify-vehicle').hide();
-                $('.mask').hide();
-            }
-        });
-
-        // 未通过原因: 取消
-        $('.refuse-content .del').click(function() {
-            $('.refuse-content').hide();
-            $('.modify-vehicle').show();
-        });
-
-        // 未通过原因: 确定
-        $('.refuse-content .save').click(function() {
-            if (confirm('是否驳回/冻结该车辆？')) {
-                $('.modify-vehicle .refuse_reason').val($('.refuse-content textarea').val());
-                $('.modify-vehicle form').prop('action', '/zhidui/vehicle_refuse');
-                $('.modify-vehicle form').submit();
-                $('.refuse-content').hide();
-                $('.modify-vehicle').hide();
-                $('.mask').hide();
-            }
         });
 
         // 提交车辆查询表单

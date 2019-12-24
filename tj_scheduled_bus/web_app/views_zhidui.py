@@ -184,18 +184,22 @@ def vehicle_mark(request):
 @login_check
 def permission(request):
     user_id = request.session.get('user_id', '')
-    dept_id = (User.objects.get(id=user_id)).dept_id
+    user_info = User.objects.get(id=user_id)
 
-    enterprise_name = request.POST.get('enterprise_name', '')
+    search_name = request.GET.get('search_name', '')
 
-    statistic_list = Statistic.objects.filter(sta_enterprise__dept_id=dept_id).\
-        filter(sta_enterprise__enterprise_name__contains=enterprise_name)
+    if user_info.authority == 2:
+        dept_id = user_info.dept_id
+        statistic_list = Statistic.objects.filter(sta_enterprise__dept_id=dept_id).\
+            filter(sta_enterprise__enterprise_name__contains=search_name)
+    else:
+        statistic_list = Statistic.objects.filter(sta_enterprise__enterprise_name__contains=search_name)
 
     # 分页
     mp = MyPaginator()
     mp.paginate(statistic_list, 10, 1)
 
-    context = {'enterprise_name': enterprise_name,
+    context = {'search_name': search_name,
                'mp': mp
                }
 

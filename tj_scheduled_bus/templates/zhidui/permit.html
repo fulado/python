@@ -104,8 +104,8 @@
     <div class="table_container">
         <div class="search_input">
             <label for="ss">企业搜索</label>
-            <form action="/zhidui/permission" method="POST" style="display: inline-block;">
-                <input type="text" placeholder="输入企业名称" id="ss" name="enterprise_name" value="{{ enterprise_name }}" />
+            <form action="/zhidui/permission" method="GET" style="display: inline-block;">
+                <input type="text" placeholder="输入企业名称" id="ss" name="search_name" value="{{ search_name }}" />
             </form>
             <span class="find_btn">查询</span>
         </div>
@@ -142,21 +142,21 @@
     <div id="pageToolbar">
         <div id="Paging_009071537570730115" class="ui-paging-container">
             <ul>
-                <a href="/vehicle?page_num=1&number={{ number }}&status={{ status }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
-                <a href="/vehicle?page_num={{ mp.current_num|add:-1 }}&number={{ number }}&status={{ status }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
+                <a href="/zhidui/permission?page_num=1&search_name={{ search_name }}&status={{ status }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
+                <a href="/zhidui/permission?page_num={{ mp.current_num|add:-1 }}&search_name={{ search_name }}&status={{ status }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
                 {% for num in mp.page_range %}
                     {% if num == mp.current_num %}
-                    <a href="/vehicle?page_num={{ num }}&search_name={{ number }}&status={{ status }}"><li class="ui-pager focus">{{ num }}</li></a>
+                    <a href="/zhidui/permission?page_num={{ num }}&search_name={{ search_name }}&status={{ status }}"><li class="ui-pager focus">{{ num }}</li></a>
                     {% else %}
-                    <a href="/vehicle?page_num={{ num }}&search_name={{ number }}&status={{ status }}"><li class="ui-pager">{{ num }}</li></a>
+                    <a href="/zhidui/permission?page_num={{ num }}&search_name={{ search_name }}&status={{ status }}"><li class="ui-pager">{{ num }}</li></a>
                     {% endif %}
                 {% endfor %}
-                <a href="/vehicle?page_num={{ mp.current_num|add:1 }}&number={{ number }}&status={{ status }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
-                <a href="/vehicle?page_num={{ mp.total_pages }}&number={{ number }}&status={{ status }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
+                <a href="/zhidui/permission?page_num={{ mp.current_num|add:1 }}&search_name={{ search_name }}&status={{ status }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
+                <a href="/zhidui/permission?page_num={{ mp.total_pages }}&search_name={{ search_name }}&status={{ status }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
                 <li class="ui-paging-toolbar">
-                    <form action="/vehicle" method="GET">
+                    <form action="/zhidui/permission" method="GET">
                         <input type="text" class="ui-paging-count" style="font-size: 12px;" name="page_num" value="{{ mp.current_num }}" />
-                        <input type="hidden" name="number" value="{{ number }}" />
+                        <input type="hidden" name="search_name" value="{{ search_name }}" />
                         <input type="hidden" name="status" value="{{ status }}" />
                         <span>/&nbsp;{{ mp.total_pages }}</span>
                         <a href="javascript:jump()">跳转</a>
