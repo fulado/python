@@ -80,17 +80,17 @@
         }
 
         .pop-up1 .btndiv input,.pop-up1 .btndiv button{
-         display: inline-block;
-         background-color: #25b4b2;
-         border: solid 1px #189694;
-         color: #fff;
-         margin-left: 160px;
-         background: #139b99;
+            display: inline-block;
+            background-color: #25b4b2;
+            border: solid 1px #189694;
+            color: #fff;
+            margin-left: 160px;
+            background: #139b99;
         }
 
         .table_head .number_word{
-        float: right;
-        margin-right: 20px;
+            float: right;
+            margin-right: 20px;
         }
 
     </style>
@@ -134,7 +134,7 @@
                     <td title="{{ permission.permission_status.status_content }}">{{ permission.permission_status.status_content }}</td>
                     <td>
                         {% if permission.permission_status_id == 51 %}
-                        <a href="/static/certification/{{ permission.permission_id }}.jpg" target="_Blank" class="see download" style="margin-right: 5px;">下载</a>
+                        <a href="/static/certification/{{ permission.permission_id }}.jpg" target="_Blank" class="see download" style="margin-right: 5px;" onclick="download_count()">下载</a>
                         {% endif %}
                     </td>
                 </tr>
@@ -277,6 +277,12 @@
     // 跳转到指定页面
     function jump() {
         $('#pageToolbar form').submit();
+    }
+
+    // 下载计数
+    function download_count() {
+        $.get('download_count', {}, function (data) {
+        });
     }
 
 </script>

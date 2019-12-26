@@ -106,6 +106,7 @@
             <label for="ss">企业搜索</label>
             <form action="/zhidui/permission" method="GET" style="display: inline-block;">
                 <input type="text" placeholder="输入企业名称" id="ss" name="search_name" value="{{ search_name }}" />
+                <input type="text" class="datetime-picker" placeholder="请选择查询月份" name="permission_month" value="{{ permission_month }}">
             </form>
             <span class="find_btn">查询</span>
         </div>
@@ -312,9 +313,10 @@
         // 日期组件初始化
         $('.datetime-picker').datetimepicker({
             language: 'zh-CN',          //显示中文
-            format: 'yyyy-mm-dd',       //显示格式
-            minView: "month",           //设置只显示到月份
+            format: 'yyyy-mm',       //显示格式
+            minView: "year",           //设置只显示到月份
             initialDate: new Date(),    //初始化当前日期
+            startView: 'year',
             autoclose: true,            //选中自动关闭
             todayBtn: true              //显示今日按钮
         });

@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.db.models import Count
 from PIL import Image, ImageDraw, ImageFont
 
-from .models import User, Enterprise, Station, Department, Route, Vehicle, Permission, Mark
+from .models import User, Enterprise, Station, Department, Route, Vehicle, Permission, Mark, Statistic
 from .decorator import login_check
 from tj_scheduled_bus import settings
 from .utils import save_file, MyPaginator, statistic_update, send_sms, check_vehicle, check_vehicle_expired,\
@@ -115,6 +115,10 @@ def login_handle(request):
         return HttpResponseRedirect('/?msg=%s' % msg)
 
     user = user_list[0]
+    if user.status_id == 72:
+        msg = '账号已被冻结'
+        return HttpResponseRedirect('/?msg=%s' % msg)
+
     if hashlib.sha1(user_password.encode('utf8')).hexdigest() != user.password:
         msg = '用户名或密码错误'
         return HttpResponseRedirect('/?msg=%s' % msg)
@@ -586,12 +590,21 @@ def can_add_vehicle(request):
     vehicle_owner = request.GET.get('owner', '')
     user_id = request.session.get('user_id', '')
 
+    enterprise_list = Enterprise.objects.filter(user_id=user_id, enterprise_type=41)
+
     if Vehicle.objects.filter(vehicle_number=vehicle_number,vehicle_user_id=user_id).exists():
         result = '1'    # 车辆已经存在
     elif not check_vehicle(vehicle_number, engine_code, vehicle_owner):
         result = '2'    # 车辆信息不正确
+    elif not enterprise_list:
+        result = '3'    # 请先添加自有车辆企业
     else:
-        result = '0'    # 可以添加
+        enterprise_info = enterprise_list[0]
+
+        if enterprise_info.enterprise_status_id == 3:
+            result = '0'    # 可以添加
+        else:
+            result = '4'    # 企业未通过审核
 
     return JsonResponse({'result': result})
 
@@ -963,6 +976,26 @@ def vehicle_unlock(request):
 
     return HttpResponseRedirect('/vehicle')
 
+
+# 下载计数
+def download_count(request):
+    user_id = request.session.get('user_id', '')
+
+    enterprise_list = Enterprise.objects.filter(user_id=user_id)
+
+    if enterprise_list:
+        enterprise_info = enterprise_list[0]
+    else:
+        return
+
+    try:
+        statistic_info = Statistic.objects.get(sta_enterprise_id=enterprise_info.id)
+        statistic_info.download_count += 1
+
+        statistic_info.save()
+    except Exception as e:
+        print(e)
+        return
 
 
 

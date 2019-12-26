@@ -171,9 +171,14 @@ def station_delete(request):
 @login_check
 def account(request):
     page_num = request.GET.get('page_num', 1)
-    search_name = request.POST.get('search_name', '')
+    search_name = request.GET.get('search_name', '')
+    user_authority = int(request.GET.get('user_authority', 2))
 
-    user_list = User.objects.filter(username__contains=search_name)
+    if user_authority:
+        user_list = User.objects.filter(username__contains=search_name, authority=user_authority)
+    else:
+        user_list = User.objects.filter(username__contains=search_name)
+
     dept_list = Department.objects.all()
 
     # 分页
@@ -183,8 +188,14 @@ def account(request):
     context = {'mp': mp,
                'page_num': page_num,
                'search_name': search_name,
-               'dept_list': dept_list
+               'dept_list': dept_list,
+               'user_authority': user_authority,
                }
+
+    # 保存页码和搜索信息
+    request.session['page_num'] = page_num
+    request.session['search_name'] = search_name
+    request.session['user_authority'] = user_authority
 
     return render(request, 'zongdui/account.html', context)
 
@@ -226,7 +237,13 @@ def account_add(request):
 
     user_info.save()
 
-    return HttpResponseRedirect('/zongdui/account')
+    page_num = int(request.session.get('page_num', 1))
+    search_name = request.session.get('search_name', '')
+    user_authority = request.session.get('user_authority', '')
+
+    url = '/zongdui/account?page_num=%d&search_name=%s&user_authority=%s' % (page_num, search_name, user_authority)
+
+    return HttpResponseRedirect(url)
 
 
 # 修改账号
@@ -252,7 +269,13 @@ def account_modify(request):
 
     user_info.save()
 
-    return HttpResponseRedirect('/zongdui/account')
+    page_num = int(request.session.get('page_num', 1))
+    search_name = request.session.get('search_name', '')
+    user_authority = request.session.get('user_authority', '')
+
+    url = '/zongdui/account?page_num=%d&search_name=%s&user_authority=%s' % (page_num, search_name, user_authority)
+
+    return HttpResponseRedirect(url)
 
 
 # 删除账号
@@ -264,7 +287,13 @@ def account_delete(request):
     else:
         pass
 
-    return HttpResponseRedirect('/zongdui/account')
+    page_num = int(request.session.get('page_num', 1))
+    search_name = request.session.get('search_name', '')
+    user_authority = request.session.get('user_authority', '')
+
+    url = '/zongdui/account?page_num=%d&search_name=%s&user_authority=%s' % (page_num, search_name, user_authority)
+
+    return HttpResponseRedirect(url)
 
 
 # 冻结账号
@@ -277,7 +306,13 @@ def account_lock(request):
     else:
         pass
 
-    return HttpResponseRedirect('/zongdui/account')
+    page_num = int(request.session.get('page_num', 1))
+    search_name = request.session.get('search_name', '')
+    user_authority = request.session.get('user_authority', '')
+
+    url = '/zongdui/account?page_num=%d&search_name=%s&user_authority=%s' % (page_num, search_name, user_authority)
+
+    return HttpResponseRedirect(url)
 
 
 # 解冻账号
@@ -289,7 +324,13 @@ def account_unlock(request):
     else:
         pass
 
-    return HttpResponseRedirect('/zongdui/account')
+    page_num = int(request.session.get('page_num', 1))
+    search_name = request.session.get('search_name', '')
+    user_authority = request.session.get('user_authority', '')
+
+    url = '/zongdui/account?page_num=%d&search_name=%s&user_authority=%s' % (page_num, search_name, user_authority)
+
+    return HttpResponseRedirect(url)
 
 
 

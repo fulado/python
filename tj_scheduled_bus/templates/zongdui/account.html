@@ -117,9 +117,15 @@
     </div>
     <div class="table_container">
         <div class="search_input">
-            <label for="ss">车辆搜索</label>
-            <form action="/vehicle" method="POST" style="display: inline-block;">
-                <input type="text" placeholder="输入车牌号码" id="ss" name="search_number" value="{{ search_number }}" />
+            <label for="ss">用户搜索</label>
+            <form action="/zongdui/account" method="GET" style="display: inline-block;">
+                <input type="text" placeholder="输入用户名" id="ss" name="search_number" value="{{ search_number }}" />
+                <select name="user_authority">
+                    <option value="0" {% if user_authority == 0 %}selected{% endif %}>全部账号</option>
+                    <option value="1" {% if user_authority == 1 %}selected{% endif %}>企业账号</option>
+                    <option value="2" {% if user_authority == 2 %}selected{% endif %}>支队账号</option>
+                    <option value="3" {% if user_authority == 3 %}selected{% endif %}>交管局账号</option>
+                </select>
             </form>
             <span class="find_btn">查询</span>
             <span class="add_account" id="add">新增</span>
@@ -170,22 +176,22 @@
     <div id="pageToolbar">
         <div id="Paging_009071537570730115" class="ui-paging-container">
             <ul>
-                <a href="/vehicle?page_num=1&number={{ number }}&status={{ status }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
-                <a href="/vehicle?page_num={{ mp.current_num|add:-1 }}&number={{ number }}&status={{ status }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
+                <a href="/zongdui/account?page_num=1&search_number={{ search_number }}&user_authority={{ user_authority }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
+                <a href="/zongdui/account?page_num={{ mp.current_num|add:-1 }}&search_number={{ search_number }}&user_authority={{ user_authority }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
                 {% for num in mp.page_range %}
                     {% if num == mp.current_num %}
-                    <a href="/vehicle?page_num={{ num }}&search_name={{ number }}&status={{ status }}"><li class="ui-pager focus">{{ num }}</li></a>
+                    <a href="/zongdui/account?page_num={{ num }}&search_name={{ search_number }}&user_authority={{ user_authority }}"><li class="ui-pager focus">{{ num }}</li></a>
                     {% else %}
-                    <a href="/vehicle?page_num={{ num }}&search_name={{ number }}&status={{ status }}"><li class="ui-pager">{{ num }}</li></a>
+                    <a href="/zongdui/account?page_num={{ num }}&search_name={{ search_number }}&user_authority={{ user_authority }}"><li class="ui-pager">{{ num }}</li></a>
                     {% endif %}
                 {% endfor %}
-                <a href="/vehicle?page_num={{ mp.current_num|add:1 }}&number={{ number }}&status={{ status }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
-                <a href="/vehicle?page_num={{ mp.total_pages }}&number={{ number }}&status={{ status }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
+                <a href="/zongdui/account?page_num={{ mp.current_num|add:1 }}&search_number={{ search_number }}&user_authority={{ user_authority }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
+                <a href="/zongdui/account?page_num={{ mp.total_pages }}&search_number={{ search_number }}&user_authority={{ user_authority }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
                 <li class="ui-paging-toolbar">
-                    <form action="/vehicle" method="GET">
+                    <form action="/zongdui/account" method="GET">
                         <input type="text" class="ui-paging-count" style="font-size: 12px;" name="page_num" value="{{ mp.current_num }}" />
-                        <input type="hidden" name="number" value="{{ number }}" />
-                        <input type="hidden" name="status" value="{{ status }}" />
+                        <input type="hidden" name="search_number" value="{{ search_number }}" />
+                        <input type="hidden" name="user_authority" value="{{ user_authority }}" />
                         <span>/&nbsp;{{ mp.total_pages }}</span>
                         <a href="javascript:jump()">跳转</a>
                     </form>

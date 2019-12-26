@@ -1,6 +1,10 @@
 """
 支队功能
 """
+import time
+import calendar
+
+
 from django.shortcuts import render, HttpResponseRedirect
 
 
@@ -188,19 +192,39 @@ def permission(request):
 
     search_name = request.GET.get('search_name', '')
 
+    # 查询月份
+    local_time = time.localtime()
+
+    query_month = '%d-%d' % (local_time.tm_year, local_time.tm_mon)
+    permission_month = request.GET.get('permission_month', query_month)
+
+    if permission_month == '':
+        permission_month = query_month
+
+    year = int((permission_month.split('-'))[0])
+    month = int((permission_month.split('-'))[1])
+
+    end_day = calendar.monthrange(year, month)[1]
+
+    start_date ='%d-%d-%d' % (year, month, 1)
+    end_date = '%d-%d-%d' % (year, month, end_day)
+
     if user_info.authority == 2:
         dept_id = user_info.dept_id
         statistic_list = Statistic.objects.filter(sta_enterprise__dept_id=dept_id).\
-            filter(sta_enterprise__enterprise_name__contains=search_name)
+            filter(sta_enterprise__enterprise_name__contains=search_name).\
+            filter(sta_date__gte=start_date, sta_date__lte=end_date)
     else:
-        statistic_list = Statistic.objects.filter(sta_enterprise__enterprise_name__contains=search_name)
+        statistic_list = Statistic.objects.filter(sta_enterprise__enterprise_name__contains=search_name).\
+            filter(sta_date__gte=start_date, sta_date__lte=end_date)
 
     # 分页
     mp = MyPaginator()
     mp.paginate(statistic_list, 10, 1)
 
     context = {'search_name': search_name,
-               'mp': mp
+               'mp': mp,
+               'permission_month': permission_month,
                }
 
     return render(request, 'zhidui/permit.html', context)
