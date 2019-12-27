@@ -253,6 +253,8 @@
                 </tr>
             </table>
             <div class="my-modal-footer" >
+                <input type="hidden" name="route_name" />
+                <input type="hidden" name="station_list" />
                 <div class="clickbtn" style="margin: 0px;width: 830px;text-align: center; ">
                     <button type="button" class="btn add">添加</button>
                     <div class="btn cancle">取消</div>
@@ -283,13 +285,13 @@
     var re_15 = /^[\W][A-Z][A-Z0-9]{4}$/
 
     $(function() {
-        // 显示增加车辆模态框
+        // 显示增加路线
         $('#add').click(function() {
             $('.add-vehicle').show();
             $('.mask').show();
         });
 
-        // 隐藏增加车辆模态框
+        // 隐藏增加路线
         $('.add-vehicle .cancle').click(function() {
             if (confirm('是否放弃编辑？')) {
                 $('.add-vehicle').hide();
@@ -306,7 +308,7 @@
             if (route_name.length == 0) {
                 alert('请填写路线名称');
             }
-            else if (station_id == '0') {
+            else if (station_id == '0' || station_id == null) {
                 alert('请选择站点');
             }
             else {
@@ -505,24 +507,57 @@
     // 在路线中添加站点
     function addStation(station_id, route_name) {
         // 添加站点
-        $.get('/station_add', {'station_id': station_id, 'route_name': route_name}, function (data) {
-            if (data.result) {
-                let newRow = "<tr style=\"height: 40px;\">\n" +
-                                "<td style=\"width: 4%\">" + "</td>\n" +
-                                "<td title=" + data.station_name + ">" + data.station_name + "</td>\n" +
-                                "<td title=" + data.station_area + ">" + data.station_area + "</td>\n" +
-                                "<td title=" + data.station_road + ">" + data.station_road + "</td>\n" +
-                                "<td title=" + data.station_direction + ">" + data.station_direction + "</td>\n" +
-                                "<td>\n" +
-                                "<button type=\"button\" class=\"see modify-vehicle-info\" style=\"margin-right: 5px;\" route_id=\"" + data.route_id + "\">删除</button>\n" +
-                                "</td>\n" +
-                            "</tr>"
-                $('.add-station tr:last').after(newRow);
-                refreshRowNumber();
+        //$.get('/station_add', {'station_id': station_id, 'route_name': route_name}, function (data) {
+        let result = addStationToForm(station_id, route_name);
+
+        if (result) {
+            let station_name = '';
+            let station_area = '';
+            let station_road = '';
+            let station_direction = '';
+            $.get('/get_station_info', {'station_id': station_id}, function (data) {
+                station_name = data.station_name;
+                station_area = data.station_area;
+                station_road = data.station_road;
+                station_direction = data.station_direction;
+            });
+
+            let newRow = "<tr style=\"height: 40px;\">\n" +
+                            "<td style=\"width: 4%\">" + "</td>\n" +
+                            "<td title=" + station_name + ">" + station_name + "</td>\n" +
+                            "<td title=" + station_area + ">" + station_area + "</td>\n" +
+                            "<td title=" + station_road + ">" + station_road + "</td>\n" +
+                            "<td title=" + station_direction + ">" + station_direction + "</td>\n" +
+                            "<td>\n" +
+                            "<button type=\"button\" class=\"see modify-vehicle-info\" style=\"margin-right: 5px;\" route_id=\"" + station_id + "\">删除</button>\n" +
+                            "</td>\n" +
+                        "</tr>"
+            $('.add-station tr:last').after(newRow);
+            refreshRowNumber();
+        } else {
+            alert('站点已经存在于路线中');
+        }
+        //})
+    }
+
+    function addStationToForm(station_id, route_name) {
+        $('.add-vehicle .my-modal-footer input').eq(0).val(route_name);
+
+        let station_list = $('.add-vehicle .my-modal-footer input').eq(1).val();
+
+        if (station_list.length > 0) {
+            station_list = station_list.split(',');
+            if (station_list.includes(station_id)) {
+                return false;
             } else {
-                alert('站点已经存在与路线中');
+                station_list = station_list + "," + station_id;
             }
-        })
+        } else {
+            station_list = station_id
+        }
+
+        $('.add-vehicle .my-modal-footer input').eq(1).val(station_list);
+        return true;
     }
 
     // 更新表格中的行号

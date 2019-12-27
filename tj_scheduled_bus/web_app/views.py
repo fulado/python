@@ -725,6 +725,24 @@ def can_add_station(request):
 #     return HttpResponseRedirect(url)
 
 
+# 获取站点信息
+def get_station_info(request):
+    station_id = request.GET.get('station_id', 0)
+
+    if station_id:
+        station_info = Station.objects.get(id=station_id)
+
+        result = {'station_name': station_info.station_name,
+                  'station_area': station_info.station_area,
+                  'station_road': station_info.station_road,
+                  'station_direction': station_info.station_direction,
+                  }
+    else:
+        result = {}
+    print(result)
+    return JsonResponse(result)
+
+
 # 添加站点
 def station_add(request):
     user_id = request.session.get('user_id', '')
@@ -981,7 +999,7 @@ def vehicle_unlock(request):
 def download_count(request):
     user_id = request.session.get('user_id', '')
 
-    enterprise_list = Enterprise.objects.filter(user_id=user_id)
+    enterprise_list = Enterprise.objects.filter(user_id=user_id, enterprise_type=41)
 
     if enterprise_list:
         enterprise_info = enterprise_list[0]
@@ -996,6 +1014,9 @@ def download_count(request):
     except Exception as e:
         print(e)
         return
+
+
+
 
 
 

@@ -69,6 +69,7 @@ urlpatterns = [
     url(r'^station_save/?', views.station_save),
     url(r'^station/?', views.station),
     url(r'^can_add_station/?', views.can_add_station),
+    url(r'^get_station_info/?', views.get_station_info),
 
     # 公用
     url(r'^main/?', views.main),

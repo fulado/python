@@ -87,6 +87,7 @@ class Station(models.Model):
     station_area = models.CharField(max_length=50, null=True, blank=True)  # 区域
 
     station_status = models.ForeignKey(Status, null=True, blank=True, on_delete=models.SET_NULL)  # 站点状态，31-运行，32-停运，33-未启动
+    # station_cnt = models.IntegerField(default=0)     # 站点使用次数
 
 
 # 路线信息
@@ -152,7 +153,6 @@ class Mark(models.Model):
     dept = models.ForeignKey(Department, null=True, blank=True, on_delete=models.SET_NULL)  # 标记支队
 
 
-#
 
 
 
