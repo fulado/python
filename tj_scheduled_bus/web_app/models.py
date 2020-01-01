@@ -87,22 +87,22 @@ class Station(models.Model):
     station_area = models.CharField(max_length=50, null=True, blank=True)  # 区域
 
     station_status = models.ForeignKey(Status, null=True, blank=True, on_delete=models.SET_NULL)  # 站点状态，31-运行，32-停运，33-未启动
-    # station_cnt = models.IntegerField(default=0)     # 站点使用次数
+    station_cnt = models.IntegerField(default=0)     # 站点使用次数
 
 
 # 路线信息
 class Route(models.Model):
     route_name = models.CharField(max_length=200, null=True, blank=True)                     # 路线名称
-    route_station = models.ForeignKey(Station, null=True, blank=True, on_delete=models.SET_NULL)   # 路线关联站点
+    route_station = models.ManyToManyField(Station, null=True, blank=True)   # 路线关联站点
     route_user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)     # 路线所属用户
     route_status = models.IntegerField(default=1, null=True, blank=True)      # 站点状态，1-临时添加，2-临时删除，3-正式生效
     # is_temp = models.BooleanField(default=True)      # 是否临时添加
 
 
 # 路线站点
-class RouteStation(models.Model):
-    route = models.ForeignKey(Route, null=True, blank=True, on_delete=models.SET_NULL)   # 路线
-    station = models.ForeignKey(Station, null=True, blank=True, on_delete=models.SET_NULL)   # 站点
+# class RouteStation(models.Model):
+#     route = models.ForeignKey(Route, null=True, blank=True, on_delete=models.SET_NULL)   # 路线
+#     station = models.ForeignKey(Station, null=True, blank=True, on_delete=models.SET_NULL)   # 站点
 
 
 # 车辆信息
@@ -127,7 +127,7 @@ class Vehicle(models.Model):
 # 通行证信息
 class Permission(models.Model):
     permission_vehicle = models.ForeignKey(Vehicle, null=True, blank=True, on_delete=models.SET_NULL)  # 车辆
-    permission_route = models.CharField(max_length=200, null=True, blank=True)  # 路线名称
+    permission_route = models.ForeignKey(Route, null=True, blank=True, on_delete=models.SET_NULL)  # 路线
     permission_status = models.ForeignKey(Status, null=True, blank=True, on_delete=models.SET_NULL)  # 通行证状态，51-可用，52-不可用
     permission_user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)  # 通行证用户
     start_date = models.DateTimeField(null=True, blank=True)  # 开始时间

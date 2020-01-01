@@ -57,8 +57,10 @@ urlpatterns = [
 
     # 企业通行证管理
     url(r'^permission_add/?', views.permission_add),
+    url(r'^permission_delete/?', views.permission_delete),
     url(r'^permission/?', views.permission),
     url(r'^is_vehicle_expired/?', views.is_vehicle_expired),
+    url(r'^can_get_permission/?', views.can_get_permission),
     url(r'^download_count/?', views.download_count),
 
     # 企业路线管理
@@ -70,6 +72,12 @@ urlpatterns = [
     url(r'^station/?', views.station),
     url(r'^can_add_station/?', views.can_add_station),
     url(r'^get_station_info/?', views.get_station_info),
+    url(r'^route_add/?', views.route_add),
+    url(r'^route_cancel/?', views.route_cancel),
+    url(r'^route_modify/?', views.route_modify),
+    url(r'^route_delete/?', views.route_delete),
+    url(r'^can_delete_route/?', views.can_delete_route),
+    url(r'^is_station_over_limitation/?', views.is_station_over_limitation),
 
     # 公用
     url(r'^main/?', views.main),

@@ -128,7 +128,7 @@
                 <tr>
                     <td style="width: 4%">{{ forloop.counter }}</td>
                     <td title="{{ permission.permission_vehicle.vehicle_number }}">{{ permission.permission_vehicle.vehicle_number }}</td>
-                    <td title="{{ permission.permission_route }}">{{ permission.permission_route }}</td>
+                    <td title="{{ permission.permission_route.route_name }}">{{ permission.permission_route.route_name  }}</td>
                     <td title="{{ permission.start_date|date:'Y-m-d' }}">{{ permission.start_date|date:'Y-m-d' }}</td>
                     <td title="{{ permission.end_date|date:'Y-m-d' }}">{{ permission.end_date|date:'Y-m-d' }}</td>
                     <td title="{{ permission.permission_status.status_content }}">{{ permission.permission_status.status_content }}</td>
@@ -136,6 +136,7 @@
                         {% if permission.permission_status_id == 51 %}
                         <a href="/static/certification/{{ permission.permission_id }}.jpg" target="_Blank" class="see download" style="margin-right: 5px;" onclick="download_count()">下载</a>
                         {% endif %}
+                        <button type="button" class="see modify-vehicle-info" style="margin-right: 5px;" onclick="permissionDelete('{{ permission.id }}')">删除</button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -196,9 +197,9 @@
                 <tr>
                     <td><span>选择路线</span></td>
                     <td>
-                        <select name="route_name" placeholder="请选择路线">
+                        <select name="route_id" placeholder="请选择路线">
                             {% for route in route_list %}
-                                <option value="{{ route.route_name }}">{{ route.route_name }}</option>
+                                <option value="{{ route.id }}">{{ route.route_name }}</option>
                             {% endfor %}
                         </select>
                     </td>
@@ -244,17 +245,21 @@
         // 保存新增车辆
         $('.add-vehicle .save').click(function() {
             let vehicle_id =  $('.add-vehicle select').eq(0).val();
-            let route_name =  $('.add-vehicle select').eq(1).val();
+            let route_id =  $('.add-vehicle select').eq(1).val();
 
             if (vehicle_id == null) {
                 alert('请选择车辆');
             }
-            else if (route_name == null)  {
+            else if (route_id == null)  {
                 alert('请选择路线');
             }
             else if (confirm('是否申请通行证？')) {
-                $.get('is_vehicle_expired', {'vehicle_id': vehicle_id}, function (data) {
-                    if (data.result) {
+                $.get('can_get_permission', {'vehicle_id': vehicle_id, 'route_id': route_id}, function (data) {
+                    if (data.result == 1) {
+                        alert('信息错误，不能申请通行证');
+                    } else if (data.result == 2) {
+                        alert('通行证已存在，请勿重复申请');
+                    } else if (data.result == 3) {
                         alert('车辆逾期未检验，不能申请通行证');
                     }
                     else {
@@ -283,6 +288,13 @@
     function download_count() {
         $.get('download_count', {}, function (data) {
         });
+    }
+
+    // 删除通行证
+    function permissionDelete(permission_id) {
+        if (confirm('是否删除该通行证？')) {
+            window.location.href = "/permission_delete?permission_id=" + permission_id;
+        }
     }
 
 </script>

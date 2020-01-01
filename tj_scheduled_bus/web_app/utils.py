@@ -151,11 +151,15 @@ def get_vehicle_info(vehicle_number, vehicle_type='01'):
         "hpzl": vehicle_type,
     }
 
-    response_data = requests.get(url, params=params, headers=headers)
+    try:
+        response_data = requests.get(url, params=params, headers=headers)
 
-    if len(response_data.content):
-        return json.loads(response_data.content.decode())
-    else:
+        if len(response_data.content):
+            return json.loads(response_data.content.decode())
+        else:
+            return None
+    except Exception as e:
+        print(e)
         return None
 
 
@@ -233,13 +237,14 @@ def create_permission(permission_info):
     permission_info.start_date = start_date
     permission_info.end_date = end_date
 
-    certification_id = '%d%d%s%d%d%d%d' % (year, month,
-                                           permission_info.permission_vehicle.vehicle_number[1:].strip(),
-                                           random.randint(0, 9),
-                                           random.randint(0, 9),
-                                           random.randint(0, 9),
-                                           random.randint(0, 9),
-                                           )
+    certification_id = '%d%d%s%s%d%d%d%d' % (year, month,
+                                             permission_info.permission_vehicle.vehicle_number[1:].strip(),
+                                             permission_info.permission_route_id,
+                                             random.randint(0, 9),
+                                             random.randint(0, 9),
+                                             random.randint(0, 9),
+                                             random.randint(0, 9),
+                                             )
 
     permission_info.permission_id = certification_id
     permission_info.save()
@@ -250,13 +255,18 @@ def create_permission(permission_info):
     user_id = permission_info.permission_user_id
     enterprise_name = (Enterprise.objects.get(user_id=user_id, enterprise_type=41)).enterprise_name
 
-    route_info_list = Route.objects.filter(route_name=permission_info.permission_route).filter(route_user_id=user_id)
+    try:
+        station_list = Route.objects.get(id=permission_info.permission_route_id).route_station.all()
+    except Exception as e:
+        print(e)
+        station_list = None
+
     route = ''
-    for route_info in route_info_list:
+    for station_info in station_list:
         if route != '':
             route += ' — '
 
-        route += route_info.route_station.station_name
+        route += station_info.station_name
 
     file_name = r'%s/certification/%s.jpg' % (settings.FILE_DIR, certification_id)
 
@@ -271,7 +281,7 @@ def generate_certification(certification_id, limit_data, vehicle_number, enterpr
     limit_data = '有效期：%s' % limit_data
     number = '牌照号：%s' % vehicle_number
     enterprise_name = '所属企业: %s' % enterprise_name
-    route = '行驶路线：%s' % route
+    route = '停靠站点：%s' % route
 
     route_list = list(route)
     i = 1

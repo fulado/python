@@ -1,13 +1,14 @@
 import random
 import hashlib
 import io
+import os
 
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
 from django.db.models import Count
 from PIL import Image, ImageDraw, ImageFont
 
-from .models import User, Enterprise, Station, Department, Route, Vehicle, Permission, Mark, Statistic
+from .models import User, Enterprise, Station, Department, Route, Vehicle, Permission, Mark, Statistic, Status
 from .decorator import login_check
 from tj_scheduled_bus import settings
 from .utils import save_file, MyPaginator, statistic_update, send_sms, check_vehicle, check_vehicle_expired,\
@@ -616,25 +617,31 @@ def station(request):
     search_name = request.GET.get('search_name', '')
     page_num = request.GET.get('page_num', 1)
 
-    route_list = Route.objects.filter(route_user_id=user_id).filter(route_status=3).\
-        filter(route_name__contains=search_name).values('route_name').annotate(num_station=Count('route_station'))
+    route_list = Route.objects.filter(route_user_id=user_id). \
+        filter(route_name__contains=search_name).annotate(num_station=Count('route_station'))
 
     area_list = Station.objects.filter(station_status=31).values('station_area').distinct()
 
     # 模态框显示控制
-    display_add_route = request.GET.get('display_add_route', 'none')
-    display_mask = request.GET.get('display_mask', 'none')
-    route_name = request.GET.get('route_name', '')
+    modify = int(request.GET.get('modify', 0))
+    route_id = request.GET.get('route_id', '')
 
-    station_list = Route.objects.filter(route_name=route_name).filter(route_status=3).filter(route_user_id=user_id)
+    try:
+        route_info = Route.objects.get(id=route_id, route_user_id=user_id)
+        station_list = route_info.route_station.all()
+        route_name = route_info.route_name
+    except Exception as e:
+        print(e)
+        route_name = ''
+        station_list = None
 
     # 分页
     mp = MyPaginator()
     mp.paginate(route_list, 10, page_num)
 
     context = {'area_list': area_list,
-               'display_add_route': display_add_route,
-               'display_mask': display_mask,
+               'modify': modify,
+               'route_id': route_id,
                'route_name': route_name,
                'station_list': station_list,
                'mp': mp,
@@ -693,13 +700,11 @@ def can_add_station(request):
     user_id = request.session.get('user_id', '')
     route_name = request.GET.get('route_name', '')
 
-    station_count = Route.objects.filter(route_user_id=user_id).filter(route_name=route_name).\
-        filter(route_status__in=(1, 3)).count()
-
-    if station_count >= 5:
+    try:
+        result = not Route.objects.filter(route_user_id=user_id).filter(route_name=route_name).exists()
+    except Exception as e:
+        print(e)
         result = False
-    else:
-        result = True
 
     return JsonResponse({'result': result})
 
@@ -739,7 +744,7 @@ def get_station_info(request):
                   }
     else:
         result = {}
-    print(result)
+
     return JsonResponse(result)
 
 
@@ -834,6 +839,139 @@ def station_save(request):
     return HttpResponseRedirect(url)
 
 
+# 站点是否操作数量限制
+def is_station_over_limitation(request):
+    station_id = request.POST.get('station_id', '')
+
+    if station_id:
+        try:
+            station_info = Station.objects.get(id=station_id)
+
+            # 读取显示数量
+            limit_num = int((Status.objects.get(id=100)).status_content)
+            if station_info.station_cnt >= limit_num:
+                result = True
+            else:
+                result = False
+        except Exception as e:
+            print(e)
+            result = True
+    else:
+        result = True
+
+    return JsonResponse({'result': result})
+
+
+# 添加路线
+def route_add(request):
+    route_name = request.POST.get('route_name', '')
+    station_list = request.POST.get('station_list', '')
+
+    page_num = int(request.session.get('page_num', 1))
+    search_name = request.session.get('search_name', '')
+
+    url = '/station?page_num=%d&search_name=%s' % (page_num, search_name)
+
+    if route_name == '' or station_list == '':
+        return HttpResponseRedirect(url)
+
+    user_id = request.session.get('user_id', '')
+
+    # 保存路线信息
+    route_info = Route()
+    route_info.route_name = route_name
+    route_info.route_user_id = user_id
+
+    route_info.save()
+
+    # 保存路线站点信息
+    station_id_list = station_list.split(',')
+
+    for station_id in station_id_list:
+        try:
+            station_info = Station.objects.get(id=station_id)
+            route_info.route_station.add(station_info)
+
+            # 站点使用数量+1
+            station_info.station_cnt += 1
+            station_info.save()
+        except Exception as e:
+            print(e)
+
+    return HttpResponseRedirect(url)
+
+
+# 修改路线
+def route_modify(request):
+    route_name = request.POST.get('route_name', '')
+    station_list = request.POST.get('station_list', '')
+    route_id = request.POST.get('route_id', 0)
+
+    page_num = int(request.session.get('page_num', 1))
+    search_name = request.session.get('search_name', '')
+
+    url = '/station?page_num=%d&search_name=%s' % (page_num, search_name)
+
+    if route_name == '' or station_list == '':
+        return HttpResponseRedirect(url)
+
+    # 保存路线信息
+    try:
+        route_info = Route.objects.get(id=route_id)
+        route_info.route_name = route_name
+        route_info.save()
+
+        # 清除路线的站点信息
+        route_info.route_station.clear()
+
+        # 保存路线站点信息
+        station_id_list = station_list.split(',')
+
+        for station_id in station_id_list:
+            station_info = Station.objects.get(id=station_id)
+            route_info.route_station.add(station_info)
+    except Exception as e:
+        print(e)
+
+    return HttpResponseRedirect(url)
+
+
+# 删除路线
+def route_delete(request):
+    route_id = request.GET.get('route_id', 0)
+
+    try:
+        Route.objects.filter(id=route_id).delete()
+    except Exception as e:
+        print(e)
+
+    page_num = int(request.session.get('page_num', 1))
+    search_name = request.session.get('search_name', '')
+
+    url = '/station?page_num=%d&search_name=%s' % (page_num, search_name)
+
+    return HttpResponseRedirect(url)
+
+
+# 是否可以删除路线，如果该路线还关联通行证，则不能删除该路线
+def can_delete_route(request):
+    route_id = request.GET.get('route_id', 0)
+
+    result = not Permission.objects.filter(permission_route_id=route_id).exists()
+
+    return JsonResponse({'result': result})
+
+
+# 取消添加路线
+def route_cancel(request):
+    page_num = int(request.session.get('page_num', 1))
+    search_name = request.session.get('search_name', '')
+
+    url = '/station?page_num=%d&search_name=%s' % (page_num, search_name)
+
+    return HttpResponseRedirect(url)
+
+
 # 显示通行证信息
 @login_check
 def permission(request):
@@ -843,7 +981,7 @@ def permission(request):
     page_num = int(request.GET.get('page_num', 1))
 
     vehicle_list = Vehicle.objects.filter(vehicle_user_id=user_id).filter(vehicle_status_id__in=(3, 6))
-    route_list = Route.objects.filter(route_user_id=user_id).values('route_name').distinct()
+    route_list = Route.objects.filter(route_user_id=user_id)
 
     permission_vehicle_list = Vehicle.objects.filter(vehicle_number__contains=vehicle_number, vehicle_user=user_id)
 
@@ -875,11 +1013,11 @@ def permission(request):
 def permission_add(request):
     user_id = request.session.get('user_id', '')
     vehicle_id = request.POST.get('vehicle_id', '')
-    route_name = request.POST.get('route_name', '')
+    route_id = request.POST.get('route_id', '')
 
     permission_info = Permission()
     permission_info.permission_vehicle_id = vehicle_id
-    permission_info.permission_route = route_name
+    permission_info.permission_route_id = route_id
     permission_info.permission_user_id = user_id
     permission_info.permission_status_id = 51
 
@@ -903,12 +1041,66 @@ def permission_add(request):
     return HttpResponseRedirect(url)
 
 
+# 删除通行证
+def permission_delete(request):
+    permission_id = request.GET.get('permission_id', 0)
+
+    try:
+        permission_info = Permission.objects.get(id=permission_id)
+
+        # 删除通行证文件
+        file_name = r'%s/certification/%s.jpg' % (settings.FILE_DIR, permission_info.permission_id)
+
+        if os.path.exists(file_name):
+            os.remove(file_name)
+        else:
+            pass
+
+        # 删除通行证数据
+        permission_info.delete()
+
+    except Exception as e:
+        print(e)
+
+    # 取得分页页码
+    page_num = int(request.session.get('page_num', 1))
+    vehicle_number = request.session.get('vehicle_number', '')
+
+    url = '/permission?page_num=%d&vehicle_number=%s' % (page_num, vehicle_number)
+
+    return HttpResponseRedirect(url)
+
+
 # 车辆是否过期
 def is_vehicle_expired(request):
     vehicle_id = request.GET.get('vehicle_id', '')
     vehicle_info = Vehicle.objects.get(id=vehicle_id)
 
     result = not check_vehicle_expired(vehicle_info.vehicle_number)
+
+    return JsonResponse({'result': result})
+
+
+# 是否可以申请通行证
+def can_get_permission(request):
+    vehicle_id = request.GET.get('vehicle_id', '')
+    route_id = request.GET.get('route_id', '')
+
+    # 车辆id为空，或者路线id为空，返回信息错误
+    if vehicle_id == '' or route_id == '':
+        result = 1
+
+    # 判断通行证是否已经存在
+    elif Permission.objects.filter(permission_vehicle_id=vehicle_id, permission_route_id=route_id).exists():
+        result = 2
+
+    # 判断车辆是否在检验有效期内
+    else:
+        vehicle_info = Vehicle.objects.get(id=vehicle_id)
+        if check_vehicle_expired(vehicle_info.vehicle_number):
+            result = 0  # 在有效期内，可以申请通行证
+        else:
+            result = 3  # 不在有效期内
 
     return JsonResponse({'result': result})
 
