@@ -113,7 +113,7 @@
 <body>
 <div class="table_wrapper">
     <div class="table_head">
-        <span>车辆列表</span>
+        <span>用户列表</span>
     </div>
     <div class="table_container">
         <div class="search_input">
@@ -287,6 +287,9 @@
                         <input type="password" placeholder="请输入密码" name="password">
                     </td>
                 </tr>
+                {% if user_authority == 1 %}
+
+                {% else %}
                 <tr>
                     <td><span>所属部门</span></td>
                     <td>
@@ -316,6 +319,7 @@
                         <input type="text" placeholder="请输入手机号" name="phone">
                     </td>
                 </tr>
+                {% endif %}
             </table>
             <input type="hidden" name="user_id">
             <div class="my-modal-footer" >
