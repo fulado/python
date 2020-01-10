@@ -1,24 +1,35 @@
-import xml.etree.ElementTree as xml_et
+import xmltodict
 
 
 class XmlHandler(object):
-    def __init__(self, xml_data):
-        self.xml_data = xml_data
+    def __init__(self):
         self.token = ''
         self.client_address = ''
         self.seq = ''
+        self.operation_order = ''
         self.operation_name = ''
-        self.object_name = ''
+        self.data_type = ''
+        self.data_dict = {}
 
-    def xml_parse(self):
-        root = xml_et.fromstring(self.xml_data)
+    def xml_parse(self, xml_data):
+        data = xmltodict.parse(xml_data)
 
-        self.token = root.find('Token').text
-        self.client_address = root.find('From').text
-        self.seq = root.find('Seq').text
+        data = data.get('Message', {})
 
+        self.token = data.get('Token', '')
+        self.client_address = data.get('From', '')
+        self.seq = data.get('Seq')
 
+        data = data.get('Body', {})
+        data = data.get('Operation', {})
+        self.operation_order = data.get('@order', '')
+        self.operation_name = data.get('@name', '')
+        self.data_type = tuple(data.keys())[-1]
 
+        self.data_dict = data.get(self.data_type, {})
+
+        for k, v in self.data_dict.items():
+            print(k, v)
 
 
 
