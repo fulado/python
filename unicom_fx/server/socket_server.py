@@ -10,8 +10,8 @@ class SocketServer(object):
         # 创建
         socket_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         socket_server.setsockopt(socket.SOL_SOCKET,  socket.SO_REUSEADDR, 1)
-        addr = ('', self.port)
-        socket_server.bind(addr)
+        address = ('', self.port)
+        socket_server.bind(address)
         socket_server.listen(5)
 
         try:
