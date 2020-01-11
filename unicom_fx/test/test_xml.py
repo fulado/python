@@ -4,6 +4,8 @@ from pprint import pprint
 import json
 
 from server.xml_handler import XmlHandler
+from server.xml_data import LoginData, HearBeat
+from server.static_data import SysInfo
 
 
 def parse_xml(xml_data):
@@ -54,8 +56,44 @@ def parse_xml(xml_data):
 
 if __name__ == '__main__':
     xml_data = """
-    <?xml version="1.0" encoding="UTF-8"?> <Message> <Version>版本号</Version> <Token></Token> <From>源地址</From> <To><Address><Sys>TICP</Sys><SubSys/><Instance/></Address></To> <Type>REQUEST</Type> <Seq>序列号</Seq> <Body> <Operation order="1" name="Login"> <SDO_User> <UserName>用户名</UserName> <Pwd>口令</Pwd>
-</SDO_User > </Operation> </Body> </Message>
+    <?xml version="1.0" encoding="UTF-8"?>
+<Message>
+  <Version>1.1</Version>
+  <Token></Token>
+  <From>
+    <Address>
+      <Sys>UTCS</Sys>
+      <SubSys/>
+      <Instance/>
+    </Address>
+  </From>
+  <To>
+    <Address>
+      <Sys>TICP</Sys>
+      <SubSys/>
+      <Instance/>
+    </Address>
+  </To>
+  <Type>RESPONSE</Type>
+  <Seq>20140829084311000015</Seq>
+  <Body>
+    <Operation order="1" name="Get">
+      <SysInfo>
+        <SysName>智能交通管控平台</SysName>
+        <SysVersion>3.04</SysVersion>
+        <Supplier>XXXXXX</Supplier>
+        <RegionIDList>
+	  <RegionID>330100211</RegionID>
+<RegionID>330100212</RegionID>
+        </RegionIDList>
+        <SignalControlerIDList>
+	  <SignalControlerID>33010058792223258</SignalControlerID>
+     <SignalControlerID>33010058792223259</SignalControlerID>
+        </SignalControlerIDList>
+      </SysInfo>
+    </Operation>
+  </Body>
+</Message>
     """
 
     # parse_xml(xml_data.strip())
@@ -63,4 +101,27 @@ if __name__ == '__main__':
     xml_handler = XmlHandler()
     xml_handler.xml_parse(xml_data.strip())
 
+    print(xml_handler.request_data_dict)
+
+    # 登录
+    login_data = LoginData(xml_handler.request_data_dict)
+    login_data.get_user_info()
+    login_data.set_response_data()
+
+    xml_handler.xml_construct(login_data.response_date, login_data.data_type, login_data.token)
+
+    # 心跳
+    heart_beat = HearBeat(xml_handler.request_data_dict)
+    heart_beat.set_response_data()
+
+    xml_handler.xml_construct(heart_beat.response_date, heart_beat.data_type)
+
+    # 系统参数请求
+    sys_info = SysInfo()
+    sys_info.set_request_data()
+    xml_handler.xml_construct(sys_info.request_data, sys_info.data_type)
+    sys_info.parse_response_data(xml_handler.request_data_dict)
+
+    # 系统参数返回
+    # print(xml_handler.response_data_xml)
 
