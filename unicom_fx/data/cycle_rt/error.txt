@@ -1,0 +1,5 @@
+CrossID,
+StartTime,
+LastCycleLen,
+CurCycleLen,
+CurCycleRemainLen,

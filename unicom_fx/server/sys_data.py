@@ -9,7 +9,7 @@ from utils.xml_tools import generate_ordered_dict
 
 
 # 数据基类
-class XmlData(object):
+class SysData(object):
     def __init__(self, request_data):
         self.request_data = request_data
         self.response_date = {}
@@ -18,7 +18,7 @@ class XmlData(object):
 
 
 # 登录数据
-class LoginData(XmlData):
+class LoginData(SysData):
     def __init__(self, request_data):
         super(LoginData, self).__init__(request_data)
         self.username = ''
@@ -35,8 +35,10 @@ class LoginData(XmlData):
 
     # 生成登录数据
     def set_response_data(self):
+        self.get_user_info()
+
         # 判断账号密码
-        if self.username == 'fengxian' and self.password == 'signal':
+        if self.username == 'fengxian' and self.password == 'fengxian':
             login_success = True
         else:
             login_success = False
@@ -45,7 +47,7 @@ class LoginData(XmlData):
             # 如果账号密码正确，构造登录成功数据
             self.generate_token()
             self.username = 'fengxian'
-            self.password = 'signal'
+            self.password = 'fengxian'
 
             # 生产token
             self.generate_token()
@@ -76,17 +78,17 @@ class LoginData(XmlData):
 
 
 # 心跳
-class HearBeat(XmlData):
-    def __init__(self, request_data):
-        super(HearBeat, self).__init__(request_data)
+class HearBeat(object):
+    def __init__(self):
         self.data_type = 'PUSH'
+        self.response_data = ''
 
     def set_response_data(self):
         operation_list = [('SDO_HeartBeat', [])]
         operation_order = '7'
         operation_name = 'notify'
 
-        self.response_date = generate_ordered_dict(operation_order, operation_name, operation_list)
+        self.response_data = generate_ordered_dict(operation_order, operation_name, operation_list)
 
 
 

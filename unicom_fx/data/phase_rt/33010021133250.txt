@@ -1,0 +1,6 @@
+CrossID, 33010021133250
+LastStageNo, 1
+LastStageLen, 60
+CurStageNo, 1
+CurStageLen, 60
+CurStageRemainLen, 23

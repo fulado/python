@@ -17,7 +17,6 @@ class XmlHandler(object):
     # 解析请求xml
     def xml_parse(self, xml_data):
         data = xmltodict.parse(xml_data.strip())
-
         data = data.get('Message', {})
 
         self.token = data.get('Token', '')

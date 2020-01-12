@@ -1,0 +1,5 @@
+CrossID, 33010021133250
+StartTime, 2016-07-05T09:00:00
+LastCycleLen, 110
+CurCycleLen, 110
+CurCycleRemainLen, 23
