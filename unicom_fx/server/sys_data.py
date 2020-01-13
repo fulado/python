@@ -3,6 +3,7 @@
 """
 import hashlib
 import time
+from collections import OrderedDict
 
 
 from utils.xml_tools import generate_ordered_dict
@@ -12,9 +13,12 @@ from utils.xml_tools import generate_ordered_dict
 class SysData(object):
     def __init__(self, request_data):
         self.request_data = request_data
-        self.response_date = {}
+        self.response_data = {}
         self.token = ''
         self.data_type = 'RESPONSE'
+
+    def set_response_data(self):
+        pass
 
 
 # 登录数据
@@ -74,7 +78,7 @@ class LoginData(SysData):
         operation_order = '1'
         operation_name = 'Login'
 
-        self.response_date = generate_ordered_dict(operation_order, operation_name, operation_list)
+        self.response_data = generate_ordered_dict(operation_order, operation_name, operation_list)
 
 
 # 心跳
@@ -91,12 +95,53 @@ class HearBeat(object):
         self.response_data = generate_ordered_dict(operation_order, operation_name, operation_list)
 
 
+# 订阅
+class CrossReportCtrl(object):
+    def __init__(self, data_name):
+        self.data_type = 'REQUEST'
+        self.object_type = 'CrossReportCtrl'
+        self.data_name = data_name
+        self.cross_id_list = []
+        self.response_data = ''
 
+    # 获取路口id列表
+    def get_cross_id_list(self):
+        self.cross_id_list = ['452',
+                              '411',
+                              '2629']
 
+    # 创建订阅数据
+    # def set_response_data(self):
+    #     cross_id_list = [('CrossID', self.cross_id_list),
+    #                      ]
+    #
+    #     object_list = [('Cmd', 'Start'),
+    #                    ('Type', self.data_name),
+    #                    ('CrossIDList', cross_id_list),
+    #                    ]
+    #
+    #     operation_list = [(self.object_type, object_list),
+    #                       ]
+    #
+    #     operation_order = '1'
+    #     operation_name = 'Set'
+    #     print(operation_list)
+    #     self.response_data = generate_ordered_dict(operation_order, operation_name, operation_list)
+    def set_response_data(self):
+        cross_id_list_element = OrderedDict()
+        cross_id_list_element['CrossID'] = self.cross_id_list
 
+        cross_report_ctrl_element = OrderedDict()
+        cross_report_ctrl_element['Cmd'] = 'Start'
+        cross_report_ctrl_element['Type'] = self.data_name
+        cross_report_ctrl_element['CrossIDList'] = cross_id_list_element
 
+        operation_element = OrderedDict()
+        operation_element['@order '] = '1'
+        operation_element['@name '] = 'Set'
+        operation_element['Operation '] = cross_report_ctrl_element
 
-
+        self.response_data = operation_element
 
 
 

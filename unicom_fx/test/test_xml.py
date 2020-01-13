@@ -4,7 +4,7 @@ from pprint import pprint
 import json
 
 from server.xml_handler import XmlHandler
-from server.xml_data import LoginData, HearBeat
+from server.sys_data import LoginData, HearBeat, CrossReportCtrl
 from server.static_data import SysInfo
 from server.dynamic_data import CrossCycle, CrossStage
 
@@ -57,36 +57,37 @@ def parse_xml(xml_data):
 
 if __name__ == '__main__':
     xml_data = """
-    <?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <Message>
   <Version>1.1</Version>
   <Token/>
   <From>
     <Address>
-      <Sys>UTCS</Sys>
+      <Sys>TICP</Sys>
       <SubSys/>
       <Instance/>
     </Address>
   </From>
   <To>
     <Address>
-      <Sys>TICP</Sys>
+      <Sys>UTCS</Sys>
       <SubSys/>
       <Instance/>
     </Address>
   </To>
-  <Type>RESPONSE</Type>
+  <Type>REQUEST</Type>
   <Seq>20140829084311000006</Seq>
   <Body>
-    <Operation order="1" name="Get">
-      <CrossStage>
-        <CrossID>33010021133250</CrossID>
-        <LastStageNo>1</LastStageNo>
-        <LastStageLen>60</LastStageLen>
-        <CurStageNo>1</CurStageNo>
-        <CurStageLen>60</CurStageLen>
-        <CurStageRemainLen>23</CurStageRemainLen>
-      </CrossStage>
+    <Operation order="1" name="Set">
+      <CrossReportCtrl>
+        <Cmd>Start</Cmd>
+        <Type>CrossCycle</Type>
+        <CrossIDList>
+          <CrossID>2629</CrossID>
+          <CrossID>123</CrossID>
+          <CrossID>456</CrossID>
+        </CrossIDList>
+      </CrossReportCtrl>
     </Operation>
   </Body>
 </Message>
@@ -97,8 +98,9 @@ if __name__ == '__main__':
     xml_handler = XmlHandler()
     xml_handler.xml_parse(xml_data.strip())
 
-    print(xml_handler.object_type)
-    print(xml_handler.request_data_dict)
+
+    # print(xml_handler.object_type)
+    # print(xml_handler.request_data_dict)
 
     # # 登录
     # login_data = LoginData(xml_handler.request_data_dict)
@@ -125,9 +127,20 @@ if __name__ == '__main__':
     # cross_cycle.save_data()
 
     # 路口周期
-    CrossStage = CrossStage()
-    CrossStage.parse_data(xml_handler.request_data_dict)
-    CrossStage.save_data()
+    # CrossStage = CrossStage()
+    # CrossStage.parse_data(xml_handler.request_data_dict)
+    # CrossStage.save_data()
+
+    # 订阅数据
+    cross_report_ctrl = CrossReportCtrl('CrossCycle')
+    cross_report_ctrl.get_cross_id_list()
+    cross_report_ctrl.set_response_data()
+
+    print(cross_report_ctrl.response_date)
+
+    xml_handler.xml_construct(cross_report_ctrl.response_date, cross_report_ctrl.data_type)
+
+    print(xml_handler.response_data_xml)
 
     # 系统参数返回
     # print(xml_handler.response_data_xml)
