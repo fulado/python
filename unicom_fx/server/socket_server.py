@@ -23,6 +23,15 @@ class MyRequestHandler(BaseRequestHandler):
         print('建立客户端连接')
         print(self.client_address)
 
+        # 初始化参数
+        self.request_data = None
+        self.response_data = None
+        self.xml_handler = None
+        self.heart_beat_data = None
+        self.token = ''
+        self.request_object = None
+        self.heart_beat_thread = None
+
         # 创建一个xml处理器对象
         self.xml_handler = XmlHandler()
 
