@@ -6,6 +6,7 @@ from threading import Thread
 from server.xml_handler import XmlHandler
 from server.sys_data import HearBeat, LoginData, CrossReportCtrl
 from server.dynamic_data import CrossCycle, CrossStage
+from server.static_data import SysInfo
 
 
 # 创建BaseRequestHandler的子类
@@ -41,8 +42,10 @@ class MyRequestHandler(BaseRequestHandler):
         try:
             while True:
                 self.request_data = (self.request.recv(100000)).decode('utf-8')
+                print(self.request_data)
                 self.handle_data()
 
+                print(self.response_data)
                 if self.response_data:
                     self.request.send(self.response_data.encode())
         except Exception as e:
@@ -84,24 +87,37 @@ class MyRequestHandler(BaseRequestHandler):
 
         # 处理数据
         if self.xml_handler.object_type == 'SDO_User':  # 登录
-            print('%s : 登录' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
+            print('%s : 接收登录请求' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
             self.login_data()
             time.sleep(1)
-            self.cross_report_ctrl()
+
+            # 登陆成功
+            if self.token != '':
+                # 请求路口静态数据
+                self.send_sys_info_()
+
+                # 订阅路口实时数据
+                self.cross_report_ctrl()
 
         elif self.xml_handler.object_type == 'SDO_HeartBeat':  # 心跳
-            print('%s : 心跳' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
+            print('%s : 接收心跳请求' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
             self.heart_beat()
 
         elif self.xml_handler.object_type == 'CrossCycle':  # 实时周期
-            print('%s : 实时周期' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
+            print('%s : 接收实时周期' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
             self.cross_cycle()
 
             return
 
         elif self.xml_handler.object_type == 'CrossStage':  # 实时阶段
-            print('%s : 实时阶段' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
+            print('%s : 接收实时阶段' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
             self.cross_stage()
+
+            return
+
+        elif self.xml_handler.object_type == 'SysInfo':  # 系统信息
+            print('%s : 接收系统信息' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
+            self.recv_sys_info()
 
             return
 
@@ -161,8 +177,22 @@ class MyRequestHandler(BaseRequestHandler):
         self.request_object = CrossStage(self.xml_handler.request_data_dict)
         self.request_object.save_data()
 
+    # 发送系统参数
+    def send_sys_info_(self):
+        # 构造请求数据
+        sys_info = SysInfo()
+        sys_info.set_request_data()
 
+        self.xml_handler.xml_construct(sys_info.response_data, sys_info.data_type, self.token)
 
+        # 发送系统参数请求
+        self.request.send(self.xml_handler.response_data_xml.encode())
+        print('%s : 发送系统信息请求' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
+
+    # 接收系统信息数据
+    def recv_sys_info(self):
+        self.request_object = SysInfo()
+        self.request_object.parse_response_data(self.xml_handler.request_data_dict)
 
 
 

@@ -42,7 +42,7 @@ class XmlHandler(object):
         self.seq = seq if seq != '' else self.seq
 
         message = collections.OrderedDict()
-        message['Version'] = '1.1'
+        message['Version'] = '1.0'
         message['Token'] = self.token
 
         # 构造From标签中的内容

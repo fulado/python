@@ -2,7 +2,7 @@ import socket
 
 client = socket.socket()
 
-client.connect(('localhost', 19530))
+client.connect(('15.75.', 19530))
 while True:
     cmd = input("(quit退出)>>").strip()
     if len(cmd) == 0:

@@ -1,0 +1,6 @@
+CrossID, 33010021133250
+PhaseNo, 1
+PhaseName, œ‡ŒªA
+Attribute, 11
+LaneNoList, OrderedDict([('LaneNo', '1')])
+PedDirList, OrderedDict([('Direction', '1')])

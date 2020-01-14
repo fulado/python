@@ -5,7 +5,7 @@ import json
 
 from server.xml_handler import XmlHandler
 from server.sys_data import LoginData, HearBeat, CrossReportCtrl
-from server.static_data import SysInfo, LampGroup
+from server.static_data import SysInfo, LampGroup, LaneParam, PhaseParam
 from server.dynamic_data import CrossCycle, CrossStage
 
 
@@ -79,12 +79,20 @@ if __name__ == '__main__':
   <Seq>20140829084311000019</Seq>
   <Body>
     <Operation order="1" name="Get">
-      <LampGroup>
-        <SignalControlerID>33010058792223258</SignalControlerID>
-        <LampGroupNo>1</LampGroupNo>
-        <Direction>0</Direction>
-        <Type>10</Type>
-      </LampGroup>
+       <SysInfo>
+        <SysName>智能交通管控平台</SysName>
+        <SysVersion>3.04</SysVersion>
+        <Supplier>XXXXXX</Supplier>
+        <RegionIDList>
+	  <RegionID>330100211</RegionID>
+<RegionID>330100212</RegionID>
+        </RegionIDList>
+        <SignalControlerIDList>
+	  <SignalControlerID>33010058792223258</SignalControlerID>
+     <SignalControlerID>33010058792223259</SignalControlerID>
+        </SignalControlerIDList>
+      </SysInfo>
+
     </Operation>
   </Body>
 </Message>
@@ -113,10 +121,10 @@ if __name__ == '__main__':
     # xml_handler.xml_construct(heart_beat.response_date, heart_beat.data_type)
     #
     # # 系统参数请求
-    # sys_info = SysInfo()
+    sys_info = SysInfo()
     # sys_info.set_request_data()
     # xml_handler.xml_construct(sys_info.request_data, sys_info.data_type)
-    # sys_info.parse_response_data(xml_handler.request_data_dict)
+    sys_info.parse_response_data(xml_handler.request_data_dict)
 
     # 路口周期
     # cross_cycle = CrossCycle()
@@ -140,12 +148,12 @@ if __name__ == '__main__':
     # print(xml_handler.response_data_xml)
 
     #
-    sys_info = LampGroup('123')
+    # sys_info = PhaseParam('123')
     # sys_info.set_request_data()
     # xml_handler.xml_construct(sys_info.request_data, sys_info.data_type)
-    # print(xml_handler.request_data_dict)
-    sys_info.parse_response_data(xml_handler.request_data_dict)
-
+    # print(xml_handler.response_data_xml)
+    # sys_info.parse_response_data(xml_handler.request_data_dict)
+    # sys_info.save_data_to_file()
 
 
     # 系统参数返回

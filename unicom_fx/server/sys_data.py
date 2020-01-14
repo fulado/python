@@ -63,6 +63,9 @@ class LoginData(SysData):
 
             operation_list = [('SDO_User', object_list),
                               ]
+
+            print('%s : 登陆成功' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
+
         else:
             # 如果账号密码错误，构造登录失败数据
             object_list = [('ErrObj', 'SDO_User'),
@@ -74,6 +77,8 @@ class LoginData(SysData):
                               ]
 
             self.data_type = 'ERROR'
+
+            print('%s : 登陆失败' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
 
         operation_order = '1'
         operation_name = 'Login'

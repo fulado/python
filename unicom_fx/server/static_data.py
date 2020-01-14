@@ -24,9 +24,13 @@ class StaticData(object):
         file = open(file_name, 'w')
 
         try:
-            for data in self.response_data:
-                file.write(data)
-                file.write(',\n')
+            # for data in self.response_data:
+            #     file.write(data)
+            #     file.write(',\n')
+
+            for k, v in self.response_data.items():
+                file.write('%s, %s' % (k, v))
+                file.write('\n')
         except Exception as e:
             print(e)
         finally:
@@ -49,7 +53,21 @@ class SysInfo(StaticData):
     def parse_response_data(self, response_data_dict):
         self.response_data = response_data_dict.get('SignalControlerIDList', {}).get('SignalControlerID', [])
 
+        print(self.response_data)
         self.save_data_to_file('../data/signal_list.txt')
+
+    # 保存数据
+    def save_data_to_file(self, file_name):
+        file = open(file_name, 'w')
+
+        try:
+            for data in self.response_data:
+                file.write(data)
+                file.write(',\n')
+        except Exception as e:
+            print(e)
+        finally:
+            file.close()
 
 
 # 信号机参数
@@ -74,16 +92,56 @@ class LampGroup(StaticData):
         # response_data_dict = response_data_dict.get('SignalControlerID', {})
         self.response_data = response_data_dict
 
-        print(self.response_data)
-        for k, v in self.response_data.items():
-            print(k, v)
-        # self.save_data_to_file('../data/signal_list.txt')
+        signal_id = self.response_data.get('SignalControlerID', '')
+        file_name = '../data/lamp_group/%s.txt' % signal_id
+
+        self.save_data_to_file(file_name)
 
 
+# 车道参数
+class LaneParam(StaticData):
+    def __init__(self, cross_id):
+        super(LaneParam, self).__init__()
+        object_list = [('ObjName', 'LaneParam'),
+                       ('ID', cross_id),
+                       ('No', ''),
+                       ]
+
+        self.operation_list = [('TSCCmd', object_list),
+                               ]
+
+    # 解析返回结果数据
+    def parse_response_data(self, response_data_dict):
+        # response_data_dict = response_data_dict.get('SignalControlerID', {})
+        self.response_data = response_data_dict
+
+        cross_id = self.response_data.get('CrossID', '')
+        file_name = '../data/lane_param/%s.txt' % cross_id
+
+        self.save_data_to_file(file_name)
 
 
+# 相位参数
+class PhaseParam(StaticData):
+    def __init__(self, cross_id):
+        super(PhaseParam, self).__init__()
+        object_list = [('ObjName', 'PhaseParam'),
+                       ('ID', cross_id),
+                       ('No', ''),
+                       ]
 
+        self.operation_list = [('TSCCmd', object_list),
+                               ]
 
+    # 解析返回结果数据
+    def parse_response_data(self, response_data_dict):
+        # response_data_dict = response_data_dict.get('SignalControlerID', {})
+        self.response_data = response_data_dict
+
+        cross_id = self.response_data.get('CrossID', '')
+        file_name = '../data/phase_param/%s.txt' % cross_id
+
+        self.save_data_to_file(file_name)
 
 
 
