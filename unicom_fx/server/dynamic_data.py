@@ -5,8 +5,8 @@
 
 # 数据基类
 class DynamicData(object):
-    def __init__(self):
-        self.request_data = {}  # 双向互通发送的其请求数据
+    def __init__(self, data_dict={}):
+        self.request_data = data_dict  # 双向互通发送的其请求数据
         self.response_data = {}  # 信号系统返回的数据
         self.token = ''
         self.data_type = 'REQUEST'
@@ -16,8 +16,8 @@ class DynamicData(object):
         self.file_name = '../data/error.txt'
 
     #  解析实时数据
-    def parse_data(self, data_dict):
-        self.request_data = data_dict
+    # def parse_data(self, data_dict):
+    #     self.request_data = data_dict
 
     # 保存数据
     def save_data_to_file(self):

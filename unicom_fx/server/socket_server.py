@@ -5,6 +5,7 @@ from threading import Thread
 
 from server.xml_handler import XmlHandler
 from server.sys_data import HearBeat, LoginData, CrossReportCtrl
+from server.dynamic_data import CrossCycle, CrossStage
 
 
 # 创建BaseRequestHandler的子类
@@ -20,7 +21,7 @@ class MyRequestHandler(BaseRequestHandler):
         self.heart_beat_thread = None
 
     def setup(self):
-        print('建立客户端连接')
+        print('%s : 建立客户端连接' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
         print(self.client_address)
 
         # 初始化参数
@@ -48,7 +49,7 @@ class MyRequestHandler(BaseRequestHandler):
             print(e)
 
     def finish(self):
-        print('连接关闭')
+        print('%s : 连接关闭' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
         # 关闭连接后重置系统参数
         self.request_data = None
         self.response_data = None
@@ -83,13 +84,27 @@ class MyRequestHandler(BaseRequestHandler):
 
         # 处理数据
         if self.xml_handler.object_type == 'SDO_User':  # 登录
-            print('登录')
+            print('%s : 登录' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
             self.login_data()
             time.sleep(1)
             self.cross_report_ctrl()
+
         elif self.xml_handler.object_type == 'SDO_HeartBeat':  # 心跳
-            print('心跳')
+            print('%s : 心跳' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
             self.heart_beat()
+
+        elif self.xml_handler.object_type == 'CrossCycle':  # 实时周期
+            print('%s : 实时周期' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
+            self.cross_cycle()
+
+            return
+
+        elif self.xml_handler.object_type == 'CrossStage':  # 实时阶段
+            print('%s : 实时阶段' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
+            self.cross_stage()
+
+            return
+
         else:
             return
 
@@ -125,7 +140,7 @@ class MyRequestHandler(BaseRequestHandler):
 
         self.xml_handler.xml_construct(cross_cycle.response_data, cross_cycle.data_type, self.token)
         self.request.send(self.xml_handler.response_data_xml.encode())
-        print('订阅路口周期')
+        print('%s : 订阅路口周期' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
 
         # 路口阶段
         cross_stage = CrossReportCtrl('CrossStage')
@@ -134,9 +149,17 @@ class MyRequestHandler(BaseRequestHandler):
 
         self.xml_handler.xml_construct(cross_stage.response_data, cross_stage.data_type, self.token)
         self.request.send(self.xml_handler.response_data_xml.encode())
-        print('订阅路口阶段')
+        print('%s : 订阅路口阶段' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
 
+    # 实时周期
+    def cross_cycle(self):
+        self.request_object = CrossCycle(self.xml_handler.request_data_dict)
+        self.request_object.save_data()
 
+    # 实时阶段
+    def cross_stage(self):
+        self.request_object = CrossStage(self.xml_handler.request_data_dict)
+        self.request_object.save_data()
 
 
 

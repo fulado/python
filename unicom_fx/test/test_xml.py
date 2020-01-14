@@ -5,7 +5,7 @@ import json
 
 from server.xml_handler import XmlHandler
 from server.sys_data import LoginData, HearBeat, CrossReportCtrl
-from server.static_data import SysInfo
+from server.static_data import SysInfo, LampGroup
 from server.dynamic_data import CrossCycle, CrossStage
 
 
@@ -57,37 +57,34 @@ def parse_xml(xml_data):
 
 if __name__ == '__main__':
     xml_data = """
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Message>
   <Version>1.1</Version>
-  <Token/>
+  <Token></Token>
   <From>
     <Address>
-      <Sys>TICP</Sys>
+      <Sys>UTCS</Sys>
       <SubSys/>
       <Instance/>
     </Address>
   </From>
   <To>
     <Address>
-      <Sys>UTCS</Sys>
+      <Sys>TICP</Sys>
       <SubSys/>
       <Instance/>
     </Address>
   </To>
-  <Type>REQUEST</Type>
-  <Seq>20140829084311000006</Seq>
+  <Type>RESPONSE</Type>
+  <Seq>20140829084311000019</Seq>
   <Body>
-    <Operation order="1" name="Set">
-      <CrossReportCtrl>
-        <Cmd>Start</Cmd>
-        <Type>CrossCycle</Type>
-        <CrossIDList>
-          <CrossID>2629</CrossID>
-          <CrossID>123</CrossID>
-          <CrossID>456</CrossID>
-        </CrossIDList>
-      </CrossReportCtrl>
+    <Operation order="1" name="Get">
+      <LampGroup>
+        <SignalControlerID>33010058792223258</SignalControlerID>
+        <LampGroupNo>1</LampGroupNo>
+        <Direction>0</Direction>
+        <Type>10</Type>
+      </LampGroup>
     </Operation>
   </Body>
 </Message>
@@ -132,15 +129,24 @@ if __name__ == '__main__':
     # CrossStage.save_data()
 
     # 订阅数据
-    cross_report_ctrl = CrossReportCtrl('CrossCycle')
-    cross_report_ctrl.get_cross_id_list()
-    cross_report_ctrl.set_response_data()
+    # cross_report_ctrl = CrossReportCtrl('CrossCycle')
+    # cross_report_ctrl.get_cross_id_list()
+    # cross_report_ctrl.set_response_data()
+    #
+    # print(cross_report_ctrl.response_date)
+    #
+    # xml_handler.xml_construct(cross_report_ctrl.response_date, cross_report_ctrl.data_type)
+    #
+    # print(xml_handler.response_data_xml)
 
-    print(cross_report_ctrl.response_date)
+    #
+    sys_info = LampGroup('123')
+    # sys_info.set_request_data()
+    # xml_handler.xml_construct(sys_info.request_data, sys_info.data_type)
+    # print(xml_handler.request_data_dict)
+    sys_info.parse_response_data(xml_handler.request_data_dict)
 
-    xml_handler.xml_construct(cross_report_ctrl.response_date, cross_report_ctrl.data_type)
 
-    print(xml_handler.response_data_xml)
 
     # 系统参数返回
     # print(xml_handler.response_data_xml)

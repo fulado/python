@@ -52,8 +52,32 @@ class SysInfo(StaticData):
         self.save_data_to_file('../data/signal_list.txt')
 
 
+# 信号机参数
+class SignalController(StaticData):
+    pass
 
 
+# 信号灯组参数
+class LampGroup(StaticData):
+    def __init__(self, signal_id):
+        super(LampGroup, self).__init__()
+        object_list = [('ObjName', 'LampGroup'),
+                       ('ID', signal_id),
+                       ('No', ''),
+                       ]
+
+        self.operation_list = [('TSCCmd', object_list),
+                               ]
+
+    # 解析返回结果数据
+    def parse_response_data(self, response_data_dict):
+        # response_data_dict = response_data_dict.get('SignalControlerID', {})
+        self.response_data = response_data_dict
+
+        print(self.response_data)
+        for k, v in self.response_data.items():
+            print(k, v)
+        # self.save_data_to_file('../data/signal_list.txt')
 
 
 
