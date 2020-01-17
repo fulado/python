@@ -51,10 +51,13 @@ class SysInfo(StaticData):
 
     # 解析返回结果数据
     def parse_response_data(self, response_data_dict):
+        # 保存路口id
         self.response_data = response_data_dict.get('SignalControlerIDList', {}).get('SignalControlerID', [])
-
-        print(self.response_data)
         self.save_data_to_file('../data/signal_list.txt')
+
+        # 保存区域id
+        self.response_data = [response_data_dict.get('RegionIDList', {}).get('RegionID', [])]
+        self.save_data_to_file('../data/region_list.txt')
 
     # 保存数据
     def save_data_to_file(self, file_name):
@@ -63,7 +66,40 @@ class SysInfo(StaticData):
         try:
             for data in self.response_data:
                 file.write(data)
-                file.write(',\n')
+                file.write('\n')
+        except Exception as e:
+            print(e)
+        finally:
+            file.close()
+
+
+# 区域参数
+class RegionParam(StaticData):
+    def __init__(self):
+        super(RegionParam, self).__init__()
+        object_list = [('ObjName', 'RegionParam'),
+                       ('ID', '310120000'),
+                       ('No', ''),
+                       ]
+
+        self.operation_list = [('TSCCmd', object_list),
+                               ]
+
+        # 解析返回结果数据
+
+    def parse_response_data(self, response_data_dict):
+        # 保存路口id
+        self.response_data = response_data_dict.get('CrossIDList', {}).get('CrossID', [])
+        self.save_data_to_file('../data/cross_list.txt')
+
+    # 保存数据
+    def save_data_to_file(self, file_name):
+        file = open(file_name, 'w')
+
+        try:
+            for data in self.response_data:
+                file.write(data)
+                file.write('\n')
         except Exception as e:
             print(e)
         finally:

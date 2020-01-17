@@ -3,6 +3,7 @@
 """
 import hashlib
 import time
+import random
 from collections import OrderedDict
 
 
@@ -107,13 +108,37 @@ class CrossReportCtrl(object):
         self.object_type = 'CrossReportCtrl'
         self.data_name = data_name
         self.cross_id_list = []
+        self.signal_id_list = []
         self.response_data = ''
+        self.seq = ''
 
     # 获取路口id列表
     def get_cross_id_list(self):
-        self.cross_id_list = ['452',
-                              '411',
-                              '2629']
+        file = open('../data/cross_list.txt', 'r')
+        self.cross_id_list = []
+
+        try:
+            for line in file.readlines():
+                self.cross_id_list.append(line.strip())
+
+        except Exception as e:
+            print(e)
+        finally:
+            file.close()
+
+    # 获取信号机id列表
+    def get_signal_id_list(self):
+        file = open('../data/signal_list.txt', 'r')
+        self.signal_id_list = []
+
+        try:
+            for line in file.readlines():
+                self.signal_id_list.append(line.strip())
+
+        except Exception as e:
+            print(e)
+        finally:
+            file.close()
 
     # 创建订阅数据
     # def set_response_data(self):
@@ -142,11 +167,15 @@ class CrossReportCtrl(object):
         cross_report_ctrl_element['CrossIDList'] = cross_id_list_element
 
         operation_element = OrderedDict()
-        operation_element['@order '] = '1'
+        operation_element['@order '] = '6'
         operation_element['@name '] = 'Set'
         operation_element['Operation '] = cross_report_ctrl_element
 
         self.response_data = operation_element
+
+        self.seq = time.strftime('%Y%m%d%H%M%S', time.localtime()) + '000%d%d%d' % (random.randint(0, 9),
+                                                                                    random.randint(0, 9),
+                                                                                    random.randint(0, 9))
 
 
 

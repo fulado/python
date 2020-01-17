@@ -397,7 +397,7 @@
             $('.my-modal-body select').eq(1).change();
         });
 
-        // 道路选择后, 方向变化
+        // 道路选择后, 站点变化
         $('.my-modal-body select').eq(1).change(function() {
             $.ajaxSettings.async = false;
             let val = $(this).val();

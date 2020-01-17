@@ -6,7 +6,7 @@ from threading import Thread
 from server.xml_handler import XmlHandler
 from server.sys_data import HearBeat, LoginData, CrossReportCtrl
 from server.dynamic_data import CrossCycle, CrossStage
-from server.static_data import SysInfo
+from server.static_data import SysInfo, RegionParam
 
 
 # 创建BaseRequestHandler的子类
@@ -41,13 +41,30 @@ class MyRequestHandler(BaseRequestHandler):
     def handle(self):
         try:
             while True:
-                self.request_data = (self.request.recv(100000)).decode('utf-8')
+                request_data = (self.request.recv(100000)).decode('utf-8')
+
+                if request_data[:5] == '<?xml':
+                    self.request_data = request_data
+                else:
+                    self.request_data += request_data
+                    continue
+
+                print()
+                print('==========================接收数据==========================')
                 print(self.request_data)
+                print('==========================接收完毕==========================')
+                print()
+
                 self.handle_data()
 
-                print(self.response_data)
                 if self.response_data:
+                    print()
+                    print('==========================发送数据==========================')
+                    print(self.response_data)
                     self.request.send(self.response_data.encode())
+                    print('==========================发送完毕==========================')
+                    print()
+
         except Exception as e:
             print(e)
 
@@ -65,17 +82,17 @@ class MyRequestHandler(BaseRequestHandler):
         self.request.close()
 
     # 发送心跳数据线程
-    def send_heart_beat(self):
-        while True:
-            # 如果token为空，跳出循环
-            if self.token == '':
-                break
-            else:
-                self.request.send(self.heart_beat_data.encode())
-                print('send_heart_beat')
-
-            # 心跳间隔时间
-            time.sleep(5)
+    # def send_heart_beat(self):
+    #     while True:
+    #         # 如果token为空，跳出循环
+    #         if self.token == '':
+    #             break
+    #         else:
+    #             self.request.send(self.heart_beat_data.encode())
+    #             print('send_heart_beat')
+    #
+    #         # 心跳间隔时间
+    #         time.sleep(5)
 
     # 处理数据
     def handle_data(self):
@@ -86,18 +103,16 @@ class MyRequestHandler(BaseRequestHandler):
             return
 
         # 处理数据
-        if self.xml_handler.object_type == 'SDO_User':  # 登录
+        if self.xml_handler.object_type == 'SDO_User' and self.token == '':  # 登录, 避免重复登陆
             print('%s : 接收登录请求' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
             self.login_data()
-            time.sleep(1)
+            # time.sleep(5)
 
             # 登陆成功
             if self.token != '':
-                # 请求路口静态数据
-                self.send_sys_info_()
-
-                # 订阅路口实时数据
-                self.cross_report_ctrl()
+                # 新建线程，请求静态数据，并订阅动态数据
+                init_data_thread = Thread(target=self.init_data)
+                init_data_thread.start()
 
         elif self.xml_handler.object_type == 'SDO_HeartBeat':  # 心跳
             print('%s : 接收心跳请求' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
@@ -121,6 +136,12 @@ class MyRequestHandler(BaseRequestHandler):
 
             return
 
+        elif self.xml_handler.object_type == 'RegionParam':  # 区域信息
+            print('%s : 接收区域信息' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
+            self.recv_region_param()
+
+            return
+
         else:
             return
 
@@ -136,6 +157,9 @@ class MyRequestHandler(BaseRequestHandler):
         # 设置token
         self.token = self.request_object.token
 
+        if self.token != '':
+            print('%s : 登陆成功' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
+
     # 心跳
     def heart_beat(self):
         # 生成心跳xml数据
@@ -146,9 +170,8 @@ class MyRequestHandler(BaseRequestHandler):
         # self.heart_beat_thread = Thread(target=self.send_heart_beat)
         # self.heart_beat_thread.start()
 
-    # 订阅
-    def cross_report_ctrl(self):
-        # 创建订阅数据
+    # 订阅路口周期
+    def cross_report_ctrl_cycle(self):
         # 路口周期
         cross_cycle = CrossReportCtrl('CrossCycle')
         cross_cycle.get_cross_id_list()
@@ -157,7 +180,12 @@ class MyRequestHandler(BaseRequestHandler):
         self.xml_handler.xml_construct(cross_cycle.response_data, cross_cycle.data_type, self.token)
         self.request.send(self.xml_handler.response_data_xml.encode())
         print('%s : 订阅路口周期' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
+        print('==========================发送订阅路口周期==========================')
+        print(self.xml_handler.response_data_xml)
+        print('==========================发送完毕==========================')
 
+    # 订阅路口阶段
+    def cross_report_ctrl_phase(self):
         # 路口阶段
         cross_stage = CrossReportCtrl('CrossStage')
         cross_stage.get_cross_id_list()
@@ -166,6 +194,9 @@ class MyRequestHandler(BaseRequestHandler):
         self.xml_handler.xml_construct(cross_stage.response_data, cross_stage.data_type, self.token)
         self.request.send(self.xml_handler.response_data_xml.encode())
         print('%s : 订阅路口阶段' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
+        print('==========================发送订阅路口阶段==========================')
+        print(self.xml_handler.response_data_xml)
+        print('==========================发送完毕==========================')
 
     # 实时周期
     def cross_cycle(self):
@@ -183,24 +214,57 @@ class MyRequestHandler(BaseRequestHandler):
         sys_info = SysInfo()
         sys_info.set_request_data()
 
-        self.xml_handler.xml_construct(sys_info.response_data, sys_info.data_type, self.token)
+        self.xml_handler.xml_construct(sys_info.request_data, sys_info.data_type, self.token)
 
         # 发送系统参数请求
+        print('==========================发送系统请求数据==========================')
+        print(self.xml_handler.response_data_xml)
+        print('==========================发送完毕==========================')
         self.request.send(self.xml_handler.response_data_xml.encode())
-        print('%s : 发送系统信息请求' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
 
     # 接收系统信息数据
     def recv_sys_info(self):
         self.request_object = SysInfo()
         self.request_object.parse_response_data(self.xml_handler.request_data_dict)
 
+    # 发送区域参数请求
+    def send_region_param(self):
+        # 构造请求数据
+        region_param = RegionParam()
+        region_param.set_request_data()
 
+        self.xml_handler.xml_construct(region_param.request_data, region_param.data_type, self.token)
 
+        # 发送系统参数请求
+        print('==========================发送区域参数请求==========================')
+        print(self.xml_handler.response_data_xml)
+        print('==========================发送完毕==========================')
+        self.request.send(self.xml_handler.response_data_xml.encode())
 
+    # 接收系统信息数据
+    def recv_region_param(self):
+        self.request_object = RegionParam()
+        self.request_object.parse_response_data(self.xml_handler.request_data_dict)
 
+    # 请求静态数据，并订阅动态数据
+    def init_data(self):
+        # 发送系统参数请求
+        time.sleep(20)
+        self.send_sys_info_()
+        print('%s : 发送系统信息请求' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
 
+        # 发送区域参数请求
+        time.sleep(20)
+        self.send_region_param()
+        print('%s : 发送区域参数请求' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
 
+        # 订阅路口实时数据
+        time.sleep(20)
+        self.cross_report_ctrl_cycle()
 
+        # 订阅路口阶段数据
+        time.sleep(20)
+        self.cross_report_ctrl_phase()
 
 
 

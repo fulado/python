@@ -670,11 +670,11 @@ def station_search(request):
     elif item == 'direction' and parent_id != '':
         # cate_list = Direction.objects.filter(direction_road_id=parent_id)
         cate_list = Station.objects.filter(station_status=31).filter(station_area=obj_1_val).\
-            filter(station_road=parent_id).values('station_direction').distinct()
-    elif item == 'station' and parent_id != '':
-        # cate_list = Station.objects.filter(station_direction_id=parent_id)
-        cate_list = Station.objects.filter(station_status=31).filter(station_area=obj_1_val).\
-            filter(station_road=obj_2_val).filter(station_direction=parent_id)
+            filter(station_road=parent_id)
+    # elif item == 'station' and parent_id != '':
+    #     # cate_list = Station.objects.filter(station_direction_id=parent_id)
+    #     cate_list = Station.objects.filter(station_status=31).filter(station_area=obj_1_val).\
+    #         filter(station_road=obj_2_val).filter(station_direction=parent_id)
     else:
         cate_list = []
 

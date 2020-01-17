@@ -57,45 +57,7 @@ def parse_xml(xml_data):
 
 if __name__ == '__main__':
     xml_data = """
-<?xml version="1.0" encoding="UTF-8"?>
-<Message>
-  <Version>1.1</Version>
-  <Token></Token>
-  <From>
-    <Address>
-      <Sys>UTCS</Sys>
-      <SubSys/>
-      <Instance/>
-    </Address>
-  </From>
-  <To>
-    <Address>
-      <Sys>TICP</Sys>
-      <SubSys/>
-      <Instance/>
-    </Address>
-  </To>
-  <Type>RESPONSE</Type>
-  <Seq>20140829084311000019</Seq>
-  <Body>
-    <Operation order="1" name="Get">
-       <SysInfo>
-        <SysName>智能交通管控平台</SysName>
-        <SysVersion>3.04</SysVersion>
-        <Supplier>XXXXXX</Supplier>
-        <RegionIDList>
-	  <RegionID>330100211</RegionID>
-<RegionID>330100212</RegionID>
-        </RegionIDList>
-        <SignalControlerIDList>
-	  <SignalControlerID>33010058792223258</SignalControlerID>
-     <SignalControlerID>33010058792223259</SignalControlerID>
-        </SignalControlerIDList>
-      </SysInfo>
-
-    </Operation>
-  </Body>
-</Message>
+<?xml version="1.0" encoding="UTF-8"?><Message><Version>1.0</Version><Token>451e8ad42dfca3b1a72880b118ac35fda93af922</Token><From><Address><Sys>UTCS</Sys><SubSys></SubSys><Instance></Instance></Address></From><To><Address><Sys>TICP</Sys><SubSys></SubSys><Instance></Instance></Address></To><Type>RESPONSE</Type><Seq>20200115171602000001</Seq><Body><Operation name="Get" order="5"><SysInfo><SysName>CSTCP4.0信号控制系统</SysName><SysVersion>1.0</SysVersion><Supplier>宝康</Supplier><RegionIDList><RegionID>310120000</RegionID></RegionIDList><SignalControlerIDList><SignalControlerID>31012000000000066</SignalControlerID><SignalControlerID>31012000000000064</SignalControlerID><SignalControlerID>31012000000000065</SignalControlerID><SignalControlerID>31012000000000067</SignalControlerID><SignalControlerID>31012000000000068</SignalControlerID><SignalControlerID>31012000000000069</SignalControlerID><SignalControlerID>31012000000000002</SignalControlerID><SignalControlerID>31012000000000001</SignalControlerID><SignalControlerID>31012000000000005</SignalControlerID><SignalControlerID>31012000000000006</SignalControlerID><SignalControlerID>31012000000000007</SignalControlerID><SignalControlerID>31012000000000008</SignalControlerID><SignalControlerID>31012000000000009</SignalControlerID><SignalControlerID>31012000000000011</SignalControlerID><SignalControlerID>31012000000000012</SignalControlerID><SignalControlerID>31012000000097055</SignalControlerID><SignalControlerID>31012000000000015</SignalControlerID><SignalControlerID>31012000000000019</SignalControlerID><SignalControlerID>31012000000000021</SignalControlerID><SignalControlerID>31012000000000022</SignalControlerID><SignalControlerID>31012000000000023</SignalControlerID><SignalControlerID>31012000000000024</SignalControlerID><SignalControlerID>31012000000000025</SignalControlerID><SignalControlerID>31012000000000026</SignalControlerID><SignalControlerID>31012000000000027</SignalControlerID><SignalControlerID>31012000000000030</SignalControlerID><SignalControlerID>31012000000000032</SignalControlerID><SignalControlerID>31012000000000033</SignalControlerID><SignalControlerID>31012000000000035</SignalControlerID><SignalControlerID>31012000000000036</SignalControlerID><SignalControlerID>31012000000000038</SignalControlerID><SignalControlerID>31012000000000013</SignalControlerID><SignalControlerID>31012000000000014</SignalControlerID><SignalControlerID>31012000000000016</SignalControlerID><SignalControlerID>31012000000000018</SignalControlerID><SignalControlerID>31012000000000028</SignalControlerID><SignalControlerID>31012000000000029</SignalControlerID><SignalControlerID>31012000000000031</SignalControlerID><SignalControlerID>31012000000000034</SignalControlerID><SignalControlerID>31012000000000037</SignalControlerID><SignalControlerID>31012000000000039</SignalControlerID><SignalControlerID>31012000000000040</SignalControlerID><SignalControlerID>31012000000000041</SignalControlerID><SignalControlerID>31012000000000042</SignalControlerID><SignalControlerID>31012000000000043</SignalControlerID><SignalControlerID>31012000000000044</SignalControlerID><SignalControlerID>31012000000000017</SignalControlerID><SignalControlerID>31012000000000045</SignalControlerID><SignalControlerID>31012000000000046</SignalControlerID><SignalControlerID>31012000000000047</SignalControlerID><SignalControlerID>31012000000000003</SignalControlerID><SignalControlerID>31012000000000004</SignalControlerID><SignalControlerID>31012000000000010</SignalControlerID><SignalControlerID>31012000000000020</SignalControlerID><SignalControlerID>31012000000000048</SignalControlerID><SignalControlerID>31012000000000049</SignalControlerID><SignalControlerID>31012000000000050</SignalControlerID><SignalControlerID>31012000000000051</SignalControlerID><SignalControlerID>31012000000000052</SignalControlerID><SignalControlerID>31012000000000053</SignalControlerID><SignalControlerID>31012000000000054</SignalControlerID><SignalControlerID>31012000000000055</SignalControlerID><SignalControlerID>31012000000000056</SignalControlerID><SignalControlerID>31012000000000057</SignalControlerID><SignalControlerID>31012000000000058</SignalControlerID><SignalControlerID>31012000000000059</SignalControlerID><SignalControlerID>31012000000000060</SignalControlerID><SignalControlerID>31012000000000061</SignalControlerID><SignalControlerID>31012000000000062</SignalControlerID><SignalControlerID>31012000000000063</SignalControlerID></SignalControlerIDList></SysInfo></Operation></Body></Message>
     """
 
     # parse_xml(xml_data.strip())
@@ -121,10 +83,10 @@ if __name__ == '__main__':
     # xml_handler.xml_construct(heart_beat.response_date, heart_beat.data_type)
     #
     # # 系统参数请求
-    sys_info = SysInfo()
+    # sys_info = SysInfo()
     # sys_info.set_request_data()
     # xml_handler.xml_construct(sys_info.request_data, sys_info.data_type)
-    sys_info.parse_response_data(xml_handler.request_data_dict)
+    # sys_info.parse_response_data(xml_handler.request_data_dict)
 
     # 路口周期
     # cross_cycle = CrossCycle()
@@ -137,15 +99,12 @@ if __name__ == '__main__':
     # CrossStage.save_data()
 
     # 订阅数据
-    # cross_report_ctrl = CrossReportCtrl('CrossCycle')
-    # cross_report_ctrl.get_cross_id_list()
-    # cross_report_ctrl.set_response_data()
-    #
-    # print(cross_report_ctrl.response_date)
-    #
-    # xml_handler.xml_construct(cross_report_ctrl.response_date, cross_report_ctrl.data_type)
-    #
-    # print(xml_handler.response_data_xml)
+    cross_cycle = CrossReportCtrl('CrossCycle')
+    cross_cycle.get_cross_id_list()
+    cross_cycle.set_response_data()
+
+    xml_handler.xml_construct(cross_cycle.response_data, cross_cycle.data_type, '', cross_cycle.seq)
+
 
     #
     # sys_info = PhaseParam('123')
@@ -157,5 +116,5 @@ if __name__ == '__main__':
 
 
     # 系统参数返回
-    # print(xml_handler.response_data_xml)
+    print(xml_handler.response_data_xml)
 
