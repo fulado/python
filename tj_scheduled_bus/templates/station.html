@@ -239,17 +239,16 @@
                 </td>
             </tr>
             <tr>
-                <td><span>方向</span></td>
+                <td><span>站点</span></td>
                 <td>
-                    <select name="direction" placeholder="方向">
+                    <select name="station" placeholder="站点">
                     </select>
                 </td>
             </tr>
             <tr>
-                <td><span>站点名称</span></td>
+                <td><span>备注</span></td>
                 <td>
-                    <select name="station" placeholder="站点">
-                    </select>
+                    <input name="direction" placeholder="" />
                 </td>
             </tr>
         </table>
@@ -306,7 +305,7 @@
 
         // 新增站点
         $('.add-vehicle .add').click(function() {
-            let station_id = $('.add-vehicle select').eq(3).val();
+            let station_id = $('.add-vehicle select').eq(2).val();
 
             if (station_id == '0' || station_id == null) {
                 alert('请选择站点');
@@ -413,18 +412,20 @@
             $('.my-modal-body select').eq(2).change();
         });
 
-        // 方向选择后, 站点变化
+        // 站点选择后, 备注变化
         $('.my-modal-body select').eq(2).change(function() {
             $.ajaxSettings.async = false;
-            let val = $(this).val();
+            let station_id = $(this).val();
 
-            if (val == 0) {
-                $('.my-modal-body select').eq(3).val(0);
-                $('.my-modal-body select').eq(3).attr("disabled","disabled");
-            } else {
-                $('.my-modal-body select').eq(3).removeAttr("disabled");
-                setStationInfo($('.my-modal-body select').eq(0), $('.my-modal-body select').eq(1), $(this), $('.my-modal-body select').eq(3), 0, 'station');
-            }
+            // if (val == 0) {
+            //    $('.my-modal-body select').eq(3).val(0);
+            //    $('.my-modal-body select').eq(3).attr("disabled","disabled");
+            // } else {
+            //    $('.my-modal-body select').eq(3).removeAttr("disabled");
+            //    setStationInfo($('.my-modal-body select').eq(0), $('.my-modal-body select').eq(1), $(this), $('.my-modal-body select').eq(3), 0, 'station');
+            // }
+
+            setCommentInfo(station_id);
         });
     });
 
@@ -518,6 +519,12 @@
                 }
                 childObj.append(newOption);
             }
+        });
+    }
+
+    function setCommentInfo(station_id) {
+        $.get('station_search', {'station_id': station_id, 'item': 'station'}, function (data) {
+            $('.my-modal-body input').eq(1).val(data.value);
         });
     }
     
@@ -624,6 +631,7 @@
         // });
         $('.add-station tr').eq(row_number).remove();
         refreshRowNumber();
+        refreshStationList();
     }
 
     function refreshStationList() {

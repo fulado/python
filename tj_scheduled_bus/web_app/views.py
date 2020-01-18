@@ -635,6 +635,12 @@ def station(request):
         route_name = ''
         station_list = None
 
+    if modify == 1:
+        page_num = int(request.session.get('page_num', 1))
+        search_name = request.session.get('search_name', '')
+    else:
+        pass
+
     # 分页
     mp = MyPaginator()
     mp.paginate(route_list, 10, page_num)
@@ -660,7 +666,12 @@ def station_search(request):
     obj_1_val = request.GET.get('obj_1_val', '')
     obj_2_val = request.GET.get('obj_2_val', '')
     parent_id = request.GET.get('parent_id', '')
+    station_id = request.GET.get('station_id', '')
     item = request.GET.get('item')
+
+    if item == 'station':
+        station_info = Station.objects.get(id=station_id)
+        return JsonResponse({'id': station_info.id, 'value': station_info.station_direction})
 
     # 查询数据
     if item == 'road' and parent_id != '':
@@ -685,9 +696,9 @@ def station_search(request):
         if item == 'road':
             cate_info = {'id': cate.get('station_road', ''), 'name': cate.get('station_road', '')}
         elif item == 'direction':
-            cate_info = {'id': cate.get('station_direction', ''), 'name': cate.get('station_direction', '')}
-        elif item == 'station':
             cate_info = {'id': cate.id, 'name': cate.station_name}
+        # elif item == 'station':
+        #     cate_info = {'id': cate.id, 'name': cate.station_name}
         else:
             cate_info = {}
         data.append(cate_info)
@@ -842,7 +853,6 @@ def station_save(request):
 # 站点是否操作数量限制
 def is_station_over_limitation(request):
     station_id = request.POST.get('station_id', '')
-
     if station_id:
         try:
             station_info = Station.objects.get(id=station_id)
