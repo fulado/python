@@ -120,7 +120,7 @@ def station_add(request):
 # 编辑站点
 def station_modify(request):
     station_id = request.POST.get('station_id', None)
-
+    print(station_id)
     if station_id:
         station_area = request.POST.get('station_area', '')
         station_road = request.POST.get('station_road', '')
@@ -128,7 +128,7 @@ def station_modify(request):
         station_name = request.POST.get('station_name', '')
         station_position = request.POST.get('station_position', '')
         station_status = int(request.POST.get('station_status', 31))
-
+        print(station_road)
         station_info = Station.objects.get(id=station_id)
 
         station_info.station_area = station_area

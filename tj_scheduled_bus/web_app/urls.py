@@ -57,8 +57,10 @@ urlpatterns = [
 
     # 企业通行证管理
     url(r'^permission_add/?', views.permission_add),
+    url(r'^permission_apply/?', views.permission_apply),
     url(r'^permission_delete/?', views.permission_delete),
     url(r'^permission/?', views.permission),
+    url(r'^this_month/?', views.this_month),
     url(r'^is_vehicle_expired/?', views.is_vehicle_expired),
     url(r'^can_get_permission/?', views.can_get_permission),
     url(r'^download_count/?', views.download_count),

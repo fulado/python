@@ -337,7 +337,7 @@
 <!-- 解冻车辆 -->
 <div class="pop-up unlock-vehicle my-modal-dialog" style="height: 550px;">
     <div class="my-modal-title">
-        <p>标记车辆</p>
+        <p>解冻车辆</p>
     </div>
     <div class="my-modal-body">
         <form action="/zhidui/vehicle_unlock" method="POST" enctype="multipart/form-data">
@@ -474,6 +474,47 @@
                 $('.mask').hide();
             }
         });
+
+        // 提交标记车辆表单
+        $('.mark-vehicle .save').click(function () {
+            let mark_reason = $('.mark-vehicle .my-modal-body select').eq(0).val();
+            let mark_time = $('.mark-vehicle .my-modal-body input').eq(1).val().length;
+            let mark_position = $('.mark-vehicle .my-modal-body input').eq(2).val().length;
+            let mark_content = $('.mark-vehicle .my-modal-body textarea').eq(0).val().length;
+
+            if (mark_reason == 61) {
+                if (mark_time == 0) {
+                    alert('请选择标记时间');
+                    return false;
+                }
+                else if (mark_position == 0) {
+                    alert('请填写违规地点');
+                    return false;
+                }
+                else if (mark_content == 0) {
+                    alert('请填写违规原因');
+                    return false;
+                }
+                else if (confirm('是否标记该车辆')) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            else {
+                if (mark_content == 0) {
+                    alert('请填写违规原因');
+                    return false;
+                }
+                else if (confirm('是否标记该车辆')) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        })
 
         // 提交车辆查询表单
         $('.search_input .find_btn').click(function() {

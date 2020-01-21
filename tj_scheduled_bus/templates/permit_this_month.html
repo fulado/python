@@ -99,16 +99,15 @@
 <body>
 <div class="table_wrapper">
     <div class="table_head">
-        <span>通行证列表</span>
+        <span>本月通行证列表</span>
     </div>
     <div class="table_container">
         <div class="search_input">
             <label for="ss">车辆搜索</label>
-            <form action="/permission" method="GET" style="display: inline-block;">
+            <form action="/this_month" method="GET" style="display: inline-block;">
                 <input type="text" placeholder="输入车牌号码" id="ss" name="vehicle_number" value="{{ vehicle_number }}" />
             </form>
             <span class="find_btn">查询</span>
-            <span class="add_account" id="add">添加</span>
         </div>
         <!--检索结果-->
         <table class="table_box" id="table_box">
@@ -119,7 +118,6 @@
                     <td>路线</td>
                     <td>开始日期</td>
                     <td>截止日期</td>
-                    <td>状态</td>
                     <td style="width: 200px">操作</td>
                 </tr>
             </thead>
@@ -133,12 +131,7 @@
                     <td title="{{ permission.end_date|date:'Y-m-d' }}">{{ permission.end_date|date:'Y-m-d' }}</td>
                     <td title="{{ permission.permission_status.status_content }}">{{ permission.permission_status.status_content }}</td>
                     <td>
-                        {% if permission.permission_status_id == 51 %}
-                        <a href="/static/certification/{{ permission.permission_id }}.jpg" target="_Blank" class="see download" style="margin-right: 5px;" onclick="download_count()">下载</a>
-                        {% else %}
-                        <a class="see download apply" style="margin-right: 5px;" onclick="permission_apply({{ permission.permission_route_id }}, {{ permission.permission_vehicle_id }}, {{ permission.id }})">申请</a>
-                        {% endif %}
-                        <button type="button" class="see modify-vehicle-info" style="margin-right: 5px;" onclick="permissionDelete('{{ permission.id }}')">删除</button>
+                        <a href="/static/certification_this_month/{{ permission.permission_id }}.jpg" target="_Blank" class="see download" style="margin-right: 5px;" onclick="download_count()">下载</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -150,19 +143,19 @@
     <div id="pageToolbar">
         <div id="Paging_009071537570730115" class="ui-paging-container">
             <ul>
-                <a href="/permission?page_num=1&vehicle_number={{ vehicle_number }}&status={{ status }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
-                <a href="/permission?page_num={{ mp.current_num|add:-1 }}&vehicle_number={{ vehicle_number }}&status={{ status }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
+                <a href="/this_month?page_num=1&vehicle_number={{ vehicle_number }}&status={{ status }}"><li class="js-page-first js-page-action ui-pager">&lt;&lt;首页</li></a>
+                <a href="/this_month?page_num={{ mp.current_num|add:-1 }}&vehicle_number={{ vehicle_number }}&status={{ status }}"><li class="js-page-prev js-page-action ui-pager">上一页</li></a>
                 {% for num in mp.page_range %}
                     {% if num == mp.current_num %}
-                    <a href="/permission?page_num={{ num }}&vehicle_number={{ vehicle_number }}&status={{ status }}"><li class="ui-pager focus">{{ num }}</li></a>
+                    <a href="/this_month?page_num={{ num }}&vehicle_number={{ vehicle_number }}&status={{ status }}"><li class="ui-pager focus">{{ num }}</li></a>
                     {% else %}
-                    <a href="/permission?page_num={{ num }}&vehicle_number={{ vehicle_number }}&status={{ status }}"><li class="ui-pager">{{ num }}</li></a>
+                    <a href="/this_month?page_num={{ num }}&vehicle_number={{ vehicle_number }}&status={{ status }}"><li class="ui-pager">{{ num }}</li></a>
                     {% endif %}
                 {% endfor %}
-                <a href="/permission?page_num={{ mp.current_num|add:1 }}&vehicle_number={{ vehicle_number }}&status={{ status }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
-                <a href="/permission?page_num={{ mp.total_pages }}&vehicle_number={{ vehicle_number }}&status={{ status }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
+                <a href="/this_month?page_num={{ mp.current_num|add:1 }}&vehicle_number={{ vehicle_number }}&status={{ status }}"><li class="js-page-next js-page-action ui-pager">下一页</li></a>
+                <a href="/this_month?page_num={{ mp.total_pages }}&vehicle_number={{ vehicle_number }}&status={{ status }}"><li class="js-page-last js-page-action ui-pager">末页&gt;&gt;</li></a>
                 <li class="ui-paging-toolbar">
-                    <form action="/permission" method="GET">
+                    <form action="/this_month" method="GET">
                         <input type="text" class="ui-paging-count" style="font-size: 12px;" name="page_num" value="{{ mp.current_num }}" />
                         <input type="hidden" name="vehicle_number" value="{{ vehicle_number }}" />
                         <input type="hidden" name="status" value="{{ status }}" />

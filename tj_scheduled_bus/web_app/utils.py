@@ -228,7 +228,12 @@ def create_permission(permission_info):
     current_time = time.localtime()
     year = current_time.tm_year
     month = current_time.tm_mon
-    start_day = current_time.tm_mday
+
+    # 计算下个月所在年月
+    year += 1 if month == 12 else 0
+    month = month + 1 if month < 12 else 1
+
+    start_day = 1
     end_day = calendar.monthrange(year, month)[1]
 
     start_date = '%s-%s-%s' % (year, month, start_day)
@@ -247,6 +252,7 @@ def create_permission(permission_info):
                                              )
 
     permission_info.permission_id = certification_id
+    permission_info.permission_status_id = 51
     permission_info.save()
 
     limit_data = '%d年%d月%d日 — %d年%d月%d日' % (year, month, start_day, year, month, end_day)

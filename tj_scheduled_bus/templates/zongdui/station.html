@@ -128,9 +128,8 @@
                     <td style="width: 4%">序号</td>
                     <td>区域</td>
                     <td>道路</td>
-                    <td>方向</td>
                     <td>站点</td>
-                    <td>位置</td>
+                    <td>备注</td>
                     <td>状态</td>
                     <td style="width: 200px">查看</td>
                 </tr>
@@ -141,9 +140,8 @@
                     <td style="width: 4%">{{ forloop.counter }}</td>
                     <td title="{{ station.station_area|default:'' }}">{{ station.station_area|default:'' }}</td>
                     <td title="{{ station.station_road|default:'' }}">{{ station.station_road|default:'' }}</td>
-                    <td title="{{ station.station_direction|default:'' }}">{{ station.station_direction|default:'' }}</td>
                     <td title="{{ station.station_name }}">{{ station.station_name }}</td>
-                    <td title="{{ station.station_position|default:'' }}">{{ station.station_position|default:'' }}</td>
+                    <td title="{{ station.station_direction|default:'' }}">{{ station.station_direction|default:'' }}</td>
                     <td title="{{ station.station_status.status_content }}">{{ station.station_status.status_content }}</td>
                     <td>
                         <button type="button" class="see modify-vehicle-info" style="margin-right: 5px;" onclick="setVehicleInfo(
@@ -211,21 +209,15 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><span>方向</span></td>
-                    <td>
-                        <input type="text" placeholder="请输入方向名称" name="station_direction">
-                    </td>
-                </tr>
-                <tr>
                     <td><span>站点</span></td>
                     <td>
                         <input type="text" placeholder="请输入站点名称" name="station_name">
                     </td>
                 </tr>
                 <tr>
-                    <td><span>位置</span></td>
+                    <td><span>备注</span></td>
                     <td>
-                        <input type="text" placeholder="请输入详细位置" name="station_position">
+                        <input type="text" placeholder="请输入方向名称" name="station_direction">
                     </td>
                 </tr>
                 <tr>
@@ -274,21 +266,15 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><span>方向</span></td>
-                    <td>
-                        <input type="text" placeholder="请输入方向名称" name="station_direction">
-                    </td>
-                </tr>
-                <tr>
                     <td><span>站点</span></td>
                     <td>
                         <input type="text" placeholder="请输入站点名称" name="station_name">
                     </td>
                 </tr>
                 <tr>
-                    <td><span>位置</span></td>
+                    <td><span>备注</span></td>
                     <td>
-                        <input type="text" placeholder="请输入详细位置" name="station_position">
+                        <input type="text" placeholder="请输入方向名称" name="station_direction">
                     </td>
                 </tr>
                 <tr>
@@ -383,7 +369,7 @@
             let station_road = $('.add-vehicle input').eq(1).val().replace(/\s+/g,"");
             let station_direction = $('.add-vehicle input').eq(2).val().replace(/\s+/g,"");
             let station_name = $('.add-vehicle input').eq(3).val().replace(/\s+/g,"");
-            let station_postion = $('.add-vehicle input').eq(4).val().replace(/\s+/g,"");
+            // let station_postion = $('.add-vehicle input').eq(4).val().replace(/\s+/g,"");
 
             if (station_area.length == 0) {
                 alert('请填写区域名称');
@@ -397,9 +383,9 @@
             else if (station_name.length == 0) {
                 alert('请填写站点名称');
             }
-            else if (station_postion.length == 0) {
-                alert('请填写位置信息');
-            }
+            // else if (station_postion.length == 0) {
+            //    alert('请填写位置信息');
+            // }
             else {
                 if (confirm('是否保存站点信息？')) {
                     $('.add-vehicle form').submit();
@@ -413,7 +399,7 @@
             let station_road = $('.modify-vehicle input').eq(1).val().replace(/\s+/g,"");
             let station_direction = $('.modify-vehicle input').eq(2).val().replace(/\s+/g,"");
             let station_name = $('.modify-vehicle input').eq(3).val().replace(/\s+/g,"");
-            let station_postion = $('.modify-vehicle input').eq(4).val().replace(/\s+/g,"");
+            // let station_postion = $('.modify-vehicle input').eq(4).val().replace(/\s+/g,"");
 
             if (station_area.length == 0) {
                 alert('请填写区域名称');
@@ -427,9 +413,9 @@
             else if (station_name.length == 0) {
                 alert('请填写站点名称');
             }
-            else if (station_postion.length == 0) {
-                alert('请填写位置信息');
-            }
+            // else if (station_postion.length == 0) {
+            //     alert('请填写位置信息');
+            // }
             else {
                 if (confirm('是否保存站点信息？')) {
                     $('.modify-vehicle form').submit();
@@ -481,10 +467,10 @@
 
         $('.modify-vehicle input').eq(0).val(station_area.replace("<br />",""));
         $('.modify-vehicle input').eq(1).val(station_road.replace("<br />",""));
-        $('.modify-vehicle input').eq(2).val(station_direction.replace("<br />",""));
-        $('.modify-vehicle input').eq(3).val(station_name.replace("<br />",""));
-        $('.modify-vehicle input').eq(4).val(station_position.replace("<br />",""));
-        $('.modify-vehicle input').eq(5).val(station_id);
+        $('.modify-vehicle input').eq(2).val(station_name.replace("<br />",""));
+        $('.modify-vehicle input').eq(3).val(station_direction.replace("<br />",""));
+        $('.modify-vehicle input').eq(4).val(station_id);
+        // $('.modify-vehicle input').eq(5).val(station_id);
     }
 </script>
 </html>

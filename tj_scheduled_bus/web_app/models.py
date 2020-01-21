@@ -17,8 +17,8 @@ class Status(models.Model):
 # 支队表
 class Department(models.Model):
     dept_name = models.CharField(max_length=50, null=True, blank=True)     # 支队名称
-    dept_address = models.CharField(max_length=200, null=True, blank=True)  # 支队名称
-    dept_phone = models.CharField(max_length=50, null=True, blank=True)  # 支队名称
+    dept_address = models.CharField(max_length=200, null=True, blank=True)  # 支队地址
+    dept_phone = models.CharField(max_length=50, null=True, blank=True)  # 支队电话
 
 
 # 用户表
@@ -32,6 +32,7 @@ class User(models.Model):
     person_id = models.CharField(max_length=50, null=True, blank=True)  # 警号
     status = models.ForeignKey(Status, null=True, blank=True, on_delete=models.SET_NULL, default=71)   # 用户状态，71-正常，72-冻结
     reason = models.CharField(max_length=200, null=True, blank=True)  # 审核不通过/冻结原因
+    marked_vehicle_cnt = models.IntegerField(default=0)
 
 
 # 企业信息
@@ -128,7 +129,7 @@ class Vehicle(models.Model):
 class Permission(models.Model):
     permission_vehicle = models.ForeignKey(Vehicle, null=True, blank=True, on_delete=models.SET_NULL)  # 车辆
     permission_route = models.ForeignKey(Route, null=True, blank=True, on_delete=models.SET_NULL)  # 路线
-    permission_status = models.ForeignKey(Status, null=True, blank=True, on_delete=models.SET_NULL)  # 通行证状态，51-可用，52-不可用
+    permission_status = models.ForeignKey(Status, null=True, blank=True, on_delete=models.SET_NULL)  # 通行证状态，51-可用，52-不可用, 53-未申请
     permission_user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)  # 通行证用户
     start_date = models.DateTimeField(null=True, blank=True)  # 开始时间
     end_date = models.DateTimeField(null=True, blank=True)   # 结束时间
@@ -153,7 +154,11 @@ class Mark(models.Model):
     dept = models.ForeignKey(Department, null=True, blank=True, on_delete=models.SET_NULL)  # 标记支队
 
 
-
+# 按用户记录站点使用次数
+class StationCount(models.Model):
+    station = models.ForeignKey(Station, null=True, blank=True, on_delete=models.SET_NULL)  # 站点
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)  # 用户
+    cnt = models.IntegerField(default=0)  # 使用计数
 
 
 

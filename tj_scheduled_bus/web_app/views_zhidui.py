@@ -173,6 +173,17 @@ def vehicle_mark(request):
     vehicle_info.mark_cnt += 1
     vehicle_info.vehicle_status_id = 6 if vehicle_info.mark_cnt < 3 else 5
 
+    # 如果是新被标记的测量，车辆所属用户累计标记车辆
+    if vehicle_info.mark_cnt == 1:
+        user_info = vehicle_info.vehicle_user
+        user_info.marked_vehicle_cnt += 1
+
+        # 如果被标记车辆大于等于10辆，冻结该用户
+        if user_info.marked_vehicle_cnt >= 10:
+            user_info.status_id = 72
+
+        user_info.save()
+
     vehicle_info.save()
 
     # 获取页码和搜索信息
@@ -332,6 +343,13 @@ def mark_delete(request):
 
     vehicle_info.save()
     mark_info.delete()
+
+    # 如果是新被标记的数量为0，车辆所属用户累计标记车辆-1
+    if vehicle_info.mark_cnt <= 0:
+        user_info = vehicle_info.vehicle_user
+        user_info.marked_vehicle_cnt -= 1 if user_info.marked_vehicle_cnt > 0 else 0
+
+    user_info.save()
 
     # 获取页码和搜索信息
     page_num = int(request.session.get('page_num', 1))

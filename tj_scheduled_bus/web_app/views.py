@@ -8,7 +8,8 @@ from django.http import JsonResponse
 from django.db.models import Count
 from PIL import Image, ImageDraw, ImageFont
 
-from .models import User, Enterprise, Station, Department, Route, Vehicle, Permission, Mark, Statistic, Status
+from .models import User, Enterprise, Station, Department, Route, Vehicle, Permission, Mark, Statistic, Status, \
+    StationCount
 from .decorator import login_check
 from tj_scheduled_bus import settings
 from .utils import save_file, MyPaginator, statistic_update, send_sms, check_vehicle, check_vehicle_expired,\
@@ -117,7 +118,7 @@ def login_handle(request):
 
     user = user_list[0]
     if user.status_id == 72:
-        msg = '账号已被冻结'
+        msg = '账号已被冻结，请到%s处理' % user.dept.dept_name
         return HttpResponseRedirect('/?msg=%s' % msg)
 
     if hashlib.sha1(user_password.encode('utf8')).hexdigest() != user.password:
@@ -982,6 +983,46 @@ def route_cancel(request):
     return HttpResponseRedirect(url)
 
 
+# 本月通行证下载页面
+@login_check
+def this_month(request):
+    user_id = request.session.get('user_id', '')
+
+    # vehicle_number = request.GET.get('vehicle_number', '')
+    # page_num = int(request.GET.get('page_num', 1))
+    #
+    # vehicle_list = Vehicle.objects.filter(vehicle_user_id=user_id).filter(vehicle_status_id__in=(3, 6))
+    # route_list = Route.objects.filter(route_user_id=user_id)
+    #
+    # permission_vehicle_list = Vehicle.objects.filter(vehicle_number__contains=vehicle_number, vehicle_user=user_id)
+    #
+    # vehicle_id_list = []
+    # for vehicle_info in permission_vehicle_list:
+    #     vehicle_id_list.append(vehicle_info.id)
+    #
+    # permission_list = Permission.objects.filter(permission_user_id=user_id). \
+    #     filter(permission_vehicle_id__in=vehicle_id_list)
+    #
+    # # 分页
+    # mp = MyPaginator()
+    # mp.paginate(permission_list, 10, page_num)
+    #
+    # context = {'vehicle_list': vehicle_list,
+    #            'route_list': route_list,
+    #            'mp': mp,
+    #            'vehicle_number': vehicle_number,
+    #            }
+    #
+    # # 保存页码和搜索信息
+    # request.session['page_num'] = page_num
+    # request.session['vehicle_number'] = vehicle_number
+
+    # 删除
+    context = {}
+
+    return render(request, 'permit_this_month.html', context)
+
+
 # 显示通行证信息
 @login_check
 def permission(request):
@@ -1019,7 +1060,7 @@ def permission(request):
     return render(request, 'permit.html', context)
 
 
-# 申请通行证
+# 添加通行证
 def permission_add(request):
     user_id = request.session.get('user_id', '')
     vehicle_id = request.POST.get('vehicle_id', '')
@@ -1029,7 +1070,30 @@ def permission_add(request):
     permission_info.permission_vehicle_id = vehicle_id
     permission_info.permission_route_id = route_id
     permission_info.permission_user_id = user_id
-    permission_info.permission_status_id = 51
+    permission_info.permission_status_id = 53
+
+    permission_info.save()
+
+    # 路线中包含的站点使用计数+1
+    station_list = Route.objects.get(id=route_id).route_station.all()
+    for station_info in station_list:
+        station_count(station_info.id, user_id)
+
+    # 取得分页页码
+    page_num = int(request.session.get('page_num', 1))
+    vehicle_number = request.session.get('vehicle_number', '')
+
+    url = '/permission?page_num=%d&vehicle_number=%s' % (page_num, vehicle_number)
+
+    return HttpResponseRedirect(url)
+
+
+# 申请通行证
+def permission_apply(request):
+    user_id = request.session.get('user_id', '')
+    permission_id = request.GET.get('permission_id', '')
+
+    permission_info = Permission.objects.get(id=permission_id)
 
     # 生成通行证
     create_permission(permission_info)
@@ -1051,12 +1115,37 @@ def permission_add(request):
     return HttpResponseRedirect(url)
 
 
+# 站点使用计数
+def station_count(station_id, user_id):
+    station_count_list = StationCount.objects.filter(station_id=station_id, user_id=user_id)
+
+    if station_count_list:
+        station_count_info = station_count_list[0]
+
+    else:
+        station_count_info = StationCount()
+        station_count_info.user_id = user_id
+        station_count_info.station_id = station_id
+
+    station_count_info.cnt += 1
+    station_count_info.save()
+
+
 # 删除通行证
 def permission_delete(request):
+    user_id = request.session.get('user_id', '')
     permission_id = request.GET.get('permission_id', 0)
 
     try:
         permission_info = Permission.objects.get(id=permission_id)
+
+        # 该通行证相关的站点统计数据全部-1
+        route_info = permission_info.permission_route
+        station_list = route_info.route_station.all()
+        for station_info in station_list:
+            station_count_info = StationCount.objects.get(station_id=station_info.id, user_id=user_id)
+            station_count_info.cnt -= 1 if station_count_info.cnt > 0 else 0
+            station_count_info.save()
 
         # 删除通行证文件
         file_name = r'%s/certification/%s.jpg' % (settings.FILE_DIR, permission_info.permission_id)
@@ -1093,8 +1182,11 @@ def is_vehicle_expired(request):
 
 # 是否可以申请通行证
 def can_get_permission(request):
+    user_id = request.session.get('user_id', '')
     vehicle_id = request.GET.get('vehicle_id', '')
     route_id = request.GET.get('route_id', '')
+
+    result = 0
 
     # 车辆id为空，或者路线id为空，返回信息错误
     if vehicle_id == '' or route_id == '':
@@ -1105,12 +1197,17 @@ def can_get_permission(request):
         result = 2
 
     # 判断车辆是否在检验有效期内
+    elif not check_vehicle_expired(Vehicle.objects.get(id=vehicle_id).vehicle_number):
+        result = 3  # 在有效期内，可以申请通行证
+
     else:
-        vehicle_info = Vehicle.objects.get(id=vehicle_id)
-        if check_vehicle_expired(vehicle_info.vehicle_number):
-            result = 0  # 在有效期内，可以申请通行证
-        else:
-            result = 3  # 不在有效期内
+        # 判断路线中的站点使用次数，如果有站点使用超过5次，则提示用户不能申请通行证
+        station_list = Route.objects.get(id=route_id).route_station.all()
+        for station_info in station_list:
+            if StationCount.objects.filter(user_id=user_id, station_id=station_info.id).count() >= 5:
+                return JsonResponse({'result': 4, 'station_name': station_info.station_name})
+            else:
+                continue
 
     return JsonResponse({'result': result})
 
