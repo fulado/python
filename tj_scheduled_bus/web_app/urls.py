@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^zhidui/department/?', views_zhidui.department),
     url(r'^zhidui/mark_delete/?', views_zhidui.mark_delete),
     url(r'^zhidui/mark/?', views_zhidui.mark),
+    url(r'^zhidui/account/?', views_zhidui.account),
 
     # 总队
     url(r'^zongdui/enterprise/?', views_zongdui.enterprise),

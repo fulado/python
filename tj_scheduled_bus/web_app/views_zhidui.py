@@ -3,6 +3,7 @@
 """
 import time
 import calendar
+import hashlib
 
 
 from django.shortcuts import render, HttpResponseRedirect
@@ -381,6 +382,73 @@ def vehicle_unlock(request):
     status = request.session.get('status', 0)
 
     url = '/zhidui/vehicle/?page_num=%d&number=%s&status=%s' % (page_num, number, status)
+
+    return HttpResponseRedirect(url)
+
+
+# 显示大队账号管理
+@login_check
+def account(request):
+    page_num = request.GET.get('page_num', 1)
+    search_name = request.GET.get('search_name', '')
+    user_authority = 4
+
+    if user_authority:
+        user_list = User.objects.filter(username__contains=search_name, authority=user_authority)
+    else:
+        user_list = User.objects.filter(username__contains=search_name)
+
+    dept_list = Department.objects.all()
+
+    # 分页
+    mp = MyPaginator()
+    mp.paginate(user_list, 10, page_num)
+
+    context = {'mp': mp,
+               'page_num': page_num,
+               'search_name': search_name,
+               'dept_list': dept_list,
+               'user_authority': user_authority,
+               }
+
+    # 保存页码和搜索信息
+    request.session['page_num'] = page_num
+    request.session['search_name'] = search_name
+    request.session['user_authority'] = user_authority
+
+    return render(request, 'zhidui/account.html', context)
+
+
+# 添加账号
+def account_add(request):
+    username = request.POST.get('username', '')
+    password = request.POST.get('password', '')
+    dept_id = request.POST.get('dept_id', '')
+    person_name = request.POST.get('person_name', '')
+    person_id = request.POST.get('person_id', '')
+    phone = request.POST.get('phone', '')
+
+    user_info = User()
+
+    user_info.username = username
+    user_info.password = hashlib.sha1(password.encode('utf8')).hexdigest()
+    user_info.dept_id = dept_id
+    user_info.person_name = person_name
+    user_info.person_id = person_id
+    user_info.phone = phone
+
+    if dept_id == 1:
+        user_info.authority = 3
+    else:
+        user_info.authority = 2
+
+    user_info.save()
+
+    page_num = int(request.session.get('page_num', 1))
+    search_name = request.session.get('search_name', '')
+    user_authority = request.session.get('user_authority', '')
+
+    url = '/zongdui/account?page_num=%d&search_name=%s&user_authority=%s' % (page_num, search_name, user_authority)
 
     return HttpResponseRedirect(url)
 

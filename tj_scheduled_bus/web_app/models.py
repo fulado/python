@@ -19,13 +19,14 @@ class Department(models.Model):
     dept_name = models.CharField(max_length=50, null=True, blank=True)     # 支队名称
     dept_address = models.CharField(max_length=200, null=True, blank=True)  # 支队地址
     dept_phone = models.CharField(max_length=50, null=True, blank=True)  # 支队电话
+    # dept_class = models.IntegerField(default=1, null=True, blank=True)           # 权限，1-交管局，2-支队，3-大队
 
 
 # 用户表
 class User(models.Model):
     username = models.CharField(max_length=50, unique=True)                     # 帐号
     password = models.CharField(max_length=50)                                  # 密码
-    authority = models.IntegerField(default=1, null=True, blank=True)           # 权限，1-企业，2-支队，3-交管局
+    authority = models.IntegerField(default=1, null=True, blank=True)           # 权限，1-企业，2-支队，3-交管局，4-大队
     phone = models.CharField(max_length=20, null=True, blank=True)  # 手机号码
     dept = models.ForeignKey(Department, null=True, blank=True, on_delete=models.SET_NULL)  # 用户所属支队
     person_name = models.CharField(max_length=50, null=True, blank=True)                     # 姓名
@@ -33,6 +34,7 @@ class User(models.Model):
     status = models.ForeignKey(Status, null=True, blank=True, on_delete=models.SET_NULL, default=71)   # 用户状态，71-正常，72-冻结
     reason = models.CharField(max_length=200, null=True, blank=True)  # 审核不通过/冻结原因
     marked_vehicle_cnt = models.IntegerField(default=0)
+    branch_name = models.CharField(max_length=100, null=True, blank=True)   # 大队名称
 
 
 # 企业信息
