@@ -41,13 +41,13 @@ class MyRequestHandler(BaseRequestHandler):
     def handle(self):
         try:
             while True:
-                request_data = (self.request.recv(100000)).decode('utf-8')
+                self.request_data = (self.request.recv(100000)).decode('utf-8')
 
-                if request_data[:5] == '<?xml':
-                    self.request_data = request_data
-                else:
-                    self.request_data += request_data
-                    continue
+                # if request_data[:5] == '<?xml':
+                #     self.request_data = request_data
+                # else:
+                #     self.request_data += request_data
+                #     continue
 
                 print()
                 print('==========================接收数据==========================')
@@ -55,6 +55,13 @@ class MyRequestHandler(BaseRequestHandler):
                 print('==========================接收完毕==========================')
                 print()
 
+                t_test_1 = Thread(target=self.thread_test_1())
+                t_test_1.start()
+
+                t_test_2 = Thread(target=self.thread_test_2())
+                t_test_2.start()
+
+                break
                 self.handle_data()
 
                 if self.response_data:
@@ -80,6 +87,18 @@ class MyRequestHandler(BaseRequestHandler):
         self.heart_beat_thread = None
 
         self.request.close()
+
+    # 测试线程1
+    def thread_test_1(self):
+        for i in range(5):
+            print('thread test 1: %d' % i)
+            time.sleep(1)
+
+    # 测试线程2
+    def thread_test_2(self):
+        for i in range(5):
+            print('thread test 2: %d' % i)
+            time.sleep(1)
 
     # 发送心跳数据线程
     # def send_heart_beat(self):

@@ -1,7 +1,8 @@
 """
 主程序
 """
-from socketserver import TCPServer
+
+from socketserver import TCPServer, ThreadingTCPServer
 
 
 from server_2.request_handler import MyRequestHandler

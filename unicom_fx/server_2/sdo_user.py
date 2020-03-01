@@ -8,8 +8,7 @@ from .utils import generate_ordered_dict, xml_construct
 
 
 class SdoUser(object):
-    def __init__(self, send_data_queue, seq, data_dict):
-        self.send_data_queue = send_data_queue
+    def __init__(self, seq, data_dict):
         self.seq = seq
         self.data_dict = data_dict
         self.username = ''
@@ -23,13 +22,12 @@ class SdoUser(object):
         self.username = self.data_dict.get('UserName', '')
         self.password = self.data_dict.get('Pwd', '')
 
-    # 生成token
-    def generate_token(self):
-        self.token = hashlib.sha1(
-            ('%s%s%d' % (self.username, self.password, int(time.time()))).encode()).hexdigest().upper()
+    # 获取token
+    def get_token(self):
+        return self.token
 
     # 生成登录数据
-    def create_login_response_data(self):
+    def create_send_data(self):
         # 判断账号密码
         if self.username == 'fengxian' and self.password == 'fengxian':
             login_success = True
@@ -38,12 +36,12 @@ class SdoUser(object):
 
         if login_success:
             # 如果账号密码正确，构造登录成功数据
-            self.generate_token()
             self.username = 'fengxian'
             self.password = 'fengxian'
 
             # 生产token
-            self.generate_token()
+            self.token = hashlib.sha1(
+                ('%s%s%d' % (self.username, self.password, int(time.time()))).encode()).hexdigest().upper()
 
             # 构造返回数据
             object_list = [('UserName', self.username),
@@ -73,8 +71,9 @@ class SdoUser(object):
         self.send_data_xml = xml_construct(send_data_dict, self.seq, self.token, self.data_type)
 
     # 将数据存入发送数据队列
-    def put_send_data_into_queue(self):
-        self.send_data_queue.put(self.send_data_xml)
+    def put_send_data_into_queue(self, send_data_queue):
+        # print(self.send_data_xml)
+        send_data_queue.put(self.send_data_xml)
 
 
 

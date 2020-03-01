@@ -24,6 +24,7 @@ def xml_check(xml_string):
         ps(xml_string, ContentHandler())
         return True
     except Exception as e:
+        print('xml格式错误')
         print(e)
         return False
 
