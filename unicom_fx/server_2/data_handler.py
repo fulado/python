@@ -2,7 +2,9 @@
 数据处理类
 """
 import xmltodict
+import time
 
+from threading import Thread
 from .sdo_user import SdoUser
 from .sdo_heart_beat import SdoHeartBeat
 from .sys_info import SysInfo
@@ -20,12 +22,14 @@ class DataHandler(object):
         self.seq = ''
         self.object_type = ''
         self.token = ''
+        self.is_login = False
 
     # 解析xml数据
     def xml_parse(self, recv_data_xml):
         data = xmltodict.parse(recv_data_xml.strip())
         data = data.get('Message', {})
 
+        self.token = data.get('Token')
         self.seq = data.get('Seq')
         data = data.get('Body', {}).get('Operation', {})
 
@@ -39,16 +43,24 @@ class DataHandler(object):
         if self.object_type == 'SDO_User':
             self.sdo_user_handle()
 
-            if self.token != '':
-                # 获取系统信息
-                self.sys_info_subscribe_handle()
+            # if self.token != '':
+            #     # 获取系统信息
+            #
+            #     t_sys_info_subscribe_handle = Thread(target=self.sys_info_subscribe_handle)
+            #     t_sys_info_subscribe_handle.start()
 
-                # 测试
-                # self.cross_report_ctrl_handle()
+            # 测试
+            # self.cross_report_ctrl_handle()
 
         # 心跳
         elif self.object_type == 'SDO_HeartBeat':
             self.sdo_heart_beat_handle()
+
+            if not self.is_login:
+                t_sys_info_subscribe_handle = Thread(target=self.sys_info_subscribe_handle)
+                t_sys_info_subscribe_handle.start()
+
+                self.is_login = True
 
         # 静态数据——系统信息
         elif self.object_type == 'SysInfo':
@@ -73,7 +85,8 @@ class DataHandler(object):
             self.cross_stage_handle()
 
         else:
-            self.handle_test()
+            pass
+            # self.handle_test()
 
     # 测试
     def handle_test(self):
@@ -83,7 +96,7 @@ class DataHandler(object):
 
     # 登录
     def sdo_user_handle(self):
-        sdo_user = SdoUser(self.seq, self.recv_data_dict)
+        sdo_user = SdoUser(self.seq, self.token, self.recv_data_dict)
         sdo_user.get_user_info()
         sdo_user.create_send_data()
         sdo_user.put_send_data_into_queue(self.send_data_queue)

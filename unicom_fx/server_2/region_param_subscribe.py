@@ -12,7 +12,7 @@ class RegionParamSubscribe(object):
     def __init__(self, token):
         self.seq = ''
         self.token = token
-        self.data_type = 'PUSH'
+        self.data_type = 'REQUEST'
         self.send_data_xml = ''
 
     def create_send_data(self):

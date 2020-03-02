@@ -6,7 +6,7 @@ import time
 import random
 
 from collections import OrderedDict
-from .utils import xml_construct
+from server_2.utils import xml_construct
 
 
 class CrossReportCtrl(object):
@@ -41,10 +41,13 @@ class CrossReportCtrl(object):
         cross_report_ctrl_element['Type'] = data_type_name
         cross_report_ctrl_element['CrossIDList'] = cross_id_list_element
 
+        object_element = OrderedDict()
+        object_element[self.object_type] = cross_report_ctrl_element
+        object_element['@order '] = '6'
+        object_element['@name '] = 'Set'
+
         operation_element = OrderedDict()
-        operation_element['@order '] = '6'
-        operation_element['@name '] = 'Set'
-        operation_element['Operation '] = cross_report_ctrl_element
+        operation_element['Operation '] = object_element
 
         send_data_dict = operation_element
 
@@ -59,7 +62,13 @@ class CrossReportCtrl(object):
         send_data_queue.put(self.send_data_xml)
 
 
-
+# 测试
+# if __name__ == '__main__':
+#     crt = CrossReportCtrl('123')
+#     crt.get_cross_id_list()
+#     crt.create_send_data('CrossCycle')
+#
+#     print(crt.send_data_xml)
 
 
 

@@ -8,12 +8,12 @@ from .utils import generate_ordered_dict, xml_construct
 
 
 class SdoUser(object):
-    def __init__(self, seq, data_dict):
+    def __init__(self, seq, token, data_dict):
         self.seq = seq
         self.data_dict = data_dict
         self.username = ''
         self.password = ''
-        self.token = ''
+        self.token = token
         self.data_type = ''
         self.send_data_xml = ''
 
@@ -40,8 +40,9 @@ class SdoUser(object):
             self.password = 'fengxian'
 
             # 生产token
-            self.token = hashlib.sha1(
-                ('%s%s%d' % (self.username, self.password, int(time.time()))).encode()).hexdigest().upper()
+            if self.token == '':
+                self.token = hashlib.sha1(
+                    ('%s%s%d' % (self.username, self.password, int(time.time()))).encode()).hexdigest().upper()
 
             # 构造返回数据
             object_list = [('UserName', self.username),
