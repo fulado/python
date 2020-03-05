@@ -40,9 +40,6 @@ def parse_xml(xml_data):
     print(data.get('Message'))
 
 
-
-
-
 # def get_child_element(element, data):
 #     data = {element.tag: element.text}
 #

@@ -3,6 +3,7 @@
 """
 import collections
 import xmltodict
+import time
 
 from xml.sax import parseString as ps
 from xml.sax.handler import ContentHandler
@@ -10,11 +11,10 @@ from xml.sax.handler import ContentHandler
 
 # 保存数据日志，暂时在屏幕上打印结果
 def save_log(data_content, activation):
-    print()
+    print('%s' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
     print('==========================%s数据==========================' % activation)
     print(data_content)
-    print('==========================%s完毕==========================' % activation)
-    print()
+    print('==========================%s完毕==========================\n\n' % activation)
 
 
 # 验证xml字符是否正确

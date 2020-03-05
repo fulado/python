@@ -1,6 +1,0 @@
-CrossID, 33010021133250
-LaneNo, 1
-Direction, 1
-Attribute, 1
-Movement, 11
-Feature, 1
