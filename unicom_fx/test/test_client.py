@@ -62,16 +62,23 @@ try:
     #     time.sleep(1)
     #     client.send(str(i).encode())
 
-    client.send(sdo_user.encode())
-    recv_data = client.recv(100000)
-    print(recv_data.decode())
+    # client.send(sdo_user.encode())
+    # recv_data = client.recv(100000)
+    # print(recv_data.decode())
+    #
+    # # client.send(sdo_heart_beat.encode())
+    # recv_data = client.recv(100000)
+    # print(recv_data.decode())
+    #
+    # recv_data = client.recv(100000)
+    # print(recv_data.decode())
 
-    # client.send(sdo_heart_beat.encode())
-    recv_data = client.recv(100000)
-    print(recv_data.decode())
+    while True:
+        client.send(sdo_user.encode())
+        recv_data = client.recv(100000)
+        print(recv_data.decode())
 
-    recv_data = client.recv(100000)
-    print(recv_data.decode())
+        time.sleep(0.2)
 
 except Exception as e:
     print(e)
