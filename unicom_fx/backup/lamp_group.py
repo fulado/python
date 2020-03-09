@@ -3,7 +3,7 @@
 """
 
 
-class LaneParam(object):
+class LampParam(object):
     def __init__(self):
         self.recv_data = {}
 

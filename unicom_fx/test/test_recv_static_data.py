@@ -1,6 +1,5 @@
 from server_2.data_handler import DataHandler
-from static_data.lane_param import LaneParam
-from static_data.lamp_group import LaneParam
+from static_data.static_data import StaticData
 
 
 recv_data_xml = """
@@ -23,25 +22,32 @@ recv_data_xml = """
     </Address>
   </To>
   <Type>RESPONSE</Type>
-  <Seq>20140829084311000019</Seq>
+  <Seq>20140829084311000012</Seq>
   <Body>
     <Operation order="1" name="Get">
-      <LampGroup>
-        <SignalControlerID>3301005879222325811</SignalControlerID>
-        <LampGroupNo>1</LampGroupNo>
-        <Direction>0</Direction>
-        <Type>10</Type>
-      </LampGroup>
+      <PlanParam>
+	<CrossID>33010021133250</CrossID>
+        <PlanNo>1</PlanNo>
+        <CycleLen>110</CycleLen>
+        <CoordPhaseNo>1</CoordPhaseNo>
+        <OffSet>1</OffSet>
+        <StageNoList>
+	  <StageNo>1</StageNo>
+	  <StageNo>2</StageNo>
+	  <StageNo>3</StageNo>
+</StageNoList>
+      </PlanParam>
     </Operation>
   </Body>
-</Message>    
+</Message>
     """
 
 data_handler = DataHandler('send data queue')
 data_handler.xml_parse(recv_data_xml)
 
-lane_param = LaneParam()
-lane_param.parse_recv_data(data_handler.recv_data_dict)
+static_data = StaticData('PlanParam')
+static_data.parse_recv_data(data_handler.recv_data_dict)
+static_data.save_data_to_file()
 
 
 

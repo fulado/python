@@ -1,26 +1,27 @@
 """
-系统信息订阅
+区域信息订阅
 """
 
 import time
 import random
 
-from .utils import generate_ordered_dict, xml_construct
+from server_2.utils import generate_ordered_dict, xml_construct
 
 
-class SysInfoSubscribe(object):
-    def __init__(self, token):
+class LaneParamSubscribe(object):
+    def __init__(self, token, cross_id):
         self.seq = ''
         self.token = token
         self.data_type = 'REQUEST'
         self.send_data_xml = ''
+        self.cross_id = cross_id
 
     def create_send_data(self):
         operation_order = '5'
         operation_name = 'Get'
 
-        object_list = [('ObjName', 'SysInfo'),
-                       ('ID', ''),
+        object_list = [('ObjName', 'LaneParam'),
+                       ('ID', self.cross_id),
                        ('No', ''),
                        ]
 
@@ -39,6 +40,11 @@ class SysInfoSubscribe(object):
         send_data_queue.put(self.send_data_xml)
 
 
+if __name__ == '__main__':
+    rps = LaneParamSubscribe('123', 'abc')
+    rps.create_send_data()
+
+    print(rps.send_data_xml)
 
 
 
