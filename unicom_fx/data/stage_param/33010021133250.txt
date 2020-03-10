@@ -1,0 +1,9 @@
+CrossID: 33010021133250
+StageNo: 1
+StageName: Stage01
+Attribute: 1
+Green: 30
+RedYellow: 1
+Yellow: 1
+AllRed: 20
+PhaseNoList: ['1', '2']

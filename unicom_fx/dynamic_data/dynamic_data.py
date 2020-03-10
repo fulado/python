@@ -5,16 +5,24 @@
 
 # 数据基类
 class DynamicData(object):
-    def __init__(self, recv_data_dict):
-        self.recv_data_dict = recv_data_dict
+    def __init__(self, obj_name):
+        self.recv_data = {}
+        self.obj_name = obj_name
         self.file_name = '../data/error.txt'
 
     # 获取保存文件路径
-    def get_file_name(self, data_type_name):
-        cross_id = self.recv_data_dict.get('CrossID', 'error')
+    def get_file_name(self, recv_data_dict):
+        cross_id = recv_data_dict.get('CrossID', 'error')
 
         if cross_id != 'error':
-            self.file_name = '../data/%s/%s.txt' % (data_type_name, cross_id)
+
+            if self.obj_name == 'CrossCycle':
+                self.file_name = '../data/%s/%s.txt' % ('cycle_rt', cross_id)
+            elif self.obj_name == 'CrossStage':
+                self.file_name = '../data/%s/%s.txt' % ('stage_rt', cross_id)
+            else:
+                pass
+
         else:
             pass
 

@@ -2,15 +2,14 @@
 数据处理类
 """
 import xmltodict
-import time
 
 from threading import Thread
 from .sdo_user import SdoUser
 from .sdo_heart_beat import SdoHeartBeat
-from .sys_info import SysInfo
-from .region_param import RegionParam
-from .sys_info_subscribe import SysInfoSubscribe
-from .region_param_subscribe import RegionParamSubscribe
+from static_data.sys_info import SysInfo
+from static_data.region_param import RegionParam
+from static_data.sys_info_subscribe import SysInfoSubscribe
+from subscribe_data.region_param_subscribe import RegionParamSubscribe
 from .cross_report_ctrl import CrossReportCtrl
 from .dynamic_data import DynamicData
 

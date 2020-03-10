@@ -1,0 +1,6 @@
+CrossID: 33010021133250
+PlanNo: 1
+CycleLen: 110
+CoordPhaseNo: 1
+OffSet: 1
+StageNoList: ['1', '2', '3']
