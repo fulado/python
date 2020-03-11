@@ -2,6 +2,7 @@
 数据处理类
 """
 import xmltodict
+import time
 
 from threading import Thread
 from sys_data.sdo_user import SdoUser
@@ -21,6 +22,8 @@ class DataHandler(object):
         self.object_type = ''
         self.token = ''
         self.data_subscribe = False
+        self.signal_id_list = []
+        self.cross_id_list = []
 
     # 解析xml数据
     def xml_parse(self, recv_data_xml):
@@ -101,37 +104,77 @@ class DataHandler(object):
         sdo_heart_beat.create_send_data()
         sdo_heart_beat.put_send_data_into_queue(self.send_data_queue)
 
+    # 请求静态数据，并订阅实时数据
+    def data_subscribe_handle(self):
+
+        # 请求系统信息
+        self.send_data_subscribe('', 'SysInfo')
+
+        # 请求区域信息
+        self.send_data_subscribe('310120000', 'RegionParam')
+
+        # 请求灯组信息
+        self.get_signal_id_list()
+
+        for signal_id in self.signal_id_list:
+            self.send_data_subscribe(signal_id, 'LampGroup')
+
+        # 请求车道信息
+        self.get_cross_id_list()
+
+        for cross_id in self.cross_id_list:
+            self.send_data_subscribe(cross_id, 'LaneParam')
+
+        # 实时数据订阅
+        self.cross_report_ctrl_handle()
+
+    # 发送数据查询, 订阅请求
+    def send_data_subscribe(self, cross_id, obj_name):
+        time.sleep(1)
+
+        static_data_subscribe = StaticDataSubscribe(self.token, cross_id, obj_name)
+        static_data_subscribe.create_send_data()
+        static_data_subscribe.put_send_data_into_queue(self.send_data_queue)
+
+    # 获取信号灯id列表
+    def get_signal_id_list(self):
+        file = open('../data/signal_list.txt', 'r')
+
+        try:
+            for line in file.readlines():
+                self.signal_id_list.append(line.strip())
+
+        except Exception as e:
+            print(e)
+        finally:
+            file.close()
+
+    # 获取路口id列表
+    def get_cross_id_list(self):
+        file = open('../data/cross_list.txt', 'r')
+
+        try:
+            for line in file.readlines():
+                self.cross_id_list.append(line.strip())
+
+        except Exception as e:
+            print(e)
+        finally:
+            file.close()
+
     # 订阅实时数据
     def cross_report_ctrl_handle(self):
         cross_report_ctrl = CrossReportCtrl(self.token)
-        cross_report_ctrl.get_cross_id_list()
+        cross_report_ctrl.set_cross_id_list(self.cross_id_list)
 
         # 订阅路口周期
         cross_report_ctrl.create_send_data('CrossCycle')
         cross_report_ctrl.put_send_data_into_queue(self.send_data_queue)
 
         # 订阅路口阶段
+        time.sleep(1)
         cross_report_ctrl.create_send_data('CrossStage')
         cross_report_ctrl.put_send_data_into_queue(self.send_data_queue)
-
-    # 请求静态数据，并订阅实时数据
-    def data_subscribe_handle(self):
-
-        # 请求系统信息
-        static_data_subscribe = StaticDataSubscribe(self.token, '', 'SysInfo')
-        static_data_subscribe.create_send_data()
-        static_data_subscribe.put_send_data_into_queue(self.send_data_queue)
-
-        # 请求区域信息
-        static_data_subscribe = StaticDataSubscribe(self.token, '310120000', 'RegionParam')
-        static_data_subscribe.create_send_data()
-        static_data_subscribe.put_send_data_into_queue(self.send_data_queue)
-
-
-
-
-
-
 
 
 

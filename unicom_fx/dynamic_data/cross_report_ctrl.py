@@ -32,6 +32,10 @@ class CrossReportCtrl(object):
         finally:
             file.close()
 
+    # 设定路口id
+    def set_cross_id_list(self, cross_id_list):
+        self.cross_id_list = cross_id_list
+
     def create_send_data(self, data_type_name):
         cross_id_list_element = OrderedDict()
         cross_id_list_element['CrossID'] = self.cross_id_list
