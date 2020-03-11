@@ -11,7 +11,7 @@ class DynamicData(object):
         self.file_name = '../data/error.txt'
 
     # 获取保存文件路径
-    def get_file_name(self, recv_data_dict):
+    def parse_recv_data(self, recv_data_dict):
         cross_id = recv_data_dict.get('CrossID', 'error')
 
         if cross_id != 'error':

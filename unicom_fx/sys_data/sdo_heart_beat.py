@@ -2,7 +2,7 @@
 心跳
 """
 
-from .utils import generate_ordered_dict, xml_construct
+from server_2.utils import generate_ordered_dict, xml_construct
 
 
 class SdoHeartBeat(object):
