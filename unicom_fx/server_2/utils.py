@@ -4,13 +4,38 @@
 import collections
 import xmltodict
 import time
+import logging
 
 from xml.sax import parseString as ps
 from xml.sax.handler import ContentHandler
 
 
 # 保存数据日志，暂时在屏幕上打印结果
-def save_log(data_content, activation):
+def create_logger(activation):
+
+    logger = logging.getLogger(__name__)
+    logger.setLevel(level=logging.INFO)
+
+    log_handler = logging.FileHandler("../log/%s.txt" % time.strftime('%Y-%m-%d', time.localtime()))
+    log_handler.setLevel(logging.INFO)
+
+    if activation == 'recv':
+        formatter = logging.Formatter(fmt='\n%(asctime)s recv data\n%(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+    elif activation == 'send':
+        formatter = logging.Formatter(fmt='\n%(asctime)s send data\n%(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+    else:
+        formatter = logging.Formatter(fmt='\n%(asctime)s/n%(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+
+    log_handler.setFormatter(formatter)
+
+    logger.addHandler(log_handler)
+
+    return logger
+
+
+# 打印数据
+def print_log(data_content, activation):
+
     print('%s' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
     print('==========================%s数据==========================' % activation)
     print(data_content)
@@ -88,10 +113,8 @@ def xml_construct(send_data_dict, seq='', token='', data_type='RESPONSE'):
 
 
 if __name__ == '__main__':
-    data_string = 'bbb'
-    res = xml_check(data_string)
-
-    print(res)
+    data_string = 'aaa'
+    print_log(data_string, '接收')
 
 
 

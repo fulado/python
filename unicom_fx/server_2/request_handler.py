@@ -3,7 +3,7 @@ import time
 from socketserver import BaseRequestHandler
 from multiprocessing import Queue
 from threading import Thread, local
-from .utils import save_log, xml_check
+from .utils import create_logger, print_log, xml_check
 from .data_handler import DataHandler
 
 
@@ -17,8 +17,8 @@ class MyRequestHandler(BaseRequestHandler):
         self.connection_status = False
         self.t_handle_data_status = False
         self.t_send_data_status = False
-        # self.t_recv_data = None
-        # self.t_send_data = Thread(target=self.thread_send_data())
+        self.logger_recv = None
+        self.logger_send = None
 
     def setup(self):
         print('%s : 连接建立, %s:%s' % (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()),
@@ -26,6 +26,8 @@ class MyRequestHandler(BaseRequestHandler):
         self.connection_status = True
         self.queue_recv_data = Queue(50)  # 接收数据队列
         self.queue_send_data = Queue(50)  # 发送数据队列
+        self.logger_recv = create_logger('recv')
+        self.logger_send = create_logger('send')
 
     def handle(self):
         # 处理数据线程
@@ -61,7 +63,12 @@ class MyRequestHandler(BaseRequestHandler):
                     continue
                 else:
                     # 保存接收数据日志
-                    save_log(tmp_recv_data, '接收')
+                    if 'SDO_User' not in tmp_recv_data and 'SDO_HeartBeat' not in tmp_recv_data:
+                        self.logger_recv.info(tmp_recv_data)
+                    else:
+                        pass
+
+                    print_log(tmp_recv_data, '接收')
 
                 # 判断接收xml的完整性
                 if tmp_recv_data[:5] == '<?xml':
@@ -91,7 +98,12 @@ class MyRequestHandler(BaseRequestHandler):
                 send_data = self.queue_send_data.get(True, 1)
 
                 # 保存发送数据日志
-                save_log(send_data, '发送')
+                if 'SDO_User' not in send_data and 'SDO_HeartBeat' not in send_data:
+                    self.logger_send.info(send_data)
+                else:
+                    pass
+
+                print_log(send_data, '发送')
 
                 # 发送数据
                 self.request.send(send_data.encode())

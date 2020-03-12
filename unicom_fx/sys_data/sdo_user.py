@@ -40,7 +40,7 @@ class SdoUser(object):
             self.password = 'fengxian'
 
             # 生产token
-            if self.token == '':
+            if self.token == '' or self.token is None:
                 self.token = hashlib.sha1(
                     ('%s%s%d' % (self.username, self.password, int(time.time()))).encode()).hexdigest().upper()
 

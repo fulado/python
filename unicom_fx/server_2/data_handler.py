@@ -13,6 +13,8 @@ from dynamic_data.dynamic_data import DynamicData
 from static_data.static_data import StaticData
 from static_data.static_data_subscribe import StaticDataSubscribe
 
+from .datahub_handler import DatahubHandler
+
 
 class DataHandler(object):
     def __init__(self, send_data_queue):
@@ -24,6 +26,7 @@ class DataHandler(object):
         self.data_subscribe = False
         self.signal_id_list = []
         self.cross_id_list = []
+        self.dh_handler = DatahubHandler()
 
     # 解析xml数据
     def xml_parse(self, recv_data_xml):
@@ -90,6 +93,7 @@ class DataHandler(object):
 
     # 登录
     def sdo_user_handle(self):
+
         sdo_user = SdoUser(self.seq, self.token, self.recv_data_dict)
         sdo_user.get_user_info()
         sdo_user.create_send_data()
@@ -113,20 +117,20 @@ class DataHandler(object):
         # 请求区域信息
         self.send_data_subscribe('310120000', 'RegionParam')
 
-        # 请求灯组信息
-        self.get_signal_id_list()
-
-        for signal_id in self.signal_id_list:
-            self.send_data_subscribe(signal_id, 'LampGroup')
+        # # 请求灯组信息
+        # self.get_signal_id_list()
+        #
+        # for signal_id in self.signal_id_list:
+        #     self.send_data_subscribe(signal_id, 'LampGroup')
 
         # 请求车道信息
-        self.get_cross_id_list()
-
-        for cross_id in self.cross_id_list:
-            self.send_data_subscribe(cross_id, 'LaneParam')
-
-        # 实时数据订阅
-        self.cross_report_ctrl_handle()
+        # self.get_cross_id_list()
+        #
+        # for cross_id in self.cross_id_list:
+        #     self.send_data_subscribe(cross_id, 'LaneParam')
+        #
+        # # 实时数据订阅
+        # self.cross_report_ctrl_handle()
 
     # 发送数据查询, 订阅请求
     def send_data_subscribe(self, cross_id, obj_name):
@@ -175,8 +179,6 @@ class DataHandler(object):
         time.sleep(1)
         cross_report_ctrl.create_send_data('CrossStage')
         cross_report_ctrl.put_send_data_into_queue(self.send_data_queue)
-
-
 
 
 
