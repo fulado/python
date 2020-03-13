@@ -14,7 +14,7 @@ class StaticData(object):
 
         if self.obj_name == 'SysInfo':
             # 系统参数/区域参数
-            self.recv_data = recv_data_dict.get('CrossIDList', {}).get('CrossID', [])
+            self.recv_data = recv_data_dict.get('SignalControlerIDList', {}).get('SignalControlerID', [])
             self.file_name = '../data/signal_list.txt'
 
         elif self.obj_name == 'RegionParam':
@@ -22,15 +22,15 @@ class StaticData(object):
             self.recv_data = recv_data_dict.get('CrossIDList', {}).get('CrossID', [])
             self.file_name = '../data/cross_list.txt'
 
-        elif self.obj_name == 'LampParam':
+        elif self.obj_name == 'LampGroup':
             # 灯组参数
             self.recv_data = recv_data_dict
-            self.file_name = '../data/lamp_group/%s.txt' % recv_data_dict.get('SignalControlerID')
+            self.file_name = '../data/lamp_group/%s.txt' % recv_data_dict[0].get('SignalControlerID')
 
         elif self.obj_name == 'LaneParam':
             # 车道参数
             self.recv_data = recv_data_dict
-            self.file_name = '../data/lane_param/%s.txt' % recv_data_dict.get('CrossID')
+            self.file_name = '../data/lane_param/%s.txt' % recv_data_dict[0].get('CrossID')
 
         elif self.obj_name == 'StageParam':
             # 相位参数
@@ -45,12 +45,12 @@ class StaticData(object):
     # 保存数据
     def save_data_to_file(self):
         file = open(self.file_name, 'w')
-
+        # print(self.file_name)
         if self.obj_name == 'SysInfo' or self.obj_name == 'RegionParam':
             self.save_data_for_list(file)
 
-        elif self.obj_name == 'LampParam' or self.obj_name == 'LampParam':
-            self.save_data_for_dict(file)
+        elif self.obj_name == 'LampGroup' or self.obj_name == 'LaneParam':
+            self.save_data_for_list_dict(file)
 
         elif self.obj_name == 'StageParam':
             self.save_data_for_dict_list(file, 'PhaseNoList')
@@ -98,7 +98,17 @@ class StaticData(object):
         finally:
             file.close()
 
-
+    # 保存灯组, 车道数据, 数据是一个列表, 列表中的的值是字典格式
+    def save_data_for_list_dict(self, file):
+        try:
+            for data_dict in self.recv_data:
+                for k, v in data_dict.items():
+                    file.write('%s: %s' % (k, v))
+                    file.write('\n')
+        except Exception as e:
+            print(e)
+        finally:
+            file.close()
 
 
 

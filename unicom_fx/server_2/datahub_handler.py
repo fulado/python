@@ -13,8 +13,32 @@ class DatahubHandler(object):
         self.project_name = 'city_brain'
         self.dh = DataHub(self.access_id, self.access_key, self.endpoint, enable_pb=False)
 
+        # topic_name
+        self.topic_lamp_param = 'ods_signal_lightset_froad_rltn_gb1049_fengxian'
+        self.topic_lane_param = 'ods_signal_froad_info_gb1049_fengxian'
+        self.topic_stage_param = 'ods_signal_stage_info_gb1049_fengxian'
+        self.topic_plan_param = 'ods_signal_timeplan_config_gb1049_fengxian'
+        self.topic_cross_cycle = 'ods_signal_cycle_rt_gb1049_fengxian'
+        self.topic_cross_stage = 'ods_signal_stage_rt_gb1049_fengxian'
+
     # 发布数据
-    def put_data(self, topic_name, data_list):
+    def put_data(self, obj_name, data_list):
+
+        if obj_name == 'LampParam':
+            topic_name = self.topic_lamp_param
+        elif obj_name == 'LaneParam':
+            topic_name = self.topic_lane_param
+        elif obj_name == 'StageParam':
+            topic_name = self.topic_stage_param
+        elif obj_name == 'PlanParam':
+            topic_name = self.topic_plan_param
+        elif obj_name == 'CrossCycle':
+            topic_name = self.topic_cross_cycle
+        elif obj_name == 'CrossStage':
+            topic_name = self.topic_cross_stage
+        else:
+            return
+
         try:
 
             # block等待所有shard状态ready

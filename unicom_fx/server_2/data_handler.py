@@ -47,15 +47,6 @@ class DataHandler(object):
         if self.object_type == 'SDO_User':
             self.sdo_user_handle()
 
-            # if self.token != '':
-            #     # 获取系统信息
-            #
-            #     t_sys_info_subscribe_handle = Thread(target=self.sys_info_subscribe_handle)
-            #     t_sys_info_subscribe_handle.start()
-
-            # 测试
-            # self.cross_report_ctrl_handle()
-
         # 心跳
         elif self.object_type == 'SDO_HeartBeat':
             self.sdo_heart_beat_handle()
@@ -68,9 +59,10 @@ class DataHandler(object):
                 self.data_subscribe = True
 
         # 静态数据
-        elif self.object_type in ('SysInfo', 'RegionParam', 'LampParam', 'LaneParam', 'StageParam', 'PlanParam'):
+        elif self.object_type in ('SysInfo', 'RegionParam', 'LampGroup', 'LaneParam', 'StageParam', 'PlanParam'):
             static_data = StaticData(self.object_type)
-
+            # print(self.object_type)
+            # print(self.recv_data_dict)
             static_data.parse_recv_data(self.recv_data_dict)
             static_data.save_data_to_file()
 
@@ -112,12 +104,12 @@ class DataHandler(object):
     def data_subscribe_handle(self):
 
         # 请求系统信息
-        self.send_data_subscribe('', 'SysInfo')
+        # self.send_data_subscribe('', 'SysInfo')
 
         # 请求区域信息
-        self.send_data_subscribe('310120000', 'RegionParam')
+        # self.send_data_subscribe('310120000', 'RegionParam')
 
-        # # 请求灯组信息
+        # 请求灯组信息
         # self.get_signal_id_list()
         #
         # for signal_id in self.signal_id_list:
@@ -128,9 +120,10 @@ class DataHandler(object):
         #
         # for cross_id in self.cross_id_list:
         #     self.send_data_subscribe(cross_id, 'LaneParam')
-        #
-        # # 实时数据订阅
-        # self.cross_report_ctrl_handle()
+
+        # 实时数据订阅
+        self.get_cross_id_list()
+        self.cross_report_ctrl_handle()
 
     # 发送数据查询, 订阅请求
     def send_data_subscribe(self, cross_id, obj_name):

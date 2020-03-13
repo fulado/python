@@ -13,7 +13,13 @@ from xml.sax.handler import ContentHandler
 # 保存数据日志，暂时在屏幕上打印结果
 def create_logger(activation):
 
-    logger = logging.getLogger(__name__)
+    if activation == 'recv':
+        logger = logging.getLogger('recv')
+    elif activation == 'send':
+        logger = logging.getLogger('send')
+    else:
+        logger = logging.getLogger(__name__)
+
     logger.setLevel(level=logging.INFO)
 
     log_handler = logging.FileHandler("../log/%s.txt" % time.strftime('%Y-%m-%d', time.localtime()))

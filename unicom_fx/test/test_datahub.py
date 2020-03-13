@@ -30,39 +30,39 @@ shard_id = shards[0].shard_id
 def put_data():
     try:
         # block等待所有shard状态ready
-        dh.wait_shards_ready(project_name, topic_name)
-
-        print("shards all ready!!!")
+        # dh.wait_shards_ready(project_name, topic_name)
+        #
+        # print("shards all ready!!!")
         # print("=======================================\n\n")
         topic_result = dh.get_topic(project_name, topic_name)
-        # print(topic_result)
-
-        if topic_result.record_type != RecordType.TUPLE:
-            print("topic type illegal!")
-            sys.exit(-1)
+        # # print(topic_result)
+        #
+        # if topic_result.record_type != RecordType.TUPLE:
+        #     print("topic type illegal!")
+        #     sys.exit(-1)
         # print("=======================================\n\n")
 
         record_schema = topic_result.record_schema
         print(record_schema)
 
-        records = []
-
-        record = TupleRecord(schema=record_schema)
-        record.values = ['123', 'abc', '20200304', '310000']
-        # record.shard_id = 0
-        records.append(record)
-
-        # print(project_name)
-        # print(topic_name)
-        # print(shard_id)
-        # print(records)
-
-        put_result = dh.put_records(project_name, topic_name, records)
-
-        print(put_result)
-        print("put tuple %d records, failed count: %d" % (len(records), put_result.failed_record_count))
-        # failed_record_count如果大于0最好对failed record再进行重试
-        print("=======================================\n\n")
+        # records = []
+        #
+        # record = TupleRecord(schema=record_schema)
+        # record.values = ['123', 'abc', '20200304', '310000']
+        # # record.shard_id = 0
+        # records.append(record)
+        #
+        # # print(project_name)
+        # # print(topic_name)
+        # # print(shard_id)
+        # # print(records)
+        #
+        # put_result = dh.put_records(project_name, topic_name, records)
+        #
+        # print(put_result)
+        # print("put tuple %d records, failed count: %d" % (len(records), put_result.failed_record_count))
+        # # failed_record_count如果大于0最好对failed record再进行重试
+        # print("=======================================\n\n")
 
     except DatahubException as e:
         print(e)

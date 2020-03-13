@@ -1,4 +1,0 @@
-SignalControlerID, 3301005879222325811
-LampGroupNo, 1
-Direction, 0
-Type, 10

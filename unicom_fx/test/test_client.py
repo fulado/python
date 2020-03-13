@@ -3,6 +3,7 @@ import time
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+# client.connect(('15.75.15.97', 19530))
 client.connect(('127.0.0.1', 19530))
 
 sdo_heart_beat = """
@@ -47,6 +48,11 @@ sdo_user = """
 </Message>
 """
 
+sys_info = """
+<?xml version="1.0" encoding="UTF-8"?><Message><Version>1.0</Version><Token>D2B7B0381E95C35E6A6E4820DA833A3DF0A89CA0</Token><From><Address><Sys>UTCS</Sys><SubSys></SubSys><Instance></Instance></Address></From><To><Address><Sys>TICP</Sys><SubSys></SubSys><Instance></Instance></Address></To><Type>RESPONSE</Type><Seq>20200313105915000952</Seq><Body><Operation name="Get" order="5"><SysInfo><SysName>CSTCP4.0信号控制系统</SysName><SysVersion>1.0</SysVersion><Supplier>宝康</Supplier><RegionIDList><RegionID>310120000</RegionID></RegionIDList><SignalControlerIDList><SignalControlerID>31012000000000066</SignalControlerID><SignalControlerID>31012000000000064</SignalControlerID><SignalControlerID>31012000000000065</SignalControlerID><SignalControlerID>31012000000000067</SignalControlerID><SignalControlerID>31012000000000068</SignalControlerID><SignalControlerID>31012000000000069</SignalControlerID><SignalControlerID>31012000000000002</SignalControlerID><SignalControlerID>31012000000000001</SignalControlerID><SignalControlerID>31012000000000005</SignalControlerID><SignalControlerID>31012000000000006</SignalControlerID><SignalControlerID>31012000000000007</SignalControlerID><SignalControlerID>31012000000000008</SignalControlerID><SignalControlerID>31012000000000009</SignalControlerID><SignalControlerID>31012000000000011</SignalControlerID><SignalControlerID>31012000000000012</SignalControlerID><SignalControlerID>31012000000097055</SignalControlerID><SignalControlerID>31012000000000015</SignalControlerID><SignalControlerID>31012000000000019</SignalControlerID><SignalControlerID>31012000000000021</SignalControlerID><SignalControlerID>31012000000000022</SignalControlerID><SignalControlerID>31012000000000023</SignalControlerID><SignalControlerID>31012000000000024</SignalControlerID><SignalControlerID>31012000000000025</SignalControlerID><SignalControlerID>31012000000000026</SignalControlerID><SignalControlerID>31012000000000027</SignalControlerID><SignalControlerID>31012000000000030</SignalControlerID><SignalControlerID>31012000000000032</SignalControlerID><SignalControlerID>31012000000000033</SignalControlerID><SignalControlerID>31012000000000035</SignalControlerID><SignalControlerID>31012000000000036</SignalControlerID><SignalControlerID>31012000000000038</SignalControlerID><SignalControlerID>31012000000000013</SignalControlerID><SignalControlerID>31012000000000014</SignalControlerID><SignalControlerID>31012000000000016</SignalControlerID><SignalControlerID>31012000000000018</SignalControlerID><SignalControlerID>31012000000000028</SignalControlerID><SignalControlerID>31012000000000029</SignalControlerID><SignalControlerID>31012000000000031</SignalControlerID><SignalControlerID>31012000000000034</SignalControlerID><SignalControlerID>31012000000000037</SignalControlerID><SignalControlerID>31012000000000039</SignalControlerID><SignalControlerID>31012000000000040</SignalControlerID><SignalControlerID>31012000000000041</SignalControlerID><SignalControlerID>31012000000000042</SignalControlerID><SignalControlerID>31012000000000043</SignalControlerID><SignalControlerID>31012000000000044</SignalControlerID><SignalControlerID>31012000000000017</SignalControlerID><SignalControlerID>31012000000000045</SignalControlerID><SignalControlerID>31012000000000046</SignalControlerID><SignalControlerID>31012000000000047</SignalControlerID><SignalControlerID>31012000000000003</SignalControlerID><SignalControlerID>31012000000000004</SignalControlerID><SignalControlerID>31012000000000010</SignalControlerID><SignalControlerID>31012000000000020</SignalControlerID><SignalControlerID>31012000000000048</SignalControlerID><SignalControlerID>31012000000000049</SignalControlerID><SignalControlerID>31012000000000050</SignalControlerID><SignalControlerID>31012000000000051</SignalControlerID><SignalControlerID>31012000000000052</SignalControlerID><SignalControlerID>31012000000000053</SignalControlerID><SignalControlerID>31012000000000054</SignalControlerID><SignalControlerID>31012000000000055</SignalControlerID><SignalControlerID>31012000000000056</SignalControlerID><SignalControlerID>31012000000000057</SignalControlerID><SignalControlerID>31012000000000058</SignalControlerID><SignalControlerID>31012000000000059</SignalControlerID><SignalControlerID>31012000000000060</SignalControlerID><SignalControlerID>31012000000000061</SignalControlerID><SignalControlerID>31012000000000062</SignalControlerID><SignalControlerID>31012000000000063</SignalControlerID></SignalControlerIDList></SysInfo></Operation></Body></Message>
+"""
+
+
 try:
     # while True:
     #     cmd = input("(quit退出)>>").strip()
@@ -73,14 +79,14 @@ try:
     # recv_data = client.recv(100000)
     # print(recv_data.decode())
 
-    client.send(sdo_user.encode())
+    client.send(sys_info.strip().encode())
     recv_data = client.recv(100000)
 
-    client.send(sdo_heart_beat.encode())
+    # client.send(sdo_heart_beat.encode())
 
-    while True:
-        recv_data = client.recv(100000)
-        print(recv_data.decode())
+    # while True:
+    #     recv_data = client.recv(100000)
+    #     print(recv_data.decode())
 
 except Exception as e:
     print(e)
