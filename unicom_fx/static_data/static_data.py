@@ -42,6 +42,10 @@ class StaticData(object):
             self.recv_data = recv_data_dict
             self.file_name = '../data/plan_param/%s.txt' % recv_data_dict.get('CrossID')
 
+    # 转化数据为列表
+    def convert_data_to_list(self):
+        if self.obj_name == 'LampGroup' or self.obj_name == 'LaneParam':
+
     # 保存数据
     def save_data_to_file(self):
         file = open(self.file_name, 'w')
@@ -57,6 +61,9 @@ class StaticData(object):
 
         elif self.obj_name == 'PlanParam':
             self.save_data_for_dict_list(file, 'StageNoList')
+
+        else:
+            pass
 
     # 保存系统, 区域等数据, 数据是一个列表
     def save_data_for_list(self, file):

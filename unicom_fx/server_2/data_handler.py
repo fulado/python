@@ -21,6 +21,7 @@ class DataHandler(object):
         self.send_data_queue = send_data_queue
         self.recv_data_dict = {}
         self.seq = ''
+        self.data_type = ''
         self.object_type = ''
         self.token = ''
         self.data_subscribe = False
@@ -34,6 +35,7 @@ class DataHandler(object):
         data = data.get('Message', {})
 
         self.token = data.get('Token')
+        self.data_type = data.get('Type')
         self.seq = data.get('Seq')
         data = data.get('Body', {}).get('Operation', {})
 
@@ -59,23 +61,26 @@ class DataHandler(object):
                 self.data_subscribe = True
 
         # 静态数据
-        elif self.object_type in ('SysInfo', 'RegionParam', 'LampGroup', 'LaneParam', 'StageParam', 'PlanParam'):
+        elif self.data_type == 'RESPONSE' and self.object_type in \
+                ('SysInfo', 'RegionParam', 'LampGroup', 'LaneParam', 'StageParam', 'PlanParam'):
             static_data = StaticData(self.object_type)
-            # print(self.object_type)
-            # print(self.recv_data_dict)
             static_data.parse_recv_data(self.recv_data_dict)
             static_data.save_data_to_file()
 
         # 实时数据
-        elif self.object_type in ('CrossCycle', 'CrossStage'):
-            dynamic_data = DynamicData()
-
+        elif self.data_type == 'PUSH' and self.object_type in ('CrossCycle', 'CrossStage') \
+                and not isinstance(self.recv_data_dict, list):
+            dynamic_data = DynamicData(self.object_type)
             dynamic_data.parse_recv_data(self.recv_data_dict)
-            dynamic_data.save_data_to_file()
+            dynamic_data.convert_data_to_list()
+
+            # 数据写入datahub
+            self.dh_handler.put_data(self.object_type, dynamic_data.data_list)
+
+            # dynamic_data.save_data_to_file()
 
         else:
             pass
-            # self.handle_test()
 
     # 测试
     def handle_test(self):

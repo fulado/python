@@ -1,6 +1,7 @@
 """
 信号机实时数据
 """
+import time
 
 
 # 数据基类
@@ -9,9 +10,12 @@ class DynamicData(object):
         self.recv_data = {}
         self.obj_name = obj_name
         self.file_name = '../data/error.txt'
+        self.data_list = []
 
     # 获取保存文件路径
     def parse_recv_data(self, recv_data_dict):
+        self.recv_data = recv_data_dict
+
         cross_id = recv_data_dict.get('CrossID', 'error')
 
         if cross_id != 'error':
@@ -31,13 +35,27 @@ class DynamicData(object):
         file = open(self.file_name, 'w')
 
         try:
-            for k, v in self.recv_data_dict.items():
-                file.write('%s, %s' % (k, v))
+            for k, v in self.recv_data.items():
+                file.write('%s: %s' % (k, v))
                 file.write('\n')
         except Exception as e:
             print(e)
         finally:
             file.close()
+
+    # 转化数据为列表
+    def convert_data_to_list(self):
+        data_list_tmp = []
+        for v in self.recv_data.values():
+            data_list_tmp.append(v)
+
+        dt = time.strftime('%Y%m%d', time.localtime())
+        adcode = '310000'
+
+        data_list_tmp.append(dt)
+        data_list_tmp.append(adcode)
+
+        self.data_list.append(data_list_tmp)
 
 
 # # 路口周期

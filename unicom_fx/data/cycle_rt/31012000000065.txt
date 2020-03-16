@@ -1,0 +1,5 @@
+CrossID: 31012000000065
+StartTime: 2020-03-13 17:48:43
+LastCycleLen: 100.0
+CurCycleLen: 100.0
+CurCycleRemainLen: 100.0
