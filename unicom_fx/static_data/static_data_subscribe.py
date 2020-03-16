@@ -42,7 +42,7 @@ class StaticDataSubscribe(object):
 
 
 if __name__ == '__main__':
-    rps = StaticDataSubscribe('123', 'abc', 'StageParam')
+    rps = StaticDataSubscribe('123', 'abc', 'SignalControler')
     rps.create_send_data()
 
     print(rps.send_data_xml)

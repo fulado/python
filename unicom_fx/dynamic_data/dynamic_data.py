@@ -10,7 +10,7 @@ class DynamicData(object):
         self.recv_data = {}
         self.obj_name = obj_name
         self.file_name = '../data/error.txt'
-        self.data_list = []
+        self.datahub_put_data = []
 
     # 获取保存文件路径
     def parse_recv_data(self, recv_data_dict):
@@ -44,10 +44,18 @@ class DynamicData(object):
             file.close()
 
     # 转化数据为列表
-    def convert_data_to_list(self):
+    def convert_data_for_datahub(self):
         data_list_tmp = []
-        for v in self.recv_data.values():
-            data_list_tmp.append(v)
+        for k, v in self.recv_data.items():
+            # 如果是数值类型的字段, 需要转化为整型
+            if k in ('LastStageLen', 'CurStageLen', 'CurStageRemainLen', 'LastCycleLen', 'CurCycleLen',
+                     'CurCycleRemainLen'):
+                try:
+                    data_list_tmp.append(int(float(v)))
+                except ValueError:
+                    data_list_tmp.append(0)
+            else:
+                data_list_tmp.append(v)
 
         dt = time.strftime('%Y%m%d', time.localtime())
         adcode = '310000'
@@ -55,7 +63,9 @@ class DynamicData(object):
         data_list_tmp.append(dt)
         data_list_tmp.append(adcode)
 
-        self.data_list.append(data_list_tmp)
+        self.datahub_put_data = [self.obj_name, [data_list_tmp, ]]
+
+
 
 
 # # 路口周期

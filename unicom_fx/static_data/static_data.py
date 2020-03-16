@@ -1,6 +1,7 @@
 """
 静态数据
 """
+import time
 
 
 class StaticData(object):
@@ -8,6 +9,7 @@ class StaticData(object):
         self.recv_data = {}
         self.obj_name = obj_name
         self.file_name = '../data/error.txt'
+        self.datahub_put_data = []
 
     # 解析返回结果数据
     def parse_recv_data(self, recv_data_dict):
@@ -42,9 +44,82 @@ class StaticData(object):
             self.recv_data = recv_data_dict
             self.file_name = '../data/plan_param/%s.txt' % recv_data_dict.get('CrossID')
 
+        elif self.obj_name == 'SignalControler':
+            # 信号机参数
+            self.recv_data = recv_data_dict
+            self.file_name = '../data/signal_controller/%s.txt' % recv_data_dict.get('SignalControlerID')
+
+        else:
+            pass
+
     # 转化数据为列表
-    def convert_data_to_list(self):
-        if self.obj_name == 'LampGroup' or self.obj_name == 'LaneParam':
+    def convert_data_for_datahub(self):
+        dt = time.strftime('%Y%m%d', time.localtime())
+        adcode = '310000'
+
+        # 信号机信息
+        if self.obj_name == 'SignalControler':
+            data_list = self.set_put_data_list_signal_controller(dt, adcode)
+
+        # 灯组信息, 车道信息
+        elif self.obj_name in ('LampGroup', 'LaneParam'):
+            data_list = self.set_put_data_list_lamp_group_lane_param(dt, adcode)
+
+        #
+        # elif self.obj_name == :
+        #     data_list = self.set_put_data_list_lamp_group_lane_param(dt, adcode)
+
+        else:
+            pass
+
+        self.datahub_put_data = [self.obj_name, data_list]
+
+    # 生成信号机信息datahub发布数据列表
+    def set_put_data_list_signal_controller(self, dt, adcode):
+        data_list_signal_controller = []
+
+        signal_id = self.recv_data.get('SignalControlerID', '')
+        cross_id_list = self.recv_data.get('CrossIDList', {}).get('CrossID', '')
+
+        if isinstance(cross_id_list, list):
+            cross_id_list = ','.join(cross_id_list)
+        else:
+            pass
+
+        data_list_signal_controller.append(signal_id)
+        data_list_signal_controller.append(cross_id_list)
+
+        data_list_signal_controller.append(dt)
+        data_list_signal_controller.append(adcode)
+
+        return [data_list_signal_controller, ]
+
+    # 生成灯组信息datahub发布数据列表
+    def set_put_data_list_lamp_group_lane_param(self, dt, adcode):
+        data_list_lamp_group = []
+
+        for data_dict in self.recv_data:
+            data_list_tmp = list()
+
+            if self.obj_name == 'LampGroup':
+                data_list_tmp.append(data_dict.get('SignalControlerID'))
+                data_list_tmp.append(data_dict.get('LampGroupNo'))
+                data_list_tmp.append(data_dict.get('Direction'))
+                data_list_tmp.append(data_dict.get('Type'))
+            else:
+                data_list_tmp.append(data_dict.get('CrossID'))
+                data_list_tmp.append(data_dict.get('LaneNo'))
+                data_list_tmp.append(data_dict.get('Direction'))
+                data_list_tmp.append(data_dict.get('Attribute'))
+                data_list_tmp.append(data_dict.get('Movement'))
+                data_list_tmp.append(data_dict.get('Movement'))
+
+            data_list_tmp.append(dt)
+            data_list_tmp.append(adcode)
+
+            data_list_lamp_group.append(data_list_tmp)
+
+        return data_list_lamp_group
 
     # 保存数据
     def save_data_to_file(self):
@@ -61,6 +136,9 @@ class StaticData(object):
 
         elif self.obj_name == 'PlanParam':
             self.save_data_for_dict_list(file, 'StageNoList')
+
+        elif self.obj_name == 'SignalControler':
+            self.save_data_for_dict_list(file, 'CrossIDList')
 
         else:
             pass

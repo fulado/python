@@ -14,6 +14,7 @@ class DatahubHandler(object):
         self.dh = DataHub(self.access_id, self.access_key, self.endpoint, enable_pb=False)
 
         # topic_name
+        self.topic_signal_controller = 'ods_devc_signal_info_gb1049_fengxian'
         self.topic_lamp_param = 'ods_signal_lightset_froad_rltn_gb1049_fengxian'
         self.topic_lane_param = 'ods_signal_froad_info_gb1049_fengxian'
         self.topic_stage_param = 'ods_signal_stage_info_gb1049_fengxian'
@@ -22,6 +23,7 @@ class DatahubHandler(object):
         self.topic_cross_stage = 'ods_signal_stage_rt_gb1049_fengxian'
 
         # schema
+        self.schema_signal_controller = self.dh.get_topic(self.project_name, self.topic_signal_controller).record_schema
         self.schema_lamp_param = self.dh.get_topic(self.project_name, self.topic_lamp_param).record_schema
         self.schema_lane_param = self.dh.get_topic(self.project_name, self.topic_lane_param).record_schema
         self.schema_stage_param = self.dh.get_topic(self.project_name, self.topic_stage_param).record_schema
@@ -36,7 +38,10 @@ class DatahubHandler(object):
         if not isinstance(data_list, list) or len(data_list) == 0:
             return
 
-        if obj_name == 'LampGroup':
+        if obj_name == 'SignalControler':
+            topic_name = self.topic_signal_controller
+            record_schema = self.schema_signal_controller
+        elif obj_name == 'LampGroup':
             topic_name = self.topic_lamp_param
             record_schema = self.schema_lamp_param
         elif obj_name == 'LaneParam':

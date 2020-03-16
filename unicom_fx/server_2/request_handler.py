@@ -2,9 +2,10 @@ import time
 
 from socketserver import BaseRequestHandler
 from multiprocessing import Queue
-from threading import Thread, local
+from threading import Thread
 from .utils import create_logger, print_log, xml_check
 from .data_handler import DataHandler
+from .datahub_handler import DatahubHandler
 
 
 # BaseRequestHandler子类
@@ -14,6 +15,7 @@ class MyRequestHandler(BaseRequestHandler):
         super(MyRequestHandler, self).__init__(request, client_address, server)
         self.queue_recv_data = None  # 接收数据队列
         self.queue_send_data = None  # 发送数据队列
+        self.queue_put_datahub = None  # datahub发布队列
         self.connection_status = False
         self.t_handle_data_status = False
         self.t_send_data_status = False
@@ -26,6 +28,7 @@ class MyRequestHandler(BaseRequestHandler):
         self.connection_status = True
         self.queue_recv_data = Queue(50)  # 接收数据队列
         self.queue_send_data = Queue(50)  # 发送数据队列
+        self.queue_put_datahub = Queue(50)  # 发送数据队列
         self.logger_recv = create_logger('recv')
         self.logger_send = create_logger('send')
 
@@ -34,14 +37,13 @@ class MyRequestHandler(BaseRequestHandler):
         t_handle_data = Thread(target=self.thread_handle_data)
         t_handle_data.start()
 
-        # 创建并启动发送数据线程
+        # 发送数据线程
         t_send_data = Thread(target=self.thread_send_data)
         t_send_data.start()
 
-        # 创建并启动接收数据线程
-        # t_recv_data = Thread(target=self.thread_recv_data)
-        # t_recv_data.start()
-        # t_recv_data.join()
+        # datahub发布数据线程
+        t_put_datahub = Thread(target=self.thread_put_datahub)
+        t_put_datahub.start()
 
         self.thread_recv_data()
 
@@ -63,7 +65,8 @@ class MyRequestHandler(BaseRequestHandler):
                     continue
                 else:
                     # 保存接收数据日志
-                    if 'SDO_User' not in tmp_recv_data and 'SDO_HeartBeat' not in tmp_recv_data:
+                    if 'SDO_User' not in tmp_recv_data and 'SDO_HeartBeat' not in tmp_recv_data \
+                            and 'RESPONSE' in tmp_recv_data:
                         self.logger_recv.info(tmp_recv_data)
                     else:
                         pass
@@ -87,8 +90,8 @@ class MyRequestHandler(BaseRequestHandler):
 
         except Exception as e:
             self.connection_status = False
-            print('处理数据线程结束')
             print(e)
+            print('处理数据线程结束')
 
     # 发送数据线程
     def thread_send_data(self):
@@ -109,6 +112,7 @@ class MyRequestHandler(BaseRequestHandler):
                 self.request.send(send_data.encode())
 
             except Exception as e:
+                # print(e)
                 continue
 
         print('发送数据线程结束')
@@ -116,7 +120,7 @@ class MyRequestHandler(BaseRequestHandler):
     # 处理数据
     def thread_handle_data(self):
         # 创建数据处理对象
-        data_handler = DataHandler(self.queue_send_data)
+        data_handler = DataHandler(self.queue_send_data, self.queue_put_datahub)
 
         while self.connection_status:
             try:
@@ -128,9 +132,29 @@ class MyRequestHandler(BaseRequestHandler):
                 data_handler.xml_parse(recv_data)
                 data_handler.data_handle()
             except Exception as e:
+                # print(e)
                 continue
 
         print('接收数据线程结束')
+
+    # 发布到datahub
+    def thread_put_datahub(self):
+        # 常见datahub数据发布对象
+        datahub_handler = DatahubHandler()
+
+        while self.connection_status:
+            try:
+                # print(self.connection_status)
+                # 从接收数据队列中获取数据
+                data = self.queue_put_datahub.get(True, 1)
+
+                # 处理数据
+                datahub_handler.put_data(data[0], data[1])
+            except Exception as e:
+                # print(e)
+                continue
+
+        print('datahub发布数据线程结束')
 
 
 
