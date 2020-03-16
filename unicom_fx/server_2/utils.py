@@ -118,9 +118,21 @@ def xml_construct(send_data_dict, seq='', token='', data_type='RESPONSE'):
     return xmltodict.unparse(response_data_dict)
 
 
+# str类型转换为int类型
+def str_to_int(value):
+    try:
+        val = int(float(value))
+    except ValueError:
+        val = 0
+
+    return val
+
+
 if __name__ == '__main__':
     data_string = 'aaa'
     print_log(data_string, '接收')
+
+
 
 
 

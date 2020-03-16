@@ -59,8 +59,9 @@ class DataHandler(object):
                 self.data_subscribe = True
 
         # 静态数据
-        elif self.data_type == 'RESPONSE' and self.object_type in \
-                ('SysInfo', 'RegionParam', 'LampGroup', 'LaneParam', 'StageParam', 'PlanParam', 'SignalControler'):
+        elif self.data_type == 'RESPONSE' and self.object_type in ('SysInfo', 'RegionParam', 'LampGroup', 'LaneParam',
+                                                                   'StageParam', 'PlanParam', 'SignalControler',
+                                                                   'PhaseParam'):
             static_data = StaticData(self.object_type)
             static_data.parse_recv_data(self.recv_data_dict)
             static_data.convert_data_for_datahub()
@@ -130,7 +131,10 @@ class DataHandler(object):
         # self.send_data_subscribe(self.signal_id_list, 'LampGroup')
 
         # 请求车道信息
-        self.send_data_subscribe(self.cross_id_list, 'LaneParam')
+        # self.send_data_subscribe(self.cross_id_list, 'LaneParam')
+
+        # 请求相位信息
+        self.send_data_subscribe(self.cross_id_list, 'PhaseParam')
 
         # 请求阶段信息
         # self.send_data_subscribe(self.cross_id_list, 'StageParam')

@@ -1,0 +1,117 @@
+CrossID: 31012000000045
+StageNo: 1
+StageName: 論僇1
+Attribute: 1
+Green: 35
+RedYellow: 0
+Yellow: 3
+AllRed: 1
+PhaseNoList: OrderedDict([('PhaseNo', ['1', '2'])])
+CrossID: 31012000000045
+StageNo: 2
+StageName: 論僇2
+Attribute: 1
+Green: 23
+RedYellow: 0
+Yellow: 3
+AllRed: 1
+PhaseNoList: OrderedDict([('PhaseNo', '2')])
+CrossID: 31012000000045
+StageNo: 3
+StageName: 論僇3
+Attribute: 1
+Green: 38
+RedYellow: 0
+Yellow: 3
+AllRed: 1
+PhaseNoList: OrderedDict([('PhaseNo', '3')])
+CrossID: 31012000000045
+StageNo: 4
+StageName: 論僇4
+Attribute: 1
+Green: 23
+RedYellow: 0
+Yellow: 3
+AllRed: 1
+PhaseNoList: OrderedDict([('PhaseNo', '4')])
+CrossID: 31012000000045
+StageNo: 5
+StageName: 論僇5
+Attribute: 1
+Green: 25
+RedYellow: 0
+Yellow: 3
+AllRed: 1
+PhaseNoList: OrderedDict([('PhaseNo', '5')])
+CrossID: 31012000000045
+StageNo: 6
+StageName: 論僇6
+Attribute: 1
+Green: 35
+RedYellow: 0
+Yellow: 3
+AllRed: 1
+PhaseNoList: OrderedDict([('PhaseNo', '1')])
+CrossID: 31012000000045
+StageNo: 7
+StageName: 論僇7
+Attribute: 1
+Green: 27
+RedYellow: 0
+Yellow: 3
+AllRed: 1
+PhaseNoList: OrderedDict([('PhaseNo', '2')])
+CrossID: 31012000000045
+StageNo: 8
+StageName: 論僇8
+Attribute: 1
+Green: 51
+RedYellow: 0
+Yellow: 3
+AllRed: 1
+PhaseNoList: OrderedDict([('PhaseNo', '3')])
+CrossID: 31012000000045
+StageNo: 9
+StageName: 論僇9
+Attribute: 1
+Green: 25
+RedYellow: 0
+Yellow: 3
+AllRed: 1
+PhaseNoList: OrderedDict([('PhaseNo', '5')])
+CrossID: 31012000000045
+StageNo: 10
+StageName: 論僇10
+Attribute: 1
+Green: 37
+RedYellow: 0
+Yellow: 3
+AllRed: 1
+PhaseNoList: OrderedDict([('PhaseNo', '1')])
+CrossID: 31012000000045
+StageNo: 11
+StageName: 論僇11
+Attribute: 1
+Green: 27
+RedYellow: 0
+Yellow: 3
+AllRed: 1
+PhaseNoList: OrderedDict([('PhaseNo', '2')])
+CrossID: 31012000000045
+StageNo: 12
+StageName: 論僇12
+Attribute: 1
+Green: 55
+RedYellow: 0
+Yellow: 3
+AllRed: 1
+PhaseNoList: OrderedDict([('PhaseNo', '3')])
+CrossID: 31012000000045
+StageNo: 13
+StageName: 論僇13
+Attribute: 1
+Green: 25
+RedYellow: 0
+Yellow: 3
+AllRed: 1
+PhaseNoList: OrderedDict([('PhaseNo', '5')])

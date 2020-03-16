@@ -1,0 +1,18 @@
+CrossID: 31012000000045
+PlanNo: 1
+CycleLen: 164
+CoordPhaseNo: 1
+OffSet: 35
+StageNoList: OrderedDict([('StageNo', ['1', '2', '3', '4', '5'])])
+CrossID: 31012000000045
+PlanNo: 2
+CycleLen: 154
+CoordPhaseNo: 1
+OffSet: 24
+StageNoList: OrderedDict([('StageNo', ['6', '7', '8', '9'])])
+CrossID: 31012000000045
+PlanNo: 3
+CycleLen: 160
+CoordPhaseNo: 1
+OffSet: 88
+StageNoList: OrderedDict([('StageNo', ['10', '11', '12', '13'])])

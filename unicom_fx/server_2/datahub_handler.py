@@ -19,6 +19,7 @@ class DatahubHandler(object):
         self.topic_lane_param = 'ods_signal_froad_info_gb1049_fengxian'
         self.topic_stage_param = 'ods_signal_stage_info_gb1049_fengxian'
         self.topic_plan_param = 'ods_signal_timeplan_config_gb1049_fengxian'
+        self.topic_phase_param = 'ods_signal_phase_lane_rltn_gb1049_fengxian'
         self.topic_cross_cycle = 'ods_signal_cycle_rt_gb1049_fengxian'
         self.topic_cross_stage = 'ods_signal_stage_rt_gb1049_fengxian'
 
@@ -28,6 +29,7 @@ class DatahubHandler(object):
         self.schema_lane_param = self.dh.get_topic(self.project_name, self.topic_lane_param).record_schema
         self.schema_stage_param = self.dh.get_topic(self.project_name, self.topic_stage_param).record_schema
         self.schema_plan_param = self.dh.get_topic(self.project_name, self.topic_plan_param).record_schema
+        self.schema_phase_param = self.dh.get_topic(self.project_name, self.topic_phase_param).record_schema
         self.schema_cross_cycle = self.dh.get_topic(self.project_name, self.topic_cross_cycle).record_schema
         self.schema_cross_stage = self.dh.get_topic(self.project_name, self.topic_cross_stage).record_schema
 
@@ -53,6 +55,9 @@ class DatahubHandler(object):
         elif obj_name == 'PlanParam':
             topic_name = self.topic_plan_param
             record_schema = self.schema_plan_param
+        elif obj_name == 'PhaseParam':
+            topic_name = self.topic_phase_param
+            record_schema = self.schema_phase_param
         elif obj_name == 'CrossCycle':
             topic_name = self.topic_cross_cycle
             record_schema = self.schema_cross_cycle

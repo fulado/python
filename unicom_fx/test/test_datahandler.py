@@ -11,11 +11,11 @@ def main():
     lane_param_data = """<?xml version="1.0" encoding="UTF-8"?><Message><Version>1.0</Version><Token>C080D4B8264C6BA41899F93430853C2A32D246F7</Token><From><Address><Sys>UTCS</Sys><SubSys></SubSys><Instance></Instance></Address></From><To><Address><Sys>TICP</Sys><SubSys></SubSys><Instance></Instance></Address></To><Type>PUSH</Type><Seq>20200313175109000001</Seq><Body><Operation name="Notify" order="1"><CrossStage><CrossID>31012000000031</CrossID><LastStageNo>1</LastStageNo><LastStageLen>45</LastStageLen><CurStageNo>2</CurStageNo><CurStageLen>33.0</CurStageLen><CurStageRemainLen>33.0</CurStageRemainLen><StartTime>2020-03-13 17:51:09</StartTime><CycleStartTime>2020-03-13 17:47:45</CycleStartTime></CrossStage></Operation></Body></Message>
 """
 
-    dh = DataHandler('send data queue', 'put datahub queue')
-
-    dh.xml_parse(lane_param_data)
-    print(dh.data_type)
-    print(dh.object_type)
+    # dh = DataHandler('send data queue', 'put datahub queue')
+    #
+    # dh.xml_parse(lane_param_data)
+    # print(dh.data_type)
+    # print(dh.object_type)
     # print(len(dh.recv_data_dict))
     # print(type(dh.recv_data_dict))
 
@@ -42,10 +42,10 @@ def main():
     #
     # for cross_id in dh.cross_id_list:
     #
-    #     static_data_subscribe = StaticDataSubscribe('abc', cross_id, 'LampGroup')
-    #     static_data_subscribe.create_send_data()
-    #
-    #     print(static_data_subscribe.send_data_xml)
+    static_data_subscribe = StaticDataSubscribe('abc', '123', 'PhaseParam')
+    static_data_subscribe.create_send_data()
+
+    print(static_data_subscribe.send_data_xml)
 
 
 if __name__ == '__main__':
