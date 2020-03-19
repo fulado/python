@@ -124,6 +124,10 @@ class DataHandler(object):
         self.get_signal_id_list()
         self.get_cross_id_list()
 
+        # 订阅实时数据
+        time.sleep(10)
+        self.cross_report_ctrl_handle()
+
         # 请求信号机信息
         # self.send_data_subscribe(self.signal_id_list, 'SignalControler')
 
@@ -134,7 +138,7 @@ class DataHandler(object):
         # self.send_data_subscribe(self.cross_id_list, 'LaneParam')
 
         # 请求相位信息
-        self.send_data_subscribe(self.cross_id_list, 'PhaseParam')
+        # self.send_data_subscribe(self.cross_id_list, 'PhaseParam')
 
         # 请求阶段信息
         # self.send_data_subscribe(self.cross_id_list, 'StageParam')
@@ -142,14 +146,10 @@ class DataHandler(object):
         # 请求配时方案信息
         # self.send_data_subscribe(self.cross_id_list, 'PlanParam')
 
-        # 订阅实时数据
-        self.get_cross_id_list()
-        self.cross_report_ctrl_handle()
-
     # 发送数据查询, 订阅请求
     def send_data_subscribe(self, object_id_list, obj_name):
         for object_id in object_id_list:
-            time.sleep(0.1)
+            time.sleep(2)
 
             static_data_subscribe = StaticDataSubscribe(self.token, object_id, obj_name)
             static_data_subscribe.create_send_data()

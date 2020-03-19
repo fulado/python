@@ -121,7 +121,7 @@ class StaticData(object):
                 data_list_tmp.append(data_dict.get('Direction', ''))
                 data_list_tmp.append(data_dict.get('Attribute', ''))
                 data_list_tmp.append(data_dict.get('Movement', ''))
-                data_list_tmp.append(data_dict.get('Movement', ''))
+                data_list_tmp.append(data_dict.get('Feature', ''))
 
             elif self.obj_name == 'StageParam':
                 data_list_tmp.append(data_dict.get('CrossID', ''))
@@ -137,7 +137,7 @@ class StaticData(object):
                 # 放行相位序号列表
                 try:
                     phase_no_list = data_dict.get('PhaseNoList').get('PhaseNo', '')
-                except AttributeError as e:
+                except AttributeError:
                     phase_no_list = ''
 
                 if isinstance(phase_no_list, list):
@@ -146,16 +146,16 @@ class StaticData(object):
                     data_list_tmp.append(phase_no_list)
 
             elif self.obj_name == 'PlanParam':
-                data_list_tmp.append(data_dict.get('CrossID'))
-                data_list_tmp.append(data_dict.get('PlanNo'))
+                data_list_tmp.append(data_dict.get('CrossID', ''))
+                data_list_tmp.append(data_dict.get('PlanNo', ''))
                 data_list_tmp.append(str_to_int(data_dict.get('CycleLen', '0')))
-                data_list_tmp.append(data_dict.get('CoordPhaseNo'))
-                data_list_tmp.append(str_to_int(data_dict.get('OffSet', '0')))
+                data_list_tmp.append(data_dict.get('CoordPhaseNo', ''))
+                data_list_tmp.append(data_dict.get('OffSet', '0'))
 
                 # 放行阶段序号列表
                 try:
                     stage_no_list = data_dict.get('StageNoList').get('StageNo', '')
-                except AttributeError as e:
+                except AttributeError:
                     stage_no_list = ''
 
                 if isinstance(stage_no_list, list):
@@ -164,15 +164,15 @@ class StaticData(object):
                     data_list_tmp.append(stage_no_list)
 
             elif self.obj_name == 'PhaseParam':
-                data_list_tmp.append(data_dict.get('CrossID'))
-                data_list_tmp.append(data_dict.get('PhaseNo'))
-                data_list_tmp.append(data_dict.get('PhaseName'))
-                data_list_tmp.append(data_dict.get('Feature'))
+                data_list_tmp.append(data_dict.get('CrossID', ''))
+                data_list_tmp.append(data_dict.get('PhaseNo', ''))
+                data_list_tmp.append(data_dict.get('PhaseName', ''))
+                data_list_tmp.append(data_dict.get('Feature', ''))
 
                 # 相位对应的车道列表
                 try:
                     lane_no_list = data_dict.get('LaneNoList').get('LaneNo', '')
-                except AttributeError as e:
+                except AttributeError:
                     lane_no_list = ''
 
                 if isinstance(lane_no_list, list):
@@ -183,7 +183,7 @@ class StaticData(object):
                 # 放行人行道方向列表
                 try:
                     pe_dir_list = data_dict.get('PedDirList').get('Direction', '')
-                except AttributeError as e:
+                except AttributeError:
                     pe_dir_list = ''
 
                 if isinstance(pe_dir_list, list):
