@@ -115,10 +115,10 @@ class DataHandler(object):
     def data_subscribe_handle(self):
 
         # 请求系统信息
-        # self.send_data_subscribe(['', ], 'SysInfo')
+        self.send_data_subscribe(['', ], 'SysInfo')
 
         # 请求区域信息
-        # self.send_data_subscribe(['310120000', ], 'RegionParam')
+        self.send_data_subscribe(['310120000', ], 'RegionParam')
 
         # 获取信号id和路口id
         self.get_signal_id_list()
@@ -129,22 +129,22 @@ class DataHandler(object):
         self.cross_report_ctrl_handle()
 
         # 请求信号机信息
-        # self.send_data_subscribe(self.signal_id_list, 'SignalControler')
+        self.send_data_subscribe(self.signal_id_list, 'SignalControler')
 
         # 请求灯组信息
-        # self.send_data_subscribe(self.signal_id_list, 'LampGroup')
+        self.send_data_subscribe(self.signal_id_list, 'LampGroup')
 
         # 请求车道信息
-        # self.send_data_subscribe(self.cross_id_list, 'LaneParam')
+        self.send_data_subscribe(self.cross_id_list, 'LaneParam')
 
         # 请求相位信息
-        # self.send_data_subscribe(self.cross_id_list, 'PhaseParam')
+        self.send_data_subscribe(self.cross_id_list, 'PhaseParam')
 
         # 请求阶段信息
-        # self.send_data_subscribe(self.cross_id_list, 'StageParam')
+        self.send_data_subscribe(self.cross_id_list, 'StageParam')
 
         # 请求配时方案信息
-        # self.send_data_subscribe(self.cross_id_list, 'PlanParam')
+        self.send_data_subscribe(self.cross_id_list, 'PlanParam')
 
     # 发送数据查询, 订阅请求
     def send_data_subscribe(self, object_id_list, obj_name):

@@ -58,10 +58,10 @@ def get_data_from_datahub():
         topic_result = dh.get_topic(project_name, topic_name)
         # print(topic_result)
 
-        tm = int(time.time())
-        # print(tm)
+        tm = int(time.time() * 1000)
+        print(tm)
 
-        cursor_result = dh.get_cursor(project_name, topic_name, '0', CursorType.SYSTEM_TIME, 'ab')
+        cursor_result = dh.get_cursor(project_name, topic_name, '0', CursorType.SYSTEM_TIME, tm)
         cursor = cursor_result.cursor
 
         while True:
