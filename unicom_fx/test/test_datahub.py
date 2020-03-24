@@ -10,7 +10,7 @@ access_key = 'gmQxEPpXfYXd7BCwQQUM3OxvpmZwRn'
 endpoint = 'http://15.74.19.36'
 
 project_name = 'city_brain'
-topic_name = 'ods_devc_signal_info_gb1049_fengxian'
+topic_name = 'ods_rt_signal_tmpplan_config_fengxian'
 
 dh = DataHub(access_id, access_key, endpoint, enable_pb=False)
 
@@ -43,23 +43,23 @@ def put_data():
         # print("=======================================\n\n")
 
         record_schema = topic_result.record_schema
-        print(record_schema)
+        # print(record_schema)
 
-        # records = []
-        #
-        # record = TupleRecord(schema=record_schema)
-        # record.values = ['123', 'abc', '20200304', '310000']
-        # # record.shard_id = 0
-        # records.append(record)
-        #
+        records = []
+
+        record = TupleRecord(schema=record_schema)
+        record.values = ['1', '2', '3', '4', '5', '6', 10, 20, '20200324']
+        # record.shard_id = 0
+        records.append(record)
+
         # # print(project_name)
         # # print(topic_name)
         # # print(shard_id)
         # # print(records)
         #
-        # put_result = dh.put_records(project_name, topic_name, records)
-        #
-        # print(put_result)
+        put_result = dh.put_records(project_name, topic_name, records)
+
+        print(put_result)
         # print("put tuple %d records, failed count: %d" % (len(records), put_result.failed_record_count))
         # # failed_record_count如果大于0最好对failed record再进行重试
         # print("=======================================\n\n")
