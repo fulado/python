@@ -2,7 +2,10 @@ from datahub import DataHub
 from datahub.models import TupleRecord, DatahubException, CursorType
 
 import time
-import sys
+import random
+
+from collections import OrderedDict
+from server_2.utils import xml_construct
 
 
 class DatahubGetter(object):
@@ -35,7 +38,7 @@ class DatahubGetter(object):
         try:
             while True:
                 get_result = self.dh.get_tuple_records(self.project_name, self.topic_name_temp_plan, '0',
-                                                       self.record_schema_temp_plan, self.cursor_temp_plan, 10)
+                                                       self.record_schema_temp_plan, self.cursor_temp_plan, 20)
 
                 for record in get_result.records:
                     print(record)
@@ -65,6 +68,45 @@ class DatahubGetter(object):
 
         except DatahubException as e:
             print(e)
+
+    # 构造发送命令
+    def create_send_data(self, split_time_origin, cross_id):
+
+        split_time_list_element = OrderedDict()
+        split_time_list = []
+        for split_time in split_time_origin:
+            split_time_element = OrderedDict()
+            split_time_element['StageNo'] = split_time[0]
+            split_time_element['Split'] = split_time[1]
+
+            split_time_list.append(split_time_element)
+
+        split_time_list_element['SplitTime'] = split_time_list
+
+        temp_plan_param_element = OrderedDict()
+        temp_plan_param_element['CrossID'] = cross_id
+        temp_plan_param_element['CoordStageNo '] = '0'
+        temp_plan_param_element['OffSet'] = '0'
+        temp_plan_param_element['SplitTimeList'] = split_time_list_element
+
+        object_element = OrderedDict()
+        object_element['TempPlanParam'] = temp_plan_param_element
+        object_element['@order '] = '6'
+        object_element['@name '] = 'Set'
+
+        operation_element = OrderedDict()
+        operation_element['Operation '] = object_element
+
+        send_data_dict = operation_element
+
+        seq = time.strftime('%Y%m%d%H%M%S', time.localtime()) + '000%d%d%d' % (random.randint(0, 9),
+                                                                               random.randint(0, 9),
+                                                                               random.randint(0, 9))
+
+        # send_data_xml = xml_construct(send_data_dict, seq, self.token, 'TempPlanParam')
+        send_data_xml = xml_construct(send_data_dict, seq, 'aaaaaaa', 'REQUEST')
+
+        print(send_data_xml)
 
 
 def get_data_from_datahub():
@@ -104,8 +146,12 @@ if __name__ == '__main__':
     # get_data_from_datahub()
 
     dg = DatahubGetter()
-    dg.get_temp_plan()
+    # dg.get_temp_plan()
 
+    split_time_origin = [(1, 69), (2, 39)]
+    cross_id = '123abc'
+
+    dg.create_send_data(split_time_origin, cross_id)
 
 
 
