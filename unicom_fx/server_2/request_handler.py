@@ -19,8 +19,8 @@ class MyRequestHandler(BaseRequestHandler):
         self.queue_send_data = None  # 发送数据队列
         self.queue_put_datahub = None  # datahub发布队列
         self.connection_status = False
-        self.t_handle_data_status = False
-        self.t_send_data_status = False
+        # self.t_handle_data_status = False
+        # self.t_send_data_status = False
         self.logger_recv = None
         self.logger_send = None
         self.username = ''
@@ -190,7 +190,7 @@ class MyRequestHandler(BaseRequestHandler):
             temp_plan.connect_datahub()
 
             # 获取数据
-            temp_plan.get_temp_plan()
+            temp_plan.get_temp_plan(self.connection_status)
         except Exception as e:
             print(e)
 

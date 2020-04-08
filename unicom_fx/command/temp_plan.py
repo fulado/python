@@ -45,9 +45,9 @@ class TempPlan(object):
                                                    '0', CursorType.SYSTEM_TIME, ts).cursor
 
     # 订阅临时方案
-    def get_temp_plan(self, ):
+    def get_temp_plan(self, connection_status):
         try:
-            while True:
+            while connection_status:
                 get_result = self.dh.get_tuple_records(self.project_name, self.topic_name_temp_plan, '0',
                                                        self.record_schema_temp_plan, self.cursor_temp_plan, 20)
 
