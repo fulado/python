@@ -1,4 +1,5 @@
 import time
+import hashlib
 
 from socketserver import BaseRequestHandler
 from multiprocessing import Queue
@@ -6,6 +7,7 @@ from threading import Thread
 from .utils import create_logger, print_log, xml_check
 from .data_handler import DataHandler
 from .datahub_handler import DatahubHandler
+from command.temp_plan import TempPlan
 
 
 # BaseRequestHandler子类
@@ -21,6 +23,9 @@ class MyRequestHandler(BaseRequestHandler):
         self.t_send_data_status = False
         self.logger_recv = None
         self.logger_send = None
+        self.username = 'fengxian'
+        self.password = 'fengxian'
+        self.token = ''
 
     def setup(self):
         print('%s : 连接建立, %s:%s' % (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()),
@@ -31,6 +36,9 @@ class MyRequestHandler(BaseRequestHandler):
         self.queue_put_datahub = Queue(50)  # 发送数据队列
         self.logger_recv = create_logger('recv')
         self.logger_send = create_logger('send')
+
+        # 生成token
+        self.create_token()
 
     def handle(self):
         # 处理数据线程
@@ -63,15 +71,18 @@ class MyRequestHandler(BaseRequestHandler):
                 if len(tmp_recv_data) == 0:
                     self.request.send(' '.encode())
                     continue
-                else:
-                    # 保存接收数据日志
-                    if 'SDO_User' not in tmp_recv_data and 'SDO_HeartBeat' not in tmp_recv_data \
-                            and 'RESPONSE' in tmp_recv_data:
-                        self.logger_recv.info(tmp_recv_data)
-                    else:
-                        pass
-
+                elif 'SDO_User' in tmp_recv_data:
                     print_log(tmp_recv_data, '接收')
+                    self.logger_recv.info(tmp_recv_data)
+                elif 'SDO_HeartBeat' in tmp_recv_data:
+                    print_log('心跳数据: sdo_heartbeat', '接收')
+                elif 'TempPlanParam' in tmp_recv_data:
+                    print_log('临时优化方案: temp_plan_param', '接收')
+                    self.logger_recv.info(tmp_recv_data)
+                else:
+                    pass
+
+                    # print_log(tmp_recv_data, '接收')
 
                 # 判断接收xml的完整性
                 if tmp_recv_data[:5] == '<?xml':
@@ -101,10 +112,12 @@ class MyRequestHandler(BaseRequestHandler):
                 send_data = self.queue_send_data.get(True, 1)
 
                 # 保存发送数据日志
-                if 'SDO_User' not in send_data and 'SDO_HeartBeat' not in send_data:
-                    self.logger_send.info(send_data)
+                if 'SDO_User' in send_data:
+                    print_log('登录信息', '发送')
+                elif 'SDO_HeartBeat' in send_data:
+                    print_log('心跳数据', '发送')
                 else:
-                    pass
+                    self.logger_send.info(send_data)
 
                 print_log(send_data, '发送')
 
@@ -120,7 +133,7 @@ class MyRequestHandler(BaseRequestHandler):
     # 处理数据
     def thread_handle_data(self):
         # 创建数据处理对象
-        data_handler = DataHandler(self.queue_send_data, self.queue_put_datahub)
+        data_handler = DataHandler(self.taoken, self.queue_send_data, self.queue_put_datahub)
 
         while self.connection_status:
             try:
@@ -139,7 +152,7 @@ class MyRequestHandler(BaseRequestHandler):
 
     # 发布到datahub
     def thread_put_datahub(self):
-        # 常见datahub数据发布对象
+        # 创建datahub数据发布对象
         datahub_handler = DatahubHandler()
 
         while self.connection_status:
@@ -156,7 +169,24 @@ class MyRequestHandler(BaseRequestHandler):
 
         print('datahub发布数据线程结束')
 
+    # 信号配饰优化方案下发线程
+    def thread_time_plan(self):
+        # 创建单路口临时方案下发对象
+        temp_plan = TempPlan(self.token, self.queue_send_data)
 
+        try:
+            # 连接datahub
+            temp_plan.connect_datahub()
+
+            # 获取数据
+            temp_plan.get_temp_plan()
+        except Exception as e:
+            print(e)
+
+    # 生成token
+    def create_token(self):
+        self.token = hashlib.sha1(('%s%s%d' % (self.username, self.password, int(time.time()))).encode()).hexdigest()\
+            .upper()
 
 
 

@@ -15,14 +15,14 @@ from static_data.static_data_subscribe import StaticDataSubscribe
 
 
 class DataHandler(object):
-    def __init__(self, send_data_queue, queue_put_datahub):
+    def __init__(self, token, send_data_queue, queue_put_datahub):
         self.send_data_queue = send_data_queue
         self.queue_put_datahub = queue_put_datahub
         self.recv_data_dict = {}
         self.seq = ''
         self.data_type = ''
         self.object_type = ''
-        self.token = ''
+        self.token = token
         self.data_subscribe = False
         self.signal_id_list = []
         self.cross_id_list = []
@@ -32,7 +32,7 @@ class DataHandler(object):
         data = xmltodict.parse(recv_data_xml.strip())
         data = data.get('Message', {})
 
-        self.token = data.get('Token')
+        # self.token = data.get('Token')
         self.data_type = data.get('Type')
         self.seq = data.get('Seq')
         data = data.get('Body', {}).get('Operation', {})
@@ -102,7 +102,7 @@ class DataHandler(object):
         sdo_user.create_send_data()
         sdo_user.put_send_data_into_queue(self.send_data_queue)
 
-        self.token = sdo_user.get_token()
+        # self.token = sdo_user.get_token()
         # print('sdo_user_handle')
 
     # 心跳

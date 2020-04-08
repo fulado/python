@@ -36,13 +36,13 @@ class SdoUser(object):
 
         if login_success:
             # 如果账号密码正确，构造登录成功数据
-            self.username = 'fengxian'
-            self.password = 'fengxian'
+            # self.username = 'fengxian'
+            # self.password = 'fengxian'
 
             # 生产token
-            if self.token == '' or self.token is None:
-                self.token = hashlib.sha1(
-                    ('%s%s%d' % (self.username, self.password, int(time.time()))).encode()).hexdigest().upper()
+            # if self.token == '' or self.token is None:
+            #     self.token = hashlib.sha1(
+            #         ('%s%s%d' % (self.username, self.password, int(time.time()))).encode()).hexdigest().upper()
 
             # 构造返回数据
             object_list = [('UserName', self.username),

@@ -1,5 +1,5 @@
 from datahub import DataHub
-from datahub.models import TupleRecord, DatahubException, CursorType
+from datahub.models import DatahubException, CursorType
 
 import time
 import random
@@ -8,8 +8,8 @@ from collections import OrderedDict
 from server_2.utils import xml_construct
 
 
-class DatahubGetter(object):
-    def __init__(self, token):
+class TempPlan(object):
+    def __init__(self, token, send_data_queue):
         self.endpoint = 'http://15.74.19.36'
         self.access_id = 'NE5RYcFUSOkzSUQK'
         self.access_key = 'gmQxEPpXfYXd7BCwQQUM3OxvpmZwRn'
@@ -18,27 +18,34 @@ class DatahubGetter(object):
 
         # topic_name
         self.topic_name_temp_plan = 'ods_rt_signal_tmpplan_config_fengxian'
-        self.topic_name_multi_plan = 'ods_signal_multiperiodscenario_config_fengxian'
-
-        # schema
-        self.record_schema_temp_plan = self.dh.get_topic(self.project_name, self.topic_name_temp_plan).record_schema
-        self.record_schema_multi_plan = self.dh.get_topic(self.project_name, self.topic_name_multi_plan).record_schema
-
-        # timestamp 到毫秒
-        self.ts = int(time.time() * 1000) - 60000
-
-        # cursor
-        self.cursor_temp_plan = self.dh.get_cursor(self.project_name, self.topic_name_temp_plan,
-                                                   '0', CursorType.OLDEST, self.ts).cursor
-        self.cursor_multi_plan = self.dh.get_cursor(self.project_name, self.topic_name_multi_plan,
-                                                    '0', CursorType.SYSTEM_TIME, self.ts).cursor
+        self.record_schema_temp_plan = None
+        self.cursor_temp_plan = None
 
         # 信号路口信息
         self.tmp_plan_dict = {}
         self.token = token
 
+        # 命令数据xml
+        self.send_data_xml = ''
+
+        # 发送数据队列
+        self.send_data_queue = send_data_queue
+
+    # 链接datahub
+    def connect_datahub(self):
+
+        # schema
+        self.record_schema_temp_plan = self.dh.get_topic(self.project_name, self.topic_name_temp_plan).record_schema
+
+        # timestamp 到毫秒
+        ts = int(time.time() * 1000) - 60000  # 此处因为系统时间不准, 把时间提前一分钟
+
+        # cursor
+        self.cursor_temp_plan = self.dh.get_cursor(self.project_name, self.topic_name_temp_plan,
+                                                   '0', CursorType.SYSTEM_TIME, ts).cursor
+
     # 订阅临时方案
-    def get_temp_plan(self):
+    def get_temp_plan(self, ):
         try:
             while True:
                 get_result = self.dh.get_tuple_records(self.project_name, self.topic_name_temp_plan, '0',
@@ -69,23 +76,11 @@ class DatahubGetter(object):
                 # 构造下发命令的xml格式数据
                 self.create_send_data()
 
-        except DatahubException as e:
-            print(e)
+                # 将下发命令的xml数据放入队列
+                self.send_data_queue.put(self.send_data_xml)
 
-    # 订阅多时段方案
-    def get_multi_plan(self):
-        try:
-            while True:
-                get_result = self.dh.get_tuple_records(self.project_name, self.topic_name_multi_plan, '0',
-                                                       self.record_schema_multi_plan, self.cursor_multi_plan, 10)
-
-                for record in get_result.records:
-                    print(record)
-
-                if 0 == get_result.record_count:
-                    time.sleep(1)
-
-                self.cursor_multi_plan = get_result.next_cursor
+                # 清空tmp_plan_dict
+                self.tmp_plan_dict = {}
 
         except DatahubException as e:
             print(e)
@@ -126,58 +121,12 @@ class DatahubGetter(object):
                                                                                    random.randint(0, 9),
                                                                                    random.randint(0, 9))
 
-            # send_data_xml = xml_construct(send_data_dict, seq, self.token, 'TempPlanParam')
-            send_data_xml = xml_construct(send_data_dict, seq, self.token, 'REQUEST')
+            self.send_data_xml = xml_construct(send_data_dict, seq, self.token, 'REQUEST')
 
-            # 数据写入发送队列
-            print(send_data_xml)
+            # print(send_data_xml)
 
 
-def get_data_from_datahub():
-    endpoint = 'http://15.74.19.36'
-    access_id = 'NE5RYcFUSOkzSUQK'
-    access_key = 'gmQxEPpXfYXd7BCwQQUM3OxvpmZwRn'
-    project_name = 'city_brain'
-    topic_name = 'ods_rt_signal_tmpplan_config_songjiang'
 
-    dh = DataHub(access_id, access_key, endpoint, enable_pb=False)
-
-    # try:
-    topic_result = dh.get_topic(project_name, topic_name)
-    # print(topic_result)
-
-    tm = int(time.time() * 1000) - 60000
-    print(tm)
-
-    cursor_result = dh.get_cursor(project_name, topic_name, '0', CursorType.SYSTEM_TIME, tm)
-    cursor = cursor_result.cursor
-
-    while True:
-        print(cursor)
-        get_result = dh.get_tuple_records(project_name, topic_name, '0', topic_result.record_schema, cursor, 1)
-        for record in get_result.records:
-            print(record)
-        if 0 == get_result.record_count:
-            time.sleep(1)
-        cursor = get_result.next_cursor
-
-    # except DatahubException as e:
-    #     print(e)
-        # sys.exit(-1)
-
-
-if __name__ == '__main__':
-    # get_data_from_datahub()
-
-    dg = DatahubGetter('mmmmmmm')
-    dg.get_temp_plan()
-
-    # print(dg.tmp_plan_dict)
-
-    # split_time_origin = [(1, 69), (2, 39)]
-    # cross_id = '123abc'
-    #
-    # dg.create_send_data(split_time_origin, cross_id)
 
 
 
