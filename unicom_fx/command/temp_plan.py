@@ -77,7 +77,8 @@ class TempPlan(object):
                 self.create_send_data()
 
                 # 将下发命令的xml数据放入队列
-                self.send_data_queue.put(self.send_data_xml)
+                # self.send_data_queue.put(self.send_data_xml)
+                print(self.send_data_xml)
 
                 # 清空tmp_plan_dict
                 self.tmp_plan_dict = {}

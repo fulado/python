@@ -23,8 +23,8 @@ class MyRequestHandler(BaseRequestHandler):
         self.t_send_data_status = False
         self.logger_recv = None
         self.logger_send = None
-        self.username = 'fengxian'
-        self.password = 'fengxian'
+        self.username = ''
+        self.password = ''
         self.token = ''
 
     def setup(self):
@@ -36,6 +36,9 @@ class MyRequestHandler(BaseRequestHandler):
         self.queue_put_datahub = Queue(50)  # 发送数据队列
         self.logger_recv = create_logger('recv')
         self.logger_send = create_logger('send')
+
+        self.username = 'fengxian'
+        self.password = 'fengxian'
 
         # 生成token
         self.create_token()
@@ -52,6 +55,10 @@ class MyRequestHandler(BaseRequestHandler):
         # datahub发布数据线程
         t_put_datahub = Thread(target=self.thread_put_datahub)
         t_put_datahub.start()
+
+        # 路口临时方案
+        t_temp_plan = Thread(target=self.thread_temp_plan)
+        t_temp_plan.start()
 
         self.thread_recv_data()
 
@@ -72,17 +79,19 @@ class MyRequestHandler(BaseRequestHandler):
                     self.request.send(' '.encode())
                     continue
                 elif 'SDO_User' in tmp_recv_data:
-                    print_log(tmp_recv_data, '接收')
+                    # print_log(tmp_recv_data, '接收')
                     self.logger_recv.info(tmp_recv_data)
                 elif 'SDO_HeartBeat' in tmp_recv_data:
-                    print_log('心跳数据: sdo_heartbeat', '接收')
+                    # print_log('心跳数据: sdo_heartbeat', '接收')
+                    pass
                 elif 'TempPlanParam' in tmp_recv_data:
                     print_log('临时优化方案: temp_plan_param', '接收')
                     self.logger_recv.info(tmp_recv_data)
                 else:
                     pass
 
-                    # print_log(tmp_recv_data, '接收')
+                print_log(tmp_recv_data, '接收')
+
 
                 # 判断接收xml的完整性
                 if tmp_recv_data[:5] == '<?xml':
@@ -113,9 +122,11 @@ class MyRequestHandler(BaseRequestHandler):
 
                 # 保存发送数据日志
                 if 'SDO_User' in send_data:
-                    print_log('登录信息', '发送')
+                    # print_log('登录信息', '发送')
+                    pass
                 elif 'SDO_HeartBeat' in send_data:
-                    print_log('心跳数据', '发送')
+                    # print_log('心跳数据', '发送')
+                    pass
                 else:
                     self.logger_send.info(send_data)
 
@@ -133,7 +144,7 @@ class MyRequestHandler(BaseRequestHandler):
     # 处理数据
     def thread_handle_data(self):
         # 创建数据处理对象
-        data_handler = DataHandler(self.taoken, self.queue_send_data, self.queue_put_datahub)
+        data_handler = DataHandler(self.token, self.queue_send_data, self.queue_put_datahub)
 
         while self.connection_status:
             try:
@@ -170,7 +181,7 @@ class MyRequestHandler(BaseRequestHandler):
         print('datahub发布数据线程结束')
 
     # 信号配饰优化方案下发线程
-    def thread_time_plan(self):
+    def thread_temp_plan(self):
         # 创建单路口临时方案下发对象
         temp_plan = TempPlan(self.token, self.queue_send_data)
 
@@ -182,6 +193,8 @@ class MyRequestHandler(BaseRequestHandler):
             temp_plan.get_temp_plan()
         except Exception as e:
             print(e)
+
+        print('路口临时方案线程结束')
 
     # 生成token
     def create_token(self):
