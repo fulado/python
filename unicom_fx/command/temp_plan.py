@@ -45,43 +45,45 @@ class TempPlan(object):
                                                    '0', CursorType.SYSTEM_TIME, ts).cursor
 
     # 订阅临时方案
-    def get_temp_plan(self, connection_status):
+    def get_temp_plan(self):
         try:
-            while connection_status:
-                get_result = self.dh.get_tuple_records(self.project_name, self.topic_name_temp_plan, '0',
-                                                       self.record_schema_temp_plan, self.cursor_temp_plan, 20)
+            get_result = self.dh.get_tuple_records(self.project_name, self.topic_name_temp_plan, '0',
+                                                   self.record_schema_temp_plan, self.cursor_temp_plan, 20)
 
-                # 如果取不到值, 等待1秒钟后再次尝试取值
-                if 0 == get_result.record_count:
-                    time.sleep(1)
-                    # print(self.tmp_plan_dict)
-                    continue
+            # 如果取不到值, 等待1秒钟后再次尝试取值
+            if 0 == get_result.record_count:
+                time.sleep(1)
+                # print(self.tmp_plan_dict)
+                return
 
-                # 根据渠取到的数据构造下发命令的数据, 字典格式
-                for record in get_result.records:
-                    cross_id = record.get_value('cross_id')
+            # 根据渠取到的数据构造下发命令的数据, 字典格式
+            for record in get_result.records:
+                cross_id = record.get_value('cross_id')
 
-                    if cross_id not in self.tmp_plan_dict.keys():
-                        self.tmp_plan_dict[cross_id] = []
-                    else:
-                        pass
+                if cross_id not in self.tmp_plan_dict.keys():
+                    self.tmp_plan_dict[cross_id] = []
+                else:
+                    pass
 
-                    stage_no = record.get_value('stage_no')
-                    split_time = record.get_value('green')
-                    self.tmp_plan_dict[cross_id].append({'stage_no': stage_no, 'split_time': split_time})
+                stage_no = record.get_value('stage_no')
+                split_time = record.get_value('green')
+                end_time = record.get_value('end_time')
+                self.tmp_plan_dict[cross_id].append({'stage_no': stage_no,
+                                                     'split_time': split_time,
+                                                     'end_time': end_time})
 
-                # 游标向下移动
-                self.cursor_temp_plan = get_result.next_cursor
+            # 游标向下移动
+            self.cursor_temp_plan = get_result.next_cursor
 
-                # 构造下发命令的xml格式数据
-                self.create_send_data()
+            # 构造下发命令的xml格式数据
+            self.create_send_data()
 
-                # 将下发命令的xml数据放入队列
-                # self.send_data_queue.put(self.send_data_xml)
-                print(self.send_data_xml)
+            # 将下发命令的xml数据放入队列
+            self.send_data_queue.put(self.send_data_xml)
+            # print(self.send_data_xml)
 
-                # 清空tmp_plan_dict
-                self.tmp_plan_dict = {}
+            # 清空tmp_plan_dict
+            self.tmp_plan_dict = {}
 
         except DatahubException as e:
             print(e)
@@ -93,19 +95,24 @@ class TempPlan(object):
 
             split_time_list_element = OrderedDict()
             split_time_list = []
+
+            end_time = '0'
             for plan in plan_list:
                 split_time_element = OrderedDict()
                 split_time_element['StageNo'] = plan.get('stage_no')
-                split_time_element['Split'] = plan.get('split_time')
+                split_time_element['Green'] = plan.get('split_time')
 
                 split_time_list.append(split_time_element)
+
+                end_time = plan.get('end_time', '0')
 
             split_time_list_element['SplitTime'] = split_time_list
 
             temp_plan_param_element = OrderedDict()
             temp_plan_param_element['CrossID'] = cross_id
-            temp_plan_param_element['CoordStageNo '] = '0'
+            temp_plan_param_element['CoordStageNo'] = '0'
             temp_plan_param_element['OffSet'] = '0'
+            temp_plan_param_element['EndTime'] = end_time
             temp_plan_param_element['SplitTimeList'] = split_time_list_element
 
             object_element = OrderedDict()
@@ -114,7 +121,7 @@ class TempPlan(object):
             object_element['@name'] = 'Set'
 
             operation_element = OrderedDict()
-            operation_element['Operation '] = object_element
+            operation_element['Operation'] = object_element
 
             send_data_dict = operation_element
 

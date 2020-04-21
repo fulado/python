@@ -47,18 +47,22 @@ class MyRequestHandler(BaseRequestHandler):
         # 处理数据线程
         t_handle_data = Thread(target=self.thread_handle_data)
         t_handle_data.start()
+        print('启动数据处理线程')
 
         # 发送数据线程
         t_send_data = Thread(target=self.thread_send_data)
         t_send_data.start()
+        print('启动发送数据线程')
 
         # datahub发布数据线程
         t_put_datahub = Thread(target=self.thread_put_datahub)
         t_put_datahub.start()
+        print('启动datahub发布数据线程')
 
-        # 路口临时方案
+        # 路口临时方案下发线程
         t_temp_plan = Thread(target=self.thread_temp_plan)
         t_temp_plan.start()
+        print('启动路口临时方案下发线程')
 
         self.thread_recv_data()
 
@@ -69,9 +73,10 @@ class MyRequestHandler(BaseRequestHandler):
 
     # 接收数据线程
     def thread_recv_data(self):
+        print('开始接收数据')
         recv_data = ''
-        try:
-            while self.connection_status:
+        while self.connection_status:
+            try:
                 # 接收数据
                 tmp_recv_data = (self.request.recv(100000)).decode('utf-8').strip()
 
@@ -79,19 +84,18 @@ class MyRequestHandler(BaseRequestHandler):
                     self.request.send(' '.encode())
                     continue
                 elif 'SDO_User' in tmp_recv_data:
-                    # print_log(tmp_recv_data, '接收')
+                    print_log('登录信息', '接收')
                     self.logger_recv.info(tmp_recv_data)
                 elif 'SDO_HeartBeat' in tmp_recv_data:
-                    # print_log('心跳数据: sdo_heartbeat', '接收')
-                    pass
+                    print_log('心跳数据: sdo_heartbeat', '接收')
+                    # pass
                 elif 'TempPlanParam' in tmp_recv_data:
                     print_log('临时优化方案: temp_plan_param', '接收')
                     self.logger_recv.info(tmp_recv_data)
                 else:
-                    pass
+                    print_log('信号数据', '接收')
 
-                print_log(tmp_recv_data, '接收')
-
+                # print_log(tmp_recv_data, '接收')
 
                 # 判断接收xml的完整性
                 if tmp_recv_data[:5] == '<?xml':
@@ -108,10 +112,11 @@ class MyRequestHandler(BaseRequestHandler):
                 else:
                     continue
 
-        except Exception as e:
-            self.connection_status = False
-            print(e)
-            print('处理数据线程结束')
+            except Exception as e:
+                self.connection_status = False
+                print(e)
+
+        print('接收数据线程结束')
 
     # 发送数据线程
     def thread_send_data(self):
@@ -121,16 +126,12 @@ class MyRequestHandler(BaseRequestHandler):
                 send_data = self.queue_send_data.get(True, 1)
 
                 # 保存发送数据日志
-                if 'SDO_User' in send_data:
-                    # print_log('登录信息', '发送')
-                    pass
-                elif 'SDO_HeartBeat' in send_data:
-                    # print_log('心跳数据', '发送')
-                    pass
-                else:
+                if 'SDO_HeartBeat' not in send_data:
                     self.logger_send.info(send_data)
+                else:
+                    pass
 
-                print_log(send_data, '发送')
+                # print_log(send_data, '发送')
 
                 # 发送数据
                 self.request.send(send_data.encode())
@@ -159,7 +160,7 @@ class MyRequestHandler(BaseRequestHandler):
                 # print(e)
                 continue
 
-        print('接收数据线程结束')
+        print('处理数据线程结束')
 
     # 发布到datahub
     def thread_put_datahub(self):
@@ -189,8 +190,10 @@ class MyRequestHandler(BaseRequestHandler):
             # 连接datahub
             temp_plan.connect_datahub()
 
-            # 获取数据
-            temp_plan.get_temp_plan(self.connection_status)
+            # 获取数据循环获取数据
+            while self.connection_status:
+                temp_plan.get_temp_plan()
+
         except Exception as e:
             print(e)
 

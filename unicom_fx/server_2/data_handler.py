@@ -12,6 +12,7 @@ from dynamic_data.cross_report_ctrl import CrossReportCtrl
 from dynamic_data.dynamic_data import DynamicData
 from static_data.static_data import StaticData
 from static_data.static_data_subscribe import StaticDataSubscribe
+from .utils import print_log
 
 
 class DataHandler(object):
@@ -115,9 +116,12 @@ class DataHandler(object):
     def data_subscribe_handle(self):
 
         # 请求系统信息
+        print_log('SysInfo', '发送')
         self.send_data_subscribe(['', ], 'SysInfo')
 
+
         # 请求区域信息
+        print_log('RegionParam', '发送')
         self.send_data_subscribe(['310120000', ], 'RegionParam')
 
         # 获取信号id和路口id
@@ -126,24 +130,31 @@ class DataHandler(object):
 
         # 订阅实时数据
         time.sleep(10)
+        print_log('CrossReportCtrl', '发送')
         self.cross_report_ctrl_handle()
 
         # 请求信号机信息
+        print_log('SignalControler', '发送')
         self.send_data_subscribe(self.signal_id_list, 'SignalControler')
 
         # 请求灯组信息
+        print_log('LampGroup', '发送')
         self.send_data_subscribe(self.signal_id_list, 'LampGroup')
 
         # 请求车道信息
+        print_log('LaneParam', '发送')
         self.send_data_subscribe(self.cross_id_list, 'LaneParam')
 
         # 请求相位信息
+        print_log('PhaseParam', '发送')
         self.send_data_subscribe(self.cross_id_list, 'PhaseParam')
 
         # 请求阶段信息
+        print_log('StageParam', '发送')
         self.send_data_subscribe(self.cross_id_list, 'StageParam')
 
         # 请求配时方案信息
+        print_log('PlanParam', '发送')
         self.send_data_subscribe(self.cross_id_list, 'PlanParam')
 
     # 发送数据查询, 订阅请求
