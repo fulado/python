@@ -97,26 +97,46 @@ class TempPlan(object):
             split_time_list = []
 
             end_time = '0'
+
+            is_cancel_cmd = False
+
             for plan in plan_list:
                 split_time_element = OrderedDict()
-                split_time_element['StageNo'] = plan.get('stage_no')
-                split_time_element['Green'] = plan.get('split_time')
+                stage_no = plan.get('stage_no')
+                split_time = plan.get('split_time')
 
-                split_time_list.append(split_time_element)
+                if stage_no == 0 and split_time == 0:
+                    is_cancel_cmd = True
+                else:
+                    split_time_element['StageNo'] = stage_no
+                    split_time_element['Green'] = split_time
 
-                end_time = plan.get('end_time', '0')
+                    split_time_list.append(split_time_element)
 
-            split_time_list_element['SplitTime'] = split_time_list
+                    end_time = plan.get('end_time', '0')
 
-            temp_plan_param_element = OrderedDict()
-            temp_plan_param_element['CrossID'] = cross_id
-            temp_plan_param_element['CoordStageNo'] = '0'
-            temp_plan_param_element['OffSet'] = '0'
-            temp_plan_param_element['EndTime'] = end_time
-            temp_plan_param_element['SplitTimeList'] = split_time_list_element
+            if is_cancel_cmd:
+                temp_plan_param_element = OrderedDict()
+                temp_plan_param_element['CrossID'] = cross_id
+                temp_plan_param_element['Type'] = '1'
+                temp_plan_param_element['Entrance'] = '8'
+                temp_plan_param_element['Exit'] = '8'
 
-            object_element = OrderedDict()
-            object_element['TempPlanParam'] = temp_plan_param_element
+                object_element = OrderedDict()
+                object_element['UnlockFlowDirection'] = temp_plan_param_element
+            else:
+                split_time_list_element['SplitTime'] = split_time_list
+
+                temp_plan_param_element = OrderedDict()
+                temp_plan_param_element['CrossID'] = cross_id
+                temp_plan_param_element['CoordStageNo'] = '0'
+                temp_plan_param_element['OffSet'] = '0'
+                temp_plan_param_element['EndTime'] = end_time
+                temp_plan_param_element['SplitTimeList'] = split_time_list_element
+
+                object_element = OrderedDict()
+                object_element['TempPlanParam'] = temp_plan_param_element
+
             object_element['@order'] = '6'
             object_element['@name'] = 'Set'
 
