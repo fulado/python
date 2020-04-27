@@ -4,93 +4,41 @@
     <meta charset="UTF-8">
     <title>电科进口道与rid对应关系</title>
 
-    <style>
-        .pie {
-            position: relative;
-            margin: 1em auto;
-            padding: 0;
-            width: 32em;
-            height: 32em;
-            border-radius: 100%;
-            list-style: none;
-            overflow: hidden;
-            transform: rotate(0deg) /*针对mac safari浏览器兼容*/
-
-        }
-
-        .slice {
-            overflow: hidden;
+    <style type="text/css">
+        .cust_dir {
             position: absolute;
-            top: 0;
-            right: 0;
-            width: 50%;
-            height: 50%;
-            transform-origin: 0% 100%;
+            left: 400px;
+            top: 200px;
         }
 
-        .slice-1 {
-            transform: rotate(-36deg) skewY(-54deg);
-            background: #FF0088;
+        .rid_dir {
+            position: absolute;
+            left: 800px;
+            top: 200px;
         }
-
-        .slice-2 {
-            transform: rotate(-72deg) skewY(-54deg);
-            background: #FF0000;
-        }
-
-        .slice-3 {
-            transform: rotate(-108deg) skewY(-54deg);
-            background: #FF5511;
-        }
-
-        .slice-4 {
-            transform: rotate(-144deg) skewY(-54deg);
-            background: #FF8800;
-        }
-
-        .slice-5 {
-            transform: rotate(-180deg) skewY(-54deg);
-            background: #FFBB00;
-        }
-
-        .slice-6 {
-            transform: rotate(-216deg) skewY(-54deg);
-            background: #BBFF00;
-        }
-
-        .slice-7 {
-            transform: rotate(-252deg) skewY(-54deg);
-            background: #77FF00;
-        }
-
-        .slice-8 {
-            transform: rotate(-288deg) skewY(-54deg);
-            background: #00FF00;
-        }
-
-        .slice-9 {
-            transform: rotate(-324deg) skewY(-54deg);
-            background: #00FF99;
-        }
-
-        .slice-10 {
-            transform: rotate(-360deg) skewY(-54deg);
-            background: #00FFCC;
-        }
-  </style>
+    </style>
 </head>
 <body>
-    <ul class='pie'>
-        <li class='slice-1 slice'></li>
-        <li class='slice-2 slice'></li>
-        <li class='slice-3 slice'></li>
-        <li class='slice-4 slice'></li>
-        <li class='slice-5 slice'></li>
-        <li class='slice-6 slice'></li>
-        <li class='slice-7 slice'></li>
-        <li class='slice-8 slice'></li>
-        <li class='slice-9 slice'></li>
-        <li class='slice-10 slice'></li>
-    </ul>
+
+    <div class="cust_dir">
+        <svg width="200px" height="200px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="black" stroke-width="3">
+                {% for cust_froad_info in cust_froad_list %}
+                <path d="M100 100 200 100" transform="rotate({{ cust_froad_info.cust_froad_angle }}, 100, 100)"/>
+                {% endfor %}}
+            </g>
+        </svg>
+    </div>
+
+    <div class="rid_dir">
+        <svg width="200px" height="200px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="black" stroke-width="3">
+                {% for rid_info in rid_list %}
+                <path d="M100 100 200 100" transform="rotate({{ rid_info.ft_angle }}, 100, 100)"/>
+                {% endfor %}}
+            </g>
+        </svg>
+    </div>
+
 </body>
 </html>
