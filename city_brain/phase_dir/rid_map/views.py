@@ -18,3 +18,8 @@ def rid_map_show(request):
 
 
 
+
+
+
+
+
