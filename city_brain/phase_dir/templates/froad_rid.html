@@ -3,18 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>电科进口道与rid对应关系</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
 
     <style type="text/css">
         .cust_dir {
             position: absolute;
-            left: 400px;
-            top: 200px;
+            left: 100px;
+            top: 0px;
         }
 
         .rid_dir {
             position: absolute;
-            left: 800px;
-            top: 200px;
+            left: 600px;
+            top: 0px;
         }
     </style>
 </head>
@@ -22,25 +25,61 @@
 
     <div class="cust_dir">
         <svg width="600px" height="600px" version="1.1" xmlns="http://www.w3.org/2000/svg">
-            <g stroke="black" stroke-width="3">
-                {% for cust_froad_info in cust_froad_list %}
-                <path d="M300 300 200 300" transform="rotate({{ cust_froad_info.cust_froad_angle }}, 300, 300)"/>
-                <text x="150" y="300" font-family="Microsoft Yahei Light" font-size="20" transform="rotate({{ cust_froad_info.cust_froad_angle }}, 300, 300)">
-                    {{ cust_froad_info.cust_froad_id }} - {{ cust_froad_info.cust_froad_angle }}</text>
-                {% endfor %}}
-            </g>
+            {% for cust_froad_info in cust_froad_list %}
+             <a href="#" onclick="test('{{ cust_froad_info.cust_froad_name }}')">
+                <g stroke="gray" stroke-width="20">
+                    <path d="M300 300 200 300" transform="rotate({{ cust_froad_info.cust_froad_angle }}, 300, 300)"/>
+                <text x="250" y="150" style="stroke-width: 0.1;font-size: 15px;" transform="rotate({{ cust_froad_info.cust_froad_angle|add:-90 }}, 300, 300)">
+                    {{ cust_froad_info.cust_froad_id }} - {{ cust_froad_info.cust_froad_angle }} - {{cust_froad_info.cust_froad_name}}
+                </text>
+                </g>
+             </a>
+            {% endfor %}}
         </svg>
     </div>
 
     <div class="rid_dir">
-        <svg width="200px" height="200px" version="1.1" xmlns="http://www.w3.org/2000/svg">
-            <g stroke="black" stroke-width="3">
+        <svg width="600px" height="600px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="gray" stroke-width="20">
                 {% for rid_info in rid_list %}
-                <path d="M100 100 200 100" transform="rotate({{ rid_info.ft_angle }}, 100, 100)"/>
+                <path d="M300 300 300 200" transform="rotate({{ rid_info.ft_angle }}, 300, 300)"/>
+                <text x="250" y="150" style="stroke-width: 0.1;font-size: 15px;" transform="rotate({{ rid_info.ft_angle }}, 300, 300)">
+                    {{ rid_info.ft_angle }} - {{ rid_info.rid_name }}
+                </text>
                 {% endfor %}}
             </g>
         </svg>
     </div>
 
+    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">开始演示模态框</button>
+
+    <!--模态框-->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">进口道对应关系</h4>
+                </div>
+                <div class="modal-body">
+                    <label>电科进口道</label>
+                    <select>
+                        {% for cust_froad_info in cust_froad_list %}
+                        <option>{{ cust_froad_info.cust_froad_id }} - {{ cust_froad_info.cust_froad_angle }} - {{cust_froad_info.cust_froad_name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary">提交更改</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
 </body>
+<script type="text/javascript">
+    function test(road_name){
+        alert(road_name);
+    }
+</script>
 </html>
