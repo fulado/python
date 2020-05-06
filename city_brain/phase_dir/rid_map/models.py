@@ -54,6 +54,14 @@ class RoadRidMap(models.Model):
     rid = models.ForeignKey(InterRid, on_delete=models.DO_NOTHING)
 
 
+# 客户信号机id与大脑路口id对应关系
+class CustSignalInterMap(models.Model):
+    cust_signal_id = models.CharField(max_length=20, null=True, blank=True)  # 信号机编号或id
+    inter_id = models.CharField(max_length=50, null=True, blank=True)  # 路口ID
+    area_code = models.CharField(max_length=20, null=True, blank=True)  # 区域编号
+    data_version = models.CharField(max_length=20, null=True, blank=True)  # 版本信息 如20180331：yyyymmdd
+    adcode = models.CharField(max_length=20, null=True, blank=True)  # 城市编码
+
 
 
 

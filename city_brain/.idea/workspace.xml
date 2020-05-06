@@ -4,16 +4,9 @@
     <list default="true" id="f7f00dff-5496-4209-acd6-4dc376728bc2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/phase_dir/rid_map/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/rid_map/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phase_dir/rid_map/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/rid_map/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phase_dir/rid_map/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/rid_map/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/phase_dir/templates/froad_rid.html" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/templates/froad_rid.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../tj8890/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../tj8890/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/.idea/unicom_fx.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/.idea/unicom_fx.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/data/error.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/data/error.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/server_2/data_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/server_2/data_handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/static_data/static_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/static_data/static_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/test/test_recv_static_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/test/test_recv_static_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tj_scheduled_bus/templates/station.html" beforeDir="false" afterPath="$PROJECT_DIR$/../tj_scheduled_bus/templates/station.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,84 +19,6 @@
     <SUITE FILE_PATH="coverage/city_brain$put_data.coverage" NAME="put_data Coverage Results" MODIFIED="1587871035121" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/datahub" />
     <SUITE FILE_PATH="coverage/city_brain$test.coverage" NAME="test Coverage Results" MODIFIED="1571828113406" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
-  <component name="FUSProjectUsageTrigger">
-    <session id="-638659751">
-      <usages-collector id="statistics.file.extensions.edit">
-        <counts>
-          <entry key="html" value="436" />
-          <entry key="py" value="744" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.edit">
-        <counts>
-          <entry key="HTML" value="436" />
-          <entry key="Python" value="744" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.open">
-        <counts>
-          <entry key="py" value="2" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="Python" value="2" />
-        </counts>
-      </usages-collector>
-    </session>
-  </component>
-  <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/phase_dir/templates/froad_rid.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="320">
-              <caret line="31" column="6" lean-forward="true" selection-start-line="31" selection-start-column="6" selection-end-line="31" selection-end-column="6" />
-              <folding>
-                <element signature="n#style#0;n#text#0;n#g#0;n#a#0;n#svg#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#text#0;n#g#0;n#svg#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#div#3;n#body#0;n#html#0;n#!!top" />
-                <element signature="e#2936#2943#1" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/urls.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="9" column="40" selection-start-line="9" selection-start-column="40" selection-end-line="9" selection-end-column="40" />
-              <folding>
-                <element signature="e#0#28#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/models.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="431">
-              <caret line="32" column="12" selection-start-line="32" selection-start-column="4" selection-end-line="32" selection-end-column="12" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/views.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="520">
-              <caret line="74" column="16" lean-forward="true" selection-start-line="74" selection-start-column="16" selection-end-line="74" selection-end-column="16" />
-              <folding>
-                <element signature="e#0#35#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
-  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -112,29 +27,8 @@
       </list>
     </option>
   </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>deleteStation</find>
-    </findStrings>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
-  </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/phase_dir/rid_map/models.py" />
-        <option value="$PROJECT_DIR$/phase_dir/rid_map/urls.py" />
-        <option value="$PROJECT_DIR$/phase_dir/rid_map/views.py" />
-        <option value="$PROJECT_DIR$/phase_dir/templates/froad_rid.html" />
-      </list>
-    </option>
-  </component>
-  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsGulpfileManager">
-    <detection-done>true</detection-done>
-    <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="width" value="1920" />
@@ -143,55 +37,6 @@
   <component name="ProjectId" id="1b6eNU6oKE2vz4oGi5dGDtauzjV" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
-  </component>
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
-              <item name="city_brain" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
-              <item name="city_brain" type="462c0819:PsiDirectoryNode" />
-              <item name="phase_dir" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
-              <item name="city_brain" type="462c0819:PsiDirectoryNode" />
-              <item name="phase_dir" type="462c0819:PsiDirectoryNode" />
-              <item name="rid_map" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
-              <item name="city_brain" type="462c0819:PsiDirectoryNode" />
-              <item name="phase_dir" type="462c0819:PsiDirectoryNode" />
-              <item name="static" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
-              <item name="city_brain" type="462c0819:PsiDirectoryNode" />
-              <item name="phase_dir" type="462c0819:PsiDirectoryNode" />
-              <item name="static" type="462c0819:PsiDirectoryNode" />
-              <item name="css" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
-              <item name="city_brain" type="462c0819:PsiDirectoryNode" />
-              <item name="phase_dir" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-    </panes>
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -211,18 +56,6 @@
       <recent name="D:\Workspaces\projects\yxtc\city_brain\tools" />
       <recent name="D:\Workspaces\projects\yxtc\city_brain" />
     </key>
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="RunManager" selected="Python.put_data">
     <configuration name="excel_data_import" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -314,10 +147,10 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.test" />
       <item itemvalue="Python.excel_data_import" />
       <item itemvalue="Python.input_phase_pic" />
       <item itemvalue="Python.put_data" />
+      <item itemvalue="Python.test" />
     </list>
     <recent_temporary>
       <list>
@@ -343,36 +176,9 @@
       <workItem from="1588009662850" duration="407000" />
       <workItem from="1588215629292" duration="3718000" />
       <workItem from="1588727719383" duration="1089000" />
-      <workItem from="1588728819854" duration="10317000" />
+      <workItem from="1588728819854" duration="16321000" />
     </task>
     <servers />
-  </component>
-  <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
-    <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20895523" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="11" weight="0.32899022" />
-      <window_info anchor="bottom" id="Python Console" order="12" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="SciView" order="3" />
-      <window_info anchor="right" id="Database" order="4" />
-    </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="2" />
@@ -382,66 +188,11 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="RECENTLY_FILTERED_USER_GROUPS">
-                <collection />
-              </option>
-              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
-                <collection />
-              </option>
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
-  </component>
-  <component name="editorHistoryManager">
-    <entry file="file://C:/Program Files/Python36/Lib/site-packages/django/core/handlers/exception.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="33" selection-start-line="33" selection-end-line="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="431">
-          <caret line="32" column="12" selection-start-line="32" selection-start-column="4" selection-end-line="32" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="9" column="40" selection-start-line="9" selection-start-column="40" selection-end-line="9" selection-end-column="40" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="520">
-          <caret line="74" column="16" lean-forward="true" selection-start-line="74" selection-start-column="16" selection-end-line="74" selection-end-column="16" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phase_dir/templates/froad_rid.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="31" column="6" lean-forward="true" selection-start-line="31" selection-start-column="6" selection-end-line="31" selection-end-column="6" />
-          <folding>
-            <element signature="n#style#0;n#text#0;n#g#0;n#a#0;n#svg#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#text#0;n#g#0;n#svg#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#div#3;n#body#0;n#html#0;n#!!top" />
-            <element signature="e#2936#2943#1" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

@@ -8,6 +8,7 @@
     <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
 
     <style type="text/css">
+
         .cust_dir {
             position: absolute;
             left: 100px;
@@ -27,10 +28,114 @@
             width: 900px;
         }
 
+        .navi{
+            position: absolute;
+            top: 20px;
+            left: 10px;
+            width: 202px;
+        }
+
+        .content{
+            position: absolute;
+            top: 0px;
+            left: 100px;
+        }
+
     </style>
 </head>
 <body>
 
+<div class="navi">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion"
+                       href="#collapseOne">
+                        事项管理
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <a href="#" href-url="/item/all?title=全部事项&status=0" class="list-group-item active">全部事项</a>
+                    <a href="#" href-url="/item/all?title=未转办事项&status=1" class="list-group-item">未转办事项<span
+                            class="badge init">{{ count_init }}</span></a>
+                    <a href="#" href-url="/item/all?title=已转办事项&status=2" class="list-group-item">已转办事项<span
+                            class="badge delivered">{{ count_delivered }}</span></a>
+                    <a href="#" href-url="/item/all?title=退单事项&status=9" class="list-group-item">退单事项<span
+                            class="badge reject">{{ count_reject }}</span></a>
+                    <a href="#" href-url="/item/all?title=办理中事项&status=3" class="list-group-item">办理中事项<span
+                            class="badge handling">{{ count_handling }}</span></a>
+                    <a href="#" href-url="/item/all?title=催办事项&status=8" class="list-group-item">催办事项<span
+                            class="badge urge">{{ count_urge }}</span></a>
+                    <a href="#" href-url="/item/all?title=超时事项&status=10" class="list-group-item">超时事项<span
+                            class="badge overtime">{{ count_overtime }}</span></a>
+                    <a href="#" href-url="/item/all?title=已反馈事项&status=4" class="list-group-item">已反馈事项<span
+                            class="badge complete">{{ count_complete }}</span></a>
+                    <a href="#" href-url="/item/all?title=重办事项&status=6" class="list-group-item">重办事项<span
+                            class="badge retreat">{{ count_retreat }}</span></a>
+                    <a href="#" href-url="/item/all?title=申请延期事项&status=7" class="list-group-item">申请延期事项<span
+                            class="badge delay">{{ count_delay }}</span></a>
+                    <a href="#" href-url="/item/all?title=驳回延期事项&status=11" class="list-group-item">驳回延期事项<span
+                            class="badge refuse">{{ count_refuse }}</span></a>
+                    <a href="#" href-url="/item/all?title=办结事项&status=66" class="list-group-item">办结事项</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion"
+                       href="#collapseTwo">
+                        事项管理
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse in">
+                <div class="panel-body clearfix">
+                    <a href="#" href-url="/item/all?title=待接单事项&status=2" class="list-group-item">待接单事项<span
+                            class="badge delivered">{{ count_delivered }}</a>
+                    <a href="#" href-url="/item/all?title=办理中事项&status=3" class="list-group-item">办理中事项<span
+                            class="badge handling">{{ count_handling }}</span></a>
+                    <a href="#" href-url="/item/all?title=催办事项&status=8" class="list-group-item">催办事项<span
+                            class="badge urge">{{ count_urge }}</span></a>
+                    <a href="#" href-url="/item/all?title=超时事项&status=10" class="list-group-item">超时事项<span
+                            class="badge overtime">{{ count_overtime }}</span></a>
+                    <a href="#" href-url="/item/all?title=已反馈事项&status=4" class="list-group-item">已反馈事项<span
+                            class="badge complete">{{ count_complete }}</span></a>
+                    <a href="#" href-url="/item/all?title=退回重办事项&status=6" class="list-group-item">重办事项<span
+                            class="badge retreat">{{ count_retreat }}</span></a>
+                    <a href="#" href-url="/item/all?title=申请延期事项&status=7" class="list-group-item">申请延期事项<span
+                            class="badge delay">{{ count_delay }}</span></a>
+                    <a href="#" href-url="/item/all?title=驳回延期事项&status=11" class="list-group-item">驳回延期事项<span
+                            class="badge refuse">{{ count_refuse }}</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion"
+                       href="#collapseFive">
+                        用户管理
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseFive" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <a href="#" href-url="/user/user" class="list-group-item">人员管理</a>
+                    <a href="#" href-url="/user/dept" class="list-group-item">部门管理</a>
+                    <a href="#" href-url="/item/cate" class="list-group-item">分类管理</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
     <div class="cust_dir">
         <svg width="600px" height="600px" version="1.1" xmlns="http://www.w3.org/2000/svg">
             {% for cust_froad_info in cust_froad_list %}
@@ -113,6 +218,7 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
     </div>
+</div>
 </body>
 <script type="text/javascript">
 
