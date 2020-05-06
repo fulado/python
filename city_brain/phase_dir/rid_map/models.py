@@ -5,6 +5,7 @@ from django.db import models
 
 # ods_signal_froad_info_scats 客户路口进口道定义表
 class CustFroad(models.Model):
+    id = models.CharField(max_length=50, primary_key=True)  # 进口道id, scat_id + road_id
     cust_signal_id = models.CharField(max_length=20, null=True, blank=True)  # 信号机编号或id
     cust_froad_id = models.CharField(max_length=10, null=True, blank=True)  # 进口序号
     cust_froad_name = models.CharField(max_length=50, null=True, blank=True)  # 进口道的名称，比如xxx路西进口
@@ -25,7 +26,7 @@ class InterRid(models.Model):
     inter_name = models.CharField(max_length=50, null=True, blank=True)  # (当前版本可能有空值)路口name
     is_corner = models.IntegerField(default=0, null=True, blank=True)  # 是否为综合路口 1是 0非
     is_signlight = models.IntegerField(default=0, null=True, blank=True)  # 是否为信号灯路口 1表示路口 0表示非路口
-    rid = models.CharField(max_length=50, null=True, blank=True)  # rid
+    rid = models.CharField(max_length=50, primary_key=True)  # rid
     ft_type_no = models.IntegerField(default=0, null=True, blank=True)  # 进出口编号 1:进口道 2: 出口道
     rid_len = models.FloatField(default=0, null=True, blank=True)  # rid长度
     rid_lnglat_seq = models.CharField(max_length=500, null=True, blank=True)  # rid经纬度串, 第一经纬度串表示起点
@@ -45,6 +46,13 @@ class InterRid(models.Model):
     ft_dir_8_no = models.IntegerField(default=0, null=True, blank=True)  # 进、出口道进入路口相对于正北方向的角度的8方向编码，进口角度的8方向编码，使用ft_angle计算
     data_version = models.CharField(max_length=20, null=True, blank=True)  # 版本信息 如20180331：yyyymmdd
     adcode = models.CharField(max_length=20, null=True, blank=True)  # 城市编码
+
+
+# 电科进口道与rid对应关系
+class RoadRidMap(models.Model):
+    road = models.ForeignKey(CustFroad, on_delete=models.DO_NOTHING)
+    rid = models.ForeignKey(InterRid, on_delete=models.DO_NOTHING)
+
 
 
 

@@ -11,19 +11,19 @@
         .cust_dir {
             position: absolute;
             left: 100px;
-            top: 0px;
+            top:-100px;
         }
 
         .rid_dir {
             position: absolute;
             left: 600px;
-            top: 0px;
+            top: -100px;
         }
 
         .result {
             position: absolute;
             left: 200px;
-            top: 500px;
+            top: 400px;
             width: 900px;
         }
 
@@ -60,7 +60,9 @@
     </div>
 
     <!--匹配结果-->
-    <div class="result">
+    <div class="result" style="text-align: center">
+        <h4>电科进口道与rid对应关系</h4>
+        <hr />
         <table class="table table-striped table-hover text-center">
             <thead>
             <tr>
@@ -70,6 +72,13 @@
             </tr>
             </thead>
             <tbody>
+            {% for map_info in map_list %}
+            <tr>
+                <td>{{ map_info.road.cust_froad_angle }} - {{ map_info.road.cust_froad_name }}</td>
+                <td>{{ map_info.rid.ft_angle }} - {{ map_info.rid.rid_name }}</td>
+                <td><button class="btn btn-default" map_id="{{ map_info.id }}" onclick="deleteMap('{{ forloop.counter }}', '{{ map_info.id }}')">删除</button></td>
+            </tr>
+            {% endfor %}
             </tbody>
         </table>
     </div>
@@ -93,7 +102,7 @@
                     <label>rid</label>
                     <select>
                         {% for rid_info in rid_list %}
-                        <option value="{{ rid_info.id }}">{{ rid_info.ft_angle }} - {{ rid_info.rid_name }}</option>
+                        <option value="{{ rid_info.rid }}">{{ rid_info.ft_angle }} - {{ rid_info.rid_name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -156,17 +165,34 @@
             }
         });
 
+        // 保存对应关系数据
+        let map_id = ''
+        $.ajax({
+            type: "POST",
+            url: "/phase_dir/save_map/",
+            async: false,
+            cache: false,
+            dataType: "json",
+            data: {'road_id': road_id, 'rid_id': rid_id},
+            success: function (data) {
+                map_id = data.map_id;
+            },
+            error: function () {
+            }
+        });
+
         let newRow = "<tr>\n" +
             "<td title=" + road_id + ">" + road_angle + ' - ' + road_name + "</td>\n" +
             "<td title=" + rid_id + ">" + rid_angle + ' - ' + rid_name + "</td>\n" +
             "<td>\n" +
-            "<button class=\"btn btn-default\" route_id=\"" + road_id + "\">删除</button>\n" +
+            "<button class=\"btn btn-default\" map_id=\"" + map_id + "\">删除</button>\n" +
             "</td>\n" +
             // "<input type=\"hidden\" value=" + road_id + ">" +
             "</tr>"
         $('.result tr:last').after(newRow);
 
         $(".modal").hide();
+
         refreshRowNumber();
         // refreshStationList();
 
@@ -176,31 +202,32 @@
     function refreshRowNumber() {
         let len = $('.result tr').length;
         for (let i = 1; i < len; i++) {
-            // $('.result tr').eq(i).children().eq(0).text(i);
-            // let route_id = $('.add-station tr').eq(i).children().eq(5).children().eq(0).attr('route_id');
-            $('.result tr').eq(i).children().eq(2).children().eq(0).attr('onclick', 'deleteStation(' + i + ')')
+            let map_id = $('.result tr').eq(i).children().eq(2).children().eq(0).attr('map_id');
+            alert(map_id);
+            $('.result tr').eq(i).children().eq(2).children().eq(0).attr('onclick', 'deleteMap(' + i + ', ' + map_id + ')')
         }
     }
 
     // 删除站点
-    function deleteStation(row_number) {
+    function deleteMap(row_number, map_id) {
+
+        // 保存对应关系数据
+        $.ajax({
+            type: "POST",
+            url: "/phase_dir/delete_map/",
+            async: false,
+            cache: false,
+            dataType: "json",
+            data: {'map_id': map_id},
+            success: function () {
+            },
+            error: function () {
+            }
+        });
+
         $('.result tr').eq(row_number).remove();
         refreshRowNumber();
-        refreshStationList();
-    }
-
-    function refreshStationList() {
-        let len = $('.add-station input').length;
-        let station_list = ''
-        for (let i=0; i<len; i++) {
-            if (i == 0) {
-                station_list = $('.add-station input').eq(i).val();
-            } else {
-                station_list =  station_list + "," + $('.add-station input').eq(i).val();
-            }
-        }
-
-        $('.add-vehicle .my-modal-footer input').eq(1).val(station_list);
+        // refreshStationList();
     }
 
 </script>
