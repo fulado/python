@@ -70,34 +70,6 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>1</td>
-                <td>2</td>
-                <td><a href="#">
-                    <button class="btn btn-default">删除</button>
-                </a></td>
-            </tr>
-            <tr>
-                <td>1</td>
-                <td>2</td>
-                <td><a href="#">
-                    <button class="btn btn-default">删除</button>
-                </a></td>
-            </tr>
-            <tr>
-                <td>1</td>
-                <td>2</td>
-                <td><a href="#">
-                    <button class="btn btn-default">删除</button>
-                </a></td>
-            </tr>
-            <tr>
-                <td>1</td>
-                <td>2</td>
-                <td><a href="#">
-                    <button class="btn btn-default">删除</button>
-                </a></td>
-            </tr>
             </tbody>
         </table>
     </div>
@@ -121,13 +93,13 @@
                     <label>rid</label>
                     <select>
                         {% for rid_info in rid_list %}
-                        <option>{{ rid_info.ft_angle }} - {{ rid_info.rid_name }}</option>
+                        <option value="{{ rid_info.id }}">{{ rid_info.ft_angle }} - {{ rid_info.rid_name }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary">提交更改</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addMap()">提交更改</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
@@ -140,49 +112,95 @@
         $(".modal-body select").eq(0).val(road_id);
     }
 
-    // 添加对应关系
-    function addStation(road_id, rid_id) {
-        // 添加站点
-        //$.get('/station_add', {'station_id': station_id, 'route_name': route_name}, function (data) {
-        let result;
-        result = addStationToForm(station_id);
+    // 添加进口道与rid的对应关系
+    function addMap() {
 
-        if (result == 0) {
-            let station_name = '';
-            let station_area = '';
-            let station_road = '';
-            let station_direction = '';
-            $.get('/get_station_info', {'station_id': station_id}, function (data) {
-                station_name = data.station_name;
-                station_area = data.station_area;
-                station_road = data.station_road;
-                station_direction = data.station_direction;
-            });
+        let road_id = $(".modal select").eq(0).val();
+        let rid_id = $(".modal select").eq(1).val();
 
-            let newRow = "<tr style=\"height: 40px;\">\n" +
-                            "<td style=\"width: 4%\">" + "</td>\n" +
-                            "<td title=" + station_name + ">" + station_name + "</td>\n" +
-                            "<td title=" + station_area + ">" + station_area + "</td>\n" +
-                            "<td title=" + station_road + ">" + station_road + "</td>\n" +
-                            "<td title=" + station_direction + ">" + station_direction + "</td>\n" +
-                            "<td>\n" +
-                            "<button type=\"button\" class=\"see modify-vehicle-info\" style=\"margin-right: 5px;\" route_id=\"" + station_id + "\">删除</button>\n" +
-                            "</td>\n" +
-                            "<input type=\"hidden\" value=" + station_id + ">"
-                        "</tr>"
-            $('.add-station tr:last').after(newRow);
-            refreshRowNumber();
-            refreshStationList();
-        } else if (result == 3) {
-            alert('该站点已停满，请选择其它站点');
-        } else if (result == 2) {
-            alert('站点已经存在于路线中');
-        } else if (result == 1) {
-            alert('站点数量不能超过5个');
-        } else {
-            alert('添加站点失败');
+        // 根据id获取电科路段信息
+        let road_angle = ''
+        let road_name = ''
+
+        $.ajax({
+            type: "POST",
+            url: "/phase_dir/get_road_info/",
+            async: false,
+            cache: false,
+            dataType: "json",
+            data: {'road_id': road_id},
+            success: function (data) {
+                road_angle = data.angle;
+                road_name = data.name;
+            },
+            error: function () {
+            }
+        });
+
+        // 根据id获取rid信息
+        let rid_angle = ''
+        let rid_name = ''
+
+        $.ajax({
+            type: "POST",
+            url: "/phase_dir/get_rid_info/",
+            async: false,
+            cache: false,
+            dataType: "json",
+            data: {'rid_id': rid_id},
+            success: function (data) {
+                rid_angle = data.angle;
+                rid_name = data.name;
+            },
+            error: function () {
+            }
+        });
+
+        let newRow = "<tr>\n" +
+            "<td title=" + road_id + ">" + road_angle + ' - ' + road_name + "</td>\n" +
+            "<td title=" + rid_id + ">" + rid_angle + ' - ' + rid_name + "</td>\n" +
+            "<td>\n" +
+            "<button class=\"btn btn-default\" route_id=\"" + road_id + "\">删除</button>\n" +
+            "</td>\n" +
+            // "<input type=\"hidden\" value=" + road_id + ">" +
+            "</tr>"
+        $('.result tr:last').after(newRow);
+
+        $(".modal").hide();
+        refreshRowNumber();
+        // refreshStationList();
+
+    }
+
+    // 更新表格中的行号
+    function refreshRowNumber() {
+        let len = $('.result tr').length;
+        for (let i = 1; i < len; i++) {
+            // $('.result tr').eq(i).children().eq(0).text(i);
+            // let route_id = $('.add-station tr').eq(i).children().eq(5).children().eq(0).attr('route_id');
+            $('.result tr').eq(i).children().eq(2).children().eq(0).attr('onclick', 'deleteStation(' + i + ')')
         }
-        //})
+    }
+
+    // 删除站点
+    function deleteStation(row_number) {
+        $('.result tr').eq(row_number).remove();
+        refreshRowNumber();
+        refreshStationList();
+    }
+
+    function refreshStationList() {
+        let len = $('.add-station input').length;
+        let station_list = ''
+        for (let i=0; i<len; i++) {
+            if (i == 0) {
+                station_list = $('.add-station input').eq(i).val();
+            } else {
+                station_list =  station_list + "," + $('.add-station input').eq(i).val();
+            }
+        }
+
+        $('.add-vehicle .my-modal-footer input').eq(1).val(station_list);
     }
 
 </script>
