@@ -1,21 +1,31 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import CustFroad, InterRid, RoadRidMap
+from .models import CustFroad, InterRid, RoadRidMap, CustSignalInterMap
 from .utils import get_pos2
 
 # Create your views here.
 
 
 def rid_map_show(request):
-    cust_froad_list = CustFroad.objects.all()
+    inter_list = CustSignalInterMap.objects.filter(area_code='310113')
 
-    rid_list = InterRid.objects.filter(ft_type_no=1)
+    cust_inter_id_list = []
+    inter_id_list = []
+
+    for inter_info in inter_list:
+        cust_inter_id_list.append(inter_info.cust_signal_id)
+        inter_id_list.append(inter_info.inter_id)
+
+    cust_froad_list = CustFroad.objects.filter(cust_signal_id__in=cust_inter_id_list)
+
+    rid_list = InterRid.objects.filter(inter_id__in=inter_id_list)
 
     map_list = RoadRidMap.objects.all()
 
     context = {'cust_froad_list': cust_froad_list,
                'rid_list': rid_list,
                'map_list': map_list,
+               'inter_list': inter
                }
 
     return render(request, 'froad_rid.html', context)

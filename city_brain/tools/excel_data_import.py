@@ -144,7 +144,7 @@ def main():
     # read_file_name = 'E:/city_brain/30_1030/01_设备挂接/bynt/roadnet_tp_device_金山区卡口_1031.xlsx'
     # read_file_name = 'E:/city_brain/30_1030/04_信号机/cust_inter.xlsx'
     # read_file_name = 'E:/city_brain/30_1030/01_设备挂接/coil/roadnet_tp_device_lane_direction_嘉定区线圈.xlsx'
-    read_file_name = 'D:/work/city_brain/310110_杨浦/devc/roadnet_tp_device_国定路政本路东向西.xlsx'
+    read_file_name = 'D:/work/city_brain/310109_虹口/devc/video.xlsx'
     # read_file_name = 'D:/work/city_brain/310120_奉贤/devc/roadnet_tp_device_lane_direction_fx_0408.xlsx'
 
     write_file_name = read_file_name.replace('xlsx', 'txt')
