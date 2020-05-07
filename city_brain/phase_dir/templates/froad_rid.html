@@ -11,111 +11,35 @@
 
         .cust_dir {
             position: absolute;
-            left: 100px;
+            left: 0px;
             top:-100px;
         }
 
         .rid_dir {
             position: absolute;
-            left: 600px;
+            left: 500px;
             top: -100px;
         }
 
         .result {
             position: absolute;
-            left: 200px;
+            left: 100px;
             top: 400px;
             width: 900px;
-        }
-
-        .navi{
-            position: absolute;
-            top: 20px;
-            left: 10px;
-            width: 202px;
         }
 
         .content{
             position: absolute;
             top: 0px;
-            left: 100px;
+            left: 0px;
         }
 
     </style>
 </head>
 <body>
 
-<div class="navi">
-    <div class="panel-group" id="accordion">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion"
-                       href="#collapseOne">
-                        事项管理
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseOne" class="panel-collapse collapse in">
-                <div class="panel-body">
-                    {% for inter_info in  %}
-                    <a href="#" href-url="/item/all?title=全部事项&status=0" class="list-group-item">全部事项</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion"
-                       href="#collapseTwo">
-                        事项管理
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseTwo" class="panel-collapse collapse in">
-                <div class="panel-body clearfix">
-                    <a href="#" href-url="/item/all?title=待接单事项&status=2" class="list-group-item">待接单事项<span
-                            class="badge delivered">{{ count_delivered }}</a>
-                    <a href="#" href-url="/item/all?title=办理中事项&status=3" class="list-group-item">办理中事项<span
-                            class="badge handling">{{ count_handling }}</span></a>
-                    <a href="#" href-url="/item/all?title=催办事项&status=8" class="list-group-item">催办事项<span
-                            class="badge urge">{{ count_urge }}</span></a>
-                    <a href="#" href-url="/item/all?title=超时事项&status=10" class="list-group-item">超时事项<span
-                            class="badge overtime">{{ count_overtime }}</span></a>
-                    <a href="#" href-url="/item/all?title=已反馈事项&status=4" class="list-group-item">已反馈事项<span
-                            class="badge complete">{{ count_complete }}</span></a>
-                    <a href="#" href-url="/item/all?title=退回重办事项&status=6" class="list-group-item">重办事项<span
-                            class="badge retreat">{{ count_retreat }}</span></a>
-                    <a href="#" href-url="/item/all?title=申请延期事项&status=7" class="list-group-item">申请延期事项<span
-                            class="badge delay">{{ count_delay }}</span></a>
-                    <a href="#" href-url="/item/all?title=驳回延期事项&status=11" class="list-group-item">驳回延期事项<span
-                            class="badge refuse">{{ count_refuse }}</span></a>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion"
-                       href="#collapseFive">
-                        用户管理
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseFive" class="panel-collapse collapse">
-                <div class="panel-body">
-                    <a href="#" href-url="/user/user" class="list-group-item">人员管理</a>
-                    <a href="#" href-url="/user/dept" class="list-group-item">部门管理</a>
-                    <a href="#" href-url="/item/cate" class="list-group-item">分类管理</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="content">
+
     <div class="cust_dir">
         <svg width="600px" height="600px" version="1.1" xmlns="http://www.w3.org/2000/svg">
             {% for cust_froad_info in cust_froad_list %}
@@ -123,7 +47,7 @@
                 <g stroke="gray" stroke-width="20">
                     <path d="M300 300 200 300" transform="rotate({{ cust_froad_info.cust_froad_angle }}, 300, 300)"/>
                 <text x="250" y="150" style="stroke-width: 0.1;font-size: 15px;" transform="rotate({{ cust_froad_info.cust_froad_angle|add:-90 }}, 300, 300)">
-                    {{ cust_froad_info.cust_froad_id }} - {{ cust_froad_info.cust_froad_angle }} - {{cust_froad_info.cust_froad_name}}
+                    {{ cust_froad_info.cust_froad_angle }} - {{cust_froad_info.cust_froad_name}}
                 </text>
                 </g>
              </a>
@@ -147,6 +71,12 @@
     <!--匹配结果-->
     <div class="result" style="text-align: center">
         <h4>电科进口道与rid对应关系</h4>
+        <select name="rid_type" style="width: 100px;" onchange="changeRidType()">
+            <option value="0" {% if rid_type == 0 %}selected{% endif %}>全部</option>
+            <option value="1" {% if rid_type == 1 %}selected{% endif %}>主路</option>
+            <option value="2" {% if rid_type == 2 %}selected{% endif %}>辅路</option>
+        </select>
+        <input type="hidden" value="{{ inter_id }}" />
         <hr />
         <table class="table table-striped table-hover text-center">
             <thead>
@@ -169,7 +99,7 @@
     </div>
 
     <!--模态框-->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: 400px;">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -180,7 +110,7 @@
                     <label>电科进口道</label>
                     <select>
                         {% for cust_froad_info in cust_froad_list %}
-                        <option value="{{ cust_froad_info.id }}">{{ cust_froad_info.cust_froad_id }} - {{ cust_froad_info.cust_froad_angle }} - {{cust_froad_info.cust_froad_name}}</option>
+                        <option value="{{ cust_froad_info.id }}">{{ cust_froad_info.cust_froad_angle }} - {{cust_froad_info.cust_froad_name}}</option>
                         {% endfor %}
                     </select>
 
@@ -193,7 +123,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addMap()">提交更改</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addMap()">添加</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
@@ -251,7 +181,9 @@
             }
         });
 
+
         // 保存对应关系数据
+        let inter_id = $('.result input').val();
         let map_id = ''
         $.ajax({
             type: "POST",
@@ -259,7 +191,7 @@
             async: false,
             cache: false,
             dataType: "json",
-            data: {'road_id': road_id, 'rid_id': rid_id},
+            data: {'road_id': road_id, 'rid_id': rid_id, 'inter_id': inter_id},
             success: function (data) {
                 map_id = data.map_id;
             },
@@ -289,7 +221,6 @@
         let len = $('.result tr').length;
         for (let i = 1; i < len; i++) {
             let map_id = $('.result tr').eq(i).children().eq(2).children().eq(0).attr('map_id');
-            alert(map_id);
             $('.result tr').eq(i).children().eq(2).children().eq(0).attr('onclick', 'deleteMap(' + i + ', ' + map_id + ')')
         }
     }
@@ -314,6 +245,15 @@
         $('.result tr').eq(row_number).remove();
         refreshRowNumber();
         // refreshStationList();
+    }
+
+
+    // 选择主路或者辅路
+    function changeRidType() {
+        let rid_type = $('.result select').val();
+        let inter_id = $('.result input').val();
+
+        window.location.href = "/phase_dir/rid_map?inter_id=" + inter_id + '&rid_type=' + rid_type;
     }
 
 </script>

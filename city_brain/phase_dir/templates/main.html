@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>电科进口道与rid对应关系</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+
+    <style type="text/css">
+        .navi{
+            display: inline-block;
+            position: absolute;
+            top: 20px;
+            left: 0px;
+            width: 330px;
+            height: 880px;
+            overflow-y: auto;
+        }
+
+        .frame-content {
+            display: inline-block;
+            position: absolute;
+            top: 20px;
+            left: 350px;
+            width: 1500px;
+            height: 880px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="navi">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">宝山</a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse">
+                <div class="panel-body">
+                    {% for inter_info in inter_list_baoshan %}
+                    <a href="#" href-url="/phase_dir/rid_map?inter_id={{ inter_info.inter_id }}" class="list-group-item">{{ inter_info.cust_inter_id }} - {{ inter_info.inter_name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">虹口</a>
+                </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse">
+                <div class="panel-body">
+                    {% for inter_info in inter_list_hongkou %}
+                    <a href="#" href-url="/phase_dir/rid_map?inter_id={{ inter_info.inter_id }}" class="list-group-item">{{ inter_info.cust_inter_id }} - {{ inter_info.inter_name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">崇明</a>
+                </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse">
+                <div class="panel-body">
+                    {% for inter_info in inter_list_chongming %}
+                    <a href="#" href-url="/phase_dir/rid_map?inter_id={{ inter_info.inter_id }}" class="list-group-item">{{ inter_info.cust_inter_id }} - {{ inter_info.inter_name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+         <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">徐汇</a>
+                </h4>
+            </div>
+            <div id="collapseFour" class="panel-collapse collapse">
+                <div class="panel-body">
+                    {% for inter_info in inter_list_xuhui %}
+                    <a href="#" href-url="/phase_dir/rid_map?inter_id={{ inter_info.inter_id }}" class="list-group-item">{{ inter_info.cust_inter_id }} - {{ inter_info.inter_name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="frame-content">
+    <iframe id="content-iframe" name="mainFrame" scrolling="auto" src="" frameborder="0" width="100%" height="100%"></iframe>
+</div>
+
+</body>
+<script type="text/javascript">
+    // 导航栏当前页提示
+    // $(function() {
+    //     var currentPage = $('.location span').first().next().text();
+    //     $('.navi .list-group-item:contains(' + currentPage + ')').addClass('active');
+    //     $('.navi .list-group-item:contains(' + currentPage + ')').parents('.collapse').addClass('in');
+    // });
+    $(function () {
+        $('.navi .list-group-item').click(function () {
+            $('.navi .list-group-item').removeClass('active');
+            $(this).addClass('active');
+
+            var contentUrl = $(this).attr('href-url');
+            $('#content-iframe').attr('src', contentUrl);
+        });
+
+        setInterval(get_item_count, 10000);
+    })
+</script>
+</html>

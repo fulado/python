@@ -50,17 +50,23 @@ class InterRid(models.Model):
 
 # 电科进口道与rid对应关系
 class RoadRidMap(models.Model):
+    inter_id = models.CharField(max_length=20, null=True, blank=True)  # 高德路口ID
     road = models.ForeignKey(CustFroad, on_delete=models.DO_NOTHING)
     rid = models.ForeignKey(InterRid, on_delete=models.DO_NOTHING)
+    cust_signal_id = models.CharField(max_length=20, null=True, blank=True)  # 信号机编号或id
+    cust_froad_id = models.CharField(max_length=10, null=True, blank=True)  # 进口序号
 
 
 # 客户信号机id与大脑路口id对应关系
 class CustSignalInterMap(models.Model):
-    cust_signal_id = models.CharField(max_length=20, null=True, blank=True)  # 信号机编号或id
-    inter_id = models.CharField(max_length=50, null=True, blank=True)  # 路口ID
-    area_code = models.CharField(max_length=20, null=True, blank=True)  # 区域编号
-    data_version = models.CharField(max_length=20, null=True, blank=True)  # 版本信息 如20180331：yyyymmdd
-    adcode = models.CharField(max_length=20, null=True, blank=True)  # 城市编码
+    cust_inter_id = models.CharField(max_length=20, null=True, blank=True)  # 信号机编号或id
+    cust_inter_name = models.CharField(max_length=50, null=True, blank=True)  # 客户路口名称
+    inter_id = models.CharField(max_length=20, null=True, blank=True)  # 高德路口ID
+    inter_name = models.CharField(max_length=50, null=True, blank=True)  # 高德路口名称
+    is_valid = models.CharField(max_length=5, null=True, blank=True)  # 是否有效
+    gmt_invalid = models.CharField(max_length=20, null=True, blank=True)  # 失效时间
+    area_code = models.CharField(max_length=20, null=True, blank=True)  # 行政区域编码
+    grid_id = models.CharField(max_length=20, null=True, blank=True)  # 管辖区域编码
 
 
 
