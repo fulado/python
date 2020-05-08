@@ -1,12 +1,19 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import CustFroad, InterRid, RoadRidMap, CustSignalInterMap
-from .utils import get_pos2
+from .models import CustFroad, InterRid, InterOutRid, RoadRidMap, CustSignalInterMap
 
 # Create your views here.
 
 
+def select(request):
+    return render(request, 'select.html')
+
+
 def main(request):
+    ft = int(request.GET.get('ft', 1))   # 进出口道标志位, 1-进口道, 2-出口道
+
+    request.session['ft'] = ft
+
     inter_list_baoshan = CustSignalInterMap.objects.filter(area_code='310113').order_by('cust_inter_id')
     inter_list_hongkou = CustSignalInterMap.objects.filter(area_code='310109').order_by('cust_inter_id')
     inter_list_chongming = CustSignalInterMap.objects.filter(area_code='310151').order_by('cust_inter_id')
@@ -25,14 +32,19 @@ def rid_map_show(request):
     inter_id = request.GET.get('inter_id', '')
     rid_type = int(request.GET.get('rid_type', 1))
 
+    ft = request.session.get('ft', 1)
+
     inter_map_info = CustSignalInterMap.objects.get(inter_id=inter_id)
 
     cust_froad_list = CustFroad.objects.filter(cust_signal_id=inter_map_info.cust_inter_id)
 
-    if rid_type:
-        rid_list = InterRid.objects.filter(inter_id=inter_map_info.inter_id, rid_type_no=rid_type)
+    if ft == 2:
+            rid_list = InterOutRid.objects.filter(inter_id=inter_id)
     else:
-        rid_list = InterRid.objects.filter(inter_id=inter_id)
+            rid_list = InterRid.objects.filter(inter_id=inter_id)
+
+    if rid_type:
+        rid_list = rid_list.filter(rid_type_no=rid_type)
 
     map_list = RoadRidMap.objects.filter(inter_id=inter_id)
 

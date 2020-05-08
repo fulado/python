@@ -27,6 +27,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# DEBUG = False
+#
+# ALLOWED_HOSTS = ['*', ]
+
 
 # Application definition
 
@@ -78,12 +82,23 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'phase_dir',
-        'HOST': 'bj-cdb-gq8xi5ya.sql.tencentcdb.com',
-        'PORT': 63226,
+        'HOST': 'cd-cdb-6ko6xzpg.sql.tencentcdb.com',
+        'PORT': 63560,
         'USER': 'root',
         'PASSWORD': 'Init1234',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'phase_dir',
+#         'HOST': '172.27.0.14',
+#         'PORT': 3306,
+#         'USER': 'root',
+#         'PASSWORD': 'Init1234',
+#     }
+# }
 
 
 # Password validation
