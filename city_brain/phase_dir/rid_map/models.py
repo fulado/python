@@ -89,7 +89,7 @@ class RoadRidMap(models.Model):
 class RoadOutRidMap(models.Model):
     inter_id = models.CharField(max_length=20, null=True, blank=True)  # 高德路口ID
     road = models.ForeignKey(CustFroad, on_delete=models.DO_NOTHING)
-    rid = models.ForeignKey(InterRid, on_delete=models.DO_NOTHING)
+    rid = models.ForeignKey(InterOutRid, on_delete=models.DO_NOTHING)
     cust_signal_id = models.CharField(max_length=20, null=True, blank=True)  # 信号机编号或id
     cust_froad_id = models.CharField(max_length=10, null=True, blank=True)  # 进口序号
 

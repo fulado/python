@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import CustFroad, InterRid, InterOutRid, RoadRidMap, CustSignalInterMap
+from .models import CustFroad, InterRid, InterOutRid, RoadRidMap, RoadOutRidMap, CustSignalInterMap
 
 # Create your views here.
 
@@ -39,14 +39,14 @@ def rid_map_show(request):
     cust_froad_list = CustFroad.objects.filter(cust_signal_id=inter_map_info.cust_inter_id)
 
     if ft == 2:
-            rid_list = InterOutRid.objects.filter(inter_id=inter_id)
+        rid_list = InterOutRid.objects.filter(inter_id=inter_id)
+        map_list = RoadOutRidMap.objects.filter(inter_id=inter_id)
     else:
-            rid_list = InterRid.objects.filter(inter_id=inter_id)
+        rid_list = InterRid.objects.filter(inter_id=inter_id)
+        map_list = RoadRidMap.objects.filter(inter_id=inter_id)
 
     if rid_type:
         rid_list = rid_list.filter(rid_type_no=rid_type)
-
-    map_list = RoadRidMap.objects.filter(inter_id=inter_id)
 
     context = {'cust_froad_list': cust_froad_list,
                'rid_list': rid_list,
@@ -82,9 +82,13 @@ def get_road_info(request):
 # 获取rid信息
 def get_rid_info(request):
     rid_id = request.POST.get('rid_id', '')
+    ft = request.session.get('ft', 1)
 
     try:
-        rid_info = InterRid.objects.get(rid=rid_id)
+        if ft == 2:
+            rid_info = InterOutRid.objects.get(rid=rid_id)
+        else:
+            rid_info = InterRid.objects.get(rid=rid_id)
 
         res = {'angle': rid_info.ft_angle,
                'name': rid_info.rid_name,
@@ -102,9 +106,14 @@ def save_map(request):
     road_id = request.POST.get('road_id', '')
     rid_id = request.POST.get('rid_id', '')
     inter_id = request.POST.get('inter_id', '')
-
+    ft = request.session.get('ft', 1)
+    print(ft)
     if road_id != '' and rid_id != '':
-        road_rid_map = RoadRidMap()
+        if ft == 2:
+            road_rid_map = RoadOutRidMap()
+        else:
+            road_rid_map = RoadRidMap()
+
         road_rid_map.road_id = road_id
         road_rid_map.rid_id = rid_id
         road_rid_map.inter_id = inter_id
@@ -126,9 +135,15 @@ def save_map(request):
 # 删除对应关系
 def delete_map(request):
     map_id = request.POST.get('map_id', '')
+    ft = request.session.get('ft', 1)
 
     try:
-        RoadRidMap.objects.get(id=map_id).delete()
+        if ft == 2:
+            road_rid_map = RoadOutRidMap.objects.get(id=map_id)
+        else:
+            road_rid_map = RoadRidMap.objects.get(id=map_id)
+
+        road_rid_map.delete()
     except:
         pass
 
