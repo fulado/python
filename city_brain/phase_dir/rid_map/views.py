@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import CustFroad, InterRid, InterOutRid, RoadRidMap, RoadOutRidMap, CustSignalInterMap
+from .models import CustFroad, InterRid, InterOutRid, RoadRidMap, RoadOutRidMap, CustSignalInterMap, \
+    PhaseLightRelation, LightRoadRelation
 
 # Create your views here.
 
@@ -150,6 +151,21 @@ def delete_map(request):
     res = {}
 
     return JsonResponse(res)
+
+
+# 测试
+def test_phase(request):
+    cust_signal_id = 2722
+    phase_light_list = PhaseLightRelation.objects.filter(cust_signal_id=cust_signal_id)
+
+    phase_dic = {}
+    for phase_light_info in phase_light_list:
+        phase_name = phase_light_info.phase_name
+        light_list = phase_light_info.lightset_id_list.split(',')
+
+        phase_dic[phase_name] = light_list
+
+    print(phase_dic)
 
 
 

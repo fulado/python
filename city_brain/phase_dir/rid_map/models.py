@@ -106,8 +106,22 @@ class CustSignalInterMap(models.Model):
     grid_id = models.CharField(max_length=20, null=True, blank=True)  # 管辖区域编码
 
 
+# 客户信号机相位阶段与灯组关系
+class PhaseLightRelation(models.Model):
+    cust_signal_id = models.CharField(max_length=20, null=True, blank=True)  # 信号机编号或id
+    phase_name = models.CharField(max_length=20, null=True, blank=True)  # 相位阶段
+    lightset_id_list = models.CharField(max_length=50, null=True, blank=True)  # 本相位对应的灯组ID列表
+    dt = models.CharField(max_length=20, null=True, blank=True)  # 日期：yyyymmdd
+    adcode = models.CharField(max_length=20, null=True, blank=True)  # 城市编码
 
 
+# 信号机灯组（灯组代表了一组通行方向）定义
+class LightRoadRelation(models.Model):
+    cust_signal_id = models.CharField(max_length=20, null=True, blank=True)  # 信号机编号或id
+    lightset_id = models.CharField(max_length=20, null=True, blank=True)  # 相位阶段
+    lightset_content = models.CharField(max_length=50, null=True, blank=True)  # 本相位对应的灯组ID列表
+    dt = models.CharField(max_length=20, null=True, blank=True)  # 日期：yyyymmdd
+    adcode = models.CharField(max_length=20, null=True, blank=True)  # 城市编码
 
 
 
