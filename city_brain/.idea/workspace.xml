@@ -3,11 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f7f00dff-5496-4209-acd6-4dc376728bc2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phase_dir/rid_map/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/rid_map/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phase_dir/rid_map/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/rid_map/tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phase_dir/rid_map/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/rid_map/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/phase_dir/rid_map/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/rid_map/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phase_dir/templates/froad_rid.html" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/templates/froad_rid.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../tj8890/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../tj8890/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../unicom_fx/command/temp_plan.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/command/temp_plan.py" afterDir="false" />
     </list>
@@ -51,7 +47,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../tj8890" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -207,6 +203,7 @@
       <workItem from="1588728819854" duration="16321000" />
       <workItem from="1588839038789" duration="30800000" />
       <workItem from="1589217189286" duration="19471000" />
+      <workItem from="1589417183231" duration="931000" />
     </task>
     <servers />
   </component>
@@ -226,22 +223,30 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1878" height="359" key="GridCell.Tab.0.bottom" timestamp="1589392197045">
+    <state x="828" y="382" key="#Notifications" timestamp="1589417210593">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1878" height="359" key="GridCell.Tab.0.bottom/3840.807.1920.1000/0.0.1920.1040@0.0.1920.1040" timestamp="1589392197045" />
-    <state width="1878" height="359" key="GridCell.Tab.0.center" timestamp="1589392197045">
+    <state x="828" y="382" key="#Notifications/3840.807.1920.1000/0.0.1920.1040@0.0.1920.1040" timestamp="1589417210593" />
+    <state width="1878" height="359" key="GridCell.Tab.0.bottom" timestamp="1589395026387">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1878" height="359" key="GridCell.Tab.0.center/3840.807.1920.1000/0.0.1920.1040@0.0.1920.1040" timestamp="1589392197045" />
-    <state width="1878" height="359" key="GridCell.Tab.0.left" timestamp="1589392197045">
+    <state width="1878" height="359" key="GridCell.Tab.0.bottom/3840.807.1920.1000/0.0.1920.1040@0.0.1920.1040" timestamp="1589395026387" />
+    <state width="1878" height="359" key="GridCell.Tab.0.center" timestamp="1589395026386">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1878" height="359" key="GridCell.Tab.0.left/3840.807.1920.1000/0.0.1920.1040@0.0.1920.1040" timestamp="1589392197045" />
-    <state width="1878" height="359" key="GridCell.Tab.0.right" timestamp="1589392197045">
+    <state width="1878" height="359" key="GridCell.Tab.0.center/3840.807.1920.1000/0.0.1920.1040@0.0.1920.1040" timestamp="1589395026386" />
+    <state width="1878" height="359" key="GridCell.Tab.0.left" timestamp="1589395026386">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1878" height="359" key="GridCell.Tab.0.right/3840.807.1920.1000/0.0.1920.1040@0.0.1920.1040" timestamp="1589392197045" />
+    <state width="1878" height="359" key="GridCell.Tab.0.left/3840.807.1920.1000/0.0.1920.1040@0.0.1920.1040" timestamp="1589395026386" />
+    <state width="1878" height="359" key="GridCell.Tab.0.right" timestamp="1589395026386">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1878" height="359" key="GridCell.Tab.0.right/3840.807.1920.1000/0.0.1920.1040@0.0.1920.1040" timestamp="1589395026386" />
+    <state x="462" y="165" key="SettingsEditor" timestamp="1589417206337">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="462" y="165" key="SettingsEditor/3840.807.1920.1000/0.0.1920.1040@0.0.1920.1040" timestamp="1589417206337" />
     <state x="619" y="175" width="670" height="676" key="search.everywhere.popup" timestamp="1588841233566">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

@@ -165,6 +165,8 @@ def test_phase(request):
 
         phase_dic[phase_name] = light_list
 
+    light_road_list = LightRoadRelation.objects.filter(cust_signal_id=cust_signal_id)
+
     print(phase_dic)
 
 
