@@ -19,7 +19,38 @@ def find_troad_id(light_content):
 
 # 在灯组内容字符串中找到转向描述
 def find_turn(light_content):
-    return light_content[-2:]
+    if find_froad_id(light_content) == find_troad_id(light_content):
+        return '掉头'
+    else:
+        return light_content[-2:]
+
+
+# 根据ft_dir确定入口方向
+def get_dir_name(ft_dir_4_no):
+    if ft_dir_4_no == 1:
+        return '北'
+    elif ft_dir_4_no == 2:
+        return '东'
+    elif ft_dir_4_no == 3:
+        return '南'
+    elif ft_dir_4_no == 4:
+        return '西'
+
+
+# 计算转向代码
+def get_turn_dir_no(turn):
+    if turn == '左转':
+        return '1'
+    elif turn == '直行':
+        return '2'
+    elif turn == '右转':
+        return '3'
+    elif turn == '掉头':
+        return '4'
+    elif turn == '行人':
+        return '5'
+    else:
+        return '0'
 
 
 if __name__ == '__main__':

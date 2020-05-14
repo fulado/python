@@ -77,7 +77,7 @@
 
     <!--匹配结果-->
     <div class="result" style="text-align: center">
-        <h4>电科进口道与rid对应关系</h4>
+        <h4>{{ cust_signal_id }} - {{ inter_name }} - {{ inter_id }}</h4>
         <select name="rid_type" style="width: 100px;" onchange="changeRidType()">
             <option value="0" {% if rid_type == 0 %}selected{% endif %}>全部</option>
             <option value="1" {% if rid_type == 1 %}selected{% endif %}>主路</option>
