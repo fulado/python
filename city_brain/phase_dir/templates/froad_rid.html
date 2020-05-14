@@ -11,19 +11,19 @@
 
         .cust_dir {
             position: absolute;
-            left: 0px;
+            left: -100px;
             top:-100px;
         }
 
         .rid_dir {
             position: absolute;
-            left: 500px;
+            left: 350px;
             top: -100px;
         }
 
         .result {
             position: absolute;
-            left: 100px;
+            left: 0px;
             top: 400px;
             width: 900px;
         }
@@ -32,6 +32,13 @@
             position: absolute;
             top: 0px;
             left: 0px;
+        }
+
+        .cust_phase_dir{
+            position: absolute;
+            top: 150px;
+            left: 920px;
+            width: 480px;
         }
 
     </style>
@@ -92,6 +99,31 @@
                 <td>{{ map_info.road.cust_froad_name }} - {{ map_info.road.cust_froad_angle }} - {{ map_info.road.cust_froad_id }}</td>
                 <td>{{ map_info.rid.rid_name }} - {{ map_info.rid.ft_angle }}</td>
                 <td><button class="btn btn-default" map_id="{{ map_info.id }}" onclick="deleteMap('{{ forloop.counter }}', '{{ map_info.id }}')">删除</button></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="cust_phase_dir">
+        <table class="table table-striped table-hover text-center">
+            <thead>
+            <tr>
+                <td>相位</td>
+                <td>灯组</td>
+                <td>进口道</td>
+                <td>出口道</td>
+                <td>方向</td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for cust_phase_dir in cust_phase_dir_list %}
+            <tr>
+                <td>{{ cust_phase_dir.phase_name }}</td>
+                <td>{{ cust_phase_dir.light_id }}</td>
+                <td>{{ cust_phase_dir.f_road }}</td>
+                <td>{{ cust_phase_dir.t_road }}</td>
+                <td>{{ cust_phase_dir.turn }}</td>
             </tr>
             {% endfor %}
             </tbody>
