@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .models import CustFroad, InterRid, InterOutRid, RoadRidMap, RoadOutRidMap, CustSignalInterMap, \
     PhaseLightRelation, LightRoadRelation
+from .tools import find_froad_id, find_troad_id, find_turn
 
 # Create your views here.
 
@@ -156,8 +157,11 @@ def delete_map(request):
 # 测试
 def test_phase(request):
     cust_signal_id = 2722
+
+    # 取路口相位与灯组的关系
     phase_light_list = PhaseLightRelation.objects.filter(cust_signal_id=cust_signal_id)
 
+    # 生成相位与灯组关系的字典
     phase_dic = {}
     for phase_light_info in phase_light_list:
         phase_name = phase_light_info.phase_name
@@ -165,10 +169,47 @@ def test_phase(request):
 
         phase_dic[phase_name] = light_list
 
-    light_road_list = LightRoadRelation.objects.filter(cust_signal_id=cust_signal_id)
+    # 根据灯组id取通行内容
+    for phase_name, light_list in phase_dic.items():
+        light_content_list = []
+        for light_id in light_list:
+            light_road_list = LightRoadRelation.objects.filter(cust_signal_id=cust_signal_id, lightset_id=light_id).\
+                exclude(lightset_content__contains='行人')
 
-    print(phase_dic)
+            if len(light_road_list) == 0:
+                continue
 
+            light_dic = {}
+            for light_road in light_road_list:
+                light_dic[light_road.lightset_id] = light_road.lightset_content.strip().replace(' ', '')
+
+            light_content_list.append(light_dic)
+
+        phase_dic[phase_name] = light_content_list
+
+    # 根据通行内容取道路信息
+    for phase_name, light_content_list in phase_dic.items():
+        content_list = []
+        for light_content_dic in light_content_list:
+            light_road_dic = {}
+            for light_id, light_content in light_content_dic.items():
+                road
+                f_id = find_froad_id(light_content)  # 进口道
+                t_id = find_froad_id(light_content)  # 出口道
+                turn = find_turn(light_content)  # 转向描述
+
+                f_road_info = CustFroad.objects.get(cust_signal_id=cust_signal_id, cust_froad_id=f_id)
+                t_road_info = CustFroad.objects.get(cust_signal_id=cust_signal_id, cust_froad_id=t_id)
+
+                light_road_dic[light_id] =
+
+            light_content_dic = {}
+            for light_road in light_road_list:
+                light_dic[light_road.lightset_id] = light_road.lightset_content.strip().replace(' ', '')
+
+            light_content_list.append(light_dic)
+
+        phase_dic[phase_name] = light_content_list
 
 
 
