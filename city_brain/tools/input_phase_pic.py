@@ -137,7 +137,7 @@ def write_data_into_odps(table_name, area_name, pic_list):
 
 def main():
     # 根据不同区的相位图文件位置和名称修改file_path和area_name
-    file_path = 'D:/work/city_brain/奉贤/xiangWeiTu'
+    file_path = 'D:/work/city_brain/310120_奉贤/xiangWeiTu(1)'
     area_name = 'fengxian'
 
     table_name = 'ods_tfc_ctl_signal_phase_pic_city_brain'
@@ -146,7 +146,7 @@ def main():
     # get_phase_pic_data(file_path, pic_list)
 
     get_phase_pic_data_qingpu(file_path, pic_list)
-    # pprint.pprint(pic_list)
+    pprint.pprint(pic_list)
 
     write_data_into_odps(table_name, area_name, pic_list)
 

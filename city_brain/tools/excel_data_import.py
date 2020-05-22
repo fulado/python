@@ -57,7 +57,7 @@ def get_excel_data_video(file_name):
     worksheet = workbook.sheets()[0]
 
     content_list = []
-
+    print(worksheet.nrows)
     for i in range(1, worksheet.nrows):
         str_out = ''
         value_list_1 = []
@@ -69,7 +69,11 @@ def get_excel_data_video(file_name):
                 value_list_1.append(str(cell_value))
             else:
                 # print(cell_value)
-                value_list_2.append(float(cell_value))
+                try:
+                    value_list_2.append(float(cell_value))
+                except:
+                    # print(j)
+                    print(cell_value)
         # print(value_list_1)
         # print(value_list_2)
         pos_convert = wgs2gcj(value_list_2[1], value_list_2[0])
@@ -144,8 +148,8 @@ def main():
     # read_file_name = 'E:/city_brain/30_1030/01_设备挂接/bynt/roadnet_tp_device_金山区卡口_1031.xlsx'
     # read_file_name = 'E:/city_brain/30_1030/04_信号机/cust_inter.xlsx'
     # read_file_name = 'E:/city_brain/30_1030/01_设备挂接/coil/roadnet_tp_device_lane_direction_嘉定区线圈.xlsx'
-    read_file_name = 'D:/03_work/66_city_brain/310109_hongkou/phase_dir/phase_dir.xlsx'
-    # read_file_name = 'D:/work/city_brain/310113_宝山/phasedir/rid_map_roadridmap.xlsx'
+    # read_file_name = 'D:/03_work/66_city_brain/310109_hongkou/phase_dir/phase_dir.xlsx'
+    read_file_name = 'D:/work/city_brain/010151_崇明/devc/chongming_1_radar.xlsx'
 
     write_file_name = read_file_name.replace('xlsx', 'txt')
 

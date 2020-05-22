@@ -1,0 +1,30 @@
+CrossID: 31012000000055
+PlanNo: 1
+CycleLen: 144
+CoordPhaseNo: 0
+OffSet: 0
+StageNoList: OrderedDict([('StageNo', ['1', '2', '3', '4'])])
+CrossID: 31012000000055
+PlanNo: 2
+CycleLen: 132
+CoordPhaseNo: 0
+OffSet: 0
+StageNoList: OrderedDict([('StageNo', ['5', '6', '7', '8'])])
+CrossID: 31012000000055
+PlanNo: 3
+CycleLen: 156
+CoordPhaseNo: 0
+OffSet: 0
+StageNoList: OrderedDict([('StageNo', ['9', '10', '11', '12'])])
+CrossID: 31012000000055
+PlanNo: 4
+CycleLen: 159
+CoordPhaseNo: 0
+OffSet: 0
+StageNoList: OrderedDict([('StageNo', ['13', '14', '15', '16'])])
+CrossID: 31012000000055
+PlanNo: 5
+CycleLen: 138
+CoordPhaseNo: 0
+OffSet: 0
+StageNoList: OrderedDict([('StageNo', ['17', '18', '19', '20'])])

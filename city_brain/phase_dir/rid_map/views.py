@@ -3,8 +3,12 @@ from django.http import JsonResponse
 from .models import CustFroad, InterRid, InterOutRid, RoadRidMap, RoadOutRidMap, CustSignalInterMap, \
     PhaseLightRelation, LightRoadRelation
 from .tools import find_froad_id, find_troad_id, find_turn, get_dir_name, get_turn_dir_no
+from .tools_odps import write_data_into_odps, delete_partition
 import xlwt
 import time
+import itertools
+import pprint
+
 
 # Create your views here.
 
@@ -363,7 +367,7 @@ def get_phase_dir(inter_id):
                           'f_road': road_rid_map.rid_id,
                           't_road': road_out_rid_map.rid_id,
                           'f_dir_4_no': road_rid_map.rid.ft_dir_4_no,
-                          'rid_dir_8_no': road_rid_map.rid.rid_dir_8_no,
+                          'f_dir_8_no': road_rid_map.rid.rid_dir_8_no,
                           'turn_dir_no': get_turn_dir_no(turn),
                           }
 
@@ -372,21 +376,215 @@ def get_phase_dir(inter_id):
     return phase_dir_list
 
 
+# 计算所有相位的排列组合
+def get_phase_plan_list(cust_signal_id):
+
+    phsase_light_list = PhaseLightRelation.objects.filter(cust_signal_id=cust_signal_id)
+
+    phase_content = ''
+
+    for phase_light in phsase_light_list:
+        if phase_light.phase_name in phase_content:
+            continue
+        else:
+            phase_content += phase_light.phase_name
+
+    phase_plane_list = []
+    phase_plan_id = 1
+    for i in range(1, len(phase_content) + 1):
+        phase_comb = itertools.combinations(phase_content, i)
+
+        for j in phase_comb:
+            phase_plan_dict = {'phase_plan_id': phase_plan_id, 'phase_content': j}
+            phase_plane_list.append(phase_plan_dict)
+
+            phase_plan_id += 1
+
+    return phase_plane_list
 
 
+# 生成都相位方案的phase_dir
+def gen_phase_dir_multi_plan(inter_id):
+
+    cust_signal_inter = CustSignalInterMap.objects.get(inter_id=inter_id)
+
+    cust_signal_id = cust_signal_inter.cust_inter_id
+
+    phase_plan_list = get_phase_plan_list(cust_signal_id)
+
+    phase_dir_list = get_phase_dir(inter_id)
+
+    phase_plan_dir_list = []
+
+    for phase_plan in phase_plan_list:
+        phase_plan_id = phase_plan.get('phase_plan_id')
+
+        # 相位内容
+        for phase_name in phase_plan.get('phase_content'):
+
+            # 相位通行方向
+            for phase_dir in phase_dir_list:
+                if phase_name == phase_dir.get('phase_name'):
+
+                    phase_plan_dir = {'phase_plan_id': phase_plan_id,
+                                      'inter_id': phase_dir.get('inter_id'),
+                                      'inter_name': phase_dir.get('inter_name'),
+                                      'phase_name': phase_dir.get('phase_name'),
+                                      'dir_name': phase_dir.get('dir_name'),
+                                      'f_road': phase_dir.get('f_road'),
+                                      't_road': phase_dir.get('t_road'),
+                                      'f_dir_4_no': phase_dir.get('f_dir_4_no'),
+                                      'f_dir_8_no': phase_dir.get('f_dir_8_no'),
+                                      'turn_dir_no': phase_dir.get('turn_dir_no'),
+                                      }
+
+                    phase_plan_dir_list.append(phase_plan_dir)
+                else:
+                    continue
+
+    return phase_plan_dir_list
 
 
+# 导出phase_plan_id的phase_dir数据
+def export_phase_plan_dir(request):
+
+    # 创建excel
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('sheet1', cell_overwrite_ok=True)
+
+    # 设置表头
+    title = ['inter_id',
+             'inter_name',
+             'phase_plan_id',
+             'phase_name',
+             'dir_name',
+             'f_rid',
+             't_rid',
+             'f_dir_4_no',
+             'f_dir_8_no',
+             'turn_dir_no',
+             'data_version',
+             'modified_date',
+             'source',
+             'start_date',
+             'adcode',
+             ]
+
+    # 生成表头
+    len_col = len(title)
+    for i in range(0, len_col):
+        ws.write(0, i, title[i])
+
+    # 查询某一区全部路口inter_id
+    cust_signal_inter_map_list = CustSignalInterMap.objects.filter(area_code='310109')
+
+    i = 1
+    for cust_signal_inter_map in cust_signal_inter_map_list:
+        phase_plan_dir_list = gen_phase_dir_multi_plan(cust_signal_inter_map.inter_id)
+
+        for phase_dir in phase_plan_dir_list:
+            ws.write(i, 0, phase_dir.get('inter_id'))
+            ws.write(i, 1, phase_dir.get('inter_name'))
+            ws.write(i, 2, phase_dir.get('phase_plan_id'))
+            ws.write(i, 3, phase_dir.get('phase_name'))
+            ws.write(i, 4, phase_dir.get('dir_name'))
+            ws.write(i, 5, phase_dir.get('f_road'))
+            ws.write(i, 6, phase_dir.get('t_road'))
+            ws.write(i, 7, phase_dir.get('f_dir_4_no'))
+            ws.write(i, 8, phase_dir.get('f_dir_8_no'))
+            ws.write(i, 9, phase_dir.get('turn_dir_no'))
+            ws.write(i, 10, '20171231')
+            ws.write(i, 11, time.strftime('%Y%m%d', time.localtime()))
+            ws.write(i, 12, '人工录入')
+            ws.write(i, 13, time.strftime('%Y%m%d', time.localtime()))
+            ws.write(i, 14, '310000')
+
+            i += 1
+
+    wb.save('d:/phase_plan_dir.xls')
 
 
+# 写入phase_dir数据到odps
+def write_phase_dir_data_into_odps(request):
+
+    table_name = 'dwd_tfc_ctl_signal_phasedir_baoshan'
+    partition = 'adcode=310000'
+
+    # 删除分区
+    delete_partition(table_name, partition)
+
+    # 查询某一区全部路口inter_id
+    cust_signal_inter_map_list = CustSignalInterMap.objects.filter(area_code='310113')
+
+    data_list = []
+    for cust_signal_inter_map in cust_signal_inter_map_list:
+        phase_plan_dir_list = gen_phase_dir_multi_plan(cust_signal_inter_map.inter_id)
+
+        # data_list = []
+        for phase_dir in phase_plan_dir_list:
+            phase_dir_list = [phase_dir.get('inter_id'),
+                              phase_dir.get('inter_name'),
+                              phase_dir.get('phase_plan_id'),
+                              phase_dir.get('phase_name'),
+                              phase_dir.get('dir_name'),
+                              phase_dir.get('f_road'),
+                              phase_dir.get('t_road'),
+                              int(phase_dir.get('f_dir_4_no')),
+                              int(phase_dir.get('f_dir_8_no')),
+                              int(phase_dir.get('turn_dir_no')),
+                              '20171231',
+                              time.strftime('%Y%m%d', time.localtime()),
+                              '人工录入',
+                              time.strftime('%Y%m%d', time.localtime()),
+                              '310000',
+                              ]
+
+            data_list.append(phase_dir_list)
+
+        # pprint.pprint(data_list)
+        # break
+
+    write_data_into_odps(table_name, partition, data_list)
+
+    print('write odps ok')
 
 
+# 写入inter_phase数据到odps
+def write_inter_phase_data_into_odps(request):
+    # 查询某一区全部路口inter_id
+    cust_signal_inter_map_list = CustSignalInterMap.objects.filter(area_code__in=('310113', '310109'))
 
+    phase_plan_content_list = []
 
+    for cust_signal_inter_map in cust_signal_inter_map_list:
 
+        cust_inter_id = cust_signal_inter_map.cust_inter_id
+        phase_plan_list = get_phase_plan_list(cust_inter_id)
 
+        for phase_plan in phase_plan_list:
+            phase_plan_content = ['',
+                                  cust_inter_id,
+                                  ','.join(phase_plan.get('phase_content')),
+                                  len(phase_plan.get('phase_content')),
+                                  str(phase_plan.get('phase_plan_id')),
+                                  '',
+                                  '310000'
+                                  ]
 
+            phase_plan_content_list.append(phase_plan_content)
 
+    # pprint.pprint(phase_plan_content_list)
 
+    table_name = 'dwd_tfc_rltn_inter_phase_city_brain'
+    partition = 'adcode=310000'
+
+    # 删除分区
+    delete_partition(table_name, partition)
+
+    # 写入新数据
+    write_data_into_odps(table_name, partition, phase_plan_content_list)
+
+    print('inter_phase数据写入完毕')
 
 
 
