@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <!-- 目前仅限360急速浏览 webkit:急速  ie-comp:ie兼容模式   ie-stand: ie标准模式 -->
+    <meta name="renderer" content="webkit">
+    <link rel="stylesheet" href="/static/css/initial.css"/>
+    <link rel="stylesheet" href="/static/css/header.css"/>
+    <link rel="stylesheet" href="/static/css/login.css"/>
+    <link rel="stylesheet" href="/static/css/company.css"/>
+    <title>登录</title>
+    <style type="text/css">
+        .announce{
+            background-color: #ffffff;
+            position: fixed;
+			left: 50%;
+			top: 50%;
+            width: 1000px;
+            height: 690px;
+            z-index:9999;
+            margin-left: -520px;
+            margin-top: -365px;
+            padding: 20px;
+            border: 2px solid #E3E3E3;
+            border-radius: 10px;
+        }
+
+        .announce h1{
+            font-size: 25px;
+            color: red;
+            text-align: center;
+            margin: 10px;
+        }
+        .announce p{
+            font-size: 15px;
+            line-height: 20px;
+        }
+
+        .announce div{
+            text-align: center;
+        }
+        .btn{
+            width: 120px;
+            height: 45px;
+            border-radius: 10px;
+            font: 25px Microsoft YaHei;
+            outline: none;
+            cursor: pointer;
+            text-align: center;
+            line-height: 45px;
+            margin-top: 20px;
+        }
+
+        .announce .time{
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<div class="body_back"></div>
+<div class="header">
+    <div class="logo">
+        <span class="logo_icon"></span>
+    </div>
+    <div class="text_wrapper">
+        <span class="text_icon_1"></span>
+        <span class="text_icon_2"></span>
+    </div>
+    <div class="tooltip_text">
+        <!--<span class="number_word">企业数量: &nbsp;</span>-->
+        <!--<span class="number"></span>-->
+        <!--<span class="number_word">提交审核车辆数: &nbsp;</span>-->
+        <!--<span class="number"></span>-->
+        <!--<span class="tooltip_btn" id='user_setting'>个人设置</span>-->
+        <a href="/download"><span class="tooltip_btn" style="width: 150px;">通行证查询下载</span></a>
+    </div>
+</div>
+<div class="form_wrapper">
+    <form action="/login_handle" method="post" id="form_box">
+        {% csrf_token %}
+        <div class="login_btn">用户登录</div>
+        <div class="form_group">
+            <span class="word">账号</span>
+            <input type="text" placeholder="输入账号" id="username" name="username" class=""/>
+        </div>
+        <div class="form_group">
+            <span class="word">密码</span>
+            <input type="password" placeholder="输入密码" id="psw" name="password"/>
+        </div>
+        <div class="form_group">
+            <span class="word" style="margin-left: 15px;">验证码</span>
+            <input type="text" placeholder="输入验证码" id="yz" class="yz" name="check_code"/>
+            <div class="YZ_img">
+                <img src="/check_code" alt="" width="100%" height="100%"/>
+            </div>
+        </div>
+        <div class="login_button" id="login_button">登录</div>
+        <!--<div class="login_button link_button" id="link_button">直接查询</div>-->
+        <!-- <div class="login_button operation" id="operation">申请流程下载</div> -->
+    </form>
+    <p style="font-size: 20px; text-align: center; margin-top: 10px;">{{ msg }}</p>
+</div>
+
+<div class="announce" style="display: none;">
+    <h1>关于货车申请通行证前须安装汽车电子标识的通知</h1>
+    <br/>
+    <p>各货车运输企业、货车所有人：</p>
+    <br/>
+    <p>按照公安部、工信部、交通运输部、环保部联合下发《京津冀汽车电子标识试点工作方案》与《京津冀汽车电子标识试点技术方案》有关要求、京津冀协同发展总体工作部署、以及天津市政府《天津市汽车电子标识试点工作方案》指示精神，天津市公安交通管理局启动了汽车电子标识试点工程项目，为本市及外埠30万辆重点车辆（包含各类货车）免费安装电子标识。</p>
+    <p>为保障货车通行权，加强城市物流配送健康发展，遏制货车被套牌现象，防止车辆验车代检问题，同时为今后实现货车检验合格标志、强制性保险标志电子化打下基础，拟于2020年3月1日起对天津市公安交通管理局通行证管理系统进行升级，增加“电子标识信息”关联查询功能，届时各货车所有人在申请货车通行证前，必须安装汽车电子标识。电子标识为免费安装，3月1日以后，本市货车不安装电子标识将无法下载通行证；外埠货车仍可以申领通行证，待车辆开往天津时再安装电子标识。</p>
+    <p>目前，天津市公安交通管理局在全市授权了15家机动车检测站为汽车电子标识发卡网点（见附件1），各货车运输企业、货车所有人可选择到发卡网点安装或集中上门安装的方式安装汽车电子标识：</p>
+    <p>（一）发卡网点安装。货车运输企业及货车所有人须携带机动车行驶证或车辆登记证书，自行驾车前往发卡网点进行安装，并在安装完毕后签字确认。</p>
+    <p>（二）集中上门安装。需集中上门安装电子标识的企业可向发卡网点（仅天马检测站）提交《天津市电子标识安装车辆登记表》（见附件2），待发卡网点做好电子标识信息签注后，预约上门安装时间和地点。现场安装时，企业负责人须提供机动车行驶证或车辆登记证书，并在安装完毕后签字确认。</p>
+    <p>在安装汽车电子标识后，货车运输企业及货车所有人应妥善保管，确保汽车电子标识正常使用；如有车辆更换风挡玻璃、车辆报废更新等情况，应当及时申请补领或换领，并提交相关证明材料。</p>
+    <p>已在外阜安装过电子标识的货车，如需申请天津市货车通行证，由货车所有人驾车前往各发卡网点进行识读测试，如识读成功则填写《已在外阜安装电子标识的车辆登记表》（见附件3）；如识读不成功的，由货车所有人驾车前往天马检测站、聚丰检测站办理电子标识补办手续（见附件4）。</p>
+    <p>咨询电话：13821609988、(022)58860218</p>
+    <br/>
+    <p>附件：</p>
+    <p><a href="/static/file/附件1：汽车电子标识发卡网点明细表.doc">1. 电子标识发卡网点明细表</a></p>
+    <p><a href="/static/file/附件2：天津市电子标识安装车辆登记表.xlsx">2. 天津市电子标识安装车辆登记表</a></p>
+    <p><a href="/static/file/附件3：已在外阜安装电子标识的车辆登记表.xls">3. 已在外阜安装电子标识的车辆登记表</a></p>
+    <p><a href="/static/file/附件4：电子标识补办规定.doc">4. 电子标识补办规定</a></p>
+    <div>
+        <button class="btn" disabled>已阅读</button>
+        <p class="time">（<span>5</span>）</p>
+    </div>
+</div>
+
+
+<!--模态框-公告-->
+<div class="announce">
+    <h1>通知</h1>
+    <br/>
+    <p>各货车运输企业、货车所有人：</p>
+    <br/>
+    <p>为坚决贯彻习近平总书记关于新型冠状病毒感染的肺炎疫情防控工作的重要指示和李克强总理重要指示精神，深入落实市委、市政府的会议部署，根据《天津市应对新型冠状病毒感染的肺炎应急预案》一级响应要求，为避免人员聚焦引发交叉感染，确保运输单位在天津市行政区域内（或途经天津市行政区域）运输工作的正常进行。
+从即日起至2月9日通行证系统的运维工作改为网上进行，各单位负责人或个人可以添加微信号：hctxzzx或w631794726（验证信息为：通行证咨询）进行通行证相关问题咨询。</p>
+    <br/>
+    <p>2020年2月1日</p>
+    <br/>
+    <div>
+        <button class="btn" disabled>已阅读</button>
+        <p class="time">（<span>5</span>）</p>
+    </div>
+</div>
+
+
+</body>
+<script src="/static/js/jquery-1.8.3.min.js"></script>
+<!--<script src="/static/js/login.js"></script>-->
+<script src="/static/js/md5.js"></script>
+<script type="text/javascript">
+    $(function() {
+        $('.YZ_img img').click(function(){
+            $(this).attr('src','/check_code?r=' + Math.random());
+        });
+
+        $('#login_button').click(function() {
+            var type;
+            for(var i = 0 ; i <$('#form_box input').length;i++){
+                if(!Boolean($('#form_box input').eq(i).val().trim())){
+                    type = false;
+                }
+            }
+            if(type == false){
+                alert('请检查内容是否输入完整')
+            }else{
+                $('#form_box').submit();
+            }
+        });
+
+        // 关闭通知
+        $('.announce .btn').eq(1).click(function() {
+            $('.announce').eq(1).hide();
+        });
+
+        // 关闭通知
+        $('.announce .btn').eq(0).click(function() {
+            $('.announce').eq(0).hide();
+        });
+
+        // 计时
+        var total_time = 4;
+        function time_left() {
+            $('.announce span').text(total_time);
+            total_time--;
+
+            if (total_time < 0) {
+                $('.announce .btn').removeAttr("disabled");
+                clearInterval(time_counter);
+            }
+        }
+        var time_counter = setInterval(time_left,1000);
+    });
+</script>
+</html>

@@ -2,14 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f7f00dff-5496-4209-acd6-4dc376728bc2" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phase_dir/rid_map/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/rid_map/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phase_dir/rid_map/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/rid_map/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/excel_data_import.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/excel_data_import.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/input_phase_pic.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/input_phase_pic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phase_dir/rid_map/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/rid_map/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tj_scheduled_bus/nginx.conf" beforeDir="false" afterPath="$PROJECT_DIR$/../tj_scheduled_bus/nginx.conf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tj_scheduled_bus/tj_scheduled_bus/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/../tj_scheduled_bus/tj_scheduled_bus/settings.py" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -23,93 +20,6 @@
     <SUITE FILE_PATH="coverage/city_brain$test.coverage" NAME="test Coverage Results" MODIFIED="1571828113406" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/city_brain$tools.coverage" NAME="tools Coverage Results" MODIFIED="1589426040058" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/phase_dir/rid_map" />
   </component>
-  <component name="FUSProjectUsageTrigger">
-    <session id="-638659751">
-      <usages-collector id="statistics.lifecycle.project">
-        <counts>
-          <entry key="project.closed" value="1" />
-          <entry key="project.open.time.10" value="1" />
-          <entry key="project.opened" value="1" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.edit">
-        <counts>
-          <entry key="Python Console" value="270" />
-          <entry key="py" value="2741" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.edit">
-        <counts>
-          <entry key="Python" value="3011" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.open">
-        <counts>
-          <entry key="py" value="17" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="Python" value="17" />
-        </counts>
-      </usages-collector>
-    </session>
-  </component>
-  <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/views.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="519" column="60" lean-forward="true" selection-start-line="519" selection-start-column="60" selection-end-line="519" selection-end-column="60" />
-              <folding>
-                <element signature="e#0#35#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tools/input_phase_pic.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="276">
-              <caret line="149" lean-forward="true" selection-start-line="149" selection-end-line="149" />
-              <folding>
-                <element signature="e#0#21#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/tools/excel_data_import.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="233">
-              <caret line="154" lean-forward="true" selection-start-line="154" selection-end-line="154" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/models.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="186">
-              <caret line="98" column="17" selection-start-line="98" selection-start-column="4" selection-end-line="98" selection-end-column="17" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/tools_odps.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="62" column="24" selection-start-line="62" selection-start-column="4" selection-end-line="62" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
-  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -118,74 +28,12 @@
       </list>
     </option>
   </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>throw_if_parsable</find>
-      <find>url</find>
-    </findStrings>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
-  </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/phase_dir/rid_map/tools_odps.py" />
-        <option value="$PROJECT_DIR$/phase_dir/rid_map/urls.py" />
-        <option value="$PROJECT_DIR$/phase_dir/rid_map/views.py" />
-        <option value="$PROJECT_DIR$/tools/input_phase_pic.py" />
-        <option value="$PROJECT_DIR$/tools/excel_data_import.py" />
-      </list>
-    </option>
-  </component>
-  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsGulpfileManager">
-    <detection-done>true</detection-done>
-    <sorting>DEFINITION_ORDER</sorting>
-  </component>
-  <component name="ProjectFrameBounds" extendedState="7">
-    <option name="width" value="1920" />
-    <option name="height" value="1080" />
   </component>
   <component name="ProjectId" id="1b6eNU6oKE2vz4oGi5dGDtauzjV" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
-  </component>
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
-              <item name="city_brain" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
-              <item name="city_brain" type="462c0819:PsiDirectoryNode" />
-              <item name="baoshan" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
-              <item name="city_brain" type="462c0819:PsiDirectoryNode" />
-              <item name="phase_dir" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
-              <item name="city_brain" type="462c0819:PsiDirectoryNode" />
-              <item name="phase_dir" type="462c0819:PsiDirectoryNode" />
-              <item name="rid_map" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-    </panes>
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -206,18 +54,6 @@
       <recent name="D:\Workspaces\projects\yxtc\city_brain\tools" />
       <recent name="D:\Workspaces\projects\yxtc\city_brain" />
     </key>
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="RunManager" selected="Python.excel_data_import">
     <configuration name="excel_data_import" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -332,10 +168,10 @@
     </configuration>
     <list>
       <item itemvalue="Python.excel_data_import" />
-      <item itemvalue="Python.views" />
+      <item itemvalue="Python.input_phase_pic" />
       <item itemvalue="Python.tools" />
       <item itemvalue="Python.tools_odps" />
-      <item itemvalue="Python.input_phase_pic" />
+      <item itemvalue="Python.views" />
     </list>
     <recent_temporary>
       <list>
@@ -366,59 +202,24 @@
       <workItem from="1588839038789" duration="30800000" />
       <workItem from="1589217189286" duration="19471000" />
       <workItem from="1589417183231" duration="19039000" />
+      <workItem from="1590480940113" duration="2153000" />
     </task>
     <servers />
   </component>
-  <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
-    <editor active="true" />
-    <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20255864" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.4451683" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.3995657" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5010661" side_tool="true" weight="0.32899022" />
-      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.4989339" weight="0.3854506" />
-      <window_info anchor="bottom" id="Python Console" order="12" weight="0.35613462" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="SciView" order="3" />
-      <window_info anchor="right" id="Database" order="4" />
-    </layout>
-  </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="2" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="RECENTLY_FILTERED_USER_GROUPS">
-                <collection />
-              </option>
-              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
-                <collection />
-              </option>
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
-  </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="828" y="382" key="#Notifications" timestamp="1589417210593">
@@ -454,106 +255,5 @@
     <SUITE FILE_PATH="coverage/city_brain$views.coverage" NAME="views Coverage Results" MODIFIED="1589361914121" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/phase_dir/rid_map" />
     <SUITE FILE_PATH="coverage/city_brain$tests.coverage" NAME="tests Coverage Results" MODIFIED="1589361781500" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/phase_dir/rid_map" />
     <SUITE FILE_PATH="coverage/city_brain$excel_data_import.coverage" NAME="excel_data_import Coverage Results" MODIFIED="1589477682715" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tools" />
-  </component>
-  <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/odps/rest.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="149" selection-start-line="149" selection-end-line="149" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/odps/tunnel/tabletunnel.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="218">
-          <caret line="229" selection-start-line="229" selection-end-line="229" />
-          <folding>
-            <element signature="e#643#654#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/odps/models/table.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1692">
-          <caret line="571" column="21" lean-forward="true" selection-start-line="571" selection-start-column="21" selection-end-line="571" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/odps/errors.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1060">
-          <caret line="77" selection-start-line="77" selection-end-line="77" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/tools.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="711">
-          <caret line="59" column="27" selection-start-line="59" selection-start-column="27" selection-end-line="59" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="14" column="84" selection-start-line="14" selection-start-column="84" selection-end-line="14" selection-end-column="84" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/tools_odps.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="62" column="24" selection-start-line="62" selection-start-column="4" selection-end-line="62" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tools/read_data_from_odps.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="780">
-          <caret line="39" column="25" lean-forward="true" selection-start-line="39" selection-start-column="25" selection-end-line="39" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#21#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="519" column="60" lean-forward="true" selection-start-line="519" selection-start-column="60" selection-end-line="519" selection-end-column="60" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tools/input_phase_pic.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="149" lean-forward="true" selection-start-line="149" selection-end-line="149" />
-          <folding>
-            <element signature="e#0#21#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="98" column="17" selection-start-line="98" selection-start-column="4" selection-end-line="98" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tools/excel_data_import.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="154" lean-forward="true" selection-start-line="154" selection-end-line="154" />
-        </state>
-      </provider>
-    </entry>
   </component>
 </project>

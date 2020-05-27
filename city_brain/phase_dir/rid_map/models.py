@@ -124,6 +124,62 @@ class LightRoadRelation(models.Model):
     adcode = models.CharField(max_length=20, null=True, blank=True)  # 城市编码
 
 
+# dwd_tfc_rltn_wide_inter_ftrid, 道路路口的上下游rid对信息
+class InterFTRid(models.Model):
+    inter_id = models.CharField(max_length=20, null=True, blank=True)  # 高德路口ID
+    inter_name = models.CharField(max_length=50, null=True, blank=True)  # 高德路口名称
+    is_signlight = models.IntegerField(default=0, null=True, blank=True)  # 是否为信号灯路口 1表示路口 0表示非路口
+    is_corner = models.IntegerField(default=0, null=True, blank=True)  # 是否为综合路口 1是 0非
+    ftrid_len = models.FloatField(default=0, null=True, blank=True)  # 进口路段rid终点与出口路段rid起点直线距离
+    f_rid = models.CharField(max_length=50, null=True, blank=True)  # rid
+    f_rid_name = models.CharField(max_length=50, null=True, blank=True)  # 进口rid名称
+    f_rid_angle = models.FloatField(default=0, null=True, blank=True)  # rid起点路口→终点路口连直线，相对于正北，顺时针方向的角度
+    f_rid_dir_8_no = models.IntegerField(default=0, null=True, blank=True)  # 进口道rid角度的8方向编码
+    f_rid_dir_4_no = models.IntegerField(default=0, null=True, blank=True)  # 进口道rid角度的4方向编码
+    f_angle = models.FloatField(default=0, null=True, blank=True)  # 进口rid正北方向顺时针方向的夹角
+    f_dir_8_no = models.IntegerField(default=0, null=True, blank=True)  # 进口道进入路口相对于正北方向的角度的8方向编码
+    f_dir_4_no = models.IntegerField(default=0, null=True, blank=True)  # 进口道进入路口相对于正北方向的角度的4方向编码
+    f_road_level = models.IntegerField(default=0, null=True, blank=True)  # 进口rid道路等级
+    f_rid_type_no = models.IntegerField(default=0, null=True, blank=True)  # 进口路段类型包括,1、主路：（高德link，formway=1/15）;2、辅路：路段中只要有辅路link就算辅路。（高德link，formway=7）;3、独立右转路段：路段中只要有独立右转车道就算是独立右转路段。（高德link，formray=1112）;4、独立左转路段;5、高速/高架/快速路上匝道路段。（高德link，formray=6）;5、高速/高架/快速路下匝道路段。（高德link，formray=6）;6、高速与高速连接路段（互通，高德link，formway=3）;7、隧道;8、虚拟路段：在以上路段内部的拓扑无法表达时，可以构建虚拟路段;9、出口（高德link formway=9）;10、入口（高德link formway= 10）;11、引路+JCT（高德link formway=8）
+    f_pass_type_no = models.IntegerField(default=0, null=True, blank=True)  # -1：暂无数据,1：机动车,2：非机动车,3：机非混合,4：行人
+    f_overlap = models.IntegerField(default=0, null=True, blank=True)  # 进口是否立体重叠道路，。-1：未调查 1：为立体重叠道路，2：不是立体重叠道路
+    f_median = models.IntegerField(default=0, null=True, blank=True)  # 进口是否有隔离带
+    f_walkway = models.IntegerField(default=0, null=True, blank=True)  # 进口是否有人行道个数，-1：未调查 1：有人行道 2：无人行道
+    f_fork = models.IntegerField(default=0, null=True, blank=True)  # 进口是否有岔口，-1：未调查 1：有岔口 2：无岔口
+    f_rid_length = models.FloatField(default=0, null=True, blank=True)  # 进口rid长度
+    f_rid_lnglat_seq = models.CharField(max_length=255, null=True, blank=True)  # 进口rid 经纬度点序列
+    f_lane_cnt = models.IntegerField(default=0, null=True, blank=True)  # 进口rid车道数量
+    f_road_name = models.CharField(max_length=50, null=True, blank=True)  # 进口道路名称
+    t_rid = models.CharField(max_length=50, null=True, blank=True)  # rid
+    t_rid_name = models.CharField(max_length=50, null=True, blank=True)  # 进口rid名称
+    t_rid_angle = models.FloatField(default=0, null=True, blank=True)  # rid起点路口→终点路口连直线，相对于正北，顺时针方向的角度
+    t_rid_dir_8_no = models.IntegerField(default=0, null=True, blank=True)  # 进口道rid角度的8方向编码
+    t_rid_dir_4_no = models.IntegerField(default=0, null=True, blank=True)  # 进口道rid角度的4方向编码
+    t_angle = models.FloatField(default=0, null=True, blank=True)  # 进口rid正北方向顺时针方向的夹角
+    t_dir_8_no = models.IntegerField(default=0, null=True, blank=True)  # 进口道进入路口相对于正北方向的角度的8方向编码
+    t_dir_4_no = models.IntegerField(default=0, null=True, blank=True)  # 进口道进入路口相对于正北方向的角度的4方向编码
+    t_road_level = models.IntegerField(default=0, null=True, blank=True)  # 进口rid道路等级
+    t_rid_type_no = models.IntegerField(default=0, null=True, blank=True)  # 进口路段类型包括,1、主路：（高德link，formway=1/15）;2、辅路：路段中只要有辅路link就算辅路。（高德link，formway=7）;3、独立右转路段：路段中只要有独立右转车道就算是独立右转路段。（高德link，formray=1112）;4、独立左转路段;5、高速/高架/快速路上匝道路段。（高德link，formray=6）;5、高速/高架/快速路下匝道路段。（高德link，formray=6）;6、高速与高速连接路段（互通，高德link，formway=3）;7、隧道;8、虚拟路段：在以上路段内部的拓扑无法表达时，可以构建虚拟路段;9、出口（高德link formway=9）;10、入口（高德link formway= 10）;11、引路+JCT（高德link formway=8）
+    t_pass_type_no = models.IntegerField(default=0, null=True, blank=True)  # -1：暂无数据,1：机动车,2：非机动车,3：机非混合,4：行人
+    t_overlap = models.IntegerField(default=0, null=True, blank=True)  # 进口是否立体重叠道路，。-1：未调查 1：为立体重叠道路，2：不是立体重叠道路
+    t_median = models.IntegerField(default=0, null=True, blank=True)  # 进口是否有隔离带
+    t_walkway = models.IntegerField(default=0, null=True, blank=True)  # 进口是否有人行道个数，-1：未调查 1：有人行道 2：无人行道
+    t_fork = models.IntegerField(default=0, null=True, blank=True)  # 进口是否有岔口，-1：未调查 1：有岔口 2：无岔口
+    t_rid_length = models.FloatField(default=0, null=True, blank=True)  # 进口rid长度
+    t_rid_lnglat_seq = models.CharField(max_length=255, null=True, blank=True)  # 进口rid 经纬度点序列
+    t_lane_cnt = models.IntegerField(default=0, null=True, blank=True)  # 进口rid车道数量
+    t_road_name = models.CharField(max_length=50, null=True, blank=True)  # 进口道路名称
+    turn_dir_no = models.CharField(max_length=10, null=True, blank=True)  # 根据进入、出口路段转向计算：1 左转 2 直行 2 右转 4 掉头
+    data_version = models.CharField(max_length=20, null=True, blank=True)  # 版本信息 如20180331：yyyymmdd
+    adcode = models.CharField(max_length=20, null=True, blank=True)  # 城市编码
+
+
+
+
+
+
+
+
 
 
 

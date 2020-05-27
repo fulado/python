@@ -23,13 +23,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'pqspmv+tuh6u$!dkm5z_5-&n&=p5&#v@8berx8)9zy^w3&s&am'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
-# DEBUG = False
+# DEBUG = True
 #
-# ALLOWED_HOSTS = ['*', ]
+# ALLOWED_HOSTS = []
+
+DEBUG = False
+
+ALLOWED_HOSTS = ['*', ]
 
 
 # Application definition
@@ -87,10 +87,13 @@ DATABASES = {
         # 'HOST': '118.24.96.90',
         # 'USER': 'root',
         # 'PASSWORD': 'xiaobai',
+        'HOST': '192.168.20.161',
+        'USER': 'root',
+        'PASSWORD': 'Yxtc1234@',
 
-        'HOST': 'rm-2zea9z45nxl14k73vfo.mysql.rds.aliyuncs.com',
-        'USER': 'tj_scheduled_bus',
-        'PASSWORD': 'yxtc_20921',
+        # 'HOST': 'rm-2zea9z45nxl14k73vfo.mysql.rds.aliyuncs.com',
+        # 'USER': 'tj_scheduled_bus',
+        # 'PASSWORD': 'yxtc_20921',
     }
 }
 
