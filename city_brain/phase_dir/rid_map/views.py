@@ -26,11 +26,13 @@ def main(request):
     inter_list_hongkou = CustSignalInterMap.objects.filter(area_code='310109').order_by('cust_inter_id')
     inter_list_chongming = CustSignalInterMap.objects.filter(area_code='310151').order_by('cust_inter_id')
     inter_list_xuhui = CustSignalInterMap.objects.filter(area_code='310104').order_by('cust_inter_id')
+    inter_list_yangpu = CustSignalInterMap.objects.filter(area_code='310110').order_by('cust_inter_id')
 
     context = {'inter_list_baoshan': inter_list_baoshan,
                'inter_list_hongkou': inter_list_hongkou,
                'inter_list_chongming': inter_list_chongming,
                'inter_list_xuhui': inter_list_xuhui,
+               'inter_list_yangpu': inter_list_yangpu,
                }
 
     return render(request, 'main.html', context)

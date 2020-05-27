@@ -174,7 +174,14 @@ class InterFTRid(models.Model):
     adcode = models.CharField(max_length=20, null=True, blank=True)  # 城市编码
 
 
-
+# 电科进口道与rid对应关系
+class RoadFTRidMap(models.Model):
+    inter_id = models.CharField(max_length=20, null=True, blank=True)  # 高德路口ID
+    road = models.ForeignKey(CustFroad, on_delete=models.DO_NOTHING)  # 电科进口道
+    f_rid = models.ForeignKey(InterRid, on_delete=models.DO_NOTHING)  # 进口道rid
+    t_rid = models.ForeignKey(InterOutRid, on_delete=models.DO_NOTHING)  # 出口道rid
+    # cust_signal_id = models.CharField(max_length=20, null=True, blank=True)  # 信号机编号或id
+    # cust_froad_id = models.CharField(max_length=10, null=True, blank=True)  # 进口序号
 
 
 

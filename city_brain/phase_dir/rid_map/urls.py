@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from . import views, views_ft
 
 
 urlpatterns = [
@@ -13,5 +13,10 @@ urlpatterns = [
     path('export_phase_plan_dir/', views.export_phase_plan_dir),
     path('write_phase_dir_data_into_odps/', views.write_phase_dir_data_into_odps),
     path('write_inter_phase_data_into_odps/', views.write_inter_phase_data_into_odps),
+
+    # ft_rid版本
+    path('main_ft/', views_ft.main),
+    path('rid_map_ft/', views_ft.rid_map_show),
+
     path('', views.select),
 ]
