@@ -17,6 +17,8 @@ urlpatterns = [
     # ft_rid版本
     path('main_ft/', views_ft.main),
     path('rid_map_ft/', views_ft.rid_map_show),
+    path('get_t_rid_list/', views_ft.get_t_rid_list),
+    path('get_trun_list/', views_ft.get_trun_list),
 
     path('', views.select),
 ]

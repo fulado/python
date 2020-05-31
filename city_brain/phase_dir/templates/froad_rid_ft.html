@@ -27,6 +27,19 @@
             top: -100px;
         }
 
+        .cust_dir p,
+        .f_rid_dir p,
+        .t_rid_dir p {
+            display: inline;
+            position: absolute;
+            left: 150px;
+            top: 100px;
+            width: 300px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: red;
+        }
 
         .result {
             position: absolute;
@@ -48,6 +61,20 @@
             width: 480px;
         }
 
+        .modal select {
+            height: 20px;
+            width: 150px;
+        }
+
+        .modal label {
+            width: 70px;
+            text-align: center;
+        }
+
+        .modal input {
+            height: 20px;
+            width: 150px;
+        }
     </style>
 </head>
 <body>
@@ -58,7 +85,7 @@
         <p>电科进口道</p>
         <svg width="600px" height="600px" version="1.1" xmlns="http://www.w3.org/2000/svg">
             {% for cust_froad_info in cust_froad_list %}
-             <a href="#" data-toggle="modal" data-target="#myModal" onclick="setFroad('{{ cust_froad_info.id }}')">
+<!--             <a href="#" data-toggle="modal" data-target="#myModal" onclick="setFroad('{{ cust_froad_info.id }}')">-->
                 <g stroke="gray" stroke-width="20">
                     <path d="M300 300 200 300" transform="rotate({{ cust_froad_info.cust_froad_angle }}, 300, 300)"/>
                 <text x="250" y="150" style="stroke-width: 0.1;font-size: 15px;" transform="rotate({{ cust_froad_info.cust_froad_angle|add:-90 }}, 300, 300)">
@@ -71,6 +98,7 @@
     </div>
 
     <div class="f_rid_dir">
+        <p style="color: green;">进口道rid</p>
         <svg width="600px" height="600px" version="1.1" xmlns="http://www.w3.org/2000/svg">
             <g stroke="gray" stroke-width="20">
                 {% for rid_info in f_rid_list %}
@@ -84,6 +112,7 @@
     </div>
 
     <div class="t_rid_dir">
+        <p style="color: blue;">出口道rid</p>
         <svg width="600px" height="600px" version="1.1" xmlns="http://www.w3.org/2000/svg">
             <g stroke="gray" stroke-width="20">
                 {% for rid_info in t_rid_list %}
@@ -110,47 +139,58 @@
         <table class="table table-striped table-hover text-center">
             <thead>
             <tr>
-                <td>电路进口道</td>
-                <td>rid</td>
-                <td>操作</td>
-            </tr>
-            </thead>
-            <tbody>
-            {% for map_info in map_list %}
-            <tr>
-                <td>{{ map_info.road.cust_froad_name }} - {{ map_info.road.cust_froad_angle }} - {{ map_info.road.cust_froad_id }}</td>
-                <td>{{ map_info.rid.rid_name }} - {{ map_info.rid.ft_angle }}</td>
-                <td><button class="btn btn-default" map_id="{{ map_info.id }}" onclick="deleteMap('{{ forloop.counter }}', '{{ map_info.id }}')">删除</button></td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <div class="cust_phase_dir">
-        <table class="table table-striped table-hover text-center">
-            <thead>
-            <tr>
                 <td>相位</td>
-                <td>灯组</td>
-                <td>进口道</td>
-                <td>出口道</td>
-                <td>方向</td>
+                <td>电科进口道</td>
+                <td>电科出口道</td>
+                <td>转向</td>
+                <td>进口rid</td>
+                <td>出口rid</td>
+                <td>转向</td>
+                <td>操作</td>
             </tr>
             </thead>
             <tbody>
             {% for cust_phase_dir in cust_phase_dir_list %}
             <tr>
                 <td>{{ cust_phase_dir.phase_name }}</td>
-                <td>{{ cust_phase_dir.light_id }}</td>
                 <td>{{ cust_phase_dir.f_road }}</td>
                 <td>{{ cust_phase_dir.t_road }}</td>
                 <td>{{ cust_phase_dir.turn }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><button class="btn btn-default" map_id="{{ map_info.id }}" data-toggle="modal" data-target="#myModal"
+                            onclick="set_rid_info('{{ cust_phase_dir.f_road }}', '{{ cust_phase_dir.t_road }}', '{{ cust_phase_dir.turn }}')">编辑</button></td>
             </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
+
+<!--    <div class="cust_phase_dir">-->
+<!--        <table class="table table-striped table-hover text-center">-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <td>相位</td>-->
+<!--                <td>灯组</td>-->
+<!--                <td>进口道</td>-->
+<!--                <td>出口道</td>-->
+<!--                <td>方向</td>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            {% for cust_phase_dir in cust_phase_dir_list %}-->
+<!--            <tr>-->
+<!--                <td>{{ cust_phase_dir.phase_name }}</td>-->
+<!--                <td>{{ cust_phase_dir.light_id }}</td>-->
+<!--                <td>{{ cust_phase_dir.f_road }}</td>-->
+<!--                <td>{{ cust_phase_dir.t_road }}</td>-->
+<!--                <td>{{ cust_phase_dir.turn }}</td>-->
+<!--            </tr>-->
+<!--            {% endfor %}-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--    </div>-->
 
     <!--模态框-->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: 400px;">
@@ -161,23 +201,35 @@
                     <h4 class="modal-title" id="myModalLabel">进口道对应关系</h4>
                 </div>
                 <div class="modal-body">
+                    <!--电科进口道信息-->
                     <label>电科进口道</label>
-                    <select>
-                        {% for cust_froad_info in cust_froad_list %}
-                        <option value="{{ cust_froad_info.id }}">{{cust_froad_info.cust_froad_name}} - {{ cust_froad_info.cust_froad_angle }} - {{ cust_froad_info.cust_froad_id }}</option>
-                        {% endfor %}
+                    <input type="text" value="" disabled />
+
+                    <label>电科出口道</label>
+                    <input type="text" value="" disabled />
+
+                    <label style="width: 30px;">转向</label>
+                    <input style="width: 60px;" type="text" value="" disabled />
+                    <br />
+                    <br />
+
+                    <!--rid信息-->
+                    <label>进口道rid</label>
+                    <select onchange="f_rid_change()">
+                    {% for rid in ft_f_rid_list %}
+                    <option value="{{rid.f_road_name}}-{{rid.f_angle}}">{{rid.f_road_name}} - {{rid.f_angle}}</option>
+                    {% endfor %}
                     </select>
 
-                    <label>rid</label>
-                    <select>
-                        {% for rid_info in f_rid_list %}
-                        <option value="{{ rid_info.rid }}">{{ rid_info.rid_name }} - {{ rid_info.ft_angle }}</option>
-                        {% endfor %}
-                    </select>
+                    <label>出口道rid</label>
+                    <select onchange="t_rid_change()"></select>
+
+                    <label style="width: 30px;">转向</label>
+                    <select style="width: 60px;"></select>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addMap()">添加</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="add_map_ft()">确定</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
@@ -185,14 +237,77 @@
 </div>
 </body>
 <script type="text/javascript">
+    // 设置模态显示信息
+    function set_rid_info(f_road, t_road, turn_dir) {
+        $(".modal input").eq(0).val(f_road);
+        $(".modal input").eq(1).val(t_road);
+        $(".modal input").eq(2).val(turn_dir);
 
-    // 设置模态框中的电科进口道
-    function setFroad(road_id) {
-        $(".modal-body select").eq(0).val(road_id);
+        f_rid_change();
     }
 
+    // 选择进口道
+    function f_rid_change() {
+        set_t_rid_list();
+        t_rid_change();
+    }
+
+    // 设置出口道rid值
+    function set_t_rid_list() {
+        let f_rid_name_angle = $(".modal select").eq(0).val();
+        let t_rid_name_angle = $(".modal select").eq(1);
+        $.ajax({
+            type: "POST",
+            url: "/phase_dir/get_t_rid_list/",
+            async: false,
+            cache: false,
+            dataType: "json",
+            data: {'f_rid_name_angle': f_rid_name_angle},
+            success: function (data) {
+                t_rid_name_angle.empty();
+
+                for (i in data.ft_t_rid_list) {
+                    let new_option = $('<option></option>').val(data.ft_t_rid_list[i].t_rid_name_angle).text(data.ft_t_rid_list[i].t_rid_name_angle);
+                    t_rid_name_angle.append(new_option);
+                }
+            },
+            error: function () {
+            }
+        });
+    }
+
+    // 设置转向
+    function t_rid_change() {
+        let f_rid_name_angle = $(".modal select").eq(0).val();
+        let t_rid_name_angle = $(".modal select").eq(1).val();
+
+        let turn_direction = $(".modal select").eq(2);
+
+        $.ajax({
+            type: "POST",
+            url: "/phase_dir/get_trun_list/",
+            async: false,
+            cache: false,
+            dataType: "json",
+            data: {'f_rid_name_angle': f_rid_name_angle, 't_rid_name_angle': t_rid_name_angle},
+            success: function (data) {
+                turn_direction.empty();
+
+                let new_option = $('<option></option>').val(data.ft_rid_id).text(data.trun_dir);
+                turn_direction.append(new_option);
+            },
+            error: function () {
+            }
+        });
+    }
+
+    // 设置模态框中的电科进口道
+    // function setFroad(road_id) {
+    //     $(".modal-body select").eq(0).val(road_id);
+    // }
+
     // 添加进口道与rid的对应关系
-    function addMap() {
+    function add_map_ft() {
 
         let road_id = $(".modal select").eq(0).val();
         let rid_id = $(".modal select").eq(1).val();
@@ -307,7 +422,7 @@
         let rid_type = $('.result select').val();
         let inter_id = $('.result input').val();
 
-        window.location.href = "/phase_dir/rid_map?inter_id=" + inter_id + '&rid_type=' + rid_type;
+        window.location.href = "/phase_dir/rid_map_ft?inter_id=" + inter_id + '&rid_type=' + rid_type;
     }
 
 </script>

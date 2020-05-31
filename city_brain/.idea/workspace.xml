@@ -3,10 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="f7f00dff-5496-4209-acd6-4dc376728bc2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phase_dir/rid_map/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/rid_map/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/phase_dir/rid_map/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/rid_map/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phase_dir/rid_map/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/rid_map/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phase_dir/templates/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/templates/main.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phase_dir/rid_map/views_ft.py" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/rid_map/views_ft.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phase_dir/templates/froad_rid_ft.html" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/templates/froad_rid_ft.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -204,7 +203,7 @@
       <workItem from="1588839038789" duration="30800000" />
       <workItem from="1589217189286" duration="19471000" />
       <workItem from="1589417183231" duration="19039000" />
-      <workItem from="1590480940113" duration="9986000" />
+      <workItem from="1590480940113" duration="33039000" />
     </task>
     <servers />
   </component>

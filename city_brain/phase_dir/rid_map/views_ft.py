@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from .models import CustSignalInterMap, CustFroad, InterRid, InterOutRid, RoadFTRidMap
+from django.http import JsonResponse
+from .models import CustSignalInterMap, CustFroad, InterRid, InterOutRid, RoadFTRidMap, InterFTRid
 from .views import get_cust_phase
 
 
@@ -37,6 +38,9 @@ def rid_map_show(request):
     t_rid_list = InterOutRid.objects.filter(inter_id=inter_id)
     map_list = RoadFTRidMap.objects.filter(inter_id=inter_id)
 
+    # ft_rid_list = InterFTRid.objects.filter(inter_id=inter_id)
+    ft_f_rid_list = InterFTRid.objects.filter(inter_id=inter_id).values('f_road_name', 'f_angle').distinct()
+
     if rid_type:
         f_rid_list = f_rid_list.filter(rid_type_no=rid_type)
         t_rid_list = t_rid_list.filter(rid_type_no=rid_type)
@@ -53,6 +57,8 @@ def rid_map_show(request):
                'cust_signal_id': cust_signal_id,
                'rid_type': rid_type,
                'cust_phase_dir_list': cust_phase_dir_list,
+               # 'ft_rid_list': ft_rid_list,
+               'ft_f_rid_list': ft_f_rid_list,
                }
 
     response = render(request, 'froad_rid_ft.html', context)
@@ -61,14 +67,53 @@ def rid_map_show(request):
     return response
 
 
+# 获取ft_rid中的出口道rid
+def get_t_rid_list(request):
+    f_rid_name_angle = request.POST.get('f_rid_name_angle', '')
+    f_road_name, f_angle = f_rid_name_angle.split('-')
+
+    ft_t_rid_list = InterFTRid.objects.filter(f_road_name=f_road_name, f_angle=f_angle).\
+        values('t_road_name', 't_angle').distinct()
+
+    rid_list = []
+    for t_rid in ft_t_rid_list:
+        rid = {'t_rid_name_angle': t_rid.get('t_road_name') + '-' + str(t_rid.get('t_angle'))}
+        rid_list.append(rid)
+
+    data = {'ft_t_rid_list': rid_list}
+
+    return JsonResponse(data)
 
 
+# 获取转向列表
+def get_trun_list(request):
+    f_rid_name_angle = request.POST.get('f_rid_name_angle', '')
+    t_rid_name_angle = request.POST.get('t_rid_name_angle', '')
+    f_road_name, f_angle = f_rid_name_angle.split('-')
+    t_road_name, t_angle = t_rid_name_angle.split('-')
 
+    ft_rid_list = InterFTRid.objects.filter(f_road_name=f_road_name, f_angle=f_angle, t_road_name=t_road_name,
+                                            t_angle=t_angle)
 
+    if len(ft_rid_list) == 1:
+        ft_rid = ft_rid_list[0]
 
+        if ft_rid.turn_dir_no == '1':
+            turn_dir = '左转'
+        elif ft_rid.turn_dir_no == '2':
+            turn_dir = '直行'
+        elif ft_rid.turn_dir_no == '3':
+            turn_dir = '右转'
+        elif ft_rid.turn_dir_no == '4':
+            turn_dir = '掉头'
+        else:
+            turn_dir = '未知'
 
+        data = {'ft_rid_id': ft_rid.id, 'trun_dir': turn_dir}
+    else:
+        data = {'id': 0, 'trun_dir': '错误'}
 
-
+    return JsonResponse(data)
 
 
 
