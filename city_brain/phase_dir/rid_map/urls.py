@@ -19,6 +19,10 @@ urlpatterns = [
     path('rid_map_ft/', views_ft.rid_map_show),
     path('get_t_rid_list/', views_ft.get_t_rid_list),
     path('get_trun_list/', views_ft.get_trun_list),
+    path('add_map_ft/', views_ft.add_map_ft),
+
+    # test
+    path('test/', views_ft.test),
 
     path('', views.select),
 ]

@@ -45,7 +45,7 @@
             position: absolute;
             left: 0px;
             top: 400px;
-            width: 900px;
+            width: 1200px;
         }
 
         .content{
@@ -55,6 +55,8 @@
         }
 
         .cust_phase_dir{
+            \
+
             position: absolute;
             top: 400px;
             left: 920px;
@@ -150,17 +152,22 @@
             </tr>
             </thead>
             <tbody>
-            {% for cust_phase_dir in cust_phase_dir_list %}
+            {% for phase_road_rid in phase_road_rid_list %}
             <tr>
-                <td>{{ cust_phase_dir.phase_name }}</td>
-                <td>{{ cust_phase_dir.f_road }}</td>
-                <td>{{ cust_phase_dir.t_road }}</td>
-                <td>{{ cust_phase_dir.turn }}</td>
+                <td>{{ phase_road_rid.phase_name }}</td>
+                <td>{{ phase_road_rid.f_road.cust_froad_name }} - {{ phase_road_rid.f_road.cust_froad_angle }} - {{ phase_road_rid.f_road.cust_froad_id }}</td>
+                {% if phase_road_rid.turn != '行人' %}
+                <td>{{ phase_road_rid.t_road.cust_froad_name }} - {{ phase_road_rid.t_road.cust_froad_angle }} - {{ phase_road_rid.t_road.cust_froad_id }}</td>
+                {% endif %}
+                <td>{{ phase_road_rid.cust_turn }}</td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td><button class="btn btn-default" map_id="{{ map_info.id }}" data-toggle="modal" data-target="#myModal"
-                            onclick="set_rid_info('{{ cust_phase_dir.f_road }}', '{{ cust_phase_dir.t_road }}', '{{ cust_phase_dir.turn }}')">编辑</button></td>
+                            onclick="set_rid_info('{{ phase_road_rid.f_road.cust_froad_name }} - {{ phase_road_rid.f_road.cust_froad_angle }} - {{ phase_road_rid.f_road.cust_froad_id }}',
+                            '{{ phase_road_rid.t_road.cust_froad_name }} - {{ phase_road_rid.t_road.cust_froad_angle }} - {{ phase_road_rid.t_road.cust_froad_id }}',
+                            '{{ phase_road_rid.cust_turn }}',
+                            '{{ phase_road_rid.id }}')">编辑</button></td>
             </tr>
             {% endfor %}
             </tbody>
@@ -210,6 +217,7 @@
 
                     <label style="width: 30px;">转向</label>
                     <input style="width: 60px;" type="text" value="" disabled />
+                    <input type="hidden" value="" />
                     <br />
                     <br />
 
@@ -238,10 +246,11 @@
 </body>
 <script type="text/javascript">
     // 设置模态显示信息
-    function set_rid_info(f_road, t_road, turn_dir) {
+    function set_rid_info(f_road, t_road, turn_dir, map_id) {
         $(".modal input").eq(0).val(f_road);
         $(".modal input").eq(1).val(t_road);
         $(".modal input").eq(2).val(turn_dir);
+        $(".modal input").eq(3).val(map_id);
 
         f_rid_change();
     }
@@ -306,83 +315,42 @@
     //     $(".modal-body select").eq(0).val(road_id);
     // }
 
-    // 添加进口道与rid的对应关系
     function add_map_ft() {
 
-        let road_id = $(".modal select").eq(0).val();
-        let rid_id = $(".modal select").eq(1).val();
+        // 添加进口道与rid的对应关系
+        // let f_road = $(".modal input").eq(0).val(f_road);
+        // let t_road = $(".modal input").eq(1).val(t_road);
+        // let turn_dir = $(".modal input").eq(2).val(turn_dir);
+        let map_id = $(".modal input").eq(3).val(map_id);
 
-        // 根据id获取电科路段信息
-        let road_angle = ''
-        let road_name = ''
+        let f_rid = $(".modal select").eq(0).val();
+        let t_rid = $(".modal select").eq(1).val();
+        let turn_dir_no = $(".modal select").eq(2).val();
 
         $.ajax({
             type: "POST",
-            url: "/phase_dir/get_road_info/",
+            url: "/phase_dir/add_map_ft/",
             async: false,
             cache: false,
             dataType: "json",
-            data: {'road_id': road_id},
+            data: {'map_id': map_id, 'f_rid': f_rid, 't_rid': t_rid, 'turn_dir_no': turn_dir_no},
             success: function (data) {
-                road_angle = data.angle;
-                road_name = data.name;
             },
             error: function () {
             }
         });
 
-        // 根据id获取rid信息
-        let rid_angle = ''
-        let rid_name = ''
-
-        $.ajax({
-            type: "POST",
-            url: "/phase_dir/get_rid_info/",
-            async: false,
-            cache: false,
-            dataType: "json",
-            data: {'rid_id': rid_id},
-            success: function (data) {
-                rid_angle = data.angle;
-                rid_name = data.name;
-            },
-            error: function () {
-            }
-        });
-
-
-        // 保存对应关系数据
-        let inter_id = $('.result input').val();
-        let map_id = ''
-        $.ajax({
-            type: "POST",
-            url: "/phase_dir/save_map/",
-            async: false,
-            cache: false,
-            dataType: "json",
-            data: {'road_id': road_id, 'rid_id': rid_id, 'inter_id': inter_id},
-            success: function (data) {
-                map_id = data.map_id;
-            },
-            error: function () {
-            }
-        });
-
-        let newRow = "<tr>\n" +
-            "<td title=" + road_id + ">" + road_name + ' - ' + road_angle + "</td>\n" +
-            "<td title=" + rid_id + ">" + rid_name + ' - ' + rid_angle + "</td>\n" +
-            "<td>\n" +
-            "<button class=\"btn btn-default\" map_id=\"" + map_id + "\">删除</button>\n" +
-            "</td>\n" +
-            // "<input type=\"hidden\" value=" + road_id + ">" +
-            "</tr>"
-        $('.result tr:last').after(newRow);
-
-        $(".modal").hide();
-
-        refreshRowNumber();
-        // refreshStationList();
-
+        // let newRow = "<tr>\n" +
+        //     "<td title=" + road_id + ">" + road_name + ' - ' + road_angle + "</td>\n" +
+        //     "<td title=" + rid_id + ">" + rid_name + ' - ' + rid_angle + "</td>\n" +
+        //     "<td>\n" +
+        //     "<button class=\"btn btn-default\" map_id=\"" + map_id + "\">删除</button>\n" +
+        //     "</td>\n" +
+        //     // "<input type=\"hidden\" value=" + road_id + ">" +
+        //     "</tr>"
+        // $('.result tr:last').after(newRow);
+        //
+        // $(".modal").hide();
     }
 
     // 更新表格中的行号

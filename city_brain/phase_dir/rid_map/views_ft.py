@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import CustSignalInterMap, CustFroad, InterRid, InterOutRid, RoadFTRidMap, InterFTRid
+from .models import CustSignalInterMap, CustFroad, InterRid, InterOutRid, RoadFTRidMap, InterFTRid, PhaseFroadFTRidMap
 from .views import get_cust_phase
+from .phase_tools import save_phase_cust_road
 
 
 def main(request):
@@ -46,7 +47,7 @@ def rid_map_show(request):
         t_rid_list = t_rid_list.filter(rid_type_no=rid_type)
 
     # 获取电科相位方向数据
-    cust_phase_dir_list = get_cust_phase(cust_signal_id)
+    phase_road_rid_list = PhaseFroadFTRidMap.objects.filter(inter_id=inter_id)
 
     context = {'cust_froad_list': cust_froad_list,
                'f_rid_list': f_rid_list,
@@ -56,7 +57,7 @@ def rid_map_show(request):
                'inter_name': inter_map_info.inter_name,
                'cust_signal_id': cust_signal_id,
                'rid_type': rid_type,
-               'cust_phase_dir_list': cust_phase_dir_list,
+               'phase_road_rid_list': phase_road_rid_list,
                # 'ft_rid_list': ft_rid_list,
                'ft_f_rid_list': ft_f_rid_list,
                }
@@ -116,9 +117,35 @@ def get_trun_list(request):
     return JsonResponse(data)
 
 
+# 保存相位进口道rid对应关系数据
+def add_map_ft(request):
+
+    map_id = request.POST.get('map_id', '')
+    f_rid = request.POST.get('f_rid', '')
+    t_rid = request.POST.get('t_rid', '')
+    turn_dir_no = request.POST.get('turn_dir_no', '')
+
+    print(map_id)
+    print(f_rid)
+    print(t_rid)
+    print(turn_dir_no)
+
+    data = {'data': ''}
+
+    return JsonResponse(data)
 
 
+# 测试
+def test(request):
+    inter_list = CustSignalInterMap.objects.values('inter_id').distinct()
 
+    for inter_id in inter_list:
+        res = save_phase_cust_road(inter_id.get('inter_id'))
+        print(inter_id.get('inter_id') + str(res))
+
+    data = {'data': ''}
+
+    return JsonResponse(data)
 
 
 
