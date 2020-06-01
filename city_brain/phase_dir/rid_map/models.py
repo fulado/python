@@ -85,7 +85,7 @@ class RoadRidMap(models.Model):
     cust_froad_id = models.CharField(max_length=10, null=True, blank=True)  # 进口序号
 
 
-# 电科进口道与出口到rid对应关系
+# 电科出口道rid对应关系
 class RoadOutRidMap(models.Model):
     inter_id = models.CharField(max_length=20, null=True, blank=True)  # 高德路口ID
     road = models.ForeignKey(CustFroad, on_delete=models.DO_NOTHING)
@@ -174,15 +174,26 @@ class InterFTRid(models.Model):
     adcode = models.CharField(max_length=20, null=True, blank=True)  # 城市编码
 
 
-# 电科进口道与rid对应关系
-class RoadFTRidMap(models.Model):
-    inter_id = models.CharField(max_length=20, null=True, blank=True)  # 高德路口ID
-    road = models.ForeignKey(CustFroad, on_delete=models.DO_NOTHING)  # 电科进口道
-    f_rid = models.ForeignKey(InterRid, on_delete=models.DO_NOTHING)  # 进口道rid
-    t_rid = models.ForeignKey(InterOutRid, on_delete=models.DO_NOTHING)  # 出口道rid
+# 相位电科进出口道与rid对应关系表
+# class RoadFTRidMap(models.Model):
+#     inter_id = models.CharField(max_length=20, null=True, blank=True)  # 高德路口ID
+#     road = models.ForeignKey(CustFroad, on_delete=models.DO_NOTHING)  # 电科进口道
+#     f_rid = models.ForeignKey(InterRid, on_delete=models.DO_NOTHING)  # 进口道rid
+#     t_rid = models.ForeignKey(InterOutRid, on_delete=models.DO_NOTHING)  # 出口道rid
     # cust_signal_id = models.CharField(max_length=20, null=True, blank=True)  # 信号机编号或id
     # cust_froad_id = models.CharField(max_length=10, null=True, blank=True)  # 进口序号
 
+
+# 相位电科进出口道与rid对应关系表
+class PhaseFroadFTRidMap(models.Model):
+    inter_id = models.CharField(max_length=20, null=True, blank=True)  # 高德路口ID
+    phase_name = models.CharField(max_length=10, null=True, blank=True)  # 相位名称
+    f_road = models.ForeignKey(CustFroad, on_delete=models.DO_NOTHING)  # 电科进口道
+    t_road = models.ForeignKey(CustFroad, on_delete=models.DO_NOTHING)  # 电科进口道
+    f_rid = models.CharField(max_length=50, null=True, blank=True)  # 进口道rid
+    t_rid = models.CharField(max_length=50, null=True, blank=True)  # 出口道rid
+    turn_dir_no = models.CharField(max_length=10, null=True, blank=True)  # 根据进入、出口路段转向计算：1 左转 2 直行 2 右转 4 掉头
+    ft_rid = models.ForeignKey(InterFTRid, on_delete=models.DO_NOTHING)  # 电科进口道
 
 
 

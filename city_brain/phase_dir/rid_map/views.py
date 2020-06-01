@@ -269,7 +269,7 @@ def get_cust_phase(cust_signal_id):
 
             phase_light_info_dict_list.append(data_dict)
 
-    # 相位同行方向列表
+    # 相位通行方向列表
     phase_dir_list = []
 
     # 根据通行内容取道路信息
