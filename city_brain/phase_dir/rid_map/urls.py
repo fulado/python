@@ -18,7 +18,7 @@ urlpatterns = [
     path('main_ft/', views_ft.main),
     path('rid_map_ft/', views_ft.rid_map_show),
     path('get_t_rid_list/', views_ft.get_t_rid_list),
-    path('get_trun_list/', views_ft.get_trun_list),
+    path('get_turn_list/', views_ft.get_turn_list),
     path('add_map_ft/', views_ft.add_map_ft),
 
     # test

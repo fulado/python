@@ -167,7 +167,8 @@
                             onclick="set_rid_info('{{ phase_road_rid.f_road.cust_froad_name }} - {{ phase_road_rid.f_road.cust_froad_angle }} - {{ phase_road_rid.f_road.cust_froad_id }}',
                             '{{ phase_road_rid.t_road.cust_froad_name }} - {{ phase_road_rid.t_road.cust_froad_angle }} - {{ phase_road_rid.t_road.cust_froad_id }}',
                             '{{ phase_road_rid.cust_turn }}',
-                            '{{ phase_road_rid.id }}')">编辑</button></td>
+                            '{{ phase_road_rid.id }}',
+                            '{{ forloop.counter }}')">编辑</button></td>
             </tr>
             {% endfor %}
             </tbody>
@@ -218,6 +219,8 @@
                     <label style="width: 30px;">转向</label>
                     <input style="width: 60px;" type="text" value="" disabled />
                     <input type="hidden" value="" />
+                    <input type="hidden" value="" />
+
                     <br />
                     <br />
 
@@ -225,7 +228,7 @@
                     <label>进口道rid</label>
                     <select onchange="f_rid_change()">
                     {% for rid in ft_f_rid_list %}
-                    <option value="{{rid.f_road_name}}-{{rid.f_angle}}">{{rid.f_road_name}} - {{rid.f_angle}}</option>
+                    <option value="{{rid.f_rid}}">{{rid.f_road_name}} - {{rid.f_angle}}</option>
                     {% endfor %}
                     </select>
 
@@ -246,11 +249,12 @@
 </body>
 <script type="text/javascript">
     // 设置模态显示信息
-    function set_rid_info(f_road, t_road, turn_dir, map_id) {
+    function set_rid_info(f_road, t_road, turn_dir, map_id, row_num) {
         $(".modal input").eq(0).val(f_road);
         $(".modal input").eq(1).val(t_road);
         $(".modal input").eq(2).val(turn_dir);
         $(".modal input").eq(3).val(map_id);
+        $(".modal input").eq(4).val(row_num);
 
         f_rid_change();
     }
@@ -263,7 +267,7 @@
 
     // 设置出口道rid值
     function set_t_rid_list() {
-        let f_rid_name_angle = $(".modal select").eq(0).val();
+        let f_rid = $(".modal select").eq(0).val();
         let t_rid_name_angle = $(".modal select").eq(1);
         $.ajax({
             type: "POST",
@@ -271,12 +275,12 @@
             async: false,
             cache: false,
             dataType: "json",
-            data: {'f_rid_name_angle': f_rid_name_angle},
+            data: {'f_rid': f_rid},
             success: function (data) {
                 t_rid_name_angle.empty();
 
                 for (i in data.ft_t_rid_list) {
-                    let new_option = $('<option></option>').val(data.ft_t_rid_list[i].t_rid_name_angle).text(data.ft_t_rid_list[i].t_rid_name_angle);
+                    let new_option = $('<option></option>').val(data.ft_t_rid_list[i].t_rid).text(data.ft_t_rid_list[i].t_rid_name_angle);
                     t_rid_name_angle.append(new_option);
                 }
             },
@@ -287,22 +291,25 @@
 
     // 设置转向
     function t_rid_change() {
-        let f_rid_name_angle = $(".modal select").eq(0).val();
-        let t_rid_name_angle = $(".modal select").eq(1).val();
+        let f_rid = $(".modal select").eq(0).val();
+        let t_rid = $(".modal select").eq(1).val();
 
         let turn_direction = $(".modal select").eq(2);
 
         $.ajax({
             type: "POST",
-            url: "/phase_dir/get_trun_list/",
+            url: "/phase_dir/get_turn_list/",
             async: false,
             cache: false,
             dataType: "json",
-            data: {'f_rid_name_angle': f_rid_name_angle, 't_rid_name_angle': t_rid_name_angle},
+            data: {'f_rid': f_rid, 't_rid': t_rid},
             success: function (data) {
                 turn_direction.empty();
 
-                let new_option = $('<option></option>').val(data.ft_rid_id).text(data.trun_dir);
+                let new_option = $('<option></option>').val(data.turn_dir_no).text(data.turn_dir);
+                turn_direction.append(new_option);
+
+                new_option = $('<option></option>').val('0').text('行人');
                 turn_direction.append(new_option);
             },
             error: function () {
@@ -321,7 +328,8 @@
         // let f_road = $(".modal input").eq(0).val(f_road);
         // let t_road = $(".modal input").eq(1).val(t_road);
         // let turn_dir = $(".modal input").eq(2).val(turn_dir);
-        let map_id = $(".modal input").eq(3).val(map_id);
+        let map_id = $(".modal input").eq(3).val();
+        let row_num = $(".modal input").eq(4).val();
 
         let f_rid = $(".modal select").eq(0).val();
         let t_rid = $(".modal select").eq(1).val();
@@ -335,6 +343,9 @@
             dataType: "json",
             data: {'map_id': map_id, 'f_rid': f_rid, 't_rid': t_rid, 'turn_dir_no': turn_dir_no},
             success: function (data) {
+                $('.result tr:eq(' + row_num + ') td:eq(4)').html(data.f_rid);
+                $('.result tr:eq(' + row_num + ') td:eq(5)').html(data.t_rid);
+                $('.result tr:eq(' + row_num + ') td:eq(6)').html(data.turn_dir);
             },
             error: function () {
             }

@@ -40,7 +40,7 @@ def rid_map_show(request):
     map_list = RoadFTRidMap.objects.filter(inter_id=inter_id)
 
     # ft_rid_list = InterFTRid.objects.filter(inter_id=inter_id)
-    ft_f_rid_list = InterFTRid.objects.filter(inter_id=inter_id).values('f_road_name', 'f_angle').distinct()
+    ft_f_rid_list = InterFTRid.objects.filter(inter_id=inter_id).values('f_road_name', 'f_angle', 'f_rid').distinct()
 
     if rid_type:
         f_rid_list = f_rid_list.filter(rid_type_no=rid_type)
@@ -70,15 +70,14 @@ def rid_map_show(request):
 
 # 获取ft_rid中的出口道rid
 def get_t_rid_list(request):
-    f_rid_name_angle = request.POST.get('f_rid_name_angle', '')
-    f_road_name, f_angle = f_rid_name_angle.split('-')
+    f_rid = request.POST.get('f_rid', '')
 
-    ft_t_rid_list = InterFTRid.objects.filter(f_road_name=f_road_name, f_angle=f_angle).\
-        values('t_road_name', 't_angle').distinct()
+    ft_t_rid_list = InterFTRid.objects.filter(f_rid=f_rid).values('t_road_name', 't_angle', 't_rid').distinct()
 
     rid_list = []
     for t_rid in ft_t_rid_list:
-        rid = {'t_rid_name_angle': t_rid.get('t_road_name') + '-' + str(t_rid.get('t_angle'))}
+        rid = {'t_rid_name_angle': t_rid.get('t_road_name') + '-' + str(t_rid.get('t_angle')),
+               't_rid': t_rid.get('t_rid')}
         rid_list.append(rid)
 
     data = {'ft_t_rid_list': rid_list}
@@ -87,14 +86,11 @@ def get_t_rid_list(request):
 
 
 # 获取转向列表
-def get_trun_list(request):
-    f_rid_name_angle = request.POST.get('f_rid_name_angle', '')
-    t_rid_name_angle = request.POST.get('t_rid_name_angle', '')
-    f_road_name, f_angle = f_rid_name_angle.split('-')
-    t_road_name, t_angle = t_rid_name_angle.split('-')
+def get_turn_list(request):
+    f_rid = request.POST.get('f_rid', '')
+    t_rid = request.POST.get('t_rid', '')
 
-    ft_rid_list = InterFTRid.objects.filter(f_road_name=f_road_name, f_angle=f_angle, t_road_name=t_road_name,
-                                            t_angle=t_angle)
+    ft_rid_list = InterFTRid.objects.filter(f_rid=f_rid, t_rid=t_rid)
 
     if len(ft_rid_list) == 1:
         ft_rid = ft_rid_list[0]
@@ -110,9 +106,9 @@ def get_trun_list(request):
         else:
             turn_dir = '未知'
 
-        data = {'ft_rid_id': ft_rid.id, 'trun_dir': turn_dir}
+        data = {'turn_dir_no': ft_rid.turn_dir_no, 'turn_dir': turn_dir}
     else:
-        data = {'id': 0, 'trun_dir': '错误'}
+        data = {'id': 0, 'turn_dir': '错误'}
 
     return JsonResponse(data)
 
@@ -125,12 +121,51 @@ def add_map_ft(request):
     t_rid = request.POST.get('t_rid', '')
     turn_dir_no = request.POST.get('turn_dir_no', '')
 
-    print(map_id)
-    print(f_rid)
-    print(t_rid)
-    print(turn_dir_no)
+    # print(map_id)
+    # print(f_rid)
+    # print(t_rid)
+    # print(turn_dir_no)
 
-    data = {'data': ''}
+    if turn_dir_no == '1':
+        turn_dir = '左转'
+    elif turn_dir_no == '2':
+        turn_dir = '直行'
+    elif turn_dir_no == '3':
+        turn_dir = '右转'
+    elif turn_dir_no == '4':
+        turn_dir = '掉头'
+    elif turn_dir_no == '0':
+        turn_dir = '行人'
+    else:
+        turn_dir = '未知'
+
+    # 根据map_id确定当前的PhaseFroadFTRidMap
+    phase_road_ftrid = PhaseFroadFTRidMap.objects.get(id=map_id)
+
+    phase_road_ftrid.f_rid = f_rid
+    phase_road_ftrid.turn_dir_no = turn_dir_no
+
+    if turn_dir_no == '0':  # 行人相位
+        # 行人相位没有出口道, 只查询进口道
+        f_rid_info = InterRid.objects.get(rid=f_rid)
+        phase_road_ftrid.t_rid = None
+
+        data = {'f_rid': f_rid_info.rid_name + ' - ' + str(f_rid_info.ft_angle),
+                't_rid': '',
+                'turn_dir': turn_dir,
+                }
+    else:
+        phase_road_ftrid.t_rid = t_rid
+
+        # 非行人相位, 根据f_rid, t_rid, turn_dir_no确定一条ft_rid
+        ft_rid_info = InterFTRid.objects.get(f_rid=f_rid, t_rid=t_rid, turn_dir_no=turn_dir_no)
+
+        data = {'f_rid': ft_rid_info.f_road_name + ' - ' + str(ft_rid_info.f_angle),
+                't_rid': ft_rid_info.t_road_name + ' - ' + str(ft_rid_info.t_angle),
+                'turn_dir': turn_dir,
+                }
+
+    phase_road_ftrid.save()
 
     return JsonResponse(data)
 
