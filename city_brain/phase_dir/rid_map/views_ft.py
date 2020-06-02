@@ -142,20 +142,20 @@ def add_map_ft(request):
     # 根据map_id确定当前的PhaseFroadFTRidMap
     phase_road_ftrid = PhaseFroadFTRidMap.objects.get(id=map_id)
 
-    phase_road_ftrid.f_rid = f_rid
+    phase_road_ftrid.f_rid_id = f_rid
     phase_road_ftrid.turn_dir_no = turn_dir_no
 
     if turn_dir_no == '0':  # 行人相位
         # 行人相位没有出口道, 只查询进口道
         f_rid_info = InterRid.objects.get(rid=f_rid)
-        phase_road_ftrid.t_rid = None
+        phase_road_ftrid.t_rid_id = None
 
         data = {'f_rid': f_rid_info.rid_name + ' - ' + str(f_rid_info.ft_angle),
                 't_rid': '',
                 'turn_dir': turn_dir,
                 }
     else:
-        phase_road_ftrid.t_rid = t_rid
+        phase_road_ftrid.t_rid_id = t_rid
 
         # 非行人相位, 根据f_rid, t_rid, turn_dir_no确定一条ft_rid
         ft_rid_info = InterFTRid.objects.get(f_rid=f_rid, t_rid=t_rid, turn_dir_no=turn_dir_no)
@@ -166,6 +166,28 @@ def add_map_ft(request):
                 }
 
     phase_road_ftrid.save()
+
+    return JsonResponse(data)
+
+
+# 删除相位进口道rid对应关系数据
+def delete_map_ft(request):
+    map_id = request.POST.get('map_id', '')
+
+    # 根据map_id确定当前的PhaseFroadFTRidMap
+    try:
+        phase_road_ftrid = PhaseFroadFTRidMap.objects.get(id=map_id)
+
+        phase_road_ftrid.f_rid_id = None
+        phase_road_ftrid.t_rid_id = None
+        phase_road_ftrid.turn_dir_no = None
+
+        phase_road_ftrid.save()
+
+        data = {'res': True}
+    except Exception as e:
+        print(e)
+        data = {'res': False}
 
     return JsonResponse(data)
 

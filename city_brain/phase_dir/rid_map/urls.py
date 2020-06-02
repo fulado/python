@@ -20,6 +20,7 @@ urlpatterns = [
     path('get_t_rid_list/', views_ft.get_t_rid_list),
     path('get_turn_list/', views_ft.get_turn_list),
     path('add_map_ft/', views_ft.add_map_ft),
+    path('delete_map_ft/', views_ft.delete_map_ft),
 
     # test
     path('test/', views_ft.test),

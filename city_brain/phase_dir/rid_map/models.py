@@ -191,8 +191,8 @@ class PhaseFroadFTRidMap(models.Model):
     f_road = models.ForeignKey(CustFroad, on_delete=models.DO_NOTHING, related_name='f_road', null=True, blank=True)  # 电科进口道
     t_road = models.ForeignKey(CustFroad, on_delete=models.DO_NOTHING, related_name='t_road', null=True, blank=True)  # 电科进口道
     cust_turn = models.CharField(max_length=20, null=True, blank=True)  # 电科转向标记
-    f_rid = models.CharField(max_length=50, null=True, blank=True)  # 进口道rid
-    t_rid = models.CharField(max_length=50, null=True, blank=True)  # 出口道rid
+    f_rid = models.ForeignKey(InterRid, on_delete=models.DO_NOTHING, null=True, blank=True)  # 进口道rid
+    t_rid = models.ForeignKey(InterOutRid, on_delete=models.DO_NOTHING, null=True, blank=True)  # 出口道rid
     turn_dir_no = models.CharField(max_length=10, null=True, blank=True)  # 根据进入、出口路段转向计算：1 左转 2 直行 2 右转 4 掉头
     ft_rid = models.ForeignKey(InterFTRid, on_delete=models.DO_NOTHING, null=True, blank=True)  # 电科进口道
 

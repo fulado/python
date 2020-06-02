@@ -160,9 +160,17 @@
                 <td>{{ phase_road_rid.t_road.cust_froad_name }} - {{ phase_road_rid.t_road.cust_froad_angle }} - {{ phase_road_rid.t_road.cust_froad_id }}</td>
                 {% endif %}
                 <td>{{ phase_road_rid.cust_turn }}</td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>{{ phase_road_rid.f_rid.rid_name }} - {{ phase_road_rid.f_rid.ft_angle }}</td>
+                <td>{{ phase_road_rid.t_rid.rid_name }} - {{ phase_road_rid.t_rid.ft_angle }}</td>
+                <td>
+                    {% if phase_road_rid.turn_dir_no == '1' %}左转
+                    {% elif phase_road_rid.turn_dir_no == '2' %}直行
+                    {% elif phase_road_rid.turn_dir_no == '3' %}右转
+                    {% elif phase_road_rid.turn_dir_no == '4' %}掉头
+                    {% elif phase_road_rid.turn_dir_no == '5' %}未知
+                    {% elif phase_road_rid.turn_dir_no == '0' %}行人
+                    {% endif %}
+                </td>
                 <td><button class="btn btn-default" map_id="{{ map_info.id }}" data-toggle="modal" data-target="#myModal"
                             onclick="set_rid_info('{{ phase_road_rid.f_road.cust_froad_name }} - {{ phase_road_rid.f_road.cust_froad_angle }} - {{ phase_road_rid.f_road.cust_froad_id }}',
                             '{{ phase_road_rid.t_road.cust_froad_name }} - {{ phase_road_rid.t_road.cust_froad_angle }} - {{ phase_road_rid.t_road.cust_froad_id }}',
@@ -240,6 +248,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="del_map_ft()">删除</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="add_map_ft()">确定</button>
                 </div>
             </div><!-- /.modal-content -->
@@ -374,25 +383,31 @@
     }
 
     // 删除站点
-    function deleteMap(row_number, map_id) {
+    function del_map_ft() {
+        let map_id = $(".modal input").eq(3).val();
+        let row_num = $(".modal input").eq(4).val();
 
         // 保存对应关系数据
         $.ajax({
             type: "POST",
-            url: "/phase_dir/delete_map/",
+            url: "/phase_dir/delete_map_ft/",
             async: false,
             cache: false,
             dataType: "json",
             data: {'map_id': map_id},
-            success: function () {
+            success: function (data) {
+                if (data.res) {
+                    $('.result tr:eq(' + row_num + ') td:eq(4)').html('-');
+                    $('.result tr:eq(' + row_num + ') td:eq(5)').html('-');
+                    $('.result tr:eq(' + row_num + ') td:eq(6)').html('-');
+                } else {
+                    alert('删除失败');
+                }
             },
             error: function () {
+                alert('删除失败');
             }
         });
-
-        $('.result tr').eq(row_number).remove();
-        refreshRowNumber();
-        // refreshStationList();
     }
 
 
