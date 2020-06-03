@@ -8,6 +8,7 @@ from threading import Thread
 from sys_data.sdo_user import SdoUser
 from sys_data.sdo_heart_beat import SdoHeartBeat
 
+from dynamic_data.traffic_data_report import TrafficDataReport
 from dynamic_data.cross_report_ctrl import CrossReportCtrl
 from dynamic_data.dynamic_data import DynamicData
 from static_data.static_data import StaticData
@@ -119,42 +120,42 @@ class DataHandler(object):
         print_log('SysInfo', '发送')
         self.send_data_subscribe(['', ], 'SysInfo')
 
-        # 请求区域信息
-        print_log('RegionParam', '发送')
-        self.send_data_subscribe(['310117000', ], 'RegionParam')
-
-        # 获取信号id和路口id
-        self.get_signal_id_list()
-        self.get_cross_id_list()
-
-        # 订阅实时数据
-        time.sleep(10)
-        print_log('CrossReportCtrl', '发送')
-        self.cross_report_ctrl_handle()
-
-        # 请求信号机信息
-        print_log('SignalControler', '发送')
-        self.send_data_subscribe(self.signal_id_list, 'SignalControler')
-
-        # 请求灯组信息
-        print_log('LampGroup', '发送')
-        self.send_data_subscribe(self.signal_id_list, 'LampGroup')
-
-        # 请求车道信息
-        print_log('LaneParam', '发送')
-        self.send_data_subscribe(self.cross_id_list, 'LaneParam')
-
-        # 请求相位信息
-        print_log('PhaseParam', '发送')
-        self.send_data_subscribe(self.cross_id_list, 'PhaseParam')
-
-        # 请求阶段信息
-        print_log('StageParam', '发送')
-        self.send_data_subscribe(self.cross_id_list, 'StageParam')
-
-        # 请求配时方案信息
-        print_log('PlanParam', '发送')
-        self.send_data_subscribe(self.cross_id_list, 'PlanParam')
+        # # 请求区域信息
+        # print_log('RegionParam', '发送')
+        # self.send_data_subscribe(['310117000', ], 'RegionParam')
+        #
+        # # 获取信号id和路口id
+        # self.get_signal_id_list()
+        # self.get_cross_id_list()
+        #
+        # # 订阅实时数据
+        # time.sleep(10)
+        # print_log('CrossReportCtrl', '发送')
+        # self.cross_report_ctrl_handle()
+        #
+        # # 请求信号机信息
+        # print_log('SignalControler', '发送')
+        # self.send_data_subscribe(self.signal_id_list, 'SignalControler')
+        #
+        # # 请求灯组信息
+        # print_log('LampGroup', '发送')
+        # self.send_data_subscribe(self.signal_id_list, 'LampGroup')
+        #
+        # # 请求车道信息
+        # print_log('LaneParam', '发送')
+        # self.send_data_subscribe(self.cross_id_list, 'LaneParam')
+        #
+        # # 请求相位信息
+        # print_log('PhaseParam', '发送')
+        # self.send_data_subscribe(self.cross_id_list, 'PhaseParam')
+        #
+        # # 请求阶段信息
+        # print_log('StageParam', '发送')
+        # self.send_data_subscribe(self.cross_id_list, 'StageParam')
+        #
+        # # 请求配时方案信息
+        # print_log('PlanParam', '发送')
+        # self.send_data_subscribe(self.cross_id_list, 'PlanParam')
 
     # 发送数据查询, 订阅请求
     def send_data_subscribe(self, object_id_list, obj_name):
@@ -205,6 +206,13 @@ class DataHandler(object):
         cross_report_ctrl.create_send_data('CrossStage')
         cross_report_ctrl.put_send_data_into_queue(self.send_data_queue)
 
+        # 订阅路口流量
+        traffic_data_report = TrafficDataReport(self.token)
+
+        for cross_id in self.cross_id_list:
+            time.sleep(1)
+            traffic_data_report.create_send_data(cross_id)
+            cross_report_ctrl.put_send_data_into_queue(self.send_data_queue)
 
 
 

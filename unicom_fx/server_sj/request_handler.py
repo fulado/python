@@ -84,16 +84,17 @@ class MyRequestHandler(BaseRequestHandler):
                     self.request.send(' '.encode())
                     continue
                 elif 'SDO_User' in tmp_recv_data:
-                    print_log('登录信息', '接收')
+                    # print_log('登录信息', '接收')
                     self.logger_recv.info(tmp_recv_data)
                 elif 'SDO_HeartBeat' in tmp_recv_data:
-                    print_log('心跳数据: sdo_heartbeat', '接收')
-                    # pass
+                    # print_log('心跳数据: sdo_heartbeat', '接收')
+                    pass
                 elif 'TempPlanParam' in tmp_recv_data:
-                    print_log('临时优化方案: temp_plan_param', '接收')
+                    # print_log('临时优化方案: temp_plan_param', '接收')
                     self.logger_recv.info(tmp_recv_data)
                 else:
-                    print_log('信号数据', '接收')
+                    # print_log('信号数据', '接收')
+                    pass
 
                 print_log(tmp_recv_data, '接收')
 
@@ -130,7 +131,7 @@ class MyRequestHandler(BaseRequestHandler):
                 else:
                     pass
 
-                # print_log(send_data, '发送')
+                print_log(send_data, '发送')
 
                 # 发送数据
                 self.request.send(send_data.encode())
@@ -180,7 +181,7 @@ class MyRequestHandler(BaseRequestHandler):
 
         print('datahub发布数据线程结束')
 
-    # 信号配饰优化方案下发线程
+    # 信号配时优化方案下发线程
     def thread_temp_plan(self):
         # 创建单路口临时方案下发对象
         temp_plan = TempPlan(self.token, self.queue_send_data)

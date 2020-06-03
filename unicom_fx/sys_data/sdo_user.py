@@ -29,8 +29,9 @@ class SdoUser(object):
     # 生成登录数据
     def create_send_data(self):
         # 判断账号密码
-        if self.username == 'fengxian' and self.password == 'fengxian':
-            login_success = True
+        # if self.username == 'fengxian' and self.password == 'fengxian':
+        if self.username != '' and self.password != '':
+                login_success = True
         else:
             login_success = False
 

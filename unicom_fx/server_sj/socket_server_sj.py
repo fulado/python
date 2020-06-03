@@ -1,6 +1,8 @@
 """
 主程序
 """
+import sys
+sys.path.append('/opt/unicom_sj')
 
 from socketserver import TCPServer
 

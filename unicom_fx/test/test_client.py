@@ -4,7 +4,7 @@ import time
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # client.connect(('15.75.15.97', 19530))
-client.connect(('127.0.0.1', 19530))
+client.connect(('127.0.0.1', 19527))
 
 sdo_heart_beat = """
 <?xml version="1.0" encoding="UTF-8"?>
@@ -80,7 +80,7 @@ try:
     #
     # recv_data = client.recv(100000)
     # print(recv_data.decode())
-    send_data = xml_data.strip()
+    send_data = sdo_user.strip()
     # print(send_data)
     client.send(send_data.encode())
 
