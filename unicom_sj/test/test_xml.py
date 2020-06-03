@@ -7,6 +7,7 @@ from server.xml_handler import XmlHandler
 from server.sys_data import LoginData, HearBeat, CrossReportCtrl
 from server.static_data import SysInfo, LampGroup, LaneParam, PhaseParam
 from server.dynamic_data import CrossCycle, CrossStage
+from dynamic_data.traffic_data_report import TrafficDataReport
 
 
 def parse_xml(xml_data):
@@ -49,7 +50,6 @@ def parse_xml(xml_data):
 #             get_child_element(child)
 #         else:
 #             return
-        
 
 
 if __name__ == '__main__':
@@ -59,8 +59,8 @@ if __name__ == '__main__':
 
     # parse_xml(xml_data.strip())
 
-    xml_handler = XmlHandler()
-    xml_handler.xml_parse(xml_data.strip())
+    # xml_handler = XmlHandler()
+    # xml_handler.xml_parse(xml_data.strip())
 
 
     # print(xml_handler.object_type)
@@ -96,12 +96,10 @@ if __name__ == '__main__':
     # CrossStage.save_data()
 
     # 订阅数据
-    cross_cycle = CrossReportCtrl('CrossCycle')
-    cross_cycle.get_cross_id_list()
-    cross_cycle.set_response_data()
-
-    xml_handler.xml_construct(cross_cycle.response_data, cross_cycle.data_type, '', cross_cycle.seq)
-
+    tfr = TrafficDataReport('CrossCycle')
+    tfr.get_cross_id_list()
+    cross_id = '123456'
+    tfr.create_send_data(cross_id)
 
     #
     # sys_info = PhaseParam('123')
@@ -111,7 +109,6 @@ if __name__ == '__main__':
     # sys_info.parse_response_data(xml_handler.request_data_dict)
     # sys_info.save_data_to_file()
 
-
     # 系统参数返回
-    print(xml_handler.response_data_xml)
+    print(tfr.send_data_xml)
 

@@ -65,7 +65,30 @@ class DynamicData(object):
 
         self.datahub_put_data = [self.obj_name, [data_list_tmp, ]]
 
+    # 转化流量数据为列表
+    def convert_traffic_data_for_datahub(self):
+        cross_id = self.recv_data.get('CrossID')
+        end_time = self.recv_data.get('EndTime')
+        interval = int(float(self.recv_data.get('Interval')))
+        traffic_data_list = self.recv_data.get('DataList').get('Data')
 
+        data_list_tmp = []
+        for traffic_data in traffic_data_list:
+
+            lane_data = [cross_id, end_time, interval]
+
+            for k, v in traffic_data.items():
+                if k == 'LaneNo':
+                    lane_data.append(v)
+                else:
+                    lane_data.append(int(float(v)))
+
+            lane_data.append(time.strftime('%Y%m%d', time.localtime()))
+            lane_data.append('310000')
+
+            data_list_tmp.append(lane_data)
+
+        self.datahub_put_data = [self.obj_name, data_list_tmp]
 
 
 # # 路口周期

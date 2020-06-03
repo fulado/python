@@ -22,6 +22,7 @@ class DatahubHandler(object):
         self.topic_phase_param = 'ods_signal_phase_lane_rltn_gb1049_songjiang'
         self.topic_cross_cycle = 'ods_signal_cycle_rt_gb1049_songjiang'
         self.topic_cross_stage = 'ods_signal_stage_rt_gb1049_songjiang'
+        self.topic_cross_traffic = 'ods_signal_traffic_data_rt_gb1049_songjiang'
 
         # schema
         self.schema_signal_controller = self.dh.get_topic(self.project_name, self.topic_signal_controller).record_schema
@@ -32,6 +33,7 @@ class DatahubHandler(object):
         self.schema_phase_param = self.dh.get_topic(self.project_name, self.topic_phase_param).record_schema
         self.schema_cross_cycle = self.dh.get_topic(self.project_name, self.topic_cross_cycle).record_schema
         self.schema_cross_stage = self.dh.get_topic(self.project_name, self.topic_cross_stage).record_schema
+        self.schema_cross_traffic = self.dh.get_topic(self.project_name, self.topic_cross_traffic).record_schema
 
     # 发布数据
     def put_data(self, obj_name, data_list):
@@ -64,6 +66,9 @@ class DatahubHandler(object):
         elif obj_name == 'CrossStage':
             topic_name = self.topic_cross_stage
             record_schema = self.schema_cross_stage
+        elif obj_name == 'CrossTrafficData':
+            topic_name = self.topic_cross_traffic
+            record_schema = self.schema_cross_traffic
         else:
             return
 
