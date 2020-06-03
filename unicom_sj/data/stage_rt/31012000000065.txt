@@ -1,0 +1,8 @@
+CrossID: 31012000000065
+LastStageNo: 2
+LastStageLen: 33
+CurStageNo: 1
+CurStageLen: 67.0
+CurStageRemainLen: 67.0
+StartTime: 2020-03-13 17:48:43
+CycleStartTime: 2020-03-13 17:48:43

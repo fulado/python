@@ -1,0 +1,35 @@
+CrossID: 31012000000050
+PhaseNo: 1
+PhaseName: 相位1
+Feature: 1
+Attribute: 1
+LaneNoList: OrderedDict([('LaneNo', ['6', '5', '20', '19'])])
+PedDirList: OrderedDict([('Direction', ['0-1-1', '4-1-1'])])
+CrossID: 31012000000050
+PhaseNo: 2
+PhaseName: 相位2
+Feature: 1
+Attribute: 1
+LaneNoList: OrderedDict([('LaneNo', ['20', '19', '18'])])
+PedDirList: None
+CrossID: 31012000000050
+PhaseNo: 3
+PhaseName: 相位3
+Feature: 1
+Attribute: 1
+LaneNoList: OrderedDict([('LaneNo', ['4', '21', '18'])])
+PedDirList: None
+CrossID: 31012000000050
+PhaseNo: 4
+PhaseName: 相位4
+Feature: 1
+Attribute: 1
+LaneNoList: OrderedDict([('LaneNo', ['13', '12', '28', '27'])])
+PedDirList: OrderedDict([('Direction', ['2-1-1', '6-1-1'])])
+CrossID: 31012000000050
+PhaseNo: 5
+PhaseName: 相位5
+Feature: 1
+Attribute: 1
+LaneNoList: OrderedDict([('LaneNo', ['11', '26'])])
+PedDirList: None

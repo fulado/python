@@ -1,0 +1,5 @@
+SignalControlerID: 31012000000000066
+Supplier: ±¦¿µ
+Type: BKGBS2400_2P
+CrossIDList: 31012000000010
+LampGroupNoList: OrderedDict([('LampGroupNo', ['15', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14'])])

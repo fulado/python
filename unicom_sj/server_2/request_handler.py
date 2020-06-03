@@ -7,7 +7,7 @@ from threading import Thread
 from .utils import create_logger, print_log, xml_check
 from .data_handler import DataHandler
 from .datahub_handler import DatahubHandler
-from command.temp_plan_sj import TempPlan
+from command.temp_plan import TempPlan
 
 
 # BaseRequestHandler子类
@@ -37,8 +37,8 @@ class MyRequestHandler(BaseRequestHandler):
         self.logger_recv = create_logger('recv')
         self.logger_send = create_logger('send')
 
-        self.username = 'admin'
-        self.password = '1qaz2wsx123456'
+        self.username = 'fengxian'
+        self.password = 'fengxian'
 
         # 生成token
         self.create_token()
@@ -84,19 +84,18 @@ class MyRequestHandler(BaseRequestHandler):
                     self.request.send(' '.encode())
                     continue
                 elif 'SDO_User' in tmp_recv_data:
-                    # print_log('登录信息', '接收')
+                    print_log('登录信息', '接收')
                     self.logger_recv.info(tmp_recv_data)
                 elif 'SDO_HeartBeat' in tmp_recv_data:
-                    # print_log('心跳数据: sdo_heartbeat', '接收')
-                    pass
+                    print_log('心跳数据: sdo_heartbeat', '接收')
+                    # pass
                 elif 'TempPlanParam' in tmp_recv_data:
-                    # print_log('临时优化方案: temp_plan_param', '接收')
+                    print_log('临时优化方案: temp_plan_param', '接收')
                     self.logger_recv.info(tmp_recv_data)
                 else:
-                    # print_log('信号数据', '接收')
-                    pass
+                    print_log('信号数据', '接收')
 
-                print_log(tmp_recv_data, '接收')
+                # print_log(tmp_recv_data, '接收')
 
                 # 判断接收xml的完整性
                 if tmp_recv_data[:5] == '<?xml':
@@ -107,6 +106,7 @@ class MyRequestHandler(BaseRequestHandler):
                 # 判断xml数据格式是否正确
                 if xml_check(recv_data):
                     # 数据存入接收数据队列
+                    # print('将数据存入队列')
                     self.queue_recv_data.put(recv_data)
                     recv_data = ''
                 else:
@@ -131,7 +131,7 @@ class MyRequestHandler(BaseRequestHandler):
                 else:
                     pass
 
-                print_log(send_data, '发送')
+                # print_log(send_data, '发送')
 
                 # 发送数据
                 self.request.send(send_data.encode())
@@ -181,7 +181,7 @@ class MyRequestHandler(BaseRequestHandler):
 
         print('datahub发布数据线程结束')
 
-    # 信号配时优化方案下发线程
+    # 信号配饰优化方案下发线程
     def thread_temp_plan(self):
         # 创建单路口临时方案下发对象
         temp_plan = TempPlan(self.token, self.queue_send_data)

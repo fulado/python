@@ -3,18 +3,14 @@
   <component name="ChangeListManager">
     <list default="true" id="f7f00dff-5496-4209-acd6-4dc376728bc2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phase_dir/rid_map/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/rid_map/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phase_dir/rid_map/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/rid_map/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phase_dir/rid_map/views_ft.py" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/rid_map/views_ft.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/phase_dir/templates/froad_rid_ft.html" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/templates/froad_rid_ft.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/.idea/unicom_fx.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/.idea/unicom_fx.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/log/2020-03-12.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/log/2020-03-13.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/log/2020-03-16.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/log/2020-04-09.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/log/2020-04-10.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/log/2020-04-22.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/phase_dir/templates/main_ft.html" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/templates/main_ft.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/input_phase_pic.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/input_phase_pic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../unicom_fx/log/2020-06-03.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/log/2020-06-03.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../unicom_fx/server_sj/request_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/server_sj/request_handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../unicom_fx/server_sj/socket_server_sj.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/server_sj/socket_server_sj.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../unicom_fx/sys_data/sdo_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/sys_data/sdo_user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../unicom_fx/test/test_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/test/test_client.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,7 +18,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/city_brain$input_phase_pic.coverage" NAME="input_phase_pic Coverage Results" MODIFIED="1590547095260" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tools" />
+    <SUITE FILE_PATH="coverage/city_brain$input_phase_pic.coverage" NAME="input_phase_pic Coverage Results" MODIFIED="1591179434849" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tools" />
     <SUITE FILE_PATH="coverage/city_brain$excel_data_import.coverage" NAME="excel_data_import Coverage Results" MODIFIED="1590117747028" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tools" />
     <SUITE FILE_PATH="coverage/city_brain$put_data.coverage" NAME="put_data Coverage Results" MODIFIED="1587871035121" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/datahub" />
     <SUITE FILE_PATH="coverage/city_brain$tools_odps.coverage" NAME="tools_odps Coverage Results" MODIFIED="1589795153989" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/phase_dir/rid_map" />
@@ -33,102 +29,40 @@
     <session id="-638659751">
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="html" value="1" />
-          <entry key="py" value="7" />
+          <entry key="html" value="3" />
+          <entry key="py" value="8" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="HTML" value="1" />
-          <entry key="Python" value="7" />
+          <entry key="HTML" value="3" />
+          <entry key="Python" value="8" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Python Console" value="22" />
-          <entry key="html" value="335" />
-          <entry key="py" value="1956" />
+          <entry key="html" value="560" />
+          <entry key="py" value="1965" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="HTML" value="335" />
-          <entry key="Python" value="1978" />
+          <entry key="HTML" value="560" />
+          <entry key="Python" value="1987" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/urls.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="27" column="27" selection-start-line="27" selection-start-column="27" selection-end-line="27" selection-end-column="27" />
-              <folding>
-                <element signature="e#0#28#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/views.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="379">
-              <caret line="270" selection-start-line="270" selection-end-line="270" />
-              <folding>
-                <element signature="e#0#35#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/phase_tools.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="431">
-              <caret line="77" column="21" selection-start-line="77" selection-start-column="4" selection-end-line="77" selection-end-column="21" />
-              <folding>
-                <element signature="e#0#97#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/models.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="551">
-              <caret line="43" column="12" selection-start-line="43" selection-start-column="4" selection-end-line="43" selection-end-column="12" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/phase_dir/templates/froad_rid_ft.html">
+        <entry file="file://$PROJECT_DIR$/tools/input_phase_pic.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="186">
-              <caret line="387" column="52" selection-start-line="387" selection-start-column="52" selection-end-line="387" selection-end-column="52" />
+            <state relative-caret-position="-1060">
+              <caret line="61" lean-forward="true" selection-start-line="61" selection-end-line="61" />
               <folding>
-                <element signature="n#style#0;n#div#4;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="e#7697#7704#1" expanded="true" />
-                <element signature="n#style#0;n#label#2;n#div#1;n#div#0;n#div#0;n#div#4;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#input#2;n#div#1;n#div#0;n#div#0;n#div#4;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#label#5;n#div#1;n#div#0;n#div#0;n#div#4;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#select#2;n#div#1;n#div#0;n#div#0;n#div#4;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/views_ft.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="493">
-              <caret line="192" selection-start-line="192" selection-end-line="192" />
-              <folding>
-                <element signature="e#0#35#0" expanded="true" />
+                <element signature="e#0#21#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -148,8 +82,9 @@
     <findStrings>
       <find>RoadFTRidMap</find>
       <find>set_rid_info</find>
-      <find>get_cust_phase</find>
       <find>add_map_ft</find>
+      <find>frame-content</find>
+      <find>get_cust_phase</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -164,6 +99,8 @@
         <option value="$PROJECT_DIR$/phase_dir/rid_map/urls.py" />
         <option value="$PROJECT_DIR$/phase_dir/rid_map/views_ft.py" />
         <option value="$PROJECT_DIR$/phase_dir/templates/froad_rid_ft.html" />
+        <option value="$PROJECT_DIR$/phase_dir/templates/main_ft.html" />
+        <option value="$PROJECT_DIR$/tools/input_phase_pic.py" />
       </list>
     </option>
   </component>
@@ -195,23 +132,6 @@
             <path>
               <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
               <item name="city_brain" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
-              <item name="city_brain" type="462c0819:PsiDirectoryNode" />
-              <item name="phase_dir" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
-              <item name="city_brain" type="462c0819:PsiDirectoryNode" />
-              <item name="phase_dir" type="462c0819:PsiDirectoryNode" />
-              <item name="rid_map" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
-              <item name="city_brain" type="462c0819:PsiDirectoryNode" />
-              <item name="phase_dir" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
@@ -426,7 +346,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="11" weight="0.44625407" />
+      <window_info anchor="bottom" id="Terminal" order="11" weight="0.35613462" />
       <window_info anchor="bottom" id="Python Console" order="12" weight="0.32899022" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -499,28 +419,64 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tools/input_phase_pic.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="248">
-          <caret line="145" column="45" lean-forward="true" selection-start-line="145" selection-start-column="45" selection-end-line="145" selection-end-column="45" />
-          <folding>
-            <element signature="e#0#21#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/tools_odps.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/tools.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/urls.py">
+    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/views_ft.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="27" column="27" selection-start-line="27" selection-start-column="27" selection-end-line="27" selection-end-column="27" />
+        <state relative-caret-position="493">
+          <caret line="192" selection-start-line="192" selection-end-line="192" />
           <folding>
-            <element signature="e#0#28#0" expanded="true" />
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phase_dir/templates/main_ft.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="440">
+          <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phase_dir/templates/froad_rid.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="680">
+          <caret line="133" column="26" selection-start-line="133" selection-start-column="22" selection-end-line="133" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phase_dir/templates/froad_rid_ft.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="68" column="23" selection-start-line="68" selection-start-column="23" selection-end-line="68" selection-end-column="23" />
+          <folding>
+            <element signature="n#style#0;n#div#4;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="e#7697#7704#1" expanded="true" />
+            <element signature="n#style#0;n#label#2;n#div#1;n#div#0;n#div#0;n#div#4;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#input#2;n#div#1;n#div#0;n#div#0;n#div#4;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#label#5;n#div#1;n#div#0;n#div#0;n#div#4;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#select#2;n#div#1;n#div#0;n#div#0;n#div#4;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="551">
+          <caret line="43" column="12" selection-start-line="43" selection-start-column="4" selection-end-line="43" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/phase_tools.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="431">
+          <caret line="77" column="21" selection-start-line="77" selection-start-column="4" selection-end-line="77" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#97#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -535,44 +491,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/phase_tools.py">
+    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="431">
-          <caret line="77" column="21" selection-start-line="77" selection-start-column="4" selection-end-line="77" selection-end-column="21" />
+        <state relative-caret-position="540">
+          <caret line="27" column="27" selection-start-line="27" selection-start-column="27" selection-end-line="27" selection-end-column="27" />
           <folding>
-            <element signature="e#0#97#0" expanded="true" />
+            <element signature="e#0#28#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/models.py">
+    <entry file="file://$PROJECT_DIR$/tools/input_phase_pic.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="551">
-          <caret line="43" column="12" selection-start-line="43" selection-start-column="4" selection-end-line="43" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/views_ft.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="192" selection-start-line="192" selection-end-line="192" />
+        <state relative-caret-position="-1060">
+          <caret line="61" lean-forward="true" selection-start-line="61" selection-end-line="61" />
           <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/phase_dir/templates/froad_rid_ft.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="387" column="52" selection-start-line="387" selection-start-column="52" selection-end-line="387" selection-end-column="52" />
-          <folding>
-            <element signature="n#style#0;n#div#4;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="e#7697#7704#1" expanded="true" />
-            <element signature="n#style#0;n#label#2;n#div#1;n#div#0;n#div#0;n#div#4;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#input#2;n#div#1;n#div#0;n#div#0;n#div#4;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#label#5;n#div#1;n#div#0;n#div#0;n#div#4;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#select#2;n#div#1;n#div#0;n#div#0;n#div#4;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="e#0#21#0" expanded="true" />
           </folding>
         </state>
       </provider>

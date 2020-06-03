@@ -4,7 +4,7 @@
 import hashlib
 import time
 
-from server_2.utils import generate_ordered_dict, xml_construct
+from server_sj.utils import generate_ordered_dict, xml_construct
 
 
 class SdoUser(object):

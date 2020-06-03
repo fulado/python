@@ -1,16 +1,15 @@
 """
 主程序
 """
-# import sys
-# sys.path.append('/opt/unicom_sj')
 
 from socketserver import TCPServer
 
-from server_sj.request_handler import MyRequestHandler
+
+from server_2.request_handler import MyRequestHandler
 
 
 def main():
-    address = '', 19527
+    address = '', 19530
 
     tcp_server = TCPServer(address, MyRequestHandler)
     print('等待客户端连接...')
