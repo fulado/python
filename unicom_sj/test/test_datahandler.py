@@ -105,10 +105,14 @@ def main():
     dh = DataHandler('aabbcc', 'send data queue', 'put datahub queue')
 
     dh.xml_parse(recv_data)
-    print(dh.data_type)
-    print(dh.object_type)
-    print(dh.recv_data_dict)
-    print(type(dh.recv_data_dict))
+    dh.data_handle()
+
+    # print(dh.datahub_)
+
+    # print(dh.data_type)
+    # print(dh.object_type)
+    # print(dh.recv_data_dict)
+    # print(type(dh.recv_data_dict))
 
     # dh.data_handle()
 
@@ -123,17 +127,17 @@ def main():
     # data = data_handler.recv_data_dict.get('StageNoList').keys()
     # print(list(data))
 
-    print('=' * 20)
-    for k, v in dh.recv_data_dict.items():
-        print(k, v)
-
-    print('=' * 20)
-
-    dyn_data = DynamicData('CrossTrafficData')
-
-    dyn_data.parse_recv_data(dh.recv_data_dict)
-    dyn_data.convert_traffic_data_for_datahub()
-    print(dyn_data.datahub_put_data)
+    # print('=' * 20)
+    # for k, v in dh.recv_data_dict.items():
+    #     print(k, v)
+    #
+    # print('=' * 20)
+    #
+    # dyn_data = DynamicData('CrossTrafficData')
+    #
+    # dyn_data.parse_recv_data(dh.recv_data_dict)
+    # dyn_data.convert_traffic_data_for_datahub()
+    # print(dyn_data.datahub_put_data)
 
     # dh.get_cross_id_list()
     # # print(dh.cross_id_list)

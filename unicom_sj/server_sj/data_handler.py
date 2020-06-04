@@ -61,7 +61,7 @@ class DataHandler(object):
                 self.data_subscribe = True
 
         # 静态数据
-        elif self.data_type == 'RESPONSE' and self.object_type in ('SysInfo', 'RegionParam', 'LampGroup', 'LaneParam',
+        elif self.data_type == 'RESPONSE' and self.object_type in ('LampGroup', 'LaneParam',
                                                                    'StageParam', 'PlanParam', 'SignalControler',
                                                                    'PhaseParam'):
             static_data = StaticData(self.object_type)
@@ -75,14 +75,19 @@ class DataHandler(object):
             static_data.save_data_to_file()
 
         # 实时数据
-        elif self.data_type == 'PUSH' and self.object_type in ('CrossCycle', 'CrossStage') \
+        elif self.data_type == 'PUSH' and self.object_type in ('CrossCycle', 'CrossStage', 'CrossTrafficData') \
                 and not isinstance(self.recv_data_dict, list):
             dynamic_data = DynamicData(self.object_type)
             dynamic_data.parse_recv_data(self.recv_data_dict)
-            dynamic_data.convert_data_for_datahub()
+
+            if self.object_type == 'CrossTrafficData':
+                dynamic_data.convert_traffic_data_for_datahub()
+            else:
+                dynamic_data.convert_data_for_datahub()
 
             # 发布到datahub写入队列
             self.queue_put_datahub.put(dynamic_data.datahub_put_data)
+            # print(dynamic_data.datahub_put_data)
 
             # 保存到文件
             # dynamic_data.save_data_to_file()
@@ -117,45 +122,45 @@ class DataHandler(object):
     def data_subscribe_handle(self):
 
         # 请求系统信息
-        print_log('SysInfo', '发送')
-        self.send_data_subscribe(['', ], 'SysInfo')
+        # print_log('SysInfo', '发送')
+        # self.send_data_subscribe(['', ], 'SysInfo')
 
         # # 请求区域信息
         # print_log('RegionParam', '发送')
         # self.send_data_subscribe(['310117000', ], 'RegionParam')
-        #
-        # # 获取信号id和路口id
-        # self.get_signal_id_list()
-        # self.get_cross_id_list()
-        #
-        # # 订阅实时数据
-        # time.sleep(10)
-        # print_log('CrossReportCtrl', '发送')
-        # self.cross_report_ctrl_handle()
-        #
-        # # 请求信号机信息
-        # print_log('SignalControler', '发送')
-        # self.send_data_subscribe(self.signal_id_list, 'SignalControler')
-        #
-        # # 请求灯组信息
-        # print_log('LampGroup', '发送')
-        # self.send_data_subscribe(self.signal_id_list, 'LampGroup')
-        #
-        # # 请求车道信息
-        # print_log('LaneParam', '发送')
-        # self.send_data_subscribe(self.cross_id_list, 'LaneParam')
-        #
-        # # 请求相位信息
-        # print_log('PhaseParam', '发送')
-        # self.send_data_subscribe(self.cross_id_list, 'PhaseParam')
-        #
-        # # 请求阶段信息
-        # print_log('StageParam', '发送')
-        # self.send_data_subscribe(self.cross_id_list, 'StageParam')
-        #
-        # # 请求配时方案信息
-        # print_log('PlanParam', '发送')
-        # self.send_data_subscribe(self.cross_id_list, 'PlanParam')
+
+        # 获取信号id和路口id
+        self.get_signal_id_list()
+        self.get_cross_id_list()
+
+        # 订阅实时数据
+        time.sleep(10)
+        print_log('CrossReportCtrl', '发送')
+        self.cross_report_ctrl_handle()
+
+        # 请求信号机信息
+        print_log('SignalControler', '发送')
+        self.send_data_subscribe(self.signal_id_list, 'SignalControler')
+
+        # 请求灯组信息
+        print_log('LampGroup', '发送')
+        self.send_data_subscribe(self.signal_id_list, 'LampGroup')
+
+        # 请求车道信息
+        print_log('LaneParam', '发送')
+        self.send_data_subscribe(self.cross_id_list, 'LaneParam')
+
+        # 请求相位信息
+        print_log('PhaseParam', '发送')
+        self.send_data_subscribe(self.cross_id_list, 'PhaseParam')
+
+        # 请求阶段信息
+        print_log('StageParam', '发送')
+        self.send_data_subscribe(self.cross_id_list, 'StageParam')
+
+        # 请求配时方案信息
+        print_log('PlanParam', '发送')
+        self.send_data_subscribe(self.cross_id_list, 'PlanParam')
 
     # 发送数据查询, 订阅请求
     def send_data_subscribe(self, object_id_list, obj_name):

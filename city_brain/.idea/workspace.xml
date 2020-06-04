@@ -3,14 +3,15 @@
   <component name="ChangeListManager">
     <list default="true" id="f7f00dff-5496-4209-acd6-4dc376728bc2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phase_dir/templates/froad_rid_ft.html" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/templates/froad_rid_ft.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phase_dir/templates/main_ft.html" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/templates/main_ft.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/input_phase_pic.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/input_phase_pic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/log/2020-06-03.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/log/2020-06-03.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/server_sj/request_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/server_sj/request_handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/server_sj/socket_server_sj.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/server_sj/socket_server_sj.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/sys_data/sdo_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/sys_data/sdo_user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/test/test_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/test/test_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../unicom_sj/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_sj/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../unicom_sj/.idea/unicom_sj.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_sj/.idea/unicom_sj.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../unicom_sj/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_sj/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../unicom_sj/data/cross_list.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_sj/data/cross_list.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../unicom_sj/data/signal_list.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_sj/data/signal_list.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../unicom_sj/server_sj/data_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_sj/server_sj/data_handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../unicom_sj/server_sj/request_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_sj/server_sj/request_handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../unicom_sj/server_sj/socket_server_sj.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_sj/server_sj/socket_server_sj.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../unicom_sj/test/test_datahandler.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_sj/test/test_datahandler.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +61,7 @@
         <entry file="file://$PROJECT_DIR$/tools/input_phase_pic.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-1060">
-              <caret line="61" lean-forward="true" selection-start-line="61" selection-end-line="61" />
+              <caret line="61" selection-start-line="61" selection-end-line="61" />
               <folding>
                 <element signature="e#0#21#0" expanded="true" />
               </folding>
@@ -136,7 +137,13 @@
             <path>
               <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
               <item name="city_brain" type="462c0819:PsiDirectoryNode" />
-              <item name="tools" type="462c0819:PsiDirectoryNode" />
+              <item name="phase_dir" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
+              <item name="city_brain" type="462c0819:PsiDirectoryNode" />
+              <item name="phase_dir" type="462c0819:PsiDirectoryNode" />
+              <item name="phase_dir" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -332,12 +339,12 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20682302" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20682302" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32899022" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32899022" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -504,7 +511,7 @@
     <entry file="file://$PROJECT_DIR$/tools/input_phase_pic.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1060">
-          <caret line="61" lean-forward="true" selection-start-line="61" selection-end-line="61" />
+          <caret line="61" selection-start-line="61" selection-end-line="61" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
           </folding>
