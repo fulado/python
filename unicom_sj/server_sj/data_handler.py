@@ -8,7 +8,6 @@ from threading import Thread
 from sys_data.sdo_user import SdoUser
 from sys_data.sdo_heart_beat import SdoHeartBeat
 
-from dynamic_data.traffic_data_report import TrafficDataReport
 from dynamic_data.cross_report_ctrl import CrossReportCtrl
 from dynamic_data.dynamic_data import DynamicData
 from static_data.static_data import StaticData
@@ -75,23 +74,27 @@ class DataHandler(object):
             static_data.save_data_to_file()
 
         # 实时数据
-        elif self.data_type == 'PUSH' and self.object_type in ('CrossCycle', 'CrossStage', 'CrossTrafficData') \
+        elif self.data_type == 'PUSH' and self.object_type in ('CrossCycle', 'CrossStage') \
                 and not isinstance(self.recv_data_dict, list):
             dynamic_data = DynamicData(self.object_type)
             dynamic_data.parse_recv_data(self.recv_data_dict)
 
-            if self.object_type == 'CrossTrafficData':
-                dynamic_data.convert_traffic_data_for_datahub()
-            else:
-                dynamic_data.convert_data_for_datahub()
+            dynamic_data.convert_data_for_datahub()
 
             # 发布到datahub写入队列
             self.queue_put_datahub.put(dynamic_data.datahub_put_data)
-            # print(dynamic_data.datahub_put_data)
 
             # 保存到文件
             # dynamic_data.save_data_to_file()
+        elif self.data_type == 'PUSH' and self.object_type == 'CrossCameraData':
+            dynamic_data = DynamicData(self.object_type)
+            dynamic_data.parse_recv_data(self.recv_data_dict)
 
+            dynamic_data.convert_traffic_data_for_datahub()
+
+            # 发布到datahub写入队列
+            self.queue_put_datahub.put(dynamic_data.datahub_put_data)
+            # pprint.pprint(dynamic_data.datahub_put_data)
         else:
             pass
 
@@ -138,29 +141,29 @@ class DataHandler(object):
         print_log('CrossReportCtrl', '发送')
         self.cross_report_ctrl_handle()
 
-        # 请求信号机信息
-        print_log('SignalControler', '发送')
-        self.send_data_subscribe(self.signal_id_list, 'SignalControler')
-
-        # 请求灯组信息
-        print_log('LampGroup', '发送')
-        self.send_data_subscribe(self.signal_id_list, 'LampGroup')
-
-        # 请求车道信息
-        print_log('LaneParam', '发送')
-        self.send_data_subscribe(self.cross_id_list, 'LaneParam')
-
-        # 请求相位信息
-        print_log('PhaseParam', '发送')
-        self.send_data_subscribe(self.cross_id_list, 'PhaseParam')
-
-        # 请求阶段信息
-        print_log('StageParam', '发送')
-        self.send_data_subscribe(self.cross_id_list, 'StageParam')
-
-        # 请求配时方案信息
-        print_log('PlanParam', '发送')
-        self.send_data_subscribe(self.cross_id_list, 'PlanParam')
+        # # 请求信号机信息
+        # print_log('SignalControler', '发送')
+        # self.send_data_subscribe(self.signal_id_list, 'SignalControler')
+        #
+        # # 请求灯组信息
+        # print_log('LampGroup', '发送')
+        # self.send_data_subscribe(self.signal_id_list, 'LampGroup')
+        #
+        # # 请求车道信息
+        # print_log('LaneParam', '发送')
+        # self.send_data_subscribe(self.cross_id_list, 'LaneParam')
+        #
+        # # 请求相位信息
+        # print_log('PhaseParam', '发送')
+        # self.send_data_subscribe(self.cross_id_list, 'PhaseParam')
+        #
+        # # 请求阶段信息
+        # print_log('StageParam', '发送')
+        # self.send_data_subscribe(self.cross_id_list, 'StageParam')
+        #
+        # # 请求配时方案信息
+        # print_log('PlanParam', '发送')
+        # self.send_data_subscribe(self.cross_id_list, 'PlanParam')
 
     # 发送数据查询, 订阅请求
     def send_data_subscribe(self, object_id_list, obj_name):
@@ -202,22 +205,26 @@ class DataHandler(object):
         cross_report_ctrl = CrossReportCtrl(self.token)
         cross_report_ctrl.set_cross_id_list(self.cross_id_list)
 
-        # 订阅路口周期
-        cross_report_ctrl.create_send_data('CrossCycle')
-        cross_report_ctrl.put_send_data_into_queue(self.send_data_queue)
+        # # 订阅路口周期
+        # cross_report_ctrl.create_send_data('CrossCycle')
+        # cross_report_ctrl.put_send_data_into_queue(self.send_data_queue)
 
-        # 订阅路口阶段
-        time.sleep(1)
-        cross_report_ctrl.create_send_data('CrossStage')
+        # # 订阅路口阶段
+        # time.sleep(1)
+        # cross_report_ctrl.create_send_data('CrossStage')
+        # cross_report_ctrl.put_send_data_into_queue(self.send_data_queue)
+
+        # 订阅路口流量
+        cross_report_ctrl.create_send_data('CrossTrafficData')
         cross_report_ctrl.put_send_data_into_queue(self.send_data_queue)
 
         # 订阅路口流量
-        traffic_data_report = TrafficDataReport(self.token)
-
-        for cross_id in self.cross_id_list:
-            time.sleep(1)
-            traffic_data_report.create_send_data(cross_id)
-            cross_report_ctrl.put_send_data_into_queue(self.send_data_queue)
+        # traffic_data_report = TrafficDataReport(self.token)
+        #
+        # for cross_id in self.cross_id_list:
+        #     time.sleep(1)
+        #     traffic_data_report.create_send_data(cross_id)
+        #     traffic_data_report.put_send_data_into_queue(self.send_data_queue)
 
 
 

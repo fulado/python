@@ -16,19 +16,19 @@ class DynamicData(object):
     def parse_recv_data(self, recv_data_dict):
         self.recv_data = recv_data_dict
 
-        cross_id = recv_data_dict.get('CrossID', 'error')
-
-        if cross_id != 'error':
-
-            if self.obj_name == 'CrossCycle':
-                self.file_name = '../data/%s/%s.txt' % ('cycle_rt', cross_id)
-            elif self.obj_name == 'CrossStage':
-                self.file_name = '../data/%s/%s.txt' % ('stage_rt', cross_id)
-            else:
-                pass
-
-        else:
-            pass
+        # cross_id = recv_data_dict.get('CrossID', 'error')
+        #
+        # if cross_id != 'error':
+        #
+        #     if self.obj_name == 'CrossCycle':
+        #         self.file_name = '../data/%s/%s.txt' % ('cycle_rt', cross_id)
+        #     elif self.obj_name == 'CrossStage':
+        #         self.file_name = '../data/%s/%s.txt' % ('stage_rt', cross_id)
+        #     else:
+        #         pass
+        #
+        # else:
+        #     pass
 
     # 保存数据
     def save_data_to_file(self):
@@ -67,26 +67,57 @@ class DynamicData(object):
 
     # 转化流量数据为列表
     def convert_traffic_data_for_datahub(self):
-        cross_id = self.recv_data.get('CrossID')
-        end_time = self.recv_data.get('EndTime')
-        interval = int(float(self.recv_data.get('Interval')))
-        traffic_data_list = self.recv_data.get('DataList').get('Data')
 
         data_list_tmp = []
-        for traffic_data in traffic_data_list:
+        for traffic_data_dict in self.recv_data:
 
-            lane_data = [cross_id, end_time, interval]
+            cross_id = traffic_data_dict.get('CrossID')
+            end_time = traffic_data_dict.get('EndTime').replace('T', ' ')
+            interval = int(float(traffic_data_dict.get('Interval')))
+            traffic_data_list = traffic_data_dict.get('DataList').get('Data')
 
-            for k, v in traffic_data.items():
-                if k == 'LaneNo':
-                    lane_data.append(v)
-                else:
-                    lane_data.append(int(float(v)))
+            if isinstance(traffic_data_list, list):
+                for traffic_data in traffic_data_list:
+                    lane_data = [cross_id,
+                                 end_time,
+                                 interval,
+                                 traffic_data.get('LaneNo'),
+                                 int(float(traffic_data.get('Volume'))),
+                                 int(float(traffic_data.get('AvgVehLen'))),
+                                 int(float(traffic_data.get('Pcu'))),
+                                 int(float(traffic_data.get('HeadDistance'))),
+                                 None,
+                                 int(float(traffic_data.get('Speed'))),
+                                 None,
+                                 None,
+                                 int(float(traffic_data.get('QueueLength'))),
+                                 int(float(traffic_data.get('Occupancy'))),
+                                 time.strftime('%Y%m%d', time.localtime()),  # dt
+                                 '310000',  # adcode
+                                 ]
 
-            lane_data.append(time.strftime('%Y%m%d', time.localtime()))
-            lane_data.append('310000')
+                    data_list_tmp.append(lane_data)
+            else:
+                traffic_data = traffic_data_list
+                lane_data = [cross_id,
+                             end_time,
+                             interval,
+                             traffic_data.get('LaneNo'),
+                             int(float(traffic_data.get('Volume'))),
+                             int(float(traffic_data.get('AvgVehLen'))),
+                             int(float(traffic_data.get('Pcu'))),
+                             int(float(traffic_data.get('HeadDistance'))),
+                             None,
+                             int(float(traffic_data.get('Speed'))),
+                             None,
+                             None,
+                             int(float(traffic_data.get('QueueLength'))),
+                             int(float(traffic_data.get('Occupancy'))),
+                             time.strftime('%Y%m%d', time.localtime()),  # dt
+                             '310000',  # adcode
+                             ]
 
-            data_list_tmp.append(lane_data)
+                data_list_tmp.append(lane_data)
 
         self.datahub_put_data = [self.obj_name, data_list_tmp]
 
