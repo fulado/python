@@ -14,6 +14,8 @@ from static_data.static_data import StaticData
 from static_data.static_data_subscribe import StaticDataSubscribe
 from .utils import print_log
 
+# import pprint
+
 
 class DataHandler(object):
     def __init__(self, token, send_data_queue, queue_put_datahub):
@@ -205,15 +207,16 @@ class DataHandler(object):
         cross_report_ctrl = CrossReportCtrl(self.token)
         cross_report_ctrl.set_cross_id_list(self.cross_id_list)
 
-        # # 订阅路口周期
-        # cross_report_ctrl.create_send_data('CrossCycle')
-        # cross_report_ctrl.put_send_data_into_queue(self.send_data_queue)
+        # 订阅路口周期
+        cross_report_ctrl.create_send_data('CrossCycle')
+        cross_report_ctrl.put_send_data_into_queue(self.send_data_queue)
 
-        # # 订阅路口阶段
-        # time.sleep(1)
-        # cross_report_ctrl.create_send_data('CrossStage')
-        # cross_report_ctrl.put_send_data_into_queue(self.send_data_queue)
+        # 订阅路口阶段
+        time.sleep(2)
+        cross_report_ctrl.create_send_data('CrossStage')
+        cross_report_ctrl.put_send_data_into_queue(self.send_data_queue)
 
+        time.sleep(2)
         # 订阅路口流量
         cross_report_ctrl.create_send_data('CrossTrafficData')
         cross_report_ctrl.put_send_data_into_queue(self.send_data_queue)

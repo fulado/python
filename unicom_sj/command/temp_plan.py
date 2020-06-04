@@ -48,7 +48,7 @@ class TempPlan(object):
     def get_temp_plan(self):
         try:
             get_result = self.dh.get_tuple_records(self.project_name, self.topic_name_temp_plan, '0',
-                                                   self.record_schema_temp_plan, self.cursor_temp_plan, 20)
+                                                   self.record_schema_temp_plan, self.cursor_temp_plan, 100)
 
             # 如果取不到值, 等待1秒钟后再次尝试取值
             if 0 == get_result.record_count:
@@ -68,19 +68,22 @@ class TempPlan(object):
                 stage_no = record.get_value('stage_no')
                 split_time = record.get_value('green')
                 end_time = record.get_value('end_time')
+                coord_stage_no = record.get_value('coord_stage_no')
+                offset = record.get_value('offset')
+
                 self.tmp_plan_dict[cross_id].append({'stage_no': stage_no,
                                                      'split_time': split_time,
-                                                     'end_time': end_time})
+                                                     'end_time': end_time,
+                                                     'coord_stage_no': coord_stage_no,
+                                                     'offset': offset,
+                                                     })
 
             # 游标向下移动
             self.cursor_temp_plan = get_result.next_cursor
+            # pprint.pprint(self.tmp_plan_dict)
 
             # 构造下发命令的xml格式数据
             self.create_send_data()
-
-            # 将下发命令的xml数据放入队列
-            self.send_data_queue.put(self.send_data_xml)
-            # print(self.send_data_xml)
 
             # 清空tmp_plan_dict
             self.tmp_plan_dict = {}
@@ -100,6 +103,9 @@ class TempPlan(object):
 
             is_cancel_cmd = False
 
+            coord_stage_no = '0'
+            offset = '0'
+
             for plan in plan_list:
                 split_time_element = OrderedDict()
                 stage_no = plan.get('stage_no')
@@ -114,6 +120,8 @@ class TempPlan(object):
                     split_time_list.append(split_time_element)
 
                     end_time = plan.get('end_time', '0')
+                    coord_stage_no = plan.get('coord_stage_no', '0')
+                    offset = plan.get('offset', '0')
 
             if is_cancel_cmd:
                 temp_plan_param_element = OrderedDict()
@@ -129,8 +137,8 @@ class TempPlan(object):
 
                 temp_plan_param_element = OrderedDict()
                 temp_plan_param_element['CrossID'] = cross_id
-                temp_plan_param_element['CoordStageNo'] = '0'
-                temp_plan_param_element['OffSet'] = '0'
+                temp_plan_param_element['CoordStageNo'] = coord_stage_no
+                temp_plan_param_element['OffSet'] = offset
                 temp_plan_param_element['EndTime'] = end_time
                 temp_plan_param_element['SplitTimeList'] = split_time_list_element
 
@@ -149,9 +157,13 @@ class TempPlan(object):
                                                                                    random.randint(0, 9),
                                                                                    random.randint(0, 9))
 
-            self.send_data_xml = xml_construct(send_data_dict, seq, self.token, 'REQUEST')
+            send_data_xml = xml_construct(send_data_dict, seq, self.token, 'REQUEST')
 
-            # print(send_data_xml)
+            # 将下发命令的xml数据放入队列
+            self.send_data_queue.put(send_data_xml)
+            # print(self.send_data_xml)
+
+
 
 
 

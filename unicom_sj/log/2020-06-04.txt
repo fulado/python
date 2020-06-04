@@ -1,0 +1,40 @@
+
+2020-06-04 16:41:32 send data
+<?xml version="1.0" encoding="utf-8"?>
+<Message><Version>1.0</Version><Token>291D6AB6758B12274D03112A106ABFF0B9E282B1</Token><From><Address><Sys>TICP</Sys><SubSys></SubSys><Instance></Instance></Address></From><To><Address><Sys>UTCS</Sys><SubSys></SubSys><Instance></Instance></Address></To><Type>REQUEST</Type><Seq>20200604164132000815</Seq><Body><Operation order="6" name="Set"><TempPlanParam><CrossID>31011700200040</CrossID><CoordStageNo>1</CoordStageNo><OffSet>-18</OffSet><EndTime>2020-06-04 17:00:00</EndTime><SplitTimeList><SplitTime><StageNo>1</StageNo><Green>63</Green></SplitTime><SplitTime><StageNo>2</StageNo><Green>54</Green></SplitTime></SplitTimeList></TempPlanParam></Operation></Body></Message>
+
+2020-06-04 16:41:32 send data
+<?xml version="1.0" encoding="utf-8"?>
+<Message><Version>1.0</Version><Token>291D6AB6758B12274D03112A106ABFF0B9E282B1</Token><From><Address><Sys>TICP</Sys><SubSys></SubSys><Instance></Instance></Address></From><To><Address><Sys>UTCS</Sys><SubSys></SubSys><Instance></Instance></Address></To><Type>REQUEST</Type><Seq>20200604164132000687</Seq><Body><Operation order="6" name="Set"><TempPlanParam><CrossID>31011700200042</CrossID><CoordStageNo>1</CoordStageNo><OffSet>53</OffSet><EndTime>2020-06-04 17:00:00</EndTime><SplitTimeList><SplitTime><StageNo>1</StageNo><Green>53</Green></SplitTime><SplitTime><StageNo>2</StageNo><Green>64</Green></SplitTime></SplitTimeList></TempPlanParam></Operation></Body></Message>
+
+2020-06-04 16:41:33 send data
+<?xml version="1.0" encoding="utf-8"?>
+<Message><Version>1.0</Version><Token>291D6AB6758B12274D03112A106ABFF0B9E282B1</Token><From><Address><Sys>TICP</Sys><SubSys></SubSys><Instance></Instance></Address></From><To><Address><Sys>UTCS</Sys><SubSys></SubSys><Instance></Instance></Address></To><Type>REQUEST</Type><Seq>20200604164133000436</Seq><Body><Operation order="6" name="Set"><TempPlanParam><CrossID>31011700200043</CrossID><CoordStageNo>3</CoordStageNo><OffSet>14</OffSet><EndTime>2020-06-04 17:00:00</EndTime><SplitTimeList><SplitTime><StageNo>3</StageNo><Green>62</Green></SplitTime><SplitTime><StageNo>4</StageNo><Green>55</Green></SplitTime></SplitTimeList></TempPlanParam></Operation></Body></Message>
+
+2020-06-04 16:41:33 send data
+<?xml version="1.0" encoding="utf-8"?>
+<Message><Version>1.0</Version><Token>291D6AB6758B12274D03112A106ABFF0B9E282B1</Token><From><Address><Sys>TICP</Sys><SubSys></SubSys><Instance></Instance></Address></From><To><Address><Sys>UTCS</Sys><SubSys></SubSys><Instance></Instance></Address></To><Type>REQUEST</Type><Seq>20200604164133000594</Seq><Body><Operation order="6" name="Set"><TempPlanParam><CrossID>31011700200041</CrossID><CoordStageNo>1</CoordStageNo><OffSet>-32</OffSet><EndTime>2020-06-04 17:00:00</EndTime><SplitTimeList><SplitTime><StageNo>1</StageNo><Green>63</Green></SplitTime><SplitTime><StageNo>2</StageNo><Green>54</Green></SplitTime></SplitTimeList></TempPlanParam></Operation></Body></Message>
+
+2020-06-04 16:41:33 send data
+<?xml version="1.0" encoding="utf-8"?>
+<Message><Version>1.0</Version><Token>291D6AB6758B12274D03112A106ABFF0B9E282B1</Token><From><Address><Sys>TICP</Sys><SubSys></SubSys><Instance></Instance></Address></From><To><Address><Sys>UTCS</Sys><SubSys></SubSys><Instance></Instance></Address></To><Type>REQUEST</Type><Seq>20200604164133000820</Seq><Body><Operation order="6" name="Set"><TempPlanParam><CrossID>31011700200039</CrossID><CoordStageNo>1</CoordStageNo><OffSet>-16</OffSet><EndTime>2020-06-04 17:00:00</EndTime><SplitTimeList><SplitTime><StageNo>1</StageNo><Green>68</Green></SplitTime><SplitTime><StageNo>2</StageNo><Green>49</Green></SplitTime></SplitTimeList></TempPlanParam></Operation></Body></Message>
+
+2020-06-04 16:42:43 send data
+<?xml version="1.0" encoding="utf-8"?>
+<Message><Version>1.0</Version><Token>291D6AB6758B12274D03112A106ABFF0B9E282B1</Token><From><Address><Sys>TICP</Sys><SubSys></SubSys><Instance></Instance></Address></From><To><Address><Sys>UTCS</Sys><SubSys></SubSys><Instance></Instance></Address></To><Type>REQUEST</Type><Seq>20200604164243000775</Seq><Body><Operation order="6" name="Set"><UnlockFlowDirection><CrossID>31011700200040</CrossID><Type>1</Type><Entrance>8</Entrance><Exit>8</Exit></UnlockFlowDirection></Operation></Body></Message>
+
+2020-06-04 16:42:43 send data
+<?xml version="1.0" encoding="utf-8"?>
+<Message><Version>1.0</Version><Token>291D6AB6758B12274D03112A106ABFF0B9E282B1</Token><From><Address><Sys>TICP</Sys><SubSys></SubSys><Instance></Instance></Address></From><To><Address><Sys>UTCS</Sys><SubSys></SubSys><Instance></Instance></Address></To><Type>REQUEST</Type><Seq>20200604164243000301</Seq><Body><Operation order="6" name="Set"><UnlockFlowDirection><CrossID>31011700200043</CrossID><Type>1</Type><Entrance>8</Entrance><Exit>8</Exit></UnlockFlowDirection></Operation></Body></Message>
+
+2020-06-04 16:42:44 send data
+<?xml version="1.0" encoding="utf-8"?>
+<Message><Version>1.0</Version><Token>291D6AB6758B12274D03112A106ABFF0B9E282B1</Token><From><Address><Sys>TICP</Sys><SubSys></SubSys><Instance></Instance></Address></From><To><Address><Sys>UTCS</Sys><SubSys></SubSys><Instance></Instance></Address></To><Type>REQUEST</Type><Seq>20200604164244000798</Seq><Body><Operation order="6" name="Set"><UnlockFlowDirection><CrossID>31011700200041</CrossID><Type>1</Type><Entrance>8</Entrance><Exit>8</Exit></UnlockFlowDirection></Operation></Body></Message>
+
+2020-06-04 16:42:44 send data
+<?xml version="1.0" encoding="utf-8"?>
+<Message><Version>1.0</Version><Token>291D6AB6758B12274D03112A106ABFF0B9E282B1</Token><From><Address><Sys>TICP</Sys><SubSys></SubSys><Instance></Instance></Address></From><To><Address><Sys>UTCS</Sys><SubSys></SubSys><Instance></Instance></Address></To><Type>REQUEST</Type><Seq>20200604164244000211</Seq><Body><Operation order="6" name="Set"><UnlockFlowDirection><CrossID>31011700200039</CrossID><Type>1</Type><Entrance>8</Entrance><Exit>8</Exit></UnlockFlowDirection></Operation></Body></Message>
+
+2020-06-04 16:42:44 send data
+<?xml version="1.0" encoding="utf-8"?>
+<Message><Version>1.0</Version><Token>291D6AB6758B12274D03112A106ABFF0B9E282B1</Token><From><Address><Sys>TICP</Sys><SubSys></SubSys><Instance></Instance></Address></From><To><Address><Sys>UTCS</Sys><SubSys></SubSys><Instance></Instance></Address></To><Type>REQUEST</Type><Seq>20200604164244000354</Seq><Body><Operation order="6" name="Set"><UnlockFlowDirection><CrossID>31011700200042</CrossID><Type>1</Type><Entrance>8</Entrance><Exit>8</Exit></UnlockFlowDirection></Operation></Body></Message>

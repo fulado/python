@@ -66,7 +66,7 @@ class DatahubHandler(object):
         elif obj_name == 'CrossStage':
             topic_name = self.topic_cross_stage
             record_schema = self.schema_cross_stage
-        elif obj_name == 'CrossTrafficData':
+        elif obj_name == 'CrossCameraData':
             topic_name = self.topic_cross_traffic
             record_schema = self.schema_cross_traffic
         else:

@@ -1,4 +1,5 @@
 from server_sj.data_handler import DataHandler
+from server_sj.datahub_handler import DatahubHandler
 from dynamic_data.dynamic_data import DynamicData
 from static_data.static_data_subscribe import StaticDataSubscribe
 
@@ -47,9 +48,9 @@ def main():
     # lane_param_data = """<?xml version="1.0" encoding="UTF-8"?><Message><Version>1.0</Version><Token>C080D4B8264C6BA41899F93430853C2A32D246F7</Token><From><Address><Sys>UTCS</Sys><SubSys></SubSys><Instance></Instance></Address></From><To><Address><Sys>TICP</Sys><SubSys></SubSys><Instance></Instance></Address></To><Type>PUSH</Type><Seq>20200313174843000001</Seq><Body><Operation name="Notify" order="1"><CrossCycle><CrossID>31012000000065</CrossID><StartTime>2020-03-13 17:48:43</StartTime><LastCycleLen>100.0</LastCycleLen><CurCycleLen>100.0</CurCycleLen><CurCycleRemainLen>100.0</CurCycleRemainLen></CrossCycle></Operation></Body></Message>"""
 
     dh = DataHandler('aabbcc', 'send data queue', 'put datahub queue')
-
+    #
     dh.xml_parse(recv_data)
-    dh.data_handle()
+    # dh.data_handle()
 
     # print(dh.datahub_)
 
@@ -96,11 +97,14 @@ def main():
     #
     # print('=' * 20)
     #
-    # dyn_data = DynamicData('CrossTrafficData')
+    dyn_data = DynamicData('CrossCameraData')
     #
-    # dyn_data.parse_recv_data(dh.recv_data_dict)
-    # dyn_data.convert_traffic_data_for_datahub()
-    # print(dyn_data.datahub_put_data)
+    dyn_data.parse_recv_data(dh.recv_data_dict)
+    dyn_data.convert_traffic_data_for_datahub()
+    print(dyn_data.datahub_put_data)
+
+    dh_handler = DatahubHandler()
+    dh_handler.put_data(dyn_data.datahub_put_data[0], dyn_data.datahub_put_data[1])
 
     # dh.get_cross_id_list()
     # # print(dh.cross_id_list)
