@@ -1,6 +1,8 @@
 from .models import PhaseLightRelation, LightRoadRelation, CustSignalInterMap, PhaseFroadFTRidMap
 from .tools import find_froad_id, find_troad_id, find_turn
 
+import itertools
+
 
 # 根据电科路口id获取电科的相位与灯组关系数据
 def get_cust_phase_light(cust_signal_id):
@@ -101,6 +103,36 @@ def save_phase_cust_road(inter_id):
             return False
 
     return True
+
+
+# 计算所有相位的排列组合
+def get_phase_plan_list(cust_signal_id):
+
+    phsase_light_list = PhaseLightRelation.objects.filter(cust_signal_id=cust_signal_id)
+
+    phase_content = ''
+
+    for phase_light in phsase_light_list:
+        if phase_light.phase_name in phase_content:
+            continue
+        else:
+            phase_content += phase_light.phase_name
+
+    phase_plane_list = []
+    phase_plan_id = 1
+    for i in range(1, len(phase_content) + 1):
+        phase_comb = itertools.combinations(phase_content, i)
+
+        for j in phase_comb:
+            phase_plan_dict = {'phase_plan_id': phase_plan_id, 'phase_content': j}
+            phase_plane_list.append(phase_plan_dict)
+
+            phase_plan_id += 1
+
+    return phase_plane_list
+
+
+
 
 
 

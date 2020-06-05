@@ -17,7 +17,7 @@ class TempPlan(object):
         self.dh = DataHub(self.access_id, self.access_key, self.endpoint, enable_pb=False)
 
         # topic_name
-        self.topic_name_temp_plan = 'ods_rt_signal_tmpplan_config_test'
+        self.topic_name_temp_plan = 'ods_rt_signal_tmpplan_config_songjiang'
         self.record_schema_temp_plan = None
         self.cursor_temp_plan = None
 
@@ -131,7 +131,7 @@ class TempPlan(object):
                 temp_plan_param_element['Exit'] = '8'
 
                 object_element = OrderedDict()
-                object_element['UnlockFlowDirection'] = temp_plan_param_element
+                object_element['UnLockFlowDirection'] = temp_plan_param_element
             else:
                 split_time_list_element['SplitTime'] = split_time_list
 

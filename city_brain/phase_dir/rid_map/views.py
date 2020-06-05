@@ -6,7 +6,6 @@ from .tools import find_froad_id, find_troad_id, find_turn, get_dir_name, get_tu
 from .tools_odps import write_data_into_odps, delete_partition
 import xlwt
 import time
-import itertools
 import pprint
 
 
@@ -376,33 +375,6 @@ def get_phase_dir(inter_id):
         phase_dir_list.append(phase_dir_dict)
 
     return phase_dir_list
-
-
-# 计算所有相位的排列组合
-def get_phase_plan_list(cust_signal_id):
-
-    phsase_light_list = PhaseLightRelation.objects.filter(cust_signal_id=cust_signal_id)
-
-    phase_content = ''
-
-    for phase_light in phsase_light_list:
-        if phase_light.phase_name in phase_content:
-            continue
-        else:
-            phase_content += phase_light.phase_name
-
-    phase_plane_list = []
-    phase_plan_id = 1
-    for i in range(1, len(phase_content) + 1):
-        phase_comb = itertools.combinations(phase_content, i)
-
-        for j in phase_comb:
-            phase_plan_dict = {'phase_plan_id': phase_plan_id, 'phase_content': j}
-            phase_plane_list.append(phase_plan_dict)
-
-            phase_plan_id += 1
-
-    return phase_plane_list
 
 
 # 生成都相位方案的phase_dir

@@ -1,29 +1,37 @@
-import sys
-import os
-import django
-
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append(BASE_DIR)
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'phase_dir.phase_dir.settings')
-django.setup()
-
-
 from django.test import TestCase
-from .models import PhaseLightRelation, LightRoadRelation
+from .models import PhaseLightRelation
+
+import itertools
+
 
 # Create your tests here.
 
+class ModelTest(TestCase):
 
-# 测试
-def test_phase():
-    cust_signal_id = 2722
-    phase_light_list = PhaseLightRelation.objects.get(cust_singal_id=cust_signal_id)
+    def test_get_phase_plan_list(self):
 
-    for phase_light_info in phase_light_list:
-        print(phase_light_info.phase_name)
+        cust_signal_id = '1300'
+        phsase_light_list = PhaseLightRelation.objects.filter(cust_signal_id=cust_signal_id)
+
+        phase_content = ''
+
+        for phase_light in phsase_light_list:
+            if phase_light.phase_name in phase_content:
+                continue
+            else:
+                phase_content += phase_light.phase_name
+
+        phase_plane_list = []
+        phase_plan_id = 1
+        for i in range(1, len(phase_content) + 1):
+            phase_comb = itertools.combinations(phase_content, i)
+
+            for j in phase_comb:
+                phase_plan_dict = {'phase_plan_id': phase_plan_id, 'phase_content': j}
+                phase_plane_list.append(phase_plan_dict)
+
+                phase_plan_id += 1
+
+        print(phase_plane_list)
 
 
-if __name__ == '__main__':
-    test_phase()
