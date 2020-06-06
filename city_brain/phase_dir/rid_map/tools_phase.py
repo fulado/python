@@ -169,9 +169,15 @@ def get_phase_dir(inter_id):
 
 
 # 生成都相位方案的phase_dir
-def get_phase_plan_dir(inter_id, start_index):
+def get_phase_dir_multi_plan(inter_id, start_index):
     # 查找scats_id
-    cust_signal_inter = CustSignalInterMap.objects.get(inter_id=inter_id)
+    try:
+        cust_signal_inter = CustSignalInterMap.objects.get(inter_id=inter_id)
+    except Exception as e:
+        print('%r: %r' % (e, inter_id))
+
+        return None
+
     cust_signal_id = cust_signal_inter.cust_inter_id
 
     # 获取路口相位id列表
@@ -179,7 +185,7 @@ def get_phase_plan_dir(inter_id, start_index):
     # 获取路口相位通行方向数据列表
     phase_dir_list = get_phase_dir(inter_id)
 
-    phase_plan_dir_list = []
+    phase_dir_multi_plan_list = []
 
     for phase_plan in phase_plan_list:
         phase_plan_id = phase_plan.get('phase_plan_id')
@@ -203,11 +209,11 @@ def get_phase_plan_dir(inter_id, start_index):
                                       'turn_dir_no': phase_dir.get('turn_dir_no'),
                                       }
 
-                    phase_plan_dir_list.append(phase_plan_dir)
+                    phase_dir_multi_plan_list.append(phase_plan_dir)
                 else:
                     continue
 
-    return phase_plan_dir_list
+    return phase_dir_multi_plan_list
 
 
 
