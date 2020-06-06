@@ -377,48 +377,6 @@ def get_phase_dir(inter_id):
     return phase_dir_list
 
 
-# 生成都相位方案的phase_dir
-def gen_phase_dir_multi_plan(inter_id):
-
-    cust_signal_inter = CustSignalInterMap.objects.get(inter_id=inter_id)
-
-    cust_signal_id = cust_signal_inter.cust_inter_id
-
-    phase_plan_list = get_phase_plan_list(cust_signal_id)
-
-    phase_dir_list = get_phase_dir(inter_id)
-
-    phase_plan_dir_list = []
-
-    for phase_plan in phase_plan_list:
-        phase_plan_id = phase_plan.get('phase_plan_id')
-
-        # 相位内容
-        for phase_name in phase_plan.get('phase_content'):
-
-            # 相位通行方向
-            for phase_dir in phase_dir_list:
-                if phase_name == phase_dir.get('phase_name'):
-
-                    phase_plan_dir = {'phase_plan_id': phase_plan_id,
-                                      'inter_id': phase_dir.get('inter_id'),
-                                      'inter_name': phase_dir.get('inter_name'),
-                                      'phase_name': phase_dir.get('phase_name'),
-                                      'dir_name': phase_dir.get('dir_name'),
-                                      'f_road': phase_dir.get('f_road'),
-                                      't_road': phase_dir.get('t_road'),
-                                      'f_dir_4_no': phase_dir.get('f_dir_4_no'),
-                                      'f_dir_8_no': phase_dir.get('f_dir_8_no'),
-                                      'turn_dir_no': phase_dir.get('turn_dir_no'),
-                                      }
-
-                    phase_plan_dir_list.append(phase_plan_dir)
-                else:
-                    continue
-
-    return phase_plan_dir_list
-
-
 # 导出phase_plan_id的phase_dir数据
 def export_phase_plan_dir(request):
 

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .models import CustSignalInterMap, CustFroad, InterRid, InterOutRid, RoadFTRidMap, InterFTRid, PhaseFroadFTRidMap
 from .views import get_cust_phase
-from .phase_tools import save_phase_cust_road
+from .tools_phase import save_phase_cust_road, get_phase_plan_list
 
 
 def main(request):
@@ -194,11 +194,15 @@ def delete_map_ft(request):
 
 # 测试
 def test(request):
-    inter_list = CustSignalInterMap.objects.values('inter_id').distinct()
+    # inter_list = CustSignalInterMap.objects.values('inter_id').distinct()
+    #
+    # for inter_id in inter_list:
+    #     res = save_phase_cust_road(inter_id.get('inter_id'))
+    #     print(inter_id.get('inter_id') + str(res))
 
-    for inter_id in inter_list:
-        res = save_phase_cust_road(inter_id.get('inter_id'))
-        print(inter_id.get('inter_id') + str(res))
+    phase_plane_list = get_phase_plan_list('1300', 10)
+
+    print(phase_plane_list)
 
     data = {'data': ''}
 

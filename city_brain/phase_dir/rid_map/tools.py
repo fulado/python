@@ -35,6 +35,8 @@ def get_dir_name(ft_dir_4_no):
         return '南'
     elif ft_dir_4_no == 4:
         return '西'
+    else:
+        return '未知'
 
 
 # 计算转向代码
@@ -51,6 +53,22 @@ def get_turn_dir_no(turn):
         return '5'
     else:
         return '0'
+
+
+# 计算转向描述
+def get_turn_name(turn_dir_no):
+    if turn_dir_no == '1':
+        return '左转'
+    elif turn_dir_no == '2':
+        return '直行'
+    elif turn_dir_no == '3':
+        return '右转'
+    elif turn_dir_no == '4':
+        return '掉头'
+    elif turn_dir_no == '0':
+        return '行人'
+    else:
+        return '未知'
 
 
 if __name__ == '__main__':
