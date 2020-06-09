@@ -111,7 +111,72 @@
             <div id="collapseFive" class="panel-collapse collapse">
                 <div class="panel-body">
                     {% for inter_info in inter_list_yangpu %}
-                    <a href="#" href-url="/phase_dir/rid_map_ft?inter_id={{ inter_info.inter_id }}" class="list-group-item">{{ inter_info.cust_inter_id }} - {{ inter_info.inter_name }}</a>
+                    <a href="#" href-url="/phase_dir/rid_map_ft?inter_id={{ inter_info.inter_id }}"
+                       class="list-group-item">{{ inter_info.cust_inter_id }} - {{ inter_info.inter_name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseSix">嘉定</a>
+                </h4>
+            </div>
+            <div id="collapseSix" class="panel-collapse collapse">
+                <div class="panel-body">
+                    {% for inter_info in inter_list_jiading %}
+                    <a href="#" href-url="/phase_dir/rid_map_ft?inter_id={{ inter_info.inter_id }}"
+                       class="list-group-item">{{ inter_info.cust_inter_id }} - {{ inter_info.inter_name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseSeven">黄埔</a>
+                </h4>
+            </div>
+            <div id="collapseSeven" class="panel-collapse collapse">
+                <div class="panel-body">
+                    {% for inter_info in inter_list_huangpu %}
+                    <a href="#" href-url="/phase_dir/rid_map_ft?inter_id={{ inter_info.inter_id }}"
+                       class="list-group-item">{{ inter_info.cust_inter_id }} - {{ inter_info.inter_name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseEight">闵行</a>
+                </h4>
+            </div>
+            <div id="collapseEight" class="panel-collapse collapse">
+                <div class="panel-body">
+                    {% for inter_info in inter_list_minhang %}
+                    <a href="#" href-url="/phase_dir/rid_map_ft?inter_id={{ inter_info.inter_id }}"
+                       class="list-group-item">{{ inter_info.cust_inter_id }} - {{ inter_info.inter_name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseNine">青浦</a>
+                </h4>
+            </div>
+            <div id="collapseNine" class="panel-collapse collapse">
+                <div class="panel-body">
+                    {% for inter_info in inter_list_qingpu %}
+                    <a href="#" href-url="/phase_dir/rid_map_ft?inter_id={{ inter_info.inter_id }}"
+                       class="list-group-item">{{ inter_info.cust_inter_id }} - {{ inter_info.inter_name }}</a>
                     {% endfor %}
                 </div>
             </div>

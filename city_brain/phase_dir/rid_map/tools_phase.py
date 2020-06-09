@@ -168,7 +168,7 @@ def get_phase_dir(inter_id):
     return phase_dir_list
 
 
-# 生成都相位方案的phase_dir
+# 生成相位方案的phase_dir
 def get_phase_dir_multi_plan(inter_id, start_index):
     # 查找scats_id
     try:

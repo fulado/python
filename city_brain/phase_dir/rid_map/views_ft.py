@@ -6,7 +6,7 @@ from .tools_phase import save_phase_cust_road, get_phase_plan_list
 
 
 def main(request):
-    ft = int(request.GET.get('ft', 1))  # 进出口道标志位, 1-进口道, 2-出口道
+    # ft = int(request.GET.get('ft', 1))  # 进出口道标志位, 1-进口道, 2-出口道
 
     # request.session['ft'] = ft
 
@@ -15,12 +15,20 @@ def main(request):
     inter_list_chongming = CustSignalInterMap.objects.filter(area_code='310151').order_by('cust_inter_id')
     inter_list_xuhui = CustSignalInterMap.objects.filter(area_code='310104').order_by('cust_inter_id')
     inter_list_yangpu = CustSignalInterMap.objects.filter(area_code='310110').order_by('cust_inter_id')
+    inter_list_jiading = CustSignalInterMap.objects.filter(area_code='310114').order_by('cust_inter_id')
+    inter_list_huangpu = CustSignalInterMap.objects.filter(area_code='310101').order_by('cust_inter_id')
+    inter_list_minhang = CustSignalInterMap.objects.filter(area_code='310112').order_by('cust_inter_id')
+    inter_list_qingpu = CustSignalInterMap.objects.filter(area_code='310118').order_by('cust_inter_id')
 
     context = {'inter_list_baoshan': inter_list_baoshan,
                'inter_list_hongkou': inter_list_hongkou,
                'inter_list_chongming': inter_list_chongming,
                'inter_list_xuhui': inter_list_xuhui,
                'inter_list_yangpu': inter_list_yangpu,
+               'inter_list_jiading': inter_list_jiading,
+               'inter_list_huangpu': inter_list_huangpu,
+               'inter_list_minhang': inter_list_minhang,
+               'inter_list_qingpu': inter_list_qingpu,
                }
 
     return render(request, 'main_ft.html', context)

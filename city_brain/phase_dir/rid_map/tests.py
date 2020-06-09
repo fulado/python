@@ -10,7 +10,8 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'phase_dir.settings')
 django.setup()
 
 from rid_map.models import PhaseLightRelation, LightRoadRelation, CustSignalInterMap, PhaseFroadFTRidMap
-from rid_map.tools_phase import get_phase_plan_list, save_phase_cust_road, get_phase_dir, get_phase_dir_multi_plan
+from rid_map.tools_phase import get_phase_plan_list, save_phase_cust_road, get_phase_dir, get_phase_dir_multi_plan, \
+    save_phase_cust_road
 from rid_map.odps_io import write_inter_phase_into_odps, write_phase_dir_into_odps
 
 import pprint
@@ -23,7 +24,7 @@ def save_cust_phase_dir(area_code):
 
     for inter_id in inter_list:
         res = save_phase_cust_road(inter_id.get('inter_id'))
-        print(inter_id.get('inter_id') + str(res))
+        print(inter_id.get('inter_id') + ' ' + str(res))
 
 
 # 根据区号写入inter_phase数据到odps
@@ -42,8 +43,10 @@ def write_phase_dir_data():
 
 
 if __name__ == '__main__':
+    save_cust_phase_dir('310101')
+
     # write_inter_phase_data()
 
-    write_phase_dir_data()
+    # write_phase_dir_data()
 
 
