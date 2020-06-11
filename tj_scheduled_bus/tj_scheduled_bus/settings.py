@@ -82,18 +82,15 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'tj_scheduled_bus',
-        'PORT': 3306,
-        # 'HOST': '127.0.0.1',
-        # 'HOST': '118.24.96.90',
-        # 'USER': 'root',
-        # 'PASSWORD': 'xiaobai',
-        'HOST': '192.168.20.161',
-        'USER': 'root',
-        'PASSWORD': 'Yxtc1234@',
+        'PORT': 3307,
 
-        # 'HOST': 'rm-2zea9z45nxl14k73vfo.mysql.rds.aliyuncs.com',
-        # 'USER': 'tj_scheduled_bus',
-        # 'PASSWORD': 'yxtc_20921',
+        # 'HOST': '192.168.20.161',
+        # 'USER': 'root',
+        # 'PASSWORD': 'Yxtc1234@',
+
+        'HOST': 'rm-2zea9z45nxl14k73vfo.mysql.rds.aliyuncs.com',
+        'USER': 'tj_scheduled_bus',
+        'PASSWORD': 'yxtc_20921',
     }
 }
 

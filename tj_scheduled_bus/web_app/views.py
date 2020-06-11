@@ -9,11 +9,11 @@ from django.db.models import Count
 from PIL import Image, ImageDraw, ImageFont
 
 from .models import User, Enterprise, Station, Department, Route, Vehicle, Permission, Mark, Statistic, Status, \
-    StationCount
+    StationCount, PermissionThisMonth
 from .decorator import login_check
 from tj_scheduled_bus import settings
 from .utils import save_file, MyPaginator, statistic_update, send_sms, check_vehicle, check_vehicle_expired,\
-    create_permission, save_unlock_file
+    create_permission, save_unlock_file, check_vio_cnt
 
 
 # Create your views here.
@@ -21,43 +21,48 @@ from .utils import save_file, MyPaginator, statistic_update, send_sms, check_veh
 
 # 验证码
 def check_code(request):
-    # 定义变量，用于画面的背景色、宽、高
-    bgcolor = (255, 255, 255)
-    width = 100
-    height = 25
-    # 创建画面对象
-    im = Image.new('RGB', (width, height), bgcolor)
-    # 创建画笔对象
-    draw = ImageDraw.Draw(im)
-    # 调用画笔的point()函数绘制噪点
-    for i in range(0, 100):
-        xy = (random.randrange(0, width), random.randrange(0, height))
-        fill = (random.randrange(0, 255), 0, random.randrange(0, 255))
-        draw.point(xy, fill=fill)
-    # 定义验证码的备选值
-    str1 = 'ABCD23EFGHJK456LMNPQRS789TUVWXYZ'
-    # 随机选取4个值作为验证码
-    rand_str = ''
-    for i in range(0, 4):
-        rand_str += str1[random.randrange(0, len(str1))]
-    # 设置字体
-    font = ImageFont.truetype(r"%s/simsun.ttf" % settings.FONTS_DIR, 23)
-    # 字体颜色
-    fontcolor = (0, 0, 0)
-    # 绘制4个字
-    draw.text((5, 2), rand_str[0], font=font, fill=fontcolor)
-    draw.text((25, 2), rand_str[1], font=font, fill=fontcolor)
-    draw.text((50, 2), rand_str[2], font=font, fill=fontcolor)
-    draw.text((75, 2), rand_str[3], font=font, fill=fontcolor)
-    # 释放画笔
-    del draw
-    # 存入session，用于做进一步验证
-    request.session['check_code'] = rand_str
-    request.session.set_expiry(0)  # 浏览器关闭后清除session
-    # 内存文件操作
-    buf = io.BytesIO()
-    # 将图片保存在内存中，文件类型为png
-    im.save(buf, 'png')
+    try:
+        # 定义变量，用于画面的背景色、宽、高
+        bgcolor = (255, 255, 255)
+        width = 100
+        height = 25
+        # 创建画面对象
+        im = Image.new('RGB', (width, height), bgcolor)
+        # 创建画笔对象
+        draw = ImageDraw.Draw(im)
+        # 调用画笔的point()函数绘制噪点
+        for i in range(0, 100):
+            xy = (random.randrange(0, width), random.randrange(0, height))
+            fill = (random.randrange(0, 255), 0, random.randrange(0, 255))
+            draw.point(xy, fill=fill)
+        # 定义验证码的备选值
+        str1 = 'ABCD23EFGHJK456LMNPQRS789TUVWXYZ'
+        # 随机选取4个值作为验证码
+        rand_str = ''
+        for i in range(0, 4):
+            rand_str += str1[random.randrange(0, len(str1))]
+        # 设置字体
+        font = ImageFont.truetype(r"%s/simsun.ttf" % settings.FONTS_DIR, 23)
+        # 字体颜色
+        fontcolor = (0, 0, 0)
+        # 绘制4个字
+        draw.text((5, 2), rand_str[0], font=font, fill=fontcolor)
+        draw.text((25, 2), rand_str[1], font=font, fill=fontcolor)
+        draw.text((50, 2), rand_str[2], font=font, fill=fontcolor)
+        draw.text((75, 2), rand_str[3], font=font, fill=fontcolor)
+        # 释放画笔
+        del draw
+        # 存入session，用于做进一步验证
+        request.session['check_code'] = rand_str
+        request.session.set_expiry(0)  # 浏览器关闭后清除session
+
+        # 内存文件操作
+        buf = io.BytesIO()
+        # 将图片保存在内存中，文件类型为png
+        im.save(buf, 'png')
+    except Exception as e:
+        print(e)
+
     # 将内存中的图片数据返回给客户端，MIME类型为图片png
     return HttpResponse(buf.getvalue(), 'image/png')
 
@@ -78,8 +83,8 @@ def sms_check_code(request):
 
     ########################################################
     # 测试用，正式环境删除
-    data = {'result': True}
-    request.session['sms_code'] = '1234'
+    # data = {'result': True}
+    # request.session['sms_code'] = '1234'
     ########################################################
 
     return JsonResponse(data)
@@ -246,6 +251,8 @@ def main(request):
         return render(request, 'zhidui/main.html', context)
     elif authority == 3:
         return render(request, 'zongdui/main.html', context)
+    elif authority == 4:
+        return render(request, 'dadui/main.html', context)
     else:
         return render(request, 'main.html', context)
 
@@ -285,6 +292,7 @@ def enterprise_add(request):
     enterprise_owner = request.POST.get('enterprise_owner', '')
     enterprise_code = request.POST.get('enterprise_code', '')
     contact_person = request.POST.get('contact_person', '')
+    promise = request.POST.get('promise', '')
     phone = request.POST.get('phone', '')
     dept_id = request.POST.get('dept_id', 0)
 
@@ -323,7 +331,15 @@ def enterprise_add(request):
             save_file(id_card_back, file_name)
             enterprise_info.id_card_back = file_name
 
+        # 承诺书照片
+        promise = request.FILES.get('promise', '')
+        if promise:
+            file_name = '承诺书_' + enterprise_name
+            save_file(promise, file_name)
+            enterprise_info.promise = file_name
+
     else:
+        enterprise_info.enterprise_code = None
         # 租赁合同
         rent_contract = request.FILES.get('rent_contract', '')
         if rent_contract:
@@ -354,6 +370,7 @@ def enterprise_modify(request):
     enterprise_code = request.POST.get('enterprise_code', '')
     contact_person = request.POST.get('contact_person', '')
     phone = request.POST.get('phone', '')
+    dept_id = request.POST.get('dept_id', '')
 
     enterprise_info = Enterprise.objects.get(id=enterprise_id)
     enterprise_info.enterprise_type_id = enterprise_type
@@ -362,6 +379,7 @@ def enterprise_modify(request):
     enterprise_info.enterprise_code = enterprise_code
     enterprise_info.contact_person = contact_person
     enterprise_info.phone = phone
+    enterprise_info.dept_id = dept_id
 
     # 营业执照照片
     business_license = request.FILES.get('business_license', '')
@@ -384,12 +402,19 @@ def enterprise_modify(request):
         save_file(id_card_back, file_name)
         enterprise_info.id_card_back = file_name
 
-    # 法人身份证反面
+    # 租赁合同
     rent_contract = request.FILES.get('rent_contract', '')
     if rent_contract:
         file_name = '租赁合同_' + enterprise_name
         save_file(rent_contract, file_name)
         enterprise_info.rent_contract = file_name
+
+    # 承诺书照片
+    promise = request.FILES.get('promise', '')
+    if promise:
+        file_name = '承诺书_' + enterprise_name
+        save_file(promise, file_name)
+        enterprise_info.promise = file_name
 
     try:
         enterprise_info.save()
@@ -556,7 +581,7 @@ def vehicle_modify(request):
 def vehicle_submit(request):
     vehicle_id = request.GET.get('vehicle_id', '')
 
-    Vehicle.objects.filter(id=vehicle_id).update(vehicle_status_id=2)
+    Vehicle.objects.filter(id=vehicle_id).update(vehicle_status_id=3)
 
     # 保存页码和搜索信息
     page_num = int(request.session.get('page_num', 1))
@@ -594,7 +619,7 @@ def can_add_vehicle(request):
 
     enterprise_list = Enterprise.objects.filter(user_id=user_id, enterprise_type=41)
 
-    if Vehicle.objects.filter(vehicle_number=vehicle_number,vehicle_user_id=user_id).exists():
+    if Vehicle.objects.filter(vehicle_number=vehicle_number, vehicle_user_id=user_id).exists():
         result = '1'    # 车辆已经存在
     elif not check_vehicle(vehicle_number, engine_code, vehicle_owner):
         result = '2'    # 车辆信息不正确
@@ -988,37 +1013,29 @@ def route_cancel(request):
 def this_month(request):
     user_id = request.session.get('user_id', '')
 
-    # vehicle_number = request.GET.get('vehicle_number', '')
-    # page_num = int(request.GET.get('page_num', 1))
-    #
-    # vehicle_list = Vehicle.objects.filter(vehicle_user_id=user_id).filter(vehicle_status_id__in=(3, 6))
-    # route_list = Route.objects.filter(route_user_id=user_id)
-    #
-    # permission_vehicle_list = Vehicle.objects.filter(vehicle_number__contains=vehicle_number, vehicle_user=user_id)
-    #
-    # vehicle_id_list = []
-    # for vehicle_info in permission_vehicle_list:
-    #     vehicle_id_list.append(vehicle_info.id)
-    #
-    # permission_list = Permission.objects.filter(permission_user_id=user_id). \
-    #     filter(permission_vehicle_id__in=vehicle_id_list)
-    #
-    # # 分页
-    # mp = MyPaginator()
-    # mp.paginate(permission_list, 10, page_num)
-    #
-    # context = {'vehicle_list': vehicle_list,
-    #            'route_list': route_list,
-    #            'mp': mp,
-    #            'vehicle_number': vehicle_number,
-    #            }
-    #
-    # # 保存页码和搜索信息
-    # request.session['page_num'] = page_num
-    # request.session['vehicle_number'] = vehicle_number
+    vehicle_number = request.GET.get('vehicle_number', '')
+    page_num = int(request.GET.get('page_num', 1))
 
-    # 删除
-    context = {}
+    permission_vehicle_list = Vehicle.objects.filter(vehicle_number__contains=vehicle_number, vehicle_user=user_id)
+
+    vehicle_id_list = []
+    for vehicle_info in permission_vehicle_list:
+        vehicle_id_list.append(vehicle_info.id)
+
+    permission_list = PermissionThisMonth.objects.filter(permission_user_id=user_id). \
+        filter(permission_vehicle_id__in=vehicle_id_list)
+
+    # 分页
+    mp = MyPaginator()
+    mp.paginate(permission_list, 10, page_num)
+
+    context = {'mp': mp,
+               'vehicle_number': vehicle_number,
+               }
+
+    # 保存页码和搜索信息
+    request.session['page_num'] = page_num
+    request.session['vehicle_number'] = vehicle_number
 
     return render(request, 'permit_this_month.html', context)
 
@@ -1186,6 +1203,7 @@ def can_get_permission(request):
     vehicle_id = request.GET.get('vehicle_id', '')
     route_id = request.GET.get('route_id', '')
 
+    vehicle_number = Vehicle.objects.get(id=vehicle_id).vehicle_number
     result = 0
 
     # 车辆id为空，或者路线id为空，返回信息错误
@@ -1197,8 +1215,12 @@ def can_get_permission(request):
         result = 2
 
     # 判断车辆是否在检验有效期内
-    elif not check_vehicle_expired(Vehicle.objects.get(id=vehicle_id).vehicle_number):
-        result = 3  # 在有效期内，可以申请通行证
+    elif not check_vehicle_expired(vehicle_number):
+        result = 3  # 在有效期内，不可以申请通行证
+
+    # 判断车辆是否在检验有效期内
+    elif not check_vio_cnt(vehicle_number):
+        result = 5  # 违章操作3条, 不能申请通行证
 
     else:
         # 判断路线中的站点使用次数，如果有站点使用超过5次，则提示用户不能申请通行证
@@ -1315,9 +1337,23 @@ def download_count(request):
         return
 
 
+# 获取支队信息
+def get_dept_info(request):
+    dept_id = request.GET.get('dept_id', '')
 
+    try:
+        dept_info = Department.objects.get(id=dept_id)
 
+        ret = {'dept_address': dept_info.dept_address,
+               'dept_phone': dept_info.dept_phone
+               }
+    except Exception as e:
+        print(e)
+        ret = {'dept_address': '',
+               'dept_phone': ''
+               }
 
+    return JsonResponse(ret)
 
 
 

@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/conf/nginx.conf" line="108" />
-  </component>
   <component name="ChangeListManager">
     <list default="true" id="62a57b59-1c24-49dd-b932-d9ecb173c698" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tj_orta/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/tj_orta/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tj_orta_app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/tj_orta_app/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tj_orta_app/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/tj_orta_app/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tj_orta_app/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/tj_orta_app/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../tj_ve2ep/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../tj_ve2ep/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../city_brain/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../city_brain/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../city_brain/tools/excel_data_import.py" beforeDir="false" afterPath="$PROJECT_DIR$/../city_brain/tools/excel_data_import.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tj_scheduled_bus/tj_scheduled_bus/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/../tj_scheduled_bus/tj_scheduled_bus/settings.py" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -23,125 +15,6 @@
     <SUITE FILE_PATH="coverage/tj_orta$utils__1_.coverage" NAME="utils (1) Coverage Results" MODIFIED="1557134236729" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tj_orta_app" />
     <SUITE FILE_PATH="coverage/tj_orta$utils.coverage" NAME="utils Coverage Results" MODIFIED="1557133584581" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tj_orta" />
     <SUITE FILE_PATH="coverage/tj_orta$tests.coverage" NAME="tests Coverage Results" MODIFIED="1557134077784" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tj_orta_app" />
-  </component>
-  <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tj_orta_app/views.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="160">
-              <caret line="587" selection-start-line="587" selection-end-line="587" />
-              <folding>
-                <element signature="e#0#35#0" expanded="true" />
-                <element signature="e#616#913#0" />
-                <element signature="e#951#2306#0" />
-                <element signature="e#2341#2603#0" />
-                <element signature="e#2644#3639#0" />
-                <element signature="e#4093#4771#0" />
-                <element signature="e#4814#6429#0" />
-                <element signature="e#6478#6790#0" />
-                <element signature="e#6838#8663#0" />
-                <element signature="e#8711#9175#0" />
-                <element signature="e#9219#9702#0" />
-                <element signature="e#10190#11426#0" />
-                <element signature="e#11468#11857#0" />
-                <element signature="e#11902#12666#0" />
-                <element signature="e#12710#14702#0" />
-                <element signature="e#14747#16978#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tj_orta_app/models.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="175">
-              <caret line="45" selection-start-line="45" selection-end-line="64" selection-end-column="88" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/login.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1039">
-              <caret line="105" column="10" selection-start-line="81" selection-start-column="4" selection-end-line="105" selection-end-column="10" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tj_orta/utils.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="12" column="43" selection-start-line="12" selection-start-column="43" selection-end-line="12" selection-end-column="43" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tj_orta_app/urls.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="888">
-              <caret line="38" column="29" selection-start-line="38" selection-start-column="11" selection-end-line="38" selection-end-column="29" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tj_orta/settings.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3864">
-              <caret line="161" selection-start-line="161" selection-end-line="161" selection-end-column="50" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/tj_orta_app/views_vehicle.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="112">
-              <caret line="167" selection-start-line="167" selection-end-line="187" selection-end-column="36" />
-              <folding>
-                <element signature="e#5827#6934#0" />
-                <element signature="e#7002#7718#0" />
-                <element signature="e#7767#10807#0" />
-                <element signature="e#10852#14395#0" />
-                <element signature="e#14454#22284#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/vehicle.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2648">
-              <caret line="165" column="28" lean-forward="true" selection-start-line="165" selection-start-column="28" selection-end-line="165" selection-end-column="28" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tj_orta/__init__.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret selection-end-line="2" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/main.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="432">
-              <caret line="18" column="25" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -191,95 +64,17 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/tj_orta/__init__.py" />
-        <option value="$PROJECT_DIR$/tj_orta/utils.py" />
-        <option value="$PROJECT_DIR$/static/js/through.js" />
-        <option value="$PROJECT_DIR$/static/js/login.js" />
-        <option value="$PROJECT_DIR$/templates/404.html" />
-        <option value="$PROJECT_DIR$/templates/500.html" />
-        <option value="$PROJECT_DIR$/static/css/header.css" />
-        <option value="$PROJECT_DIR$/static/css/login.css" />
-        <option value="$PROJECT_DIR$/static/css/modle.css" />
-        <option value="$PROJECT_DIR$/tj_orta_app/decorator.py" />
-        <option value="$PROJECT_DIR$/templates/enterprise.html" />
-        <option value="$PROJECT_DIR$/tj_orta_app/migrations/sys_views.py" />
-        <option value="$PROJECT_DIR$/tj_orta_app/sys_views.py" />
-        <option value="$PROJECT_DIR$/tj_orta_app/vehicle_views.py" />
-        <option value="$PROJECT_DIR$/templates/main.html" />
-        <option value="$PROJECT_DIR$/tj_orta_app/views_last.py" />
-        <option value="$PROJECT_DIR$/tj_orta_app/views_sys.py" />
-        <option value="$PROJECT_DIR$/templates/verify.html" />
-        <option value="$PROJECT_DIR$/tj_orta/urls.py" />
-        <option value="$PROJECT_DIR$/tj_orta_app/views_vehicle.py" />
-        <option value="$PROJECT_DIR$/tj_orta_app/tests.py" />
-        <option value="$PROJECT_DIR$/conf/uwsgi.ini" />
-        <option value="$PROJECT_DIR$/conf/nginx.conf" />
-        <option value="$PROJECT_DIR$/tj_orta_app/utils.py" />
-        <option value="$PROJECT_DIR$/templates/vehicle.html" />
-        <option value="$PROJECT_DIR$/templates/download.html" />
-        <option value="$PROJECT_DIR$/templates/last.html" />
-        <option value="$PROJECT_DIR$/tj_orta/settings.py" />
-        <option value="$PROJECT_DIR$/templates/login_bak.html" />
-        <option value="$PROJECT_DIR$/tj_orta_app/models.py" />
-        <option value="$PROJECT_DIR$/tj_orta_app/views.py" />
-        <option value="$PROJECT_DIR$/tj_orta_app/urls.py" />
-        <option value="$PROJECT_DIR$/templates/login.html" />
-      </list>
-    </option>
-  </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-1928" />
     <option name="y" value="168" />
     <option name="width" value="1936" />
     <option name="height" value="1056" />
   </component>
+  <component name="ProjectId" id="1dAC68CPSWRqIC0GJyPH6iMDpfm" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="tj_orta" type="b2602c69:ProjectViewProjectNode" />
-              <item name="tj_orta" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="tj_orta" type="b2602c69:ProjectViewProjectNode" />
-              <item name="tj_orta" type="462c0819:PsiDirectoryNode" />
-              <item name="conf" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="tj_orta" type="b2602c69:ProjectViewProjectNode" />
-              <item name="tj_orta" type="462c0819:PsiDirectoryNode" />
-              <item name="static" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="tj_orta" type="b2602c69:ProjectViewProjectNode" />
-              <item name="tj_orta" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="tj_orta" type="b2602c69:ProjectViewProjectNode" />
-              <item name="tj_orta" type="462c0819:PsiDirectoryNode" />
-              <item name="tj_orta" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="tj_orta" type="b2602c69:ProjectViewProjectNode" />
-              <item name="tj_orta" type="462c0819:PsiDirectoryNode" />
-              <item name="tj_orta_app" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-    </panes>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
@@ -301,18 +96,6 @@
       <recent name="D:\Workspaces\python\projects\python\tj_orta\static\img" />
       <recent name="D:\Workspaces\repository\python\tj_orta\tj_orta_app" />
     </key>
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="RunManager" selected="Python.utils (1)">
     <configuration name="tests" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -429,11 +212,9 @@
       <workItem from="1558324756433" duration="8384000" />
       <workItem from="1558340066893" duration="6957000" />
       <workItem from="1558356791192" duration="7731000" />
+      <workItem from="1591858334074" duration="13000" />
     </task>
     <servers />
-  </component>
-  <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="89163000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -444,321 +225,7 @@
       <is-autoscroll-to-source value="true" />
     </todo-panel>
   </component>
-  <component name="ToolWindowManager">
-    <frame x="-1928" y="168" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
-    <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23134328" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.33073324" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.3991323" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.32916266" />
-      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50319827" side_tool="true" weight="0.25576922" />
-      <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Python Console" order="10" weight="0.32839313" />
-      <window_info anchor="bottom" id="Terminal" order="11" sideWeight="0.4968017" weight="0.31344903" />
-      <window_info anchor="bottom" id="Version Control" order="12" show_stripe_button="false" weight="0.32910156" />
-      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="SciView" order="3" />
-      <window_info anchor="right" id="Data View" order="4" />
-      <window_info anchor="right" id="Database" order="5" />
-      <window_info anchor="right" id="Mongo Explorer" order="6" weight="0.15511727" />
-    </layout>
-  </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
-  </component>
-  <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/static/img/icon.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/login.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1848">
-          <caret line="77" column="32" selection-start-line="68" selection-start-column="3" selection-end-line="77" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/account_number.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2760">
-          <caret line="115" column="18" selection-start-line="115" selection-start-column="15" selection-end-line="115" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tj_orta_app/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/certification/201905LL5317024.jpg" />
-    <entry file="file://$PROJECT_DIR$/static/certification/201905LK1557261.jpg" />
-    <entry file="file://$PROJECT_DIR$/static/certification/201905HP5672617.jpg" />
-    <entry file="file://$PROJECT_DIR$/conf/uwsgi.ini">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="384">
-          <caret line="16" column="17" selection-start-line="16" selection-start-column="17" selection-end-line="16" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/plist.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/conf/uwsgi_params">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/conf/nginx.conf">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="47" column="33" lean-forward="true" selection-start-line="47" selection-start-column="33" selection-end-line="47" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tj_orta/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="15" selection-start-line="15" selection-end-line="18" selection-end-column="57" />
-          <folding>
-            <element signature="e#641#682#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/verify.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="473">
-          <caret line="111" column="35" selection-start-line="111" selection-start-column="22" selection-end-line="111" selection-end-column="35" />
-          <folding>
-            <element signature="n#style#0;n#span#0;n#div#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/download.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="631">
-          <caret line="53" column="26" lean-forward="true" selection-start-line="53" selection-start-column="26" selection-end-line="53" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/last.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2016">
-          <caret line="84" column="20" selection-start-line="84" selection-start-column="20" selection-end-line="84" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tj_orta/wsgi.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../che800/vehicle_business/templates/main.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="847">
-          <caret line="109" column="7" selection-start-line="109" selection-start-column="7" selection-end-line="109" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tj_orta_app/tests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1824">
-          <caret line="76" lean-forward="true" selection-start-line="76" selection-end-line="76" />
-          <folding>
-            <element signature="e#0#32#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tj_orta_app/views_last.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="863">
-          <caret line="36" column="7" selection-start-line="36" selection-start-column="7" selection-end-line="36" selection-end-column="7" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tj_orta_app/views_sys.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="839">
-          <caret line="38" column="40" selection-start-line="38" selection-start-column="40" selection-end-line="38" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/login_bak.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tj_orta_app/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="679">
-          <caret line="203" column="4" selection-start-line="203" selection-start-column="4" selection-end-line="208" />
-          <folding>
-            <element signature="e#13#41#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/certification/201905AFL9226756.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/certification/201905AG31516435.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/certification/201905AG31516700.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/certification/201905AG80887202.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/certification/201905AH00967605.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/certification/201905AH59996867.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/certification/201905AK09733420.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/certification/201905AK37627663.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/certification/201905AK65128270.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/certification/201905AL72237272.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/certification/201905AM03392942.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/certification/201905AM50090404.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/certification/201905AN13856654.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/certification/201905AN60228942.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/certification/201905AP92191228.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/certification/201905AQ09962018.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/certification/201905AQ38610932.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/certification/201905AU55501168.jpg">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tj_orta_app/decorator.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tj_orta_app/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="888">
-          <caret line="38" column="29" selection-start-line="38" selection-start-column="11" selection-end-line="38" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tj_orta/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3864">
-          <caret line="161" selection-start-line="161" selection-end-line="161" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tj_orta/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-line="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/main.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="18" column="25" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tj_orta_app/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="175">
-          <caret line="45" selection-start-line="45" selection-end-line="64" selection-end-column="88" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/login.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1039">
-          <caret line="105" column="10" selection-start-line="81" selection-start-column="4" selection-end-line="105" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tj_orta/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="12" column="43" selection-start-line="12" selection-start-column="43" selection-end-line="12" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tj_orta_app/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="587" selection-start-line="587" selection-end-line="587" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-            <element signature="e#616#913#0" />
-            <element signature="e#951#2306#0" />
-            <element signature="e#2341#2603#0" />
-            <element signature="e#2644#3639#0" />
-            <element signature="e#4093#4771#0" />
-            <element signature="e#4814#6429#0" />
-            <element signature="e#6478#6790#0" />
-            <element signature="e#6838#8663#0" />
-            <element signature="e#8711#9175#0" />
-            <element signature="e#9219#9702#0" />
-            <element signature="e#10190#11426#0" />
-            <element signature="e#11468#11857#0" />
-            <element signature="e#11902#12666#0" />
-            <element signature="e#12710#14702#0" />
-            <element signature="e#14747#16978#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/vehicle.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2648">
-          <caret line="165" column="28" lean-forward="true" selection-start-line="165" selection-start-column="28" selection-end-line="165" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tj_orta_app/views_vehicle.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="112">
-          <caret line="167" selection-start-line="167" selection-end-line="187" selection-end-column="36" />
-          <folding>
-            <element signature="e#5827#6934#0" />
-            <element signature="e#7002#7718#0" />
-            <element signature="e#7767#10807#0" />
-            <element signature="e#10852#14395#0" />
-            <element signature="e#14454#22284#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <option name="version" value="2" />
   </component>
 </project>
