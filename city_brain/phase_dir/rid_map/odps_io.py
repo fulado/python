@@ -3,7 +3,6 @@ from .tools_phase import get_phase_plan_list, get_phase_dir_multi_plan
 from .tools_odps import delete_partition, write_data_into_odps
 
 import time
-import pprint
 
 
 # 写入inter_phase数据到odps
@@ -45,7 +44,7 @@ def write_inter_phase_into_odps(area_code, start_index):
 
 
 # 写入phase_dir数据到odps
-def write_phase_dir_into_odps(area_code, area_name, start_index):
+def write_phase_dir_into_odps(area_code, start_index):
     """
     :param area_code: 区域代码
     :param area_name: 区域名称, 使用拼音, 如xuhui, baoshan, songjiang
@@ -79,14 +78,13 @@ def write_phase_dir_into_odps(area_code, area_name, start_index):
 
             phase_dir_list.append(phase_plan_content)
 
-    table_name = 'dwd_tfc_ctl_signal_phasedir_' + area_name
-    partition = 'adcode=310000'
+    table_name = 'dwd_tfc_ctl_signal_phasedir_city_brain'
+    partition = 'area_code=' + area_code
 
     # 删除分区
     delete_partition(table_name, partition)
 
     # 写入新数据
-    # pprint.pprint(phase_dir_list)
     write_data_into_odps(table_name, partition, phase_dir_list)
 
     print('phase_dir数据写入完毕')

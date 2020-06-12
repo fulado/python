@@ -123,7 +123,7 @@ class TempPlan(object):
                 temp_plan_param_element['Exit'] = '8'
 
                 object_element = OrderedDict()
-                object_element['UnlockFlowDirection'] = temp_plan_param_element
+                object_element['UnLockFlowDirection'] = temp_plan_param_element
             else:
                 split_time_list_element['SplitTime'] = split_time_list
 

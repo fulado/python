@@ -29,7 +29,7 @@ class SdoUser(object):
     # 生成登录数据
     def create_send_data(self):
         # 判断账号密码
-        if self.username == 'admin' and self.password == '1qaz2wsx123456':
+        if self.username == 'fengxian' and self.password == 'fengxian':
             login_success = True
         else:
             login_success = False

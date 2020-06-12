@@ -27,26 +27,17 @@ def save_cust_phase_dir(area_code):
         print(inter_id.get('inter_id') + ' ' + str(res))
 
 
-# 根据区号写入inter_phase数据到odps
-def write_inter_phase_data():
-    area_code = '310104'
-    start_index = 10
-    write_inter_phase_into_odps(area_code, start_index)
-
-
-# 根据区号写入phase_dir数据到odps
-def write_phase_dir_data():
-    area_code = '310104'
-    area_name = 'xuhui'
-    start_index = 10
-    write_phase_dir_into_odps(area_code, area_name, start_index)
-
-
 if __name__ == '__main__':
-    save_cust_phase_dir('310101')
+    area_code = '310118'  # 区号
+    start_index = 10   # phase plan id 起始值
 
-    # write_inter_phase_data()
+    # 根据区号写入inter_phase数据到odps
+    # write_inter_phase_into_odps(area_code, start_index)
 
-    # write_phase_dir_data()
+    # 根据区号写入phase_dir数据到odps
+    # write_phase_dir_into_odps(area_code, start_index)
+
+    # 写入电科phase_dir数据到mysql数据库
+    # save_cust_phase_dir(area_code)
 
 
