@@ -13,6 +13,7 @@ from dynamic_data.dynamic_data import DynamicData
 from static_data.static_data import StaticData
 from static_data.static_data_subscribe import StaticDataSubscribe
 from .utils import print_log
+from command.cmd_result import CmdResult
 
 
 class DataHandler(object):
@@ -44,7 +45,6 @@ class DataHandler(object):
     # 根据接收数据的类型，处理数据
     def data_handle(self):
         # 登录
-        # print(self.object_type)
         if self.object_type == 'SDO_User':
             self.sdo_user_handle()
 
@@ -85,6 +85,15 @@ class DataHandler(object):
 
             # 保存到文件
             # dynamic_data.save_data_to_file()
+
+        # 命令下发返回
+        elif self.data_type == 'RESPONSE' and self.object_type == 'TempPlanParam':
+            cmd_result = CmdResult(self.object_type)
+            cmd_result.parse_recv_data(self.recv_data_dict)
+            cmd_result.convert_data_for_datahub()
+
+            # 发布到datahub写入队列
+            self.queue_put_datahub.put(cmd_result.datahub_put_data)
 
         else:
             pass
