@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8f24e4d0-1ffe-45dd-9a0f-c97e4b266aa8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../city_brain/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../city_brain/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../city_brain/phase_dir/rid_map/odps_io.py" beforeDir="false" afterPath="$PROJECT_DIR$/../city_brain/phase_dir/rid_map/odps_io.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../city_brain/phase_dir/rid_map/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/../city_brain/phase_dir/rid_map/tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/command/temp_plan.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/command/temp_plan.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/command/temp_plan_sj.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/command/temp_plan_sj.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/sys_data/sdo_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/sys_data/sdo_user.py" afterDir="false" />
-    </list>
+    <list default="true" id="8f24e4d0-1ffe-45dd-9a0f-c97e4b266aa8" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/venv/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -24,10 +17,11 @@
     <session id="1626154438">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="3" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.11" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.open.time.6" value="1" />
+          <entry key="project.opened" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -80,7 +74,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/command/temp_plan_sj.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2040">
+            <state relative-caret-position="240">
               <caret line="19" column="75" selection-start-line="19" selection-start-column="37" selection-end-line="19" selection-end-column="75" />
               <folding>
                 <element signature="e#0#27#0" expanded="true" />
@@ -92,7 +86,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/command/temp_plan.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="551">
+            <state relative-caret-position="2780">
               <caret line="146" selection-start-line="146" selection-end-line="146" />
               <folding>
                 <element signature="e#0#27#0" expanded="true" />
@@ -105,7 +99,7 @@
         <entry file="file://$PROJECT_DIR$/sys_data/sdo_user.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="580">
-              <caret line="50" lean-forward="true" selection-start-line="50" selection-end-line="50" />
+              <caret line="50" selection-start-line="50" selection-end-line="50" />
             </state>
           </provider>
         </entry>
@@ -141,6 +135,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -187,7 +182,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="ProjectViewState">
@@ -365,9 +359,8 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2553305" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25799572" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -454,7 +447,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/command/temp_plan_sj.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2040">
+        <state relative-caret-position="240">
           <caret line="19" column="75" selection-start-line="19" selection-start-column="37" selection-end-line="19" selection-end-column="75" />
           <folding>
             <element signature="e#0#27#0" expanded="true" />
@@ -464,7 +457,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/command/temp_plan.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="551">
+        <state relative-caret-position="2780">
           <caret line="146" selection-start-line="146" selection-end-line="146" />
           <folding>
             <element signature="e#0#27#0" expanded="true" />
@@ -475,7 +468,7 @@
     <entry file="file://$PROJECT_DIR$/sys_data/sdo_user.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="580">
-          <caret line="50" lean-forward="true" selection-start-line="50" selection-end-line="50" />
+          <caret line="50" selection-start-line="50" selection-end-line="50" />
         </state>
       </provider>
     </entry>

@@ -28,6 +28,8 @@ class DataHandler(object):
         self.data_subscribe = False
         self.signal_id_list = []
         self.cross_id_list = []
+        self.is_error = False
+        self.error_data = ''
 
     # 解析xml数据
     def xml_parse(self, recv_data_xml):
@@ -41,6 +43,12 @@ class DataHandler(object):
 
         self.object_type = tuple(data.keys())[-1]
         self.recv_data_dict = data.get(self.object_type, {})
+
+        self.error_data = data.get('SDO_Error', '')
+        if self.error_data == '':
+            self.is_error = False
+        else:
+            self.is_error = True
 
     # 根据接收数据的类型，处理数据
     def data_handle(self):

@@ -5,20 +5,70 @@ from static_data.static_data import StaticData
 from command.cmd_result import CmdResult
 
 
-recv_data_xml = """<?xml version="1.0" encoding="utf-8"?>
-<Message><Version>1.0</Version><Token>6B11E4FE5869ED479AD887C80CB9C2D3FB8B5977</Token><From><Address><Sys>TICP</Sys><SubSys></SubSys><Instance></Instance></Address></From><To><Address><Sys>UTCS</Sys><SubSys></SubSys><Instance></Instance></Address></To><Type>REQUEST</Type><Seq>20200512141114000699</Seq><Body><Operation order="6" name="Set"><TempPlanParam><CrossID>31012000000051</CrossID><CoordStageNo>0</CoordStageNo><OffSet>0</OffSet><EndTime>2020-05-12 23:59:59</EndTime><SplitTimeList><SplitTime><StageNo>3</StageNo><Green>61</Green></SplitTime><SplitTime><StageNo>4</StageNo><Green>25</Green></SplitTime></SplitTimeList></TempPlanParam></Operation></Body></Message>"""
-
+recv_data_xml = """
+<?xml version="1.0" encoding="UTF-8"?>
+<Message>
+  <Version>1.0</Version>
+  <Token>02FCB106FB8742B0901E14BAFB0DD4B0411D5B82</Token>
+  <From>
+    <Address>
+      <Sys>UTCS</Sys>
+      <SubSys/>
+      <Instance/>
+    </Address>
+  </From>
+  <To>
+    <Address>
+      <Sys>TICP</Sys>
+      <SubSys/>
+      <Instance/>
+    </Address>
+  </To>
+  <Type>RESPONSE</Type>
+  <Seq>20200612105752000708</Seq>
+  <Body>
+    <Operation name="Set" order="6">
+      <SDO_Error>
+        <ErrObj>TEMPPLANPARAM</ErrObj>
+        <ErrType>SDE_Failure</ErrType>
+        <ErrDesc>操作失败</ErrDesc>
+      </SDO_Error>
+      <TempPlanParam>
+        <CrossID>31012000000044</CrossID>
+        <CoordStageNo>null</CoordStageNo>
+        <OffSet>57</OffSet>
+        <EndTime>2020-06-12 16:30:00</EndTime>
+        <SplitTimeList>
+          <SplitTime>
+            <StageNo/>
+            <Green>34</Green>
+          </SplitTime>
+          <SplitTime>
+            <StageNo/>
+            <Green>80</Green>
+          </SplitTime>
+          <SplitTime>
+            <StageNo/>
+            <Green>30</Green>
+          </SplitTime>
+        </SplitTimeList>
+      </TempPlanParam>
+    </Operation>
+  </Body>
+</Message>
+"""
 data_handler = DataHandler('123456', 'send data queue', 'put datahub queue')
-data_handler.xml_parse(recv_data_xml)
+data_handler.xml_parse(recv_data_xml.strip())
 
-# print(data_handler.data_type)
-# print(data_handler.object_type)
+print(data_handler.data_type)
+print(data_handler.object_type)
 print(data_handler.recv_data_dict)
+print(data_handler.error_data)
 
-cmd_result = CmdResult('RESPONSE')
-cmd_result.parse_recv_data(data_handler.recv_data_dict)
-cmd_result.convert_data_for_datahub()
-print(cmd_result.datahub_put_data)
+# cmd_result = CmdResult('RESPONSE')
+# cmd_result.parse_recv_data(data_handler.recv_data_dict)
+# cmd_result.convert_data_for_datahub()
+# print(cmd_result.datahub_put_data)
 
 # print(data_handler.recv_data_dict.get('CrossID'))
 # print(data_handler.recv_data_dict.get('CoordStageNo'))
