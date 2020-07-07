@@ -29,7 +29,6 @@ class DataHandler(object):
         self.signal_id_list = []
         self.cross_id_list = []
         self.is_error = False
-        self.error_data = ''
 
     # 解析xml数据
     def xml_parse(self, recv_data_xml):
@@ -44,11 +43,15 @@ class DataHandler(object):
         self.object_type = tuple(data.keys())[-1]
         self.recv_data_dict = data.get(self.object_type, {})
 
-        self.error_data = data.get('SDO_Error', '')
-        if self.error_data == '':
+        # 判断是否返回错误信息
+        try:
+            if data.get('SDO_Error', '') == '':
+                self.is_error = False
+            else:
+                self.is_error = True
+        except Exception as e:
+            print(e)
             self.is_error = False
-        else:
-            self.is_error = True
 
     # 根据接收数据的类型，处理数据
     def data_handle(self):
@@ -95,12 +98,13 @@ class DataHandler(object):
             # dynamic_data.save_data_to_file()
 
         # 命令下发返回
-        elif self.data_type == 'RESPONSE' and self.object_type == 'TempPlanParam':
-            cmd_result = CmdResult(self.object_type)
+        elif self.data_type == 'RESPONSE' and self.object_type in ('TempPlanParam', 'UnLockFlowDirection'):
+            cmd_result = CmdResult(self.object_type, self.is_error)
             cmd_result.parse_recv_data(self.recv_data_dict)
             cmd_result.convert_data_for_datahub()
 
             # 发布到datahub写入队列
+            # print(cmd_result.datahub_put_data)
             self.queue_put_datahub.put(cmd_result.datahub_put_data)
 
         else:
@@ -135,7 +139,6 @@ class DataHandler(object):
         # 请求系统信息
         print_log('SysInfo', '发送')
         self.send_data_subscribe(['', ], 'SysInfo')
-
 
         # 请求区域信息
         print_log('RegionParam', '发送')

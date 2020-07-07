@@ -10,7 +10,7 @@ access_key = 'gmQxEPpXfYXd7BCwQQUM3OxvpmZwRn'
 endpoint = 'http://15.74.19.36'
 
 project_name = 'city_brain'
-topic_name = 'ods_rt_signal_tmpplan_config_fengxian'
+topic_name = 'ods_rt_signal_tmpplan_result_fengxian'
 
 dh = DataHub(access_id, access_key, endpoint, enable_pb=False)
 
@@ -48,7 +48,7 @@ def put_data():
         records = []
 
         record = TupleRecord(schema=record_schema)
-        record.values = ['1', '2', '3', '4', '5', '6', 10, 20, '20200324']
+        record.values = ['31012000000042', '2020-06-15 18:00:00', 1, '2020-06-16 17:45:00', '2020-06-16 17:45:00', "{'CrossID': '31012000000042', 'EndTime': '2020-06-15 18:00:00', 'CoordStageNo': '7', 'OffSet': '3', 'SplitTimeList': [{'stageNo': '7', 'Green': '36'}, {'stageNo': '8', 'Green': '79'}, {'stageNo': '9', 'Green': '37'}]}"]
         # record.shard_id = 0
         records.append(record)
 

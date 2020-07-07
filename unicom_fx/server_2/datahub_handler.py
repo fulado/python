@@ -22,7 +22,7 @@ class DatahubHandler(object):
         self.topic_phase_param = 'ods_signal_phase_lane_rltn_gb1049_fengxian'
         self.topic_cross_cycle = 'ods_signal_cycle_rt_gb1049_fengxian'
         self.topic_cross_stage = 'ods_signal_stage_rt_gb1049_fengxian'
-        self.topic_cmd_result = 'ods_signal_tmpplan_result_fengxian'
+        self.topic_cmd_result = 'ods_rt_signal_tmpplan_result_fengxian'
 
         # schema
         self.schema_signal_controller = self.dh.get_topic(self.project_name, self.topic_signal_controller).record_schema
@@ -37,7 +37,6 @@ class DatahubHandler(object):
 
     # 发布数据
     def put_data(self, obj_name, data_list):
-
         # 如果数据不是列表类型, 或者列表长度为0, 不写入datahub
         if not isinstance(data_list, list) or len(data_list) == 0:
             return
@@ -66,7 +65,7 @@ class DatahubHandler(object):
         elif obj_name == 'CrossStage':
             topic_name = self.topic_cross_stage
             record_schema = self.schema_cross_stage
-        elif obj_name == 'TempPlanParam':
+        elif obj_name in ('TempPlanParam', 'UnLockFlowDirection'):
             topic_name = self.topic_cmd_result
             record_schema = self.schema_cmd_result
         else:

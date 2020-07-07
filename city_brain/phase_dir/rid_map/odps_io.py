@@ -31,13 +31,13 @@ def write_inter_phase_into_odps(area_code, start_index):
             phase_plan_content_list.append(phase_plan_content)
 
     table_name = 'dwd_tfc_rltn_inter_phase_city_brain'
-    partition = 'adcode=310000'
+    partition = 'area_code=' + area_code
 
     # 删除分区
     delete_partition(table_name, partition)
 
     # 写入新数据
-    # pprint.pprint(phase_plan_content_list)
+    # print(phase_plan_content_list)
     write_data_into_odps(table_name, partition, phase_plan_content_list)
 
     print('inter_phase数据写入完毕')

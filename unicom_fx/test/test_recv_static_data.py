@@ -6,66 +6,19 @@ from command.cmd_result import CmdResult
 
 
 recv_data_xml = """
-<?xml version="1.0" encoding="UTF-8"?>
-<Message>
-  <Version>1.0</Version>
-  <Token>02FCB106FB8742B0901E14BAFB0DD4B0411D5B82</Token>
-  <From>
-    <Address>
-      <Sys>UTCS</Sys>
-      <SubSys/>
-      <Instance/>
-    </Address>
-  </From>
-  <To>
-    <Address>
-      <Sys>TICP</Sys>
-      <SubSys/>
-      <Instance/>
-    </Address>
-  </To>
-  <Type>RESPONSE</Type>
-  <Seq>20200612105752000708</Seq>
-  <Body>
-    <Operation name="Set" order="6">
-      <SDO_Error>
-        <ErrObj>TEMPPLANPARAM</ErrObj>
-        <ErrType>SDE_Failure</ErrType>
-        <ErrDesc>操作失败</ErrDesc>
-      </SDO_Error>
-      <TempPlanParam>
-        <CrossID>31012000000044</CrossID>
-        <CoordStageNo>null</CoordStageNo>
-        <OffSet>57</OffSet>
-        <EndTime>2020-06-12 16:30:00</EndTime>
-        <SplitTimeList>
-          <SplitTime>
-            <StageNo/>
-            <Green>34</Green>
-          </SplitTime>
-          <SplitTime>
-            <StageNo/>
-            <Green>80</Green>
-          </SplitTime>
-          <SplitTime>
-            <StageNo/>
-            <Green>30</Green>
-          </SplitTime>
-        </SplitTimeList>
-      </TempPlanParam>
-    </Operation>
-  </Body>
-</Message>
-"""
+<?xml version="1.0" encoding="UTF-8"?><Message><Version>1.0</Version><Token>02FCB106FB8742B0901E14BAFB0DD4B0411D5B82</Token><From><Address><Sys>UTCS</Sys><SubSys></SubSys><Instance></Instance></Address></From><To><Address><Sys>TICP</Sys><SubSys></SubSys><Instance></Instance></Address></To><Type>RESPONSE</Type><Seq>20200615165558000987</Seq><Body><Operation name="Set" order="6"><TempPlanParam><CrossID>31012000000042</CrossID><CoordStageNo>7</CoordStageNo><OffSet>3</OffSet><EndTime>2020-06-15 18:00:00</EndTime><SplitTimeList><SplitTime><StageNo>7</StageNo><Green>36</Green></SplitTime><SplitTime><StageNo>8</StageNo><Green>79</Green></SplitTime><SplitTime><StageNo>9</StageNo><Green>37</Green></SplitTime></SplitTimeList></TempPlanParam></Operation></Body></Message>"""
+
 data_handler = DataHandler('123456', 'send data queue', 'put datahub queue')
 data_handler.xml_parse(recv_data_xml.strip())
 
-print(data_handler.data_type)
-print(data_handler.object_type)
-print(data_handler.recv_data_dict)
-print(data_handler.error_data)
+data_handler.data_handle()
+# print(data_handler.data_type)
+# print(data_handler.object_type)
+# print(data_handler.recv_data_dict)
+# print(data_handler.is_error)
+# print(data_handler.error_data)
 
-# cmd_result = CmdResult('RESPONSE')
+# cmd_result = CmdResult(data_handler.object_type, data_handler.is_error)
 # cmd_result.parse_recv_data(data_handler.recv_data_dict)
 # cmd_result.convert_data_for_datahub()
 # print(cmd_result.datahub_put_data)

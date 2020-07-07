@@ -137,7 +137,7 @@ def write_data_into_odps(table_name, area_name, pic_list):
 
 def main():
     # 根据不同区的相位图文件位置和名称修改file_path和area_name
-    file_path = 'D:/work/city_brain/310109_虹口/pic/xiangWeiTu'
+    file_path = 'D:/work/city_brain/310109_虹口/pic/东宝兴路与中兴路C相位'
     area_name = 'hongkou'
 
     table_name = 'ods_tfc_ctl_signal_phase_pic_city_brain'

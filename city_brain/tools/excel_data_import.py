@@ -148,8 +148,8 @@ def main():
     # read_file_name = 'E:/city_brain/30_1030/01_设备挂接/bynt/roadnet_tp_device_金山区卡口_1031.xlsx'
     # read_file_name = 'E:/city_brain/30_1030/04_信号机/cust_inter.xlsx'
     # read_file_name = 'E:/city_brain/30_1030/01_设备挂接/coil/roadnet_tp_device_lane_direction_嘉定区线圈.xlsx'
-    read_file_name = 'D:/03_work/66_city_brain/310113_baoshan/devc/radar.xlsx'
-    # read_file_name = 'D:/work/city_brain/310104_xuhui/devc/徐汇视频0609.xlsx'
+    # read_file_name = 'D:/03_work/66_city_brain/310151_崇明/devc/chongming_1_bynt.xlsx'
+    read_file_name = 'D:/work/city_brain/310151_崇明/devc/chongming_1_coil.xlsx'
 
     write_file_name = read_file_name.replace('xlsx', 'txt')
 
