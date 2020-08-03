@@ -6,14 +6,7 @@
       <change beforePath="$PROJECT_DIR$/phase_dir/rid_map/odps_io.py" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/rid_map/odps_io.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/phase_dir/rid_map/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/phase_dir/rid_map/tests.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tools/excel_data_import.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/excel_data_import.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/input_phase_pic.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/input_phase_pic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/command/cmd_result.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/command/cmd_result.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/server_2/data_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/server_2/data_handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/server_2/datahub_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/server_2/datahub_handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/test/test_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/test/test_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/test/test_datahub.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/test/test_datahub.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_fx/test/test_recv_static_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_fx/test/test_recv_static_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unicom_sj/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../unicom_sj/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/read_data_from_odps.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/read_data_from_odps.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -23,9 +16,10 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/city_brain$input_phase_pic.coverage" NAME="input_phase_pic Coverage Results" MODIFIED="1592364352710" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tools" />
-    <SUITE FILE_PATH="coverage/city_brain$excel_data_import.coverage" NAME="excel_data_import Coverage Results" MODIFIED="1593417297054" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tools" />
+    <SUITE FILE_PATH="coverage/city_brain$excel_data_import.coverage" NAME="excel_data_import Coverage Results" MODIFIED="1594799664829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tools" />
     <SUITE FILE_PATH="coverage/city_brain$put_data.coverage" NAME="put_data Coverage Results" MODIFIED="1587871035121" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/datahub" />
-    <SUITE FILE_PATH="coverage/city_brain$tests.coverage" NAME="tests Coverage Results" MODIFIED="1594089424802" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/phase_dir/rid_map" />
+    <SUITE FILE_PATH="coverage/city_brain$read_data_from_odps.coverage" NAME="read_data_from_odps Coverage Results" MODIFIED="1595557860627" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tools" />
+    <SUITE FILE_PATH="coverage/city_brain$tests.coverage" NAME="tests Coverage Results" MODIFIED="1595902216712" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/phase_dir/rid_map" />
     <SUITE FILE_PATH="coverage/city_brain$tools_odps.coverage" NAME="tools_odps Coverage Results" MODIFIED="1589795153989" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/phase_dir/rid_map" />
     <SUITE FILE_PATH="coverage/city_brain$test.coverage" NAME="test Coverage Results" MODIFIED="1571828113406" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/city_brain$tools.coverage" NAME="tools Coverage Results" MODIFIED="1589426040058" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/phase_dir/rid_map" />
@@ -34,43 +28,143 @@
     <session id="-638659751">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="3" />
-          <entry key="project.open.time.0" value="3" />
+          <entry key="project.closed" value="4" />
+          <entry key="project.open.time.0" value="4" />
+          <entry key="project.open.time.10" value="1" />
           <entry key="project.open.time.8" value="1" />
-          <entry key="project.opened" value="4" />
+          <entry key="project.opened" value="6" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="9" />
+          <entry key="html" value="2" />
+          <entry key="py" value="29" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="9" />
+          <entry key="HTML" value="2" />
+          <entry key="Python" value="29" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="28" />
+          <entry key="Python Console" value="371" />
+          <entry key="py" value="345" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="28" />
+          <entry key="Python" value="716" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/tests.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="237">
-              <caret line="25" column="60" lean-forward="true" selection-start-line="25" selection-start-column="60" selection-end-line="25" selection-end-column="60" />
+            <state relative-caret-position="571">
+              <caret line="34" column="33" selection-start-line="34" selection-start-column="6" selection-end-line="34" selection-end-column="33" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/models.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="311">
+              <caret line="184" lean-forward="true" selection-start-line="184" selection-end-line="184" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/views_ft.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="400">
+              <caret line="20" column="21" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="21" />
+              <folding>
+                <element signature="e#0#35#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/phase_dir/templates/froad_rid_ft.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-2480">
+              <caret line="95" column="45" lean-forward="true" selection-start-line="95" selection-start-column="45" selection-end-line="95" selection-end-column="45" />
+              <folding>
+                <element signature="n#style#0;n#text#0;n#g#0;n#svg#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/phase_dir/templates/main_ft.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="174" column="33" selection-start-line="174" selection-start-column="21" selection-end-line="174" selection-end-column="33" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/phase_dir/phase_dir/settings.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="20">
+              <caret line="43" column="30" selection-start-line="43" selection-start-column="18" selection-end-line="43" selection-end-column="30" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tools/read_data_from_odps.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1440">
+              <caret line="72" lean-forward="true" selection-start-line="72" selection-end-line="72" />
+              <folding>
+                <element signature="e#0#21#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/odps_io.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="520">
+              <caret line="83" column="20" selection-start-line="83" selection-start-column="4" selection-end-line="83" selection-end-column="20" />
+              <folding>
+                <element signature="e#0#38#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/tools_odps.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="540">
+              <caret line="27" lean-forward="true" selection-start-line="27" selection-end-line="27" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/tools_phase.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="220">
+              <caret line="78" lean-forward="true" selection-start-line="78" selection-end-line="78" />
+              <folding>
+                <element signature="e#0#97#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -95,10 +189,11 @@
       <find>get_cust_phase</find>
       <find>get_phase_plan_list</find>
       <find>value</find>
-      <find>save_cust_phase_dir</find>
-      <find>save_phase_cust_road</find>
       <find>get_excel_data</find>
       <find>output_to_file</find>
+      <find>shard_id</find>
+      <find>save_cust_phase_dir</find>
+      <find>save_phase_cust_road</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -109,8 +204,11 @@
       <list>
         <option value="$PROJECT_DIR$/tools/input_phase_pic.py" />
         <option value="$PROJECT_DIR$/tools/excel_data_import.py" />
+        <option value="$PROJECT_DIR$/tools/read_data_from_odps.py" />
+        <option value="$PROJECT_DIR$/phase_dir/rid_map/tools_phase.py" />
         <option value="$PROJECT_DIR$/phase_dir/rid_map/odps_io.py" />
         <option value="$PROJECT_DIR$/phase_dir/rid_map/tests.py" />
+        <option value="$PROJECT_DIR$/phase_dir/rid_map/models.py" />
       </list>
     </option>
   </component>
@@ -120,7 +218,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1936" />
@@ -135,6 +233,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -147,11 +246,33 @@
               <item name="city_brain" type="462c0819:PsiDirectoryNode" />
               <item name="phase_dir" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
+              <item name="city_brain" type="462c0819:PsiDirectoryNode" />
+              <item name="phase_dir" type="462c0819:PsiDirectoryNode" />
+              <item name="phase_dir" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
+              <item name="city_brain" type="462c0819:PsiDirectoryNode" />
+              <item name="phase_dir" type="462c0819:PsiDirectoryNode" />
+              <item name="rid_map" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
+              <item name="city_brain" type="462c0819:PsiDirectoryNode" />
+              <item name="phase_dir" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="city_brain" type="b2602c69:ProjectViewProjectNode" />
+              <item name="city_brain" type="462c0819:PsiDirectoryNode" />
+              <item name="tools" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="ProjectViewState">
@@ -160,6 +281,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="ToolWindowPython Console.ShowToolbar" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/phase_dir/templates" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -232,6 +354,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="read_data_from_odps" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="city_brain" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tools" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tools/read_data_from_odps.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="tests" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="city_brain" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -246,28 +390,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/phase_dir/rid_map/tests.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="tools" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="city_brain" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/phase_dir/rid_map" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/phase_dir/rid_map/tools.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -301,17 +423,17 @@
     <list>
       <item itemvalue="Python.excel_data_import" />
       <item itemvalue="Python.input_phase_pic" />
-      <item itemvalue="Python.tools" />
       <item itemvalue="Python.tools_odps" />
       <item itemvalue="Python.tests" />
+      <item itemvalue="Python.read_data_from_odps" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.tests" />
+        <item itemvalue="Python.read_data_from_odps" />
         <item itemvalue="Python.excel_data_import" />
         <item itemvalue="Python.input_phase_pic" />
         <item itemvalue="Python.tools_odps" />
-        <item itemvalue="Python.tools" />
       </list>
     </recent_temporary>
   </component>
@@ -344,15 +466,15 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25799572" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.26332623" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.29750273" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.29750273" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3995657" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -361,8 +483,8 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="11" weight="0.3286334" />
-      <window_info anchor="bottom" id="Python Console" order="12" />
+      <window_info anchor="bottom" id="Terminal" order="11" weight="1.0" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="12" visible="true" weight="0.4820847" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -450,48 +572,134 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="252">
           <caret line="144" selection-start-line="144" selection-end-line="144" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tools/excel_data_import.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3260">
+          <caret line="164" selection-start-line="164" selection-end-line="164" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/baoshan/data_monitor_dianke.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="19" column="4" lean-forward="true" selection-start-line="19" selection-start-column="4" selection-end-line="19" selection-end-column="23" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/tools_odps.py">
+    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/tools.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/tools_phase.py">
+    <entry file="file://$PROJECT_DIR$/datahub/put_data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3780">
+        <state relative-caret-position="80">
+          <caret line="10" column="43" selection-start-line="10" selection-start-column="39" selection-end-line="10" selection-end-column="43" />
           <folding>
-            <element signature="e#0#97#0" expanded="true" />
+            <element signature="e#0#27#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tools/excel_data_import.py">
+    <entry file="file://$PROJECT_DIR$/tools/read_data_from_odps.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="153" column="14" selection-start-line="153" selection-start-column="14" selection-end-line="153" selection-end-column="14" />
+        <state relative-caret-position="1440">
+          <caret line="72" lean-forward="true" selection-start-line="72" selection-end-line="72" />
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/odps_io.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="201">
-          <caret line="40" column="11" lean-forward="true" selection-start-line="40" selection-start-column="11" selection-end-line="40" selection-end-column="11" />
+        <state relative-caret-position="520">
+          <caret line="83" column="20" selection-start-line="83" selection-start-column="4" selection-end-line="83" selection-end-column="20" />
           <folding>
             <element signature="e#0#38#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/tools_odps.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="540">
+          <caret line="27" lean-forward="true" selection-start-line="27" selection-end-line="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/apps.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phase_dir/phase_dir/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="20">
+          <caret line="43" column="30" selection-start-line="43" selection-start-column="18" selection-end-line="43" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/tools_phase.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="78" lean-forward="true" selection-start-line="78" selection-end-line="78" />
+          <folding>
+            <element signature="e#0#97#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="27" column="91" selection-start-line="27" selection-start-column="3" selection-end-line="27" selection-end-column="91" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/views_ft.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="20" column="21" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phase_dir/templates/froad_rid_ft.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2480">
+          <caret line="95" column="45" lean-forward="true" selection-start-line="95" selection-start-column="45" selection-end-line="95" selection-end-column="45" />
+          <folding>
+            <element signature="n#style#0;n#text#0;n#g#0;n#svg#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phase_dir/templates/main_ft.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="174" column="33" selection-start-line="174" selection-start-column="21" selection-end-line="174" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/tests.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="237">
-          <caret line="25" column="60" lean-forward="true" selection-start-line="25" selection-start-column="60" selection-end-line="25" selection-end-column="60" />
+        <state relative-caret-position="571">
+          <caret line="34" column="33" selection-start-line="34" selection-start-column="6" selection-end-line="34" selection-end-column="33" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/phase_dir/rid_map/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="311">
+          <caret line="184" lean-forward="true" selection-start-line="184" selection-end-line="184" />
         </state>
       </provider>
     </entry>

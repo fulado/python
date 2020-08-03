@@ -149,12 +149,12 @@ def main():
     # read_file_name = 'E:/city_brain/30_1030/04_信号机/cust_inter.xlsx'
     # read_file_name = 'E:/city_brain/30_1030/01_设备挂接/coil/roadnet_tp_device_lane_direction_嘉定区线圈.xlsx'
     # read_file_name = 'D:/03_work/66_city_brain/310151_崇明/devc/chongming_1_bynt.xlsx'
-    read_file_name = 'D:/work/city_brain/310151_崇明/devc/chongming_1_coil.xlsx'
+    read_file_name = 'D:/work/city_brain/310117_松江/video/songjiang_202007.xlsx'
 
     write_file_name = read_file_name.replace('xlsx', 'txt')
 
-    content_list = get_excel_data(read_file_name)
-    # content_list = get_excel_data_video(read_file_name)
+    # content_list = get_excel_data(read_file_name)
+    content_list = get_excel_data_video(read_file_name)
 
     output_to_file(write_file_name, content_list)
 

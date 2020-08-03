@@ -28,11 +28,11 @@ def save_cust_phase_dir(area_code):
 
 
 if __name__ == '__main__':
-    area_code = '310101'  # 区号
+    area_code = '310113'  # 区号
     start_index = 100   # phase plan id 起始值
 
     # 根据区号写入inter_phase数据到odps
-    write_inter_phase_into_odps(area_code, start_index)
+    # write_inter_phase_into_odps(area_code, start_index)
 
     # 根据区号写入phase_dir数据到odps
     write_phase_dir_into_odps(area_code, start_index)

@@ -47,7 +47,6 @@ def write_inter_phase_into_odps(area_code, start_index):
 def write_phase_dir_into_odps(area_code, start_index):
     """
     :param area_code: 区域代码
-    :param area_name: 区域名称, 使用拼音, 如xuhui, baoshan, songjiang
     :param start_index: phase_plan_id开始值, 建议每次重新写入时都在上一次start_index的值上增加至少50
     :return:
     """
