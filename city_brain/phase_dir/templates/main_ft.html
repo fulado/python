@@ -182,6 +182,22 @@
             </div>
         </div>
 
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseTen">金山</a>
+                </h4>
+            </div>
+            <div id="collapseTen" class="panel-collapse collapse">
+                <div class="panel-body">
+                    {% for inter_info in inter_list_jinshan %}
+                    <a href="#" href-url="/phase_dir/rid_map_ft?inter_id={{ inter_info.inter_id }}"
+                       class="list-group-item">{{ inter_info.cust_inter_id }} - {{ inter_info.inter_name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 

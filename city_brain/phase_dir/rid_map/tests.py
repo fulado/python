@@ -13,8 +13,9 @@ from rid_map.models import PhaseLightRelation, LightRoadRelation, CustSignalInte
 from rid_map.tools_phase import get_phase_plan_list, save_phase_cust_road, get_phase_dir, get_phase_dir_multi_plan, \
     save_phase_cust_road
 from rid_map.odps_io import write_inter_phase_into_odps, write_phase_dir_into_odps
+from rid_map.jinshan import get_time_plan, get_phase_light, save_phase_id_no_map, test_jinshan
 
-import pprint
+# import pprint
 
 
 # 写入电科phase_dir数据到mysql数据库
@@ -28,7 +29,7 @@ def save_cust_phase_dir(area_code):
 
 
 if __name__ == '__main__':
-    area_code = '310113'  # 区号
+    area_code = '310116_qingyi'  # 区号
     start_index = 100   # phase plan id 起始值
 
     # 根据区号写入inter_phase数据到odps
@@ -40,4 +41,11 @@ if __name__ == '__main__':
     # 写入电科phase_dir数据到mysql数据库
     # save_cust_phase_dir(area_code)
 
-
+    # ============================================================
+    # 金山
+    # site_id = 81002
+    # get_time_plan(site_id)
+    # get_phase_light(site_id)
+    # get_time_plan_phase_light(site_id)
+    # save_phase_id_no_map()
+    # test_jinshan()

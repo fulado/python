@@ -138,14 +138,14 @@ def get_phase_dir(inter_id):
     inter_info = CustSignalInterMap.objects.get(inter_id=inter_id)
     inter_name = inter_info.inter_name
 
-    phase_road_ft_rid_list = PhaseFroadFTRidMap.objects.filter(inter_id=inter_id, f_rid__isnull=False)
+    phase_road_ft_rid_list = PhaseFroadFTRidMap.objects.filter(inter_id=inter_id, f_rid__isnull=False).\
+        exclude(f_rid=r'\N')
 
     # 相位通行方向列表
     phase_dir_list = []
 
     # 根据通行内容取道路信息
     for phase_road_ft_rid in phase_road_ft_rid_list:
-
         # 计算进口道方向
         dir_name = get_dir_name(phase_road_ft_rid.f_rid.ft_dir_4_no)
 

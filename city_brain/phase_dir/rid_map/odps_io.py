@@ -1,5 +1,5 @@
 from .models import CustSignalInterMap
-from .tools_phase import get_phase_plan_list, get_phase_dir_multi_plan
+from .tools_phase import get_phase_plan_list, get_phase_dir_multi_plan, get_phase_dir
 from .tools_odps import delete_partition, write_data_into_odps
 
 import time
@@ -52,15 +52,25 @@ def write_phase_dir_into_odps(area_code, start_index):
     """
     phase_dir_list = []
 
-    inter_id_list = CustSignalInterMap.objects.filter(area_code=area_code).values('inter_id').distinct()
+    if area_code == '310116_junma':
+        inter_id_list = CustSignalInterMap.objects.filter(area_code='310116', cust_inter_id__startswith='80').\
+            values('inter_id').distinct()
+    elif area_code == '310116_qingyi':
+        inter_id_list = CustSignalInterMap.objects.filter(area_code='310116', cust_inter_id__startswith='81').\
+            values('inter_id').distinct()
+    else:
+        inter_id_list = CustSignalInterMap.objects.filter(area_code=area_code).values('inter_id').distinct()
 
     for inter_id in inter_id_list:
-        single_inter_phase_dir_list = get_phase_dir_multi_plan(inter_id.get('inter_id', ''), start_index)
+        if area_code == '310116_junma' or area_code == '310116_qingyi':
+            single_inter_phase_dir_list = get_phase_dir(inter_id.get('inter_id', ''))
+        else:
+            single_inter_phase_dir_list = get_phase_dir_multi_plan(inter_id.get('inter_id', ''), start_index)
 
         for single_inter_phase_dir in single_inter_phase_dir_list:
             phase_plan_content = [single_inter_phase_dir.get('inter_id', None),
                                   single_inter_phase_dir.get('inter_name', None),
-                                  single_inter_phase_dir.get('phase_plan_id', None),
+                                  single_inter_phase_dir.get('phase_plan_id', '1'),
                                   single_inter_phase_dir.get('phase_name', None),
                                   single_inter_phase_dir.get('dir_name', None),
                                   single_inter_phase_dir.get('f_rid', None),
@@ -84,16 +94,10 @@ def write_phase_dir_into_odps(area_code, start_index):
     delete_partition(table_name, partition)
 
     # 写入新数据
+    # print(phase_dir_list)
     write_data_into_odps(table_name, partition, phase_dir_list)
 
     print('phase_dir数据写入完毕')
-
-
-
-
-
-
-
 
 
 

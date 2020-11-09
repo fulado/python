@@ -197,6 +197,32 @@ class PhaseFroadFTRidMap(models.Model):
     ft_rid = models.ForeignKey(InterFTRid, on_delete=models.DO_NOTHING, null=True, blank=True)  # 电科进口道
 
 
+# 金山配时方案
+class CustTimePlanJinshan(models.Model):
+    site_id = models.CharField(max_length=20, null=True, blank=True)  # 信号机路口ID
+    split_plan_no = models.CharField(max_length=10, null=True, blank=True)  # 绿信比方案号
+    cycle_time = models.IntegerField(default=0, null=True, blank=True)  # 周期时长
+    barrier_num = models.IntegerField(default=0, null=True, blank=True)  # 屏障数量
+    barrier_list = models.CharField(max_length=1000, null=True, blank=True)  # 屏障列表
+
+
+# 金山phase_id与phase_no对应关系
+class PhaseIdPhaseNoMapJinshan(models.Model):
+    site_id = models.CharField(max_length=20, null=True, blank=True)  # 信号机路口ID
+    split_plan_no = models.CharField(max_length=10, null=True, blank=True)  # 绿信比方案号
+    phase_id = models.CharField(max_length=20, null=True, blank=True)  # 相位阶段id
+    phase_no = models.CharField(max_length=20, null=True, blank=True)  # 相位名称
+    light_list = models.CharField(max_length=50, null=True, blank=True)  # 本相位对应的灯组ID列表
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -98,19 +98,34 @@ class MyRequestHandler(BaseRequestHandler):
                 # print_log(tmp_recv_data, '接收')
 
                 # 判断接收xml的完整性
-                if tmp_recv_data[:5] == '<?xml':
+                if tmp_recv_data.startswith('<?xml'):
                     recv_data = tmp_recv_data
                 else:
                     recv_data += tmp_recv_data
 
-                # 判断xml数据格式是否正确
-                if xml_check(recv_data):
-                    # 数据存入接收数据队列
-                    # print('将数据存入队列')
-                    self.queue_recv_data.put(recv_data)
-                    recv_data = ''
-                else:
+                if not tmp_recv_data.endswith('</Message>'):
                     continue
+
+                # 判断xml数据格式是否正确
+                # if xml_check(recv_data):
+                #     # 数据存入接收数据队列
+                #     # print('将数据存入队列')
+                #     self.queue_recv_data.put(recv_data)
+                #     recv_data = ''
+                # else:
+
+                xml_cnt = recv_data.count('<?xml')
+
+                if xml_cnt > 0:
+                    xml_list = recv_data.split('<?xml')
+
+                    for i in range(1, xml_cnt + 1):
+                        xml_data = '<?xml' + xml_list[i]
+
+                        if xml_check(xml_data):
+                            self.queue_recv_data.put(xml_data)
+
+                recv_data = ''
 
             except Exception as e:
                 self.connection_status = False

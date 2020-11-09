@@ -19,6 +19,7 @@ def main(request):
     inter_list_huangpu = CustSignalInterMap.objects.filter(area_code='310101').order_by('cust_inter_id')
     inter_list_minhang = CustSignalInterMap.objects.filter(area_code='310112').order_by('cust_inter_id')
     inter_list_qingpu = CustSignalInterMap.objects.filter(area_code='310118').order_by('cust_inter_id')
+    inter_list_jinshan = CustSignalInterMap.objects.filter(area_code='310116').order_by('cust_inter_id')
 
     context = {'inter_list_baoshan': inter_list_baoshan,
                'inter_list_hongkou': inter_list_hongkou,
@@ -29,6 +30,7 @@ def main(request):
                'inter_list_huangpu': inter_list_huangpu,
                'inter_list_minhang': inter_list_minhang,
                'inter_list_qingpu': inter_list_qingpu,
+               'inter_list_jinshan': inter_list_jinshan,
                }
 
     return render(request, 'main_ft.html', context)

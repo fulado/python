@@ -74,8 +74,8 @@ def get_excel_data_video(file_name):
                 except:
                     # print(j)
                     print(cell_value)
-        # print(value_list_1)
-        # print(value_list_2)
+        print(value_list_1)
+        print(value_list_2)
         pos_convert = wgs2gcj(value_list_2[1], value_list_2[0])
         # print(pos_convert)
         value_list_1.append(str(pos_convert[1]))
@@ -111,7 +111,7 @@ def get_excel_data(file_name):
         str_out = ''
         for j in range(worksheet.ncols):
             cell_value = str(worksheet.cell_value(i, j))
-            cell_value = cell_value.replace('.0', '') if j in (0, 1, 2, 3, 10, 9, 13, 7, 8) else cell_value
+            cell_value = cell_value.replace('.0', '') if j in (0, 1, 2, 3, 10, 9, 13, 7, 8) or j > 10 else cell_value
             # cell_value = cell_value.replace('.0', '')
 
             if j == 0:
@@ -149,12 +149,12 @@ def main():
     # read_file_name = 'E:/city_brain/30_1030/04_信号机/cust_inter.xlsx'
     # read_file_name = 'E:/city_brain/30_1030/01_设备挂接/coil/roadnet_tp_device_lane_direction_嘉定区线圈.xlsx'
     # read_file_name = 'D:/03_work/66_city_brain/310151_崇明/devc/chongming_1_bynt.xlsx'
-    read_file_name = 'D:/work/city_brain/310117_松江/video/songjiang_202007.xlsx'
+    read_file_name = 'D:/work/city_brain/310114_嘉定/bynt_2.xlsx'
 
     write_file_name = read_file_name.replace('xlsx', 'txt')
 
-    # content_list = get_excel_data(read_file_name)
-    content_list = get_excel_data_video(read_file_name)
+    content_list = get_excel_data(read_file_name)
+    # content_list = get_excel_data_video(read_file_name)
 
     output_to_file(write_file_name, content_list)
 
@@ -166,7 +166,7 @@ if __name__ == '__main__':
 
 
 
-
+    
 
 
 

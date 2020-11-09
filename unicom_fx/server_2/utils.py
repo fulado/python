@@ -129,8 +129,13 @@ def str_to_int(value):
 
 
 if __name__ == '__main__':
-    data_string = 'aaa'
-    print_log(data_string, '接收')
+    # data_string = 'aaa'
+    # print_log(data_string, '接收')
+
+    xml_string = '<?xml version="1.0" encoding="UTF-8"?><Message><Version>1.0</Version><Token>8C9518A7AD2CB43B01F3B0EEBF6DA86287F55C6B</Token><From><Address><Sys>UTCS</Sys><SubSys></SubSys><Instance></Instance></Address></From><To><Address><Sys>TICP</Sys><SubSys></SubSys><Instance></Instance></Address></To><Type>PUSH</Type><Seq>20200908060020000001</Seq><Body><Operation name="Notify" order="1"><CrossCycle><CrossID>31012000000065</CrossID><StartTime>2020-09-08 06:00:20</StartTime><LastCycleLen>140.0</LastCycleLen><CurCycleLen>140.0</CurCycleLen><CurCycleRemainLen>140.0</CurCycleRemainLen></CrossCycle></Operation></Body></Message><?xml version="1.0" encoding="UTF-8"?><Message><Version>1.0</Version><Token>8C9518A7AD2CB43B01F3B0EEBF6DA86287F55C6B</Token><From><Address><Sys>UTCS</Sys><SubSys></SubSys><Instance></Instance></Address></From><To><Address><Sys>TICP</Sys><SubSys></SubSys><Instance></Instance></Address></To><Type>RESPONSE</Type><Seq>20200908055841000040</Seq><Body><Operation name="Set" order="6"><TempPlanParam><CrossID>31012000000052</CrossID><CoordStageNo>3</CoordStageNo><OffSet>37</OffSet><EndTime>2020-09-08 07:29:00</EndTime><SplitTimeList><SplitTime><StageNo>1</StageNo><Green>86</Green></SplitTime><SplitTime><StageNo>2</StageNo><Green>56</Green></SplitTime></SplitTimeList></TempPlanParam></Operation></Body></Message>'
+    res = xml_check(xml_string)
+
+    print(res)
 
 
 
