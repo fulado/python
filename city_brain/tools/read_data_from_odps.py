@@ -63,6 +63,27 @@ def excute_sql(o, sql):
     return data_list
 
 
+def get_data_from_odps_by_sql(o, sql):
+    """
+    执行sql, 从odps查询数据
+    :param o: odps对象
+    :param sql: sql语句
+    :return:
+    """
+    reader = o.execute_sql(sql).open_reader()
+
+    data_list = []
+    for record in reader:
+        data = []
+
+        for field in record:
+            data.append(field)
+
+        data_list.append(data)
+
+    return data_list
+
+
 def put_data(data_list):
     dh_access_id = 'wJGLPrjEt3GCgB2h'
     dh_access_key = 'SJcsN7acOaCsaAYicrX0iU8l72x9GZ'
@@ -111,18 +132,34 @@ def put_data(data_list):
 if __name__ == '__main__':
     access_id = 'wJGLPrjEt3GCgB2h'
     access_key = 'SJcsN7acOaCsaAYicrX0iU8l72x9GZ'
-    project_name = 'jj_znafaqglxt2'
+    # project_name = 'jj_znafaqglxt2'
+    project_name = 'jj_znjt'
     endpoint = 'http://15.74.19.77/api'
 
-    table_name = 'dws_tfc_trl_interfrid_tp_multiflow_rt_ly'
+    # table_name = 'dws_tfc_trl_interfrid_tp_multiflow_rt_ly'
 
     odps = get_odps(access_id, access_key, project_name, endpoint)
-    table = get_table(odps, table_name)
+    # table = get_table(odps, table_name)
 
-    sql = """select * from dws_tfc_trl_interfrid_tp_multiflow_rt_ly"""
+    # sql = """select * from dws_tfc_trl_interfrid_tp_multiflow_rt_ly"""
 
-    while True:
-        flow_data_list = excute_sql(odps, sql)
-        put_data(flow_data_list)
+    # while True:
+    #     flow_data_list = excute_sql(odps, sql)
+    #     put_data(flow_data_list)
+    #
+    #     time.sleep(300)
 
-        time.sleep(300)
+    sql = """
+            select DISTINCT t1.cust_devc_id as radar_id, t3.cust_devc_id as scats_id, t2.inter_name from dwd_tfc_rltn_devc_lane_qianxun_xuhui t1
+            join jj_znafaqglxt2.dwd_tfc_bas_rdnet_inter_info t2 on t1.inter_id=t2.inter_id
+            join dwd_tfc_rltn_devc_lane_qianxun_xuhui t3 on t1.inter_id=t3.inter_id and t3.qx_type_no='7' and t3.cust_devc_id not in ('xh01', 'xh02')
+            where t1.qx_type_no='12' and t1.cust_devc_id not in (
+                select DISTINCT radar_id from ods_rt_radar_lane_statparameter_image_dianke
+                where dt=to_char(getdate(), 'yyyymmdd') and radar_id like '310104%'
+            )
+            order by radar_id;
+        """
+
+    res = get_data_from_odps_by_sql(odps, sql)
+
+    print(res)
